@@ -65,6 +65,10 @@ fix, vivo far-side toggle (hint + SUPPORT doc), Samsung Wi-Fi-calling doc (#45).
     can't see Drive-only calls" section below). Live in 2.4.3–2.4.5.
   - With the app lock (fingerprint/biometric) on, **screenshots of the app can't be taken** — a side effect
     of `FLAG_SECURE` and unwanted from a user's view (detail in the "App lock blocks screenshots" section below).
+  - **Shizuku mode fails on HyperOS 3 (POCO X7 Pro)** — Shizuku READY but never hands back a recorder binder
+    (HyperOS kills the user-service fork); standalone works. Two reporters, same device (detail in the
+    "Shizuku mode fails on HyperOS 3" section below). Plus a standalone off-Wi-Fi loopback-arming flakiness
+    on the same phone, and WD-toggling that looks like a fault to users.
 - *Quality / housekeeping:* no instrumentation tests at all (`androidTest`); transcript lines whisper
   invents from noise (#32); F-Droid readiness; README stale since 1.5.5 + stale screenshots + dead
   `WD_DISABLE_WHEN_IDLE` pref + deliberately-broken CI signing.
@@ -191,6 +195,44 @@ not a regression; the tension is that it also stops the *owner* screenshotting t
 
 Recommend the setting unless we want to rework per-screen. Small change either way; the work is the
 decision + onboarding note (a new visible option — see [[new-features-consider-onboarding]]).
+
+---
+
+## 🐞 Shizuku mode fails on HyperOS 3 (POCO X7 Pro) — reported 2026-10-03 (users "doctor divago" + "voss")
+
+**Two users, same device + ROM:** POCO X7 Pro (`2412DPC0AG` / `rodin`), **HyperOS OS3.0.302.0, Android 16**
+(`BP2A.250605.031.A3`), on 2.4.5. Both report Shizuku mode doesn't record; divago: "can't use Shizuku,
+when I start a call I get an error — but using CallVault directly (standalone) works fine." voss's
+screenshot shows the system notice *"Shizuku se estrelló recientemente"* (Shizuku crashed recently).
+
+**Cause (confirmed in code + logs):** Shizuku is running and CallVault is permitted — report shows
+`Privileged mode: SHIZUKU`, `Status: READY` — but Shizuku never hands CallVault a recorder. The log:
+`Shizuku did not hand back a recorder binder within 10000ms` (twice), `unbindUserService failed: Permission
+Denial: removeUserService from pid=… requires permission`, then `Shizuku cannot serve a recorder right now:
+NO_PERMISSION`; `Binder connected: false`, `Host uid: ?`. So `Shizuku.bindUserService` (`ShizukuBackend.kt:206`)
+is accepted but the user-service binder never arrives (`RecorderBackend.ensureShizukuRunning` 10 s poll,
+`:391`). On HyperOS the forked user-service process (`com.baba.callvault:recorder`) is killed or the
+ADB-started Shizuku server can't manage user services for this app. Note `Status: READY` is only
+`isRunning && hasPermission` (`ShizukuStatus.of`) — the *runtime* permission doesn't cover user-service
+management, so READY can be true while the bind still can't complete. **Not a CallVault capture bug** — it
+never gets a recorder. **ShizuCallRecorder is not the cause** — voss uninstalled it and it still failed.
+
+**Workaround (correct outcome for both):** use CallVault's own **Standalone** (built-in ADB) mode — it runs
+the daemon over the embedded transport, no Shizuku user-service fork. It's also the fuller mode (Shizuku is
+scrcpy-only: no VoIP / offline / resilient / speaker attribution). So nothing is lost by staying standalone.
+Possible in-app improvement: when the Shizuku bind times out, say so and point to HyperOS battery/"MIUI
+optimization" restrictions or to Standalone, instead of a generic error. 🧪 Told divago to disable battery
+restrictions on Shizuku — **awaiting his feedback** (2026-10-03).
+
+**voss also hit a Standalone off-Wi-Fi (loopback) issue — same device.** With Offline recording (loopback)
+ON, the launcher armed the loopback listener, failed twice (`NOTHING_LISTENING_ON_LOOPBACK`, ~6 s each),
+then **succeeded on attempt 3** (`Connected over loopback tcpip :47964 (works off-WiFi)` → daemon → "a
+recorder connected"), ~40 s total. His "wireless debugging keeps stopping" is by design: offline mode
+*borrows WD to re-arm the loopback listener then turns it back off* (`Borrowing Wireless debugging … it
+goes back off straight after`) — not a fault, but alarming and unexplained to the user. Worth: (a) a note/UI
+hint that WD toggling is expected in offline mode; (b) look at why the first loopback arms fail on HyperOS 3
+before one sticks. See [[loopback-tcpip-offwifi]], [[private-report-note20-no-wifi]]. If he's mostly on
+Wi-Fi, turning Offline recording OFF stops the WD churn.
 
 ---
 
