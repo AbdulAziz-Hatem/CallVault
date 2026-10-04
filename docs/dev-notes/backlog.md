@@ -111,6 +111,17 @@ visible option, a decision on onboarding — the wizard can't be re-run, see [[n
    recording (we already read the call log via `CallLogReader` for cut-off matching, and hold
    `READ_CALL_LOG`). Decisions: list design, correlation to recordings, and what a tap does.
 
+6. **"Select all" in multi-select mode (user request, 2026-10-04).** When a library page is in selection
+   mode (the "N selected" app bar with share/delete), offer a one-tap *select all* so the user doesn't
+   have to tap every row — e.g. for a bulk delete. Small and additive: the selection state is
+   `LibrarySelection` (section + `Set<String>` of names, `ui/navigation/LibrarySelection.kt`), so this is a
+   new `selectedAll(section, allNames)` on that type plus a select-all (and ideally select-none/toggle)
+   action in the selection bar (`ui/screens/LibrarySelectionUi.kt` / `HomeScreen.kt`). The "all names" must
+   be the *currently filtered/visible* list for that section, not every recording, or search + select-all
+   surprises. A toggle that flips to "clear all" once everything's picked is the usual pattern. Applies to
+   every list that has selection mode (recordings, Transcripts, Summaries), so route it through the shared
+   bar rather than one page.
+
 ---
 
 ## 🐞 Merge can't see Drive-only calls — reported 2026-10-02 (user "gene rator")
