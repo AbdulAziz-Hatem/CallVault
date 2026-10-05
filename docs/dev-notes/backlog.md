@@ -4,7 +4,7 @@ Agreed work that is **not** started, so it does not get lost between sessions. O
 delivers, not by effort. Anything already researched lives in `capture-research-directions.md`; this
 file is for decided product and engineering work.
 
-Status key: 🔵 agreed, not started · 🟡 in progress · ✅ done (kept briefly, then deleted)
+Status key: 🔵 agreed, not started · 🟡 in progress · ✅ done (moved to the Completed section below)
 
 **A section header is a claim about a release, so verify it against the tags rather than trusting it.**
 Every ✅/🟡 below now names the release it shipped in. On 2026-08-14 three sections still read "not yet
@@ -42,11 +42,8 @@ fix, vivo far-side toggle (hint + SUPPORT doc), Samsung Wi-Fi-calling doc (#45).
 
 **Open work — priority set by the maintainer 2026-10-01.**
 
-*🔼 HIGHER priority — new feature requests (detail in the "Higher-priority feature requests" section below):*
-1. ✅ **Save transcription + notes beside the audio** — SHIPPED in 2.4.5 (🧪, `83369db1`; opt-in `.md` sidecar).
+*🔼 HIGHER priority — new feature requests (detail in the "Higher-priority feature requests" section below). #1, #3 and #4 shipped in 2.4.5 — see the Completed section:*
 2. **Record Button overlay** — a floating on-screen button to start/stop recording, plus an in-call note bubble that attaches a note to the call. *(still open)*
-3. ✅ **More filename templates** — SHIPPED in 2.4.5 (🧪, `83369db1`; contact/number-first orders).
-4. ✅ **Export / import settings** — SHIPPED in 2.4.5 (🧪, `83369db1`; section-less row at the bottom of Settings).
 5. **View call history inside the app.** *(still open)*
 
 *🔽 LOWER priority — everything previously queued:*
@@ -267,67 +264,15 @@ locale. German (`values-de`) is a complete LTR locale to use as the template. Gr
 
 ---
 
-## ✅ Next release batch — SHIPPED in 2.4.4 (pulled) → 2.4.5. Parked list gathered 2026-09-29.
+## 🔵 Still open from the 2.4.4/2.4.5 batch
 
-Per-row statuses below were written as each item was built; the batch as a whole shipped in 2.4.4 (20450,
-pulled) and is carried by the unpublished 2.4.5 (20451). Still open from this list: **#9 step 2** (needs a
-Samsung log) and **#3's "switch the timeout off with consent"** part (the Offline-recording recommendation
-did ship, in the Pair-again hint). #7 DROPPED, #8 PARKED.
+The batch shipped in 2.4.4 (pulled) → 2.4.5; the shipped pieces are in **Completed** below. Still open from that round:
 
-All 📐 from field logs and source reading; each needs a build and a real phone before anything is claimed.
-The maintainer picks the order.
-
-| # | Item | From | Where the detail is |
-|---|---|---|---|
-| 1 | 🧪 **BUILT 2026-09-29 (`53529e65`, rc17)**: app calls need 14, Resilient needs 13; greyed with a reason, existing users switched off once with a notification. Unit-tested on both sides; not yet seen on an Android 12/13 device. — **Features match the phone's Android version**: detect the version at setup and in Settings, build a feature→version table, grey out what can't work | coonrw (Redmi, A12) | section below |
-| 2 | ✅ **VERIFIED 2026-09-29 on the OP9 by the maintainer (rc11: card, notifications, re-pair; + a pre-existing false "Recording is down" fixed)** — **Detect a lost ADB pairing + "Pair again"**: stop the endless retry on `AdbPairingRequiredException`, clear `adb_paired`, Home card with a Pair-again button, plus a permanent Pair-again row in Settings | issue #43 (reporter's own suggestion, maintainer agreed) | `2026-09-28-issue-43-pairing-expires.md` (read its correction first) |
-| 3 | **Stop the pairing expiring**: recommend Offline recording (its loopback connects reset Android's 7-day clock), or switch the timeout off with consent. A Wi-Fi reconnect does **not** reset it | issue #43 | same dev-note |
-| 4 | ✅ **VERIFIED 2026-09-29 on the OP9 by the maintainer (rc13 `35d178b7`: rescued file in the list, plays, card says "cut off — part saved")** — **Recover a recording cut off by the app being killed**: at start-up, finish/publish a leftover `rec_stage_*.tmp` and tell the user the call was cut short | voarch (OnePlus lost a 13-min call) | memory `field-reports-2026-09-29` |
-| 5 | ✅ **VERIFIED 2026-09-29 with #4 (notification + card)** — **Say when a call was lost** to the app being killed, instead of silence | voarch | same |
-| 6 | ✅ **VERIFIED 2026-09-29 on the OP9 by the maintainer (rc14 `cd6de764`): no grant + WD off + loopback armed + recorder killed → no "reconnect" card, recorder back over loopback.** The OEM-switch advice for blocking phones is unit-tested only (OP9 doesn't block). — **Fix the misleading "update removed a permission — turn Wireless debugging on" card**: don't show it when the phone blocks shell grants or loopback already works; point to the OEM switch instead | voarch | same |
-| 7 | ⏸️ **DROPPED 2026-09-29 by the maintainer** — #1 (grey out by Android version) removes coonrw's A12 case; meti.sh's A13 Xiaomi is covered by the 2.4.3 stale-cblk fix (🧪). Revisit only if meti.sh still loses calls on 2.4.3+. — **Resilient recording falls back to normal recording** when it captures nothing in the first seconds | coonrw (A12, 0 bytes); meti.sh (Xiaomi) | memory `field-reports-2026-09-29`, `private-reports-2026-09-28` |
-| 8 | ⏸️ **PARKED 2026-09-29 by the maintainer** — the "minimum recording length" setting already discards short recordings on BOTH paths (checked: `RecordingForegroundService.kt:719` carrier, `VoipRecordingCoordinator.kt:622` app calls, same `MinDurationPolicy`; presets 5/10/30/60 s). — **No phantom 1-second app-call file at hang-up** (Samsung switched to IN_COMMUNICATION before the carrier IDLE arrived) | benjamin (Samsung, A17) | memory `field-reports-2026-09-29` |
-| 9 | 🧪 **Step 1 BUILT + measured 2026-09-29 (rc15/16): OP9 = 31 re-takes, all `silenced=false`, 3.5 s lost in 49 s. Step 2 (skip when false) waits for a Samsung log.** — **VoIP mic re-take**: gate re-takes on `isClientSilenced` instead of 15 zero chunks (clipped word starts) | issue #41 follow-up | `2026-09-23-voip-near-side-zeros.md` |
-| 10 | 🧪 **DONE 2026-09-29 on `release/2.4.4` (`5a63239f`)** — ⚠️ rc4's end-of-call dumps froze the app after one-sided app calls; fixed `e598175a` (rc16) — **vivo, before 2.4.4 final**: drop the rc3 sink-identity change, merge `fix/vivo-all-audiorecords` (rc1 crash fix + rc4 diagnostics); what to do about vivo's allow-list is the maintainer's call | scrunscotty | `2026-09-28-two-private-reports.md` |
-
-Waiting on users, not on us: benjamin (Wi-Fi-calling vs Android 17 test calls), scrunscotty (rc4 log).
-Still open from before: #42 Android 13 mic fallback (decision pending).
-
-**Added 2026-09-29 (field request — "notify immediately when an update is available"):**
-🧪 BUILT on `release/2.4.4` (`fc493e6c`, rc19): once-per-version update popup on open (Update now / Later;
-banner + notification untouched); background check 24 h→6 h (UPDATE policy); check-on-open throttle 6 h→30 min.
-The notification already existed (UpdateCheckWorker → notifyAvailableOnce, once per tag) — the popup covers
-users who never allowed notifications. Truly-instant push declined (no backend; poll model). Popup logic
-unit-covered; on-screen appearance not yet seen (needs a genuinely newer release than the installed build).
-
----
-
-## ✅ Features that match the phone's Android version — SHIPPED in 2.4.4 (pulled) → 2.4.5 (`53529e65`, rc17); not yet seen on an Android 12/13 device
-
-**Why.** coonrw (Redmi 12 Pro, Android 12) had "Record app calls" switched on and six WhatsApp calls
-went unrecorded without a word: app-call capture needs Android 14 (the shell only gets
-`CAPTURE_VOICE_COMMUNICATION_OUTPUT` from 14; Android 12 fails even earlier on the missing
-`setTargetMixRole`, which is API 33 — corrected 2026-09-29), and the app never said so.
-**The feature → version map is written: `2026-09-29-feature-android-version-map.md`.** He had also turned on Resilient recording, which captured 0 bytes
-on Android 12, a version it was never tested on. The maintainer decided the app should know which
-features a phone can run and say so, instead of letting users switch on things that cannot work.
-
-1. **Detect the Android version** (and, where it matters, the OEM) during onboarding, and again for
-   existing users when Settings opens, so people who installed before this change are covered too.
-2. **Build a feature → Android version table** before writing code. Sources: the app's own gates
-   (`SDK_INT` checks, `@RequiresApi`), comments, dev-notes, memory and field reports, plus AOSP/vendor docs
-   and a web pass. For every feature, mark it supported, unsupported or untested per version, with the
-   evidence. Known starting points: app calls need A14+ (#42, coonrw); Resilient recording is only
-   proven on A14+ (coonrw's A12 gave 0 bytes; meti.sh's A13 worked on its first call); vivo zero-fills
-   the far side of app calls whatever the version ([[private-reports-2026-09-28]]). **Never gate on
-   `SDK_INT` alone where Android 17 reads settings as "0"** (see the Android 17 memory).
-3. **Grey out and switch off** the settings the phone can't run, each with a one-line reason
-   ("Needs Android 14 or newer"). For existing users who already switched one on, turn it off and tell
-   them once, rather than switching it off silently.
-
-Related parked ideas from the same round of reports (memory `field-reports-2026-09-29`): fall back to
-normal recording when Resilient captures nothing; recover recordings cut off by the phone killing the
-app; stop the "turn Wireless debugging on" card on phones that block the grant.
+- **#9 VoIP mic re-take, step 2** — skip the re-take when `isClientSilenced` is false; step 1 built + measured (OP9: 31 re-takes, all `silenced=false`, 3.5 s lost in 49 s), waits on a Samsung log. (`2026-09-23-voip-near-side-zeros.md`)
+- **#3 pairing-timeout "switch off with consent"** — the Offline-recording recommendation shipped (in the Pair-again hint); switching the Android 7-day timeout off with consent did not.
+- **#7 Resilient falls back to normal recording — ⏸️ DROPPED 2026-09-29**: #1 (Android-version gating) covers coonrw's A12; meti.sh's A13 is covered by the 2.4.3 stale-cblk fix. Revisit only if meti.sh still loses calls on 2.4.3+.
+- **#8 No phantom 1-second app-call file at hang-up — ⏸️ PARKED 2026-09-29**: the minimum-recording-length setting already discards short files on both paths (`RecordingForegroundService.kt:719`, `VoipRecordingCoordinator.kt:622`).
+- Waiting on users, not on us: benjamin (Wi-Fi-calling vs Android 17 test calls), scrunscotty (rc4 log). Still open from before: #42 Android 13 mic fallback (decision pending).
 
 ---
 
@@ -431,6 +376,51 @@ port open; the setting's description should say so.
 
 ---
 
+## ✅ Completed
+
+Shipped/verified work, condensed to one line each. Newest first. Full detail lives in each release's memory note, the dev-notes, and git history.
+
+**2.4.5**
+- **Transcript + notes `.md` sidecar beside the audio (#1)** — 2.4.5 (🧪, `83369db1`); opt-in, for PC backup.
+- **More filename templates (#3)** — 2.4.5 (🧪, `83369db1`); contact/number-first orders.
+- **Export / import settings (#4)** — 2.4.5 (🧪, `83369db1`); allow-listed, device-specific keys excluded.
+
+**2.4.4 (pulled) → 2.4.5 batch** — still-open residue is in "Still open from the 2.4.4/2.4.5 batch" above.
+- **Features match the phone's Android version (#1)** — 2.4.4→2.4.5 (🧪, `53529e65`, rc17); grey out + switch off what the Android version can't run (app calls need 14, Resilient 13). Not yet seen on an A12/13 device.
+- **Detect a lost ADB pairing + "Pair again" (#43)** — ✅ VERIFIED 2026-09-29 OP9 (rc11); stops the endless retry, Home card + Settings row.
+- **Recover a recording cut off by the app being killed (#4)** — ✅ VERIFIED 2026-09-29 OP9 (rc13, `35d178b7`); finishes a leftover `rec_stage_*.tmp` at start-up.
+- **Say when a call was lost (#5)** — ✅ VERIFIED 2026-09-29 with #4; notification + card instead of silence.
+- **Fix the misleading "turn Wireless debugging on" regrant card (#6)** — ✅ VERIFIED 2026-09-29 OP9 (rc14, `cd6de764`); not shown when the phone blocks grants or loopback works.
+- **vivo app-call crash + one-sided freeze (#10)** — 🧪 DONE (`5a63239f`; freeze fixed `e598175a`, rc16); far side still unrecordable on vivo (SUPPORT.md).
+- **Update popup + faster checks** — 🧪 BUILT (`fc493e6c`, rc19); once-per-version popup on open, background check 24h→6h, on-open throttle 6h→30min.
+
+**2.3.0 / 2.1.x (2026-08)**
+- **Favourites, min-duration discard, storage cap** — ✅ VERIFIED 2026-08-30 (`19a018d`, `ce9fee8`, `1afaecc`). 🚨 Any reason to sweep must be tested by BOTH `RetentionScheduler` and `RetentionSweepWorker`, or a cap-only sweep never runs.
+- **D5 "mark a moment" (flag + Stop ongoing notification, both paths)** — BUILT 2026-08-30 (`abd5ae0`); D9 per-app VoIP whitelist followed.
+- **SilentFailureNotifier — notify after boot when offline recording's loopback is down** — DONE 2026-08-30 (`d79eb72`); self-clearing, mode-aware.
+- **E1 InCallService spike** — Telecom binds us on OxygenOS 16, giving carrier direction/state by construction (`da035bf`); but WhatsApp registers no Telecom call, so the VoIP case gets no callback. Feature PARKED — see the E1 sections.
+- **Refuse to transcribe a recording over 15 min, on every path** — DONE 2026-08-25 (`TranscriptionRunner.runOne` + `TranscriptionQueue.pending`); avoids the whole-file decode OOM.
+- **Enable ARM CPU features in the ggml build** — SHIPPED 2026-08-26 (`2ce45c8`); 7 CPU variants, HWCAP-selected; summarise 1.74×, transcribe 1.17×.
+- **Silent VoIP failure now reported** — fixed 2026-08-24 (`VoipMissPolicy`). 🚨 No retry is possible (arming is fixed at track creation) — do not re-propose one.
+
+**1.5.x (2026-07)**
+- **Don't install an update while a call is being recorded** — v1.5.6 (`4e46948`, merged `2e5c0dc`); `CallInProgressGate`, guards VoIP too.
+- **VoIP near-party drop-outs on One UI** — FIXED by re-taking the mic, v1.5.5.
+- **Validate the encoder before recording into it** — v1.5.6 (`1ee77af`, merged `2e5c0dc`); `EncoderLimits` clamps bitrate, refuses an unsupported format → scrcpy.
+- **Manual "Check for updates" in Settings** — SHIPPED; bypasses the 6h throttle, reports in place.
+- **Keep-alive rewarm latch could permanently stop recording** — v1.5.5 (`RewarmGate`); exposed v1.4.0→v1.5.3. Shipped on unit tests only, no device run recorded.
+- **Upload schedule surfaced in Settings (#20)** — v1.5.5; picker extracted from the wizard (`SyncScheduleLabels.kt`).
+- **Settings restructure — a "General" section** — v1.5.5; nine top-level sections → six, Settings as a side panel.
+- **Control over what gets recorded** — 1.5.6 (`CARRIER_RECORDING_ENABLED` + `VOIP_AUTO_START`); an app-calls-only recorder is now possible.
+- **Resilient recording on One UI — ring geometry + crackle** — v1.5.3; ring derived from the mapping, `GUARD_FRAMES` 32→960. 🚨 The native drain must be passed `wrapFrames`, not `frameCount` — a third caller would reintroduce the over-read.
+
+**Issues verified / shipped**
+- **One notification during a recorded call (#31 follow-up)** — ✅ VERIFIED 2026-09-11 (`SharedStatusNotice`); the recording posts under the keep-alive's id.
+- **Import an audio file recorded elsewhere (#37)** — SHIPPED in 2.4.0 (`HomeViewModel.importAudio`, `ShareImportScreen`, `ImportedRecording`).
+- **Speaker labels for Shizuku recordings (#38)** — ✅ VERIFIED 2026-09-20 OP9 (`ef2dc3b9`, `8d79713e`); labels at transcription time from the stereo decode.
+
+---
+
 ## Current state — 2026-09-11 (STALE — superseded by the 2026-10-01 block at the top; kept as history)
 
 **Released:** `v2.3.0` (versionCode **20350**), published 2026-09-11. Asset `CallVault.apk`, downloaded back
@@ -458,35 +448,6 @@ of three unmerged branches; the longer it stacks, the more a single bad merge co
 to 1.6.0 — stale, written before the version scheme moved). 20100 clears the 10720 floor.
 
 The maintainer is running this build daily for a few days before cutting the release.
-
-### ✅ Favourites, min-duration discard, storage cap — VERIFIED 2026-08-30
-
-Three of the four things the D6 row bundled. `19a018d`, `ce9fee8`, `1afaecc`.
-
-**Favourites.** A star on the playback header and a one-tap "Starred" chip on Home that only appears
-once something is starred. Its own table at `transcripts.db` v7 — deliberately NOT a tag, because a
-tag can be renamed or deleted by the user and this row now carries a promise.
-
-**Discard short recordings** (off by default). Applied on both capture paths through one shared
-policy object, before the catalog, the transcription queue and StorageRouter. Refuses to delete on a
-duration of 0 — that is the extractor failing to parse the container, not an instantaneous call.
-
-**Storage cap** (off by default). Oldest device copies first, stops the moment it is under, and a
-starred recording is **never** taken even when that means the cap cannot be met. Device copies only.
-
-🚨 **The bug this nearly shipped with, recorded so it is not reintroduced:** both `RetentionScheduler`
-and `RetentionSweepWorker` treated "no age period" as "nothing to sweep for". That was true until the
-cap existed. A cap set on a phone with no age period would have had its daily job cancelled out from
-under it and would never have run once, while Settings showed it enabled. Both gates now test the cap
-too. **Any future reason to sweep must be added to both.**
-
-**What is NOT done from that row:** nothing else — D6 is now complete. What remains unbuilt from the
-D list is D1 (live level meter), D2 (record private, publish complete), D5 (notification actions),
-D9 (per-app VoIP whitelist + lock-screen ask).
-
-**Since updated:** D10 and the off-Wi-Fi notification shipped as `d79eb72`; the Stop action as
-`5f127c9`; the BCR sidecar as `0f3b3c6`. D5's QS tile was dropped by the maintainer as unwanted, and
-**D5's "flag a moment" is NOT built** — see the note below.
 
 ### 🧪 Switching between an app call and a phone call — ONE file (`fcbff97`, 2026-08-30)
 
@@ -517,12 +478,6 @@ continuous carrier file.
 **Open risk, only a real call can settle it:** whether the far-party submix re-attaches after the
 phone call. If it does not, the second half is near-side only — logged explicitly rather than failing
 silently, so the log will say so.
-
-### ✅ D5 "mark a moment" — BUILT 2026-08-30 on both paths (`abd5ae0`)
-
-The maintainer chose the both-paths option, so app calls gained their own ongoing notification
-(Mark + Stop; no Pause, because the daemon's VoIP capture has none to drive). D9's per-app whitelist
-followed in the next commit. The note below is kept for the reasoning, which still holds.
 
 ### 🅿️ Original framing — D5 "flag a moment", before the decision
 
@@ -824,7 +779,6 @@ actively cancelled. Play-banned since 2022-05-11. That is what Cube ACR ships.
    files it as a bug** — see [[voip-recording-feasibility]].
 
 
-
 Record from the **app's own uid with plain `MIC`**, when the privileged bridge is down. No ADB, no
 shell, no Wi-Fi. It captures the near party always and the far party only on speakerphone — the
 behaviour of every pre-ADB call recorder.
@@ -846,13 +800,6 @@ The mitigation is a **notification when offline recording is enabled and the loo
 down** — "recording is paused until this phone reaches Wi-Fi once" — fired after boot rather than at
 the moment a call is missed. That is a small, contained piece of work and it converts the worst
 property of this hole (invisibility) into an inconvenience.
-
-✅ **DONE 2026-08-30 (`d79eb72`)** — `SilentFailureNotifier`, raised from the boot path where the
-failure is genuinely invisible, and only from there: with the app open the Home status card already
-says it, and two mouths saying the same thing is how a warning becomes noise. Self-clearing, and
-mode-aware so a Shizuku user is told about Shizuku rather than about Wi-Fi. The Settings row also
-now states the reboot limitation up front, in the corrected "join any network for a few seconds, no
-internet needed" wording. Still needs a real off-Wi-Fi reboot to confirm it fires.
 
 **And the README must state the limitation plainly** rather than leaving it to look like an oversight.
 
@@ -920,21 +867,6 @@ testing and removed with `cmd companiondevice disassociate 0 <pkg> <mac>`.
 
 ⚠️ A fake association was left on **both** phones during this research (mac `00:11:22:33:44:55`). It
 does not appear in Settings' paired list and is removed on uninstall.
-
-## ✅ The spike answered it: Telecom binds us on OxygenOS 16
-
-Real outgoing call on the OP12, 2026-08-29 (`da035bf`):
-
-    12:36:29.836  onCallAdded:   direction=outgoing selfManaged=false state=9 (CONNECTING)
-    12:36:44.983  onCallRemoved: direction=outgoing selfManaged=false state=7 (DISCONNECTED)
-
-**Direction and the self-managed flag both correct, from the platform**, on a phone where the appop
-grant is silently blocked — so the companion-device role *does* carry the capability on Android 16.
-
-The recording for that call is stamped `20260829_123630.877`, about **one second after** the callback.
-📐 That is a proxy, not a direct measurement of our detection latency — the file stamp is when the
-recording was named, not when the broadcast arrived, and the logcat ring had already rotated past the
-call's start. It bounds the gain rather than stating it.
 
 ## 🚨 A WhatsApp call produces NO callback — the VoIP case does not work, and cannot
 
@@ -1049,28 +981,6 @@ in order: the `CaptureAudit` line for the capture (was a microphone opened at al
 the `AudioRecord` ever reach RECORDING), the config header (mode, resilient, transport), and whether a
 teardown or mode switch lands inside the call. See [[diagnosing-a-user-report]].
 
-### ✅ Refuse to transcribe a recording over 15 minutes — DONE 2026-08-25, on every path
-
-Decided while closing the test matrix: the long-call OOM is **not** a release gate, because shipping as
-it stands is acceptable — but transcribing a call over ~15 minutes decodes the whole file and can
-exhaust the heap, so the app should stop rather than try and die.
-
-**Agreed for now:** a hard refusal with a modal explaining why, on any recording longer than 15 minutes.
-Not a silent skip and not a spinner that ends in a crash — the user should be told the recording is too
-long to transcribe on-device yet.
-
-**Deliberately deferred:** actually making long transcription work (streaming or chunked decode rather
-than whole-file). That is the real fix and it needs its own investigation; see
-[[long-call-decode-oom]] for the two known causes and the costed options.
-
-The English-language transcription gate is **done** — confirmed working on a real call.
-
-**Done, and wider than agreed.** The refusal first landed at the manual tap only; it now sits in
-`TranscriptionRunner.runOne` and `TranscriptionQueue.pending`, so the nightly sweep and the per-call
-automatic runs inherit it too. Those two previously walked straight into the OOM this entry exists to
-prevent — and a too-long recording also held the oldest slots of the nightly batch for ever, starving
-every call behind it. See the entry below for the one part still missing.
-
 ### 🔵 Transcribing long calls — the blow-up is our decoder, not whisper — researched 2026-08-26
 
 The 15-minute refusal exists because `AudioDecoder` builds the **entire** file in memory, four times over,
@@ -1113,58 +1023,6 @@ ops, which is **slower** than ORT's optimised CPU kernels; NNAPI was deprecated 
 Google states it expects most devices to use the CPU backend in future. **Qualcomm QNN is closed to us
 outright** — the Maven artifact declares `Qualcomm AI Hub Model License` / `scm:not_public`, and F-Droid
 explicitly rejects the "but it is on Maven Central" defence.
-
-### ✅ Enable the ARM CPU features in the ggml build — SHIPPED 2026-08-26 (`2ce45c8`)
-
-**Done.** Measured end to end in the app on the OP9: summarisation 153.2 s → 88.2 s (1.74×),
-transcription 88.0 s → 75.1 s (1.17×). Seven CPU variants ship in the APK and one is chosen from HWCAP
-at load — verified selecting `armv8.2_2` on the OP9 and `armv8.6_1` on the OP12. +2.3 MB packaged.
-
-**Repack was kept ON after measuring it, and the first estimate was wrong.** On a 484 MB model it added
-252 MB and looked like "half the model size again"; on a 2,871 MB model it added 245 MB. The cost is
-**flat, not proportional** — roughly 250 MB whatever the model, about 6.5% of the projected peak with
-the real summariser, for 63% of the speed gain. The CPU variants themselves cost exactly zero: peak was
-identical to the byte with repack off and with the stock build. The one-line lever to disable it is
-documented in `CMakeLists.txt` if a phone ever refuses to load the model. The real 3.46 GB model's peak
-is still unmeasured — it was not on any test phone — so that remains an extrapolation (~3.85 GB
-projected, range 3.7–4.2, on a 7.4 GB phone).
-
-Original entry below, kept for the reasoning.
-
-
-
-The native build compiles whisper.cpp and llama.cpp with **no `-march` flags**, so ggml's dotprod, fp16
-and i8mm kernels are all `#ifdef`'d out and `GGML_CPU_REPACK` is inert — the hot loop runs a
-six-instruction emulation of a single `SDOT`. Verified from the generated CMake cache, not inferred.
-
-Measured on the OP12 at the app's production thread count:
-
-| | today | with ARM flags |
-|---|---|---|
-| Summarisation prefill | 97.5 t/s | **309.7 t/s** |
-| Summarisation generation | 69.2 t/s | 84.1 t/s |
-| Transcription encode | 4848 ms | 4073 ms |
-
-Transcription gains less because Q5_0/Q5_1 have no i8mm path; the summariser's Q4_K does.
-
-**Ship it as one APK** with `-DGGML_BACKEND_DL=ON -DGGML_CPU_ALL_VARIANTS=ON`: seven Android CPU
-variants, selected from HWCAP at load. Verified picking `armv8.6_1` on the OP12 and `armv8.2_2` on the
-OP9 (which correctly declined i8mm). No ABI floor raise, no SIGILL on older phones, ~4.5 MB.
-
-Wiring: `llamacv.cpp` must call `ggml_backend_load_all_from_path(nativeLibraryDir)` rather than
-`ggml_backend_load_all()`, and `whispercv.cpp` needs the call added. `useLegacyPackaging = true` is
-already set, which this depends on. Invalidates the stored RTF calibration.
-
-**GPU is not worth it on this SoC:** Qualcomm's own Adreno 750 numbers are 1.27× prefill and **2.1×
-slower** generation than CPU, and whisper.cpp on OpenCL currently asserts and dies on Adreno. Generation
-is memory-bandwidth-bound and the 8 Gen 3's ~77 GB/s is shared by CPU, GPU and NPU alike.
-
-**Three incidental findings while measuring:** the comment at `CMakeLists.txt:17` claiming the NDK ships
-no OpenMP runtime is factually wrong (it does; the real trap is that it resolves the *shared* libomp,
-which is not in the APK — keep the flag off, fix the comment); `GGML_LLAMAFILE` lands off by accident
-because whisper's ggml is added first, which happens to match upstream's Android policy but should be
-commented so nobody "fixes" it; and `TranscriptionEngine.kt` carries two contradictory KDoc blocks about
-thread count, one of which is wrong.
 
 ### 🅿️ In-app bug report / feature request → GitHub — designed 2026-08-26, PARKED
 
@@ -1326,20 +1184,6 @@ already says you can stop at any time. The long call in #4 re-measures it for fr
 **Also done 2026-08-24, not on the original list:** B7 rewritten (it still tested the deleted
 ringback detector), and the CHANGELOG corrected — it told users the attribution came from the
 network's ringback tone, which is both deleted and never true on this phone.
-
-### ✅ Silent VoIP failure — fixed 2026-08-24
-
-An app call that could not be recorded is now reported: a notification while the call is still
-remembered, and a status-card entry that survives to tomorrow. Split by cause — a missing folder is
-the user's and is recorded as an *excused* miss against that prerequisite; an absent daemon is ours
-and is recorded as an *unexplained gap*. Silent until the setup has recorded at least one call
-successfully, matching the carrier path's gate. Rule extracted to `VoipMissPolicy`, unit-tested.
-
-**There is no retry, and there cannot be.** Capture depends on a dynamic audio policy the daemon
-registers, and Android fixes a track's routing when the track is *created* — `startVoipRecording`
-refuses with "policy was not armed before the call" for exactly this reason. Arming is already re-done
-on every fresh daemon binder, which is what keeps the window small. A call landing inside it is lost
-and no amount of waiting recovers it. **Do not re-propose a retry here.**
 
 ### 🔵 App calls get no speaker labels — found 2026-08-24, not scheduled
 
@@ -1575,67 +1419,6 @@ callbacks. Worth understanding before relying on that API for anything.
 
 ---
 
-## ✅ Don't install an update while a call is being recorded — SHIPPED in v1.5.6 (`4e46948`, merged `2e5c0dc`)
-
-`CallInProgressGate.mayInstall()` is checked in `UpdateInstaller.installSilentlyViaShell` *before* the
-heavy-operation lock; a blocked attempt returns `ShellResult.DEFERRED_CALL_IN_PROGRESS`, which clears
-the pending tag and cancels the progress notification **without** falling back to the interactive
-installer. It guards VoIP as well as telephony, because a VoIP call never sets the telephony call
-state. Six unit tests. Known limit: a call that *starts* mid-install is not covered — aborting the
-installer would leave a half-written APK, which is worse.
-
-**Found the hard way, 2026-07-30.** An APK installed over the running app kills the app process, and
-any recording in flight dies with it. Observed on the OP12: one call became two files, and the second
-was mislabelled `out_` with no contact name, because on restart the app saw the already-running call
-as a fresh outgoing one. Nothing was lost — the first file closed cleanly and the second picked up —
-but the call is split, and the seam is silent for as long as the app takes to come back.
-
-**Why it is not just an adb mishap.** `UpdateInstaller` installs over ADB exactly the same way. It is
-tap-to-install, so a user initiates it, but nothing stops them tapping Install mid-call — and an
-update notification is precisely the kind of thing people poke at idly. Sideloads and Obtainium
-updates do it too. So the app can truncate the recording it exists to make.
-
-**What.** Before `UpdateInstaller` takes `AdbShell.heavyOperationLock` and starts streaming the APK,
-check whether a call is in progress; if it is, defer and say so ("Update will install after your
-call"). Checking, downloading and notifying are unaffected — only the install step waits.
-
-**Notes.** Small: a state check plus a deferral. The app already tracks call state in
-`CallSessionManager`, so no new permission is needed. Re-trigger the deferred install from the IDLE
-transition `PhoneStateReceiver` already sees.
-
-**Known limit, worth stating rather than pretending otherwise.** A call that starts *during* an
-install is a few seconds a pre-check cannot close. Closing it properly would mean aborting the
-installer mid-stream, which is worse than the problem — a half-written APK is a broken app.
-
----
-
-## ✅ VoIP near-party drops out on One UI — FIXED by re-taking the mic, SHIPPED in v1.5.5
-
-On a Galaxy S24 FE, One UI **silences** our shell-uid MIC capture intermittently while the VoIP app
-holds the mic — logged by the platform itself as `rec update uid:2000 src:MIC silenced
-pack:com.android.shell`. The loser of that arbitration keeps receiving buffers full of zeros, so the
-recording gets silent holes rather than failing. Measured: ~6 s lost from a 21 s call, matching a flat
--107 dB stretch in the file to within a second. The OnePlus 12 records the same call cleanly.
-
-The platform's own bypass permission (`BYPASS_CONCURRENT_RECORD_AUDIO_RESTRICTION`) is
-`signature|privileged` and `pm grant` refuses it, so shell access cannot open it.
-
-**Minimum viable response: report it.** `VoipCaptureSession` has `farPartyHeard` and no near-party
-equivalent, and `substituted` counts only *missing* chunks — a silenced capture delivers present,
-zero-filled ones, so the log reads `farPartyHeard=true, 2 silence-filled chunks` on a recording with
-a six-second hole. A near-side silence check turns an invisible failure into a visible one.
-
-**HOTWORD was tried and is dead** — it constructs, reports `STATE_INITIALIZED`, then `read()` returns
-0 and the platform never registers the capture at all. Reverted.
-
-**Separate bug it exposed, worth fixing on its own:** when the near feeder dies, `captureLoop` is
-paced by `CHUNK_WAIT_MS` poll timeouts and encodes slower than real time — an 11 s call became ~6 s of
-audio. Losing one source should cost that source, not the recording's length.
-
-Full evidence: `2026-07-30-voip-near-party-silenced-on-one-ui.md`.
-
----
-
 ## 🟡 VoIP-only mode SHIPPED in 1.5.6; Shizuku coexistence still open
 
 Investigated 2026-07-30, no code changed. Full write-up:
@@ -1683,148 +1466,6 @@ Screenshots predate the Settings panel and the two new wizard steps; **"Settings
 referenced throughout but the path is now **Settings ▸ General ▸ Experimental**; and the VoIP
 compatibility table does not know Samsung/One UI works as of 1.5.5. Screenshots were already stale
 before today — regenerating them needs care about real contacts in a public repo.
-
----
-
-## ✅ Validate the encoder before recording into it — SHIPPED in v1.5.6 (`1ee77af`, merged `2e5c0dc`)
-
-`EncoderLimits.resolveBitRate()` clamps the requested rate into the encoder's advertised range and
-logs `encoder=… bitrate=[min..max] requested=… resolved=… sampleRate=… supported=… channels=…
-supported=…`; `supports()` additionally requires `EncoderLimits.supportsFormat()`. Six unit tests.
-Verified on the OP12 (`1.5.6-encoder`): the direct path is still chosen — mono output proves it, since
-the scrcpy fallback is stereo. **But the log line is written by the daemon**, so it reaches neither the
-app debug log nor a shareable report; it reaches logcat, but the default ring ages it out within about
-a minute of a busy phone. Until the
-daemon-logging design lands, this diagnostic cannot answer the bug reports it was built for.
-
-`DirectAudioRecorderSession.hasEncoder()` checks only that an encoder for the MIME **exists** —
-nothing verifies it supports our sample rate, channel count or bitrate, and `KEY_BIT_RATE` is set to
-whatever the user picked. `MediaCodec` given an out-of-range combination does not reliably throw: it
-can clamp or emit frames that decode to nothing, i.e. a correctly-sized file that plays silent.
-
-Measured on a OnePlus 12: the software AAC encoder allows 8000-960000 bps and ≤6 channels, the
-Qualcomm hardware one 4000-192000 and ≤2. The hardware encoder is gated behind
-`special-codec required`, so it is not selected here — but a vendor that does not gate it would hand
-us an encoder with different limits and nothing would notice.
-
-**What.** Query the selected encoder's `AudioCapabilities`: clamp the bitrate into range, refuse the
-direct path when the sample rate or channel count is unsupported (so it falls back to scrcpy rather
-than producing silence), and **log the encoder name and its ranges once per recording**.
-
-Raised by issue #18, which closed unexplained — see
-`2026-07-28-issue-18-silent-carrier-recordings.md`. That log line would have answered it on day one.
-
----
-
-## ✅ Manual "Check for updates" in Settings — SHIPPED (wired in `SettingsScreen.kt` + `WizardScreen.kt`, `settings_update_check_label`)
-
-**Why.** A release only surfaces two ways: a check when the app opens, throttled to once per 6 hours
-(`UpdateScheduler.checkNowIfDue`), and a 24-hour periodic worker. Open the app shortly *before* a
-release lands and you cannot see that release until the throttle expires or the daily worker runs —
-with no way to ask. This happened for real while testing 1.4.7: the phone checked at 14:21, the release
-was published at 14:29, and the only way to force a check was toggling the update switch off and on,
-which is not something a user would ever guess.
-
-**What.** A row under Settings ▸ Updates that runs a check immediately and reports the outcome in
-place — "You're up to date" / "Version X is available". Bypasses the 6-hour throttle, since the user
-asked explicitly; keep the throttle for the automatic path so relaunches cannot hammer the GitHub API.
-
-**Notes.** `UpdateScheduler` already has everything needed — a one-time `UpdateCheckWorker` request is
-what `checkNowIfDue` enqueues. The work is the UI row, the in-place result, and not letting repeated
-taps stack (unique work + KEEP, as the install path does).
-
----
-
-## ✅ Keep-alive rewarm latch can permanently stop recording — SHIPPED in v1.5.5
-
-**Found 2026-07-30 on the OP12: the daemon had been dead ~21 hours and the app never retried.**
-`DaemonKeepAliveService.maybeRewarm` guards on a `rewarming` flag that only the worker thread clears.
-The worker calls `ensureServerRunning` → `AdbShell.ensureConnected`, which is unbounded and blocks
-forever on a half-dead (`CLOSE_WAIT`) connection. One hung attempt latches the flag true for the life
-of the process, so the 60 s watchdog returns at its first line forever. Recording is dead until the
-app is force-stopped — which no user will ever think to do.
-
-Shipped in **v1.4.0** (`a2b248e`); any adbd churn triggers it (cable, screen-off restart, toggling a
-debugging switch). Likely behind field reports of "it just stopped recording".
-
-**Fixed 2026-07-30** by `RewarmGate` (expiring latch, unit-tested) plus a bounded relaunch that drops
-the half-dead connection so the abandoned thread frees `heavyOperationLock`.
-
-**Shipped in v1.5.5** (`RewarmGate.kt` is present in the v1.5.5, v1.5.6 and v1.5.7 trees), so the
-exposure window was v1.4.0 → v1.5.3 and only users still on **v1.5.3 or older** are affected. This
-entry read "Still to do: run it on a device, and ship it" until 2026-08-14, three releases after it
-shipped — the mistake this file's header warning now exists to prevent. Still true: **no device run
-was ever recorded for it**, so it shipped verified by unit tests alone.
-
-Full diagnosis and the fix's shape: `2026-07-30-keepalive-rewarm-latch-wedge.md`.
-The `ensureConnected` entry below is the same bug's root and is still open — layers 1-2 contain it
-rather than remove it.
-
----
-
-## ✅ Upload schedule is built but stranded in the wizard — issue #20, SHIPPED in v1.5.5
-
-**Issue:** https://github.com/madkongo/CallVault/issues/20 (CathaEdulis, 2026-07-29)
-
-**The feature already exists and works end to end.** `SyncScheduleMode` is `IMMEDIATE | DAILY |
-WEEKLY`, with `SYNC_TIME_HOUR`/`SYNC_TIME_MINUTE`/`SYNC_DAY_OF_WEEK` alongside it.
-`StorageRouter.route()` checks the mode and, for DAILY/WEEKLY, skips the immediate copy entirely and
-hands off to `SyncScheduler`'s periodic sweep. Verified in code, not assumed.
-
-**The bug is reachability.** The picker is rendered *only* in `WizardScreen`, and there is no way to
-re-run the wizard. So the mode is decided once, during onboarding, defaulting to `IMMEDIATE` — and
-after that no user can ever change it. That is exactly what the reporter hit: "I couldn't find it
-anywhere."
-
-**What.** Surface the existing picker in Settings. Cheap, because nothing new has to be built:
-
-- The composable and its `scheduleModeTitleRes`/`scheduleModeDescRes` helpers exist in `WizardScreen`
-  — extract them to a shared component rather than duplicating.
-- The strings exist too (`wizard_schedule_*`, `wizard_ui_schedule_*`) and are **already translated in
-  all ten locales**, so `checkTranslations` will not bite. Reusing a `wizard_`-prefixed key outside
-  the wizard is slightly off; renaming means re-translating, so prefer keeping the keys and noting why.
-- `SettingsScreen` already has the time-picker pattern (it borrows those same wizard strings for the
-  retention sweep, around `SettingsScreen.kt:687`).
-- Call `SyncScheduler.apply(context)` on change — `WizardViewModel:137` is the reference.
-
-**Done 2026-07-30.** Exposed as a sub-section of **Storage**, alongside **Retention**, which moved from
-its own top-level accordion into the same section. Zero new strings — `wizard_schedule_title` ("When to
-upload to Drive") and `wizard_schedule_mode_label` ("Upload schedule") already existed in all ten
-locales, so `checkTranslations` stayed green with no translation round. The mode/day labels were
-extracted to `ui/common/SyncScheduleLabels.kt` so the wizard and Settings cannot drift. The old
-`SECTION_RETENTION` key now opens Storage, so a user whose saved open-section was Retention lands on
-the section that contains it instead of a collapsed screen. The schedule rows are hidden when the
-storage target is LOCAL, where there is no upload to schedule.
-
-**Fits with** the General-section restructure below; do them together if that one lands first.
-
-**Note for the reply.** Deferring uploads batches the Drive app's "uploaded" notifications into one
-run per day/week rather than one per call. It reduces the noise, it does not remove it — say so
-plainly rather than letting him expect silence.
-
----
-
-## ✅ Settings restructure: a "General" section — SHIPPED in v1.5.5
-
-**Why.** Settings has grown top-level sections that are really peers of each other, so the screen reads
-as a flat list of everything rather than a shape.
-
-**What.** A new top-level **General** section, with today's sections becoming sub-sections inside it:
-
-- General
-  - Visual settings
-  - Experimental *(keeps its own Resilience / VoIP sub-grouping)*
-  - Updates
-
-**Done 2026-07-30** on `feat/settings-sidebar`, together with opening Settings as a right-side panel
-instead of a destination. Nine top-level sections became six. `SettingsSubHeader` gained a quieter
-nested variant, because General ▸ Experimental ▸ Resilience is three levels deep and the inner
-grouping otherwise rendered at the same weight as its parent.
-
-**Notes.** `SettingsScreen` already has `SettingsSubHeader`, used for the Resilience/VoIP split inside
-Experimental, so the nesting pattern exists. Section expand-state is persisted by key — keep the
-existing keys where a section keeps its identity, or the user's expanded/collapsed state resets. That
-is why `SECTION_EXPERIMENTAL` is still the string `"reliability"` after that rename.
 
 ---
 
@@ -1897,126 +1538,6 @@ failure re-enables it and never retries. That still leaves OnePlus-class devices
 
 **The real escape is to stop needing the daemon at call time** — Track A in
 `capture-research-directions.md`. That is the only route that removes the debugging switch entirely.
-
----
-
-## ✅ Control over what gets recorded — SHIPPED in 1.5.6
-
-Three related asks, all about the user deciding rather than the rules deciding:
-
-- **Decide per call, including app calls.** These were listed as two items ("manual VoIP recording" and
-  "choose when to record") until 2026-07-31; the code says they are one. **Carrier already has it:**
-  `RecordingNotificationHelper` posts a standby notification whose action is `ACTION_MANUAL_START`,
-  plus pause/resume once running. **VoIP has nothing:** `VoipRecordingCoordinator` exposes only
-  `onCallStarted`/`onCallEnded`, which are lifecycle callbacks the detector fires — there is no
-  user-invocable entry point and no arm-without-starting mode. (An earlier version of this entry named
-  the plumbing `VoipRecordingCoordinator.start/stop`. Those symbols do not exist.) The work is the
-  arm-without-starting mode plus the carrier control surface extended to VoIP.
-- **Undecided, deliberately kept separate:** a *prompt* at the start of a call. A dialog over a live
-  call screen is a much more intrusive interaction than a notification you can ignore, it applies to
-  both paths equally, and nothing has established it is wanted.
-- **~~Turn cellular recording off independently~~ — already possible; see the VoIP-only entry above.**
-  Both auto-record switches off with VoIP on *is* an app-calls-only recorder today, and
-  `CallGapDetector` respects those flags so the health card will not nag. What is missing is only the
-  naming. Careful when naming it: it must not silently disable recording for someone who expected it —
-  default on, and state clearly what it does.
-
----
-
-## ✅ Resilient recording on One UI — ring fix CONFIRMED, crackle fixed, SHIPPED in v1.5.3
-
-**Root cause, confirmed against AOSP source rather than guessed.** The handoff sized the ring from
-`AudioRecord.getBufferSizeInFrames()`. That returns `cblk->mBufferSizeInFrames`, a **logical value the
-client rewrites on every attach** — it is *not* the field that sizes the ring. The physical ring is
-`roundup(frameCount) * frameSize`, allocated immediately after the control block by
-`AudioFlinger::TrackBase::TrackBase`. The two agree in stock AOSP only because both are seeded from the
-same `frameCount`; nothing enforces it, and on a Galaxy S24 FE they diverged — 8192 reported against a
-4096-frame allocation.
-
-So this was never a Samsung quirk: **we were reading the wrong quantity**, and the OnePlus happened to
-agree. Refusing the delivery was correct — trusting the report would have read 12 KB past the end.
-
-**Fix:** derive the ring from the mapping, which is ground truth on every device —
-`wrapFrames = min(roundup(reported), largest power of two fitting in (ashmemSize - dataOff) / frameSize)`.
-Self-correcting, no device table, cannot over-read by construction.
-
-**Also fixed alongside it:** `DATA_OFF` was hardcoded to 232, which is `sizeof(audio_track_cblk_t)` on
-Android **13+** only — it is 228 on Android 12 and 224 on Android 11, and `minSdk` is 30. On those two
-releases the ring was being read misaligned rather than failing loudly. Now derived from
-`Build.VERSION.SDK_INT`.
-
-**Trap for whoever tests this:** the native drain rounds whatever frame count it is given up to a power
-of two and masks with it, so it must be passed `wrapFrames`, **not** `frameCount` — otherwise it
-recreates the oversized ring and reads out of bounds, with the Java-side check now passing. Both call
-sites were updated; a third caller added later would reintroduce the bug silently.
-
-## Tested on a Galaxy S24 FE, 2026-07-30 — two results
-
-**The ring-geometry fix is confirmed.** A 46 s carrier call with Resilient recording ON produced a
-full-duration Opus file, mean −39.7 dB / peak −12.1 dB, and **no periodic dropouts**: silence-interval
-`stdev/mean = 1.00` (irregular, i.e. conversational pauses), and click phase concentration `R = 0.03`
-to `0.18` against every candidate wrap (1024/2048/4096/8192 frames) — a geometry error would cluster
-near `R = 1.0`. The v1.5.2 fix works on the device it was written for.
-
-**But the audio crackles, and the handoff is the cause.** Confirmed by A/B on the device: same phone,
-same call type, same codec, one toggle.
-
-| | crackle | mean | transients/s (>10x local) |
-|---|---|---|---|
-| Resilient ON | **yes** | −33.8 dB | 25.2 |
-| Resilient OFF | no | −30.7 dB | 17.6 |
-
-### Root cause: GUARD_FRAMES was smaller than one HAL write burst
-
-`GUARD_FRAMES` held back **32 frames = 0.67 ms at 48 kHz**. But AudioFlinger's record thread does not
-advance `mRear` sample by sample — it publishes a whole HAL period at a time, and while that copy is
-in flight the frames just below `mRear` are **partially written**. HAL periods are typically 4-20 ms
-(192-960 frames), so the guard was 6x to 30x too small and the drain read half-written frames.
-
-That explains every property of the symptom: crackle rather than gaps (corrupt samples, not missing
-ones), **aperiodic** (it depends where the 5 ms read cycle lands inside the write burst, which is why
-the phase-concentration test against every candidate ring wrap came back R = 0.03-0.18), and
-**vendor-specific** (a OnePlus 12 was clean throughout while every S24 FE call crackled).
-
-Raised to **960 frames (20 ms)**, covering the largest common period. Cost: 20 ms more latency before
-a frame reaches the encoder — irrelevant for call recording.
-
-### Verified on the device, 2026-07-30
-
-| build | transients/s (>10x local) | 3-6 kHz energy |
-|---|---|---|
-| handoff ON, guard 32 | 25.2 | 2.25% |
-| handoff OFF (baseline) | 17.6 | 1.52% |
-| **handoff ON, guard 960** | **16.3** | **0.39%** |
-
-The fixed handoff now measures at or below the no-handoff baseline on both.
-
-**A measurement lesson worth keeping.** With only the first two files, transient counts differed by
-~40% (both swamped by speech consonants) and the spectra by a single point — the ear separated them
-instantly and the metrics nearly did not. What discriminated cleanly was **3-6 kHz band energy**, and
-only once a third file gave the scale. Do not read a flat two-way measurement here as "no defect".
-
-### Daemon-kill test passed on One UI, 2026-07-30
-
-The premise of the feature, demonstrated on Samsung for the first time. Mid-call, the daemon that
-created the capture was `kill -9`'d:
-
-- app pid **unchanged**, and the original `cv-handoff-drai` / `cv-handoff-enco` threads carried on
-- the file grew straight through the kill with no stall (281 KB → 344 KB over the following 12 s)
-- the keep-alive relaunched a fresh daemon behind it, as designed
-- finalised as a valid 106 s Opus file
-- **no seam**: only 7 of 300 windows within ±3 s of the kill dipped near the silence floor, and
-  scattered rather than contiguous — ordinary conversational gaps, not a dropout
-
-**A measurement trap, recorded so it is not re-walked.** A first pass compared 3-6 kHz energy before
-(1.06%) and after (15.13%) the kill and looked alarming. It is an artefact: that metric is a
-*proportion*, so it tracks level, not defects — loud passages read 0.1-1.6%, quiet ones 40-89%. A
-per-5s time series showed the spikes at 10-20 s and 25-40 s, long before the kill, with the kill
-window itself at 3.9%. Always plot the metric against time before attributing a difference to an
-event.
-
-**Follow-up worth doing:** derive the guard from the observed `mRear` step (the burst size the device
-actually uses) rather than hardcoding 960.
 
 ---
 
@@ -2189,98 +1710,3 @@ that held only the phone's vibration. Analysed from code on 2026-09-11, **not re
 Hebrew test can only falsify a quality change, never clear it. Option 1 only works where turns exist —
 the handoff path with resilient recording on. Needs a real affected recording, or a clip with a vibration
 before the first word, run through the whisper-cli harness with the app's exact settings.
-
-## One notification during a recorded call (issue #31 follow-up) — ✅ VERIFIED 2026-09-11, out of the backlog
-
-> Taken out of the backlog the same day at the maintainer's request and built with the shared-id design below
-> (`SharedStatusNotice`). Kept here because the risks listed are exactly what a real call has to check.
-
-**Found 2026-09-11 by the maintainer on a real call:** a carrier recording shows **two** notifications —
-the recording one and the keep-alive's "Ready to record calls", which is moot while a call is recorded.
-VoIP calls already avoid this: the keep-alive notification itself switches to a recording title.
-
-**Why it isn't simply hidden:** that notification belongs to `DaemonKeepAliveService`, a foreground service,
-and AOSP `NotificationManagerService` raises an app's MIN/NONE foreground notification back to LOW unless the
-user changed the channel. The service also owns VoIP detection and the #30/USB observers, so stopping it is
-not an option either.
-
-**The supported fix:** let `RecordingForegroundService` post under the keep-alive's notification id. AOSP
-`ActiveServices.cancelForegroundNotificationLocked` skips the cancel while another foreground service in the
-package holds the same id, so the shade shows one notification throughout.
-
-**Why it was deferred (maintainer: only if very simple and low risk):**
-- While a carrier recording is active the keep-alive must not re-post (watchdog flips, VoIP detector callbacks,
-  USB refresh) or it replaces Pause/Mark/Stop — the only in-call controls — with "Ready".
-- When the recording ends the notification is *not* cancelled (shared id), so the keep-alive must re-post
-  "Ready" at the right moment or "Recording call" lingers after hang-up.
-- Needs a shared "carrier recording active" signal (none exists; `isCurrentlyRecording` is private) and a
-  refresh trigger on start and end.
-- Every change must be checked on a real call, including a failed start and a call that ends mid-startup.
-
-Cheaper half-measure if wanted: have the keep-alive show a recording title during carrier recordings, as it
-already does for VoIP. Still two notifications, but they would stop contradicting each other.
-
-## ✅ Import an audio file recorded elsewhere (issue #37) — SHIPPED in 2.4.0 (`HomeViewModel.importAudio`, `ShareImportScreen`, `ImportedRecording`)
-
-**Requested 2026-09-10 by mirror176.** Bring recordings made by other apps — including ShizuCallRecorder,
-which CallVault is a fork of — into CallVault, so they sit in the same list and can be transcribed.
-
-**What exists today**
-
-- The list is CallVault's own catalog (Room). It is seeded from a folder scan only when it is empty
-  (`RecordingCatalog.importIfEmpty`); after that only CallVault's own recordings are added. A file copied into
-  the recordings folder does **not** appear — seen on the OP9 on 2026-09-11.
-- Names are read from CallVault's filename grammar (`RecordingsRepository.parseName`: date, direction, contact,
-  or `voip-App`). ShizuCallRecorder shares the ancestry, but its current naming has to be checked before relying on it.
-- Transcription decodes whatever Android's `MediaExtractor` can read (`AudioDecoder`, stereo averaged to mono), so
-  an imported file transcribes like any recording once it is in the catalog.
-
-**Shape of the work**
-
-1. A picker (`OpenDocument`, `audio/*`).
-2. Copy the file into the recordings folder under a CallVault-style name, or catalogue it where it is. Copying
-   survives the other app deleting its file; referencing avoids doubling storage.
-3. A catalog row (`RecordingCatalog.recordLocal`), named from the file when it matches the grammar, otherwise from
-   its timestamp and original name; contact, direction and date editable afterwards.
-
-**Open questions:** copy or reference; whether Drive backup and retention should treat imports like recordings;
-and whether a "find recordings in my folder that aren't in the list" action would serve ShizuCallRecorder users more
-cheaply than a picker. Related: #36, which would let an import carry its own metadata.
-
-## Speaker labels for Shizuku recordings (issue #38) — ✅ VERIFIED 2026-09-20
-
-**✅ VERIFIED 2026-09-20 by the maintainer on the OP9** (Shizuku mode, real carrier call, branch
-`feat/shizuku-speaker-labels`, not merged or released): after "Transcribe again" on the 11:52 call, both
-lines carry a speaker label. Built as the opening below describes — labels at transcription time, from the
-decode. Two bugs were found and fixed on the way, both from his reports:
-
-- **No labels at all** — the turns were stored *after* `labelled()` had read them (`ef2dc3b9`).
-- **One label of two** — Shizuku's channels are not the ~60 dB isolated pair the direct path gives. One
-  voice reaches the other channel at about half level, those windows read as BOTH, and a segment only one
-  person spoke in fell to 59% < 66%. Dominance is now judged between the sides' time alone (`8d79713e`).
-
-Not verified: a long real conversation with genuine double-talk, a second Shizuku phone, and whether the
-bleed was acoustic (both test phones in one room — never confirmed). A missing *line* is a different thing
-from a missing label: see `2026-09-05-greedy-vad-drops-an-utterance.md` before blaming this feature.
-
-
-**Requested 2026-09-10 by mirror176.** In Shizuku mode the app says the two sides cannot be told apart in
-transcripts — yet his Shizuku recordings are stereo with the mic on the left and the other party on the right, so the
-sides are already separate in the file.
-
-**Why there are no labels today** (analysed as #28d on 2026-09-05): labels come from `SpeakerTurnDetector`, which
-runs on raw stereo PCM *before* our mono downmix, on the handoff path only. Shizuku cannot host an `AudioRecord`, so
-it records through scrcpy, which hands over **already-encoded** stereo. No PCM reaches us, so no turns are produced.
-
-**The opening:** the stereo survives into the file, and `AudioDecoder` already reads the channel count before
-averaging the channels for whisper. For a two-channel recording, that same decode pass could feed the left and right
-samples to `SpeakerTurnDetector` and store turns the way the handoff path does — labels at transcription time, with no
-change to capture.
-
-**Cautions before building**
-
-- Verify the channel order on a real Shizuku recording rather than trusting the report.
-- Old stereo recordings from before v1.4.4 would be labelled too; check their layout matches before trusting it.
-- The MUST-NOT-UNDO mono-encode rule concerns our own encoder and is not touched by this.
-- His other point — a non-Shizuku line holding both voices under one label — is the labeller's 66% dominance rule and
-  whisper merging turns into one segment, which belongs with #32, not with Shizuku.
