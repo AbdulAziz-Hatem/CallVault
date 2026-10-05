@@ -69,6 +69,8 @@ fix, vivo far-side toggle (hint + SUPPORT doc), Samsung Wi-Fi-calling doc (#45).
     (HyperOS kills the user-service fork); standalone works. Two reporters, same device (detail in the
     "Shizuku mode fails on HyperOS 3" section below). Plus a standalone off-Wi-Fi loopback-arming flakiness
     on the same phone, and WD-toggling that looks like a fault to users.
+  - **Greek transcribes into English** (#46) — `el` isn't a pinnable transcription language, so it auto-detects
+    and whisper romanises it; needs `el` added to the supported list (detail in the "Issue #46" section below).
 - *Quality / housekeeping:* no instrumentation tests at all (`androidTest`); transcript lines whisper
   invents from noise (#32); F-Droid readiness; README stale since 1.5.5 + stale screenshots + dead
   `WD_DISABLE_WHEN_IDLE` pref + deliberately-broken CI signing.
@@ -233,6 +235,35 @@ goes back off straight after`) — not a fault, but alarming and unexplained to 
 hint that WD toggling is expected in offline mode; (b) look at why the first loopback arms fail on HyperOS 3
 before one sticks. See [[loopback-tcpip-offwifi]], [[private-report-note20-no-wifi]]. If he's mostly on
 Wi-Fi, turning Offline recording OFF stops the WD churn.
+
+---
+
+## 🐞 + 🌐 Issue #46 — Greek: transcription comes out English, and a Greek UI translation offer (reported 2026-10-04)
+
+**Two things from issue #46.**
+
+**1. 🐞 Greek audio transcribes into English (romanised), not Greek.** The reporter: "the transcriber does
+understand Greek content, but translates it into English." **Not whisper translating** — `whispercv.cpp:246`
+hard-sets `params.translate = false`. The real cause: **Greek (`el`) is not a pinnable transcription
+language**, so it falls back to auto-detect, and whisper auto-detect on a non-Latin script spells it out in
+Latin/English (the app already warns about this for he/ar/ru/zh in `transcription_language_auto_hint`). The
+user can't work around it — `el` isn't in the picker. whisper.cpp supports `el`; pinning it (with
+translate=false) transcribes in Greek. See [[pin-the-transcription-language]].
+
+*Fix — small, additive, 3 spots:*
+- `transcription/TranscriptionLanguageChoice.kt` → add `"el"` to `SUPPORTED`.
+- `ui/common/TranscriptionLabels.kt` `languageOf()` → add `"el" -> R.string.transcription_language_greek`.
+- Add `transcription_language_greek` ("Greek") to base `values/strings.xml` (+ the other 13 locales).
+
+Same gap applies to any whisper language not in `SUPPORTED`; Greek is the one reported. 🧪 Confirming the
+output is correct Greek needs a real Greek call (we don't speak Greek — [[hebrew-cannot-clear-a-quality-change]]).
+
+**2. 🌐 A volunteer offered to translate the UI into Greek.** Create `app/src/main/res/values-el/` mirroring
+the 7 base `strings_*.xml` files (~991 translatable strings + 9 plurals + 6 string-arrays; skip the 22
+`translatable="false"`; keep names + placeholders). No code change needed — `generateLocaleConfig = true`
+(app/build.gradle.kts:282) auto-adds `el` to the language picker and the display name resolves from the
+locale. German (`values-de`) is a complete LTR locale to use as the template. Greek plurals are two forms
+(`one`/`other`). If this lands, log it in [[release-history]] and the README impact log ([[readme-impact-log]]).
 
 ---
 
