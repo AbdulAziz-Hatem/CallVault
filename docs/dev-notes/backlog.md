@@ -69,6 +69,8 @@ fix, vivo far-side toggle (hint + SUPPORT doc), Samsung Wi-Fi-calling doc (#45).
     on the same phone, and WD-toggling that looks like a fault to users.
   - **Greek transcribes into English** (#46) — `el` isn't a pinnable transcription language, so it auto-detects
     and whisper romanises it; needs `el` added to the supported list (detail in the "Issue #46" section below).
+  - **Samsung One UI turns USB debugging off by itself** (UserX, S24 FE) — breaks off-Wi-Fi recovery; CallVault only
+    mirrors the system switch (not a CallVault bug). Suspect Auto Blocker (detail in the section below).
 - *Quality / housekeeping:* no instrumentation tests at all (`androidTest`); transcript lines whisper
   invents from noise (#32); F-Droid readiness; README stale since 1.5.5 + stale screenshots + dead
   `WD_DISABLE_WHEN_IDLE` pref + deliberately-broken CI signing.
@@ -249,6 +251,37 @@ the 7 base `strings_*.xml` files (~991 translatable strings + 9 plurals + 6 stri
 (app/build.gradle.kts:282) auto-adds `el` to the language picker and the display name resolves from the
 locale. German (`values-de`) is a complete LTR locale to use as the template. Greek plurals are two forms
 (`one`/`other`). If this lands, log it in [[release-history]] and the README impact log ([[readme-impact-log]]).
+
+---
+
+## 🐞 Samsung One UI turns USB debugging off by itself — reported 2026-10-05 (user "UserX")
+
+**Report:** on a **Galaxy S24 FE (SM-S721B)**, One UI / Android 16 (Iran), 2.4.5, STANDALONE + Offline(loopback)
++ Resilient, the **USB debugging toggle keeps turning off by itself** and the user re-enables it by hand.
+Recording worked all day (3 calls over handoff, 144 in the library); then at **18:41 the daemon binder died**
+and the keep-alive couldn't recover — `loopback tcpip :50470 unavailable (unarmed/refused)` ×5; snapshot
+`init.svc.adbd: STOPPED`, `USB debugging: OFF`, `Wireless debugging: false`, `Binder connected: false`.
+
+**Cause (confirmed in code + logs):** off-Wi-Fi/loopback recovery needs USB debugging ON (the listener lives in
+adbd — [[debugging-switches-model]]); with it off and away from Wi-Fi there's no transport to relaunch the
+daemon. The in-app "USB debugging" toggle (Settings ▸ Resilience) is **not internal** — it reads/writes the
+SYSTEM `adb_enabled` via WRITE_SECURE_SETTINGS and a `ContentObserver` mirrors the live value
+(`SettingsScreen.kt:2583-2614`). **CallVault never writes USB debugging off on its own** (only on a user-confirmed
+tap; it manages Wireless debugging, not USB). So the switch flipping off = **One UI reverted `adb_enabled` to 0**
+and the observer reflected it. Opposite of #24's unreproduced "turned itself ON". Known One UI transport-kill
+family ([[adbd-transport-and-oem-quirks]], [[screen-off-adbd-kill-and-mitigations]]); this is the S24 FE those
+memories are about.
+
+**Suspected Samsung causes (🧪, not reproducible on OP9/OP12):** (1) **Auto Blocker** (Settings ▸ Security and
+privacy ▸ Auto Blocker) blocking/disabling USB debugging + ADB — top suspect; (2) an app-written `adb_enabled`
+may not "stick" on One UI (enable it natively in Developer options); (3) reboot/Secure-startup reset.
+
+**Status:** 🧪 told him to check Auto Blocker 2026-10-05 — **awaiting his reply.** Also advised: Default USB
+Configuration → "Charging only"/"Debugging only", disable "adb authorization timeout".
+
+**Possible in-app improvement (not started):** when the observer sees `adb_enabled` revert to 0 while the recorder
+needs it, show a Samsung-specific hint ("your phone turned USB debugging off — check Auto Blocker") instead of the
+generic readiness notice. Do NOT auto-re-assert `adb_enabled` — that starts a tug-of-war with the OS.
 
 ---
 
