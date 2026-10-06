@@ -67,8 +67,9 @@ fix, vivo far-side toggle (hint + SUPPORT doc), Samsung Wi-Fi-calling doc (#45).
     (HyperOS kills the user-service fork); standalone works. Two reporters, same device (detail in the
     "Shizuku mode fails on HyperOS 3" section below). Plus a standalone off-Wi-Fi loopback-arming flakiness
     on the same phone, and WD-toggling that looks like a fault to users.
-  - **Greek transcribes into English** (#46) — `el` isn't a pinnable transcription language, so it auto-detects
-    and whisper romanises it; needs `el` added to the supported list (detail in the "Issue #46" section below).
+  - **Greek transcribes into English** (#46) — 🧪 FIXED 2026-10-06 (`el` added as a pinnable transcription
+    language, `76c2c232`) + initial Greek UI locale added (`f881010c`); awaiting a Greek call + the reporter's
+    polish (detail in the "Issue #46" section below).
   - **Samsung One UI turns USB debugging off by itself** (UserX, S24 FE) — breaks off-Wi-Fi recovery; CallVault only
     mirrors the system switch (not a CallVault bug). Suspect Auto Blocker (detail in the section below).
 - *Quality / housekeeping:* no instrumentation tests at all (`androidTest`); transcript lines whisper
@@ -226,6 +227,14 @@ Wi-Fi, turning Offline recording OFF stops the WD churn.
 ---
 
 ## 🐞 + 🌐 Issue #46 — Greek: transcription comes out English, and a Greek UI translation offer (reported 2026-10-04)
+
+> **🧪 BOTH BUILT 2026-10-06 (not yet confirmed), on `main`:** (1) the `el` transcription fix — `el` added to
+> `TranscriptionLanguageChoice.SUPPORTED` + a `transcription_language_greek` label in every locale
+> (`76c2c232`); (2) the full Greek UI locale `values-el/` — initial machine-quality draft, 1007 strings/
+> plurals/arrays, exact key+placeholder parity, `assembleDebug` green, no new lint errors (`f881010c`). The
+> reporter will **polish the wording** (native review), and the transcription fix needs a real Greek call to
+> confirm it transcribes Greek (we don't speak Greek — [[hebrew-cannot-clear-a-quality-change]]). When it ships,
+> log it in [[release-history]] and the README impact log. Detail below is kept for the root cause.
 
 **Two things from issue #46.**
 
