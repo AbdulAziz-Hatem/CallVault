@@ -141,6 +141,7 @@ object TranscriptionLabels {
         "ru" -> R.string.transcription_language_russian
         "es" -> R.string.transcription_language_spanish
         "vi" -> R.string.transcription_language_vietnamese
+        "el" -> R.string.transcription_language_greek
         else -> R.string.transcription_language_auto
     }
 }
