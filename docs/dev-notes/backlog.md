@@ -72,6 +72,9 @@ fix, vivo far-side toggle (hint + SUPPORT doc), Samsung Wi-Fi-calling doc (#45).
     polish (detail in the "Issue #46" section below).
   - **Samsung One UI turns USB debugging off by itself** (UserX, S24 FE) — breaks off-Wi-Fi recovery; CallVault only
     mirrors the system switch (not a CallVault bug). Suspect Auto Blocker (detail in the section below).
+  - **"Active" but the call wasn't recorded** (HyperOS/Shizuku — UserW, UserZ) — OS kills/churns the recorder; the
+    app trusts a stale binder and lies "Active". Fix = truthful health-gated status + rebind-at-call (RESEARCHED
+    2026-10-07; see the section below + [[hyperos-shizuku-recorder-death-research]]).
 - *Quality / housekeeping:* no instrumentation tests at all (`androidTest`); transcript lines whisper
   invents from noise (#32); F-Droid readiness; README stale since 1.5.5 + stale screenshots + dead
   `WD_DISABLE_WHEN_IDLE` pref + deliberately-broken CI signing.
@@ -291,6 +294,47 @@ Configuration → "Charging only"/"Debugging only", disable "adb authorization t
 **Possible in-app improvement (not started):** when the observer sees `adb_enabled` revert to 0 while the recorder
 needs it, show a Samsung-specific hint ("your phone turned USB debugging off — check Auto Blocker") instead of the
 generic readiness notice. Do NOT auto-re-assert `adb_enabled` — that starts a tug-of-war with the OS.
+
+---
+
+## 🔼 Truthful, health-gated recorder status + rebind-at-call — RESEARCHED 2026-10-07 (fixes "Active but missed the call")
+
+**Why:** multiple HyperOS/Shizuku reports (UserW Redmi `emerald`, UserZ, and the divago/voss family) where the
+Home card shows **"Active / Ready"** but a real call is **silently not recorded**. Full cited research +
+sources in memory **[[hyperos-shizuku-recorder-death-research]]**. ShizuCallRecorder **#110** is our bug almost
+verbatim; **LyoSU/cally** (2026) and **Nightzuku/NightDog** ship the fix pattern.
+
+**The key framing — two bugs in one face:** (a) the OS *kills* the Shizuku/ADB-child recorder → **unfixable
+in-app** (prevention is device-settings-only; confirmed by Shizuku #2475/#1426). (b) the app trusts a **stale
+cached binder while the daemon is dead/unresponsive** → **fixable in-app**, and that is what makes "Active"
+lie. So detection/honest-status/recovery ARE improvable even though prevention is not.
+
+**Proposed work (both modes; highest value first):**
+1. **Liveness, not a cached flag.** Gate "ready/active" on: live binder (binder-received/-dead listeners) **+
+   `pingBinder()` each poll** (catches unresponsive-but-no-death) **+ a real round-trip** (an AIDL call like
+   cally's `svc.version`, ideally a trivial "exec as shell uid" probe — HyperOS leaves the binder nominally
+   alive while the privileged child is gone).
+2. **Re-request/confirm the binder at CALL START** (wait for `Bound` with a timeout, bail+warn otherwise) so a
+   dead recorder is a *warnable* event, not a silent lost call. (cally `CallMonitorService.kickoff()`; SCR #110 ask #1)
+3. **Self-clearing fault notification** driven by a composite `DaemonHealth` where the between-calls `Idle`
+   (daemon alive via `daemon(true)`, app unbound) is **not** a fault — shows only on real fault, auto-cancels
+   when healthy. Fixes "shows Active while dead"; `dumpsys`-checkable. (cally `DaemonHealth`/notification; SCR #110 ask #2)
+4. **Version-mismatch → `unbind(remove=true)` → fresh bind** self-heals the stale-after-update daemon
+   ([[shizuku-stale-service-after-update]]).
+
+🚨 **`daemon(true)` caveat:** only helps if the hosted recorder owns the capture fd; SCR uses `daemon(false)`
+because the pipe read-end is app-side — verify against our handoff/pipe model before flipping it.
+
+**Cheap experiment worth a try:** disable the Android 12+ **phantom-process monitor** via shell `device_config`
+(`max_phantom_processes`, `settings_enable_monitor_phantom_procs false`) — may stop AOSP killing our spawned
+daemon; we hold WRITE_SECURE_SETTINGS. Re-ensure (flags re-sync away). **Bigger later bet:** a Qidi-style
+`init`-parented shell sentinel that re-arms Shizuku PC-free + re-injects Doze/standby/AppOps.
+
+**Watch (independent):** HyperOS 3's `MiuiSentinelMemoryManager` hard ~3.5 GB per-app RAM cap could kill us
+during a long recording + in-RAM transcription model.
+
+**User mitigations to give now (Shizuku AND CallVault):** Autostart ON + Battery "No restrictions" + lock in
+Recents + uncheck "Pause app activity if unused". One-shot ADB whitelisting does NOT persist (PowerKeeper).
 
 ---
 
