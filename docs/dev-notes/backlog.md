@@ -309,6 +309,15 @@ in-app** (prevention is device-settings-only; confirmed by Shizuku #2475/#1426).
 cached binder while the daemon is dead/unresponsive** → **fixable in-app**, and that is what makes "Active"
 lie. So detection/honest-status/recovery ARE improvable even though prevention is not.
 
+**🧪 Reproduction found (UserZ, 2026-10-07):** in Shizuku mode, pressing the **clear-all "X"** in HyperOS
+Recents reliably stops recording. Clear-all force-kills the **Shizuku** card too → the recorder fork it hosts
+(uid 2000) dies → CallVault's Home card still shows **"Active"** → the next call is silently missed. (UserZ's
+screenshot even shows Shizuku's card reading *"not running"* beside CallVault's *"Active"*.) Caveat: this is
+**one trigger**, not the only one — UserW's log shows the same death *between calls* with no clear-all (HyperOS
+doze/screen-off kills it on its own). **Value:** this gives us a manual repro we can run on our own OP12
+(Shizuku mode → record → press X → does the status go honest or lie?) to verify items 1–3 below.
+**User fix for this trigger:** lock both cards in Recents (long-press card → 🔒 padlock) so the X skips them.
+
 **Proposed work (both modes; highest value first):**
 1. **Liveness, not a cached flag.** Gate "ready/active" on: live binder (binder-received/-dead listeners) **+
    `pingBinder()` each poll** (catches unresponsive-but-no-death) **+ a real round-trip** (an AIDL call like
