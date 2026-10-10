@@ -297,6 +297,66 @@ generic readiness notice. Do NOT auto-re-assert `adb_enabled` — that starts a 
 
 ---
 
+## 🐞 Issue #49 — sidecar files (.json details, .md transcript) never reach Drive with "Immediately" sync — reported 2026-10-10 (eduardozacour)
+
+Sharp, code-level report (he read the tree at 9933d92). **All three claims verified in the current code:**
+
+1. **IMMEDIATE sync uploads the audio only.** `StorageRouter.route()` (`StorageRouter.kt:55-67`) enqueues
+   `RecordingCopyWorker` with `KEY_SRC = localUri` / `KEY_NAME = displayName` — the audio file. Nothing copies
+   the `.json` details sidecar or the `.md` transcript.
+2. **The sweep is the only thing that copies the whole folder, and IMMEDIATE cancels it.**
+   `SyncScheduler.apply()` (`SyncScheduler.kt:53-56`): `if (LOCAL || IMMEDIATE) cancelUniqueWork`. So in
+   IMMEDIATE the sidecars have no path to Drive at all. DAILY/WEEKLY copy them because the sweep walks the folder.
+3. **DRIVE-only orphans them on the device.** `KEY_DELETE_LOCAL = (target == DRIVE)` (`StorageRouter.kt:60`)
+   deletes the local audio after upload → the `.json`/`.md` are left on the phone with no recording beside them.
+4. **Bonus (also verified):** deleting a recording removes the audio + the **transcript** sidecar
+   (`TranscriptSidecar.sidecarNameFor`) but NOT the `.json` details file (`RecordingsRepository.kt:368-382`
+   matches only `displayName` or the transcript sidecar) → orphan `.json`.
+
+**Fix direction (not started):** in IMMEDIATE mode, route the sidecars too — either enqueue copies for the
+`.json` (at publish) and the `.md` (after transcription, which runs post-upload, so it needs its own trigger),
+or have the copy worker take the whole sibling set. And add the `.json` to the delete match in (4). He offered
+a PR. 🧪 build-reproducible from code; not device-confirmed by us.
+
+---
+
+## 📋 Field reports 2026-10-10 — abdo kamel, foxcam, alex_812
+
+### 🐞 abdo kamel — short calls save empty recordings (Shizuku on a low-end Redmi) — self-reported as "low RAM"
+Redmi `gale` (23106RN0DA), Android 13, MIUI V14, Egypt, 2.4.5, **SHIZUKU** mode, storage BOTH. Log report (12).
+NOT a RAM kill (no lmkd/OOM; recorder pid stable). Real cause: **Shizuku can't do direct AudioRecord**, so the
+daemon tries direct (`source=4`), it "failed to enter RECORDING state", and falls back to **scrcpy — a ~2 s cold
+start** (extract + `app_process` + 56 socket retries). His calls are tiny (the one that recorded was ~3 s after
+answer): the call ended ~0.2 s after the muxer started → **98-byte, 0-frame file** that won't play. Other outgoing
+calls to short-code `800` entered standby but never started (record-from-answer; likely never truly answered).
+**Advice:** switch to **STANDALONE** mode — direct AudioRecord starts instantly, no scrcpy cold-start, so short
+calls are captured. Shizuku's scrcpy latency is inherent; on a slow device + short calls it loses the opening.
+(Possible in-app: in Shizuku mode skip the doomed direct attempt and/or keep scrcpy warm in standby — not started.)
+
+### 🔵 foxcam — one-click global ON/OFF
+There IS a master switch today (`carrier_recording_enabled`, Settings "Record phone calls"), but it's buried in
+Settings. Request = one-tap global pause/resume. **No Quick Settings tile exists** (no `TileService` in the tree).
+Cleanest answer = a **QS tile** (and/or a home-screen widget) toggling `carrier_recording_enabled`. Feature, not started.
+
+### 🅿️ alex_812 (a) — second line / call-waiting records into the first call's file
+"When using the second line, everything is recorded for the first call." Call-waiting = both cellular calls share
+ONE OFFHOOK session; `CallSessionManager` keys the recording on the first number, and the voice-call stream carries
+whichever call is active → A + B land in A's single file; B gets no separate recording. **Distinct from the
+app↔phone switch at `fcbff97` (that's VoIP-vs-carrier).** Splitting A/B needs call-identity Android won't expose
+to a non-default-dialer with READ_PHONE_STATE (OFFHOOK stays OFFHOOK across the swap). Likely PARKED (hard); document
+as a known limitation. 🧪 unconfirmed on our devices.
+
+### 🔵 alex_812 (b) — recordings show numbers, not contact names (contacts exist in Google)
+The contact name is resolved via `ContactsContract`/`PhoneLookup` (READ_CONTACTS declared) and baked into the
+filename/`.json` **at record time** (`RecordingFileNameFormatter`). So numbers-not-names means at record time
+CallVault couldn't resolve them: **READ_CONTACTS not granted**, or **Google contacts not synced to the device
+provider**, or the **contact was added after** the call (old recordings keep the number). **Advice:** grant
+Contacts permission; enable Google → Contacts sync; note older recordings may stay as numbers. (Open question worth
+checking: does the list re-resolve names at display time or only read the baked-in value? If only baked-in, a
+"re-resolve names" pass would help — RecordingsRepository is in the contacts path; not confirmed.)
+
+---
+
 ## 🔼 Truthful, health-gated recorder status + rebind-at-call — RESEARCHED 2026-10-07 (fixes "Active but missed the call")
 
 **Why:** multiple HyperOS/Shizuku reports (UserW Redmi `emerald`, UserZ, and the divago/voss family) where the
