@@ -105,6 +105,12 @@ object VoipRecordingCoordinator {
     fun onCallStarted(context: Context) {
         if (recording) return
         val prefs = AppPreferences(context)
+        // The master switch sits above the per-type VoIP setting: paused/stopped records nothing.
+        val recordingState = prefs.getRecordingState()
+        if (!recordingState.isRecordingAllowed) {
+            AppLogger.i(TAG, "Master recording switch is $recordingState — not recording this VoIP call.")
+            return
+        }
         if (!prefs.isVoipRecordingEnabled()) return
 
         val service = RecorderConnection.service
