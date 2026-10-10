@@ -333,10 +333,17 @@ calls to short-code `800` entered standby but never started (record-from-answer;
 calls are captured. Shizuku's scrcpy latency is inherent; on a slow device + short calls it loses the opening.
 (Possible in-app: in Shizuku mode skip the doomed direct attempt and/or keep scrcpy warm in standby — not started.)
 
-### 🔵 foxcam — one-click global ON/OFF
-There IS a master switch today (`carrier_recording_enabled`, Settings "Record phone calls"), but it's buried in
-Settings. Request = one-tap global pause/resume. **No Quick Settings tile exists** (no `TileService` in the tree).
-Cleanest answer = a **QS tile** (and/or a home-screen widget) toggling `carrier_recording_enabled`. Feature, not started.
+### 🔵 foxcam — one-click GLOBAL ON/OFF (carrier **and** VoIP) — clarified 2026-10-10
+The existing master switch (`carrier_recording_enabled`, Settings "Record phone calls") is **carrier-only** — it
+does NOT cover VoIP. foxcam wants a single toggle that stops/starts **everything** (carrier + VoIP) in one tap.
+**Design direction (maintainer leaning toward the "Ready to record" home card):** add a dedicated **master
+"recording paused" flag layered on top** of the existing per-type switches (so pause/resume preserves the user's
+granular carrier/VoIP settings instead of clobbering them). Surface it as a toggle on the home status card → a new
+`PAUSED` card state ("Recording paused — tap to resume"). Both `CallSessionManager` (carrier arming) and the VoIP
+arming path early-return when paused. **Open decision:** does pause also stop the daemon/keep-alive (removes the
+persistent notification [[keep-alive-notification-cannot-be-hidden]], but slower first-call resume) or just gate
+recording (instant resume, notification stays)? Recommend gate-only. **Companion:** a Quick Settings tile is the
+true one-click-from-anywhere (no `TileService` in the tree today) — do it alongside the card toggle. Not started.
 
 ### 🅿️ alex_812 (a) — second line / call-waiting records into the first call's file
 "When using the second line, everything is recorded for the first call." Call-waiting = both cellular calls share
@@ -345,6 +352,9 @@ whichever call is active → A + B land in A's single file; B gets no separate r
 app↔phone switch at `fcbff97` (that's VoIP-vs-carrier).** Splitting A/B needs call-identity Android won't expose
 to a non-default-dialer with READ_PHONE_STATE (OFFHOOK stays OFFHOOK across the swap). Likely PARKED (hard); document
 as a known limitation. 🧪 unconfirmed on our devices.
+**📌 RESEARCH WHEN WE GET TO IT (maintainer):** check whether any other call recorder has solved call-waiting /
+second-line split — what signal they use (default-dialer InCallService? CallScreeningService? per-call
+`Call.Details`?), and whether it's reachable for us without becoming the default dialer. See [[reuse-proven-implementations]].
 
 ### 🔵 alex_812 (b) — recordings show numbers, not contact names (contacts exist in Google)
 The contact name is resolved via `ContactsContract`/`PhoneLookup` (READ_CONTACTS declared) and baked into the
