@@ -352,13 +352,18 @@ Transitions = the maintainer's "pause/un-pause + stop/start": Pause ACTIVE→PAU
 Paused → Resume/Stop; Stopped → Start). Plus a **Quick Settings tile** for true one-tap-from-the-shade
 (no `TileService` in the tree today).
 
-**Open decisions before building:**
-1. **Mid-call:** if a recording is already running when Pause/Stop is tapped — let the current one finish and apply
-   to the next call (recommended, non-destructive), or cut it immediately?
-2. **Reboot:** STOPPED (and PAUSED) must **survive reboot** — the boot receiver / keep-alive must respect the
-   persisted state and NOT auto-resurrect the daemon (ties to [[reboot-deadlock-wd-off-by-user]]). Confirm.
-3. **QS tile scope:** tile does Pause/Resume (instant) with Stop left in-app, or the tile cycles all three?
-Not started.
+**Decisions — maintainer, 2026-10-10:**
+1. **Mid-call = finish current, apply to next.** A recording already running completes normally; Pause/Stop takes
+   effect from the next call. Non-destructive — never cut a live recording.
+2. **Survive reboot = YES.** The persisted `recording_state` wins: the boot receiver / keep-alive must respect
+   PAUSED/STOPPED and NOT auto-resurrect the daemon until the user taps Resume/Start (ties to
+   [[reboot-deadlock-wd-off-by-user]] — add a state check to the boot/keep-alive start path).
+3. **QS tile = cycles all three** (Active→Paused→Stopped→Active), one control for everything.
+
+**Build shape (not started):** `recording_state` pref (ACTIVE/PAUSED/STOPPED) + a small controller; gate
+`CallSessionManager.evaluateAndStartService` + VoIP arming on it; Stop path tears down daemon + keep-alive (and
+Shizuku unbind) and the boot path honours it; home-card new states + actions; `TileService` cycling the three.
+Branch it; nothing ships until on-device confirmed.
 
 ### 🅿️ alex_812 (a) — second line / call-waiting records into the first call's file
 "When using the second line, everything is recorded for the first call." Call-waiting = both cellular calls share
