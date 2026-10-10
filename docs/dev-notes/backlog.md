@@ -336,14 +336,29 @@ calls are captured. Shizuku's scrcpy latency is inherent; on a slow device + sho
 ### 🔵 foxcam — one-click GLOBAL ON/OFF (carrier **and** VoIP) — clarified 2026-10-10
 The existing master switch (`carrier_recording_enabled`, Settings "Record phone calls") is **carrier-only** — it
 does NOT cover VoIP. foxcam wants a single toggle that stops/starts **everything** (carrier + VoIP) in one tap.
-**Design direction (maintainer leaning toward the "Ready to record" home card):** add a dedicated **master
-"recording paused" flag layered on top** of the existing per-type switches (so pause/resume preserves the user's
-granular carrier/VoIP settings instead of clobbering them). Surface it as a toggle on the home status card → a new
-`PAUSED` card state ("Recording paused — tap to resume"). Both `CallSessionManager` (carrier arming) and the VoIP
-arming path early-return when paused. **Open decision:** does pause also stop the daemon/keep-alive (removes the
-persistent notification [[keep-alive-notification-cannot-be-hidden]], but slower first-call resume) or just gate
-recording (instant resume, notification stays)? Recommend gate-only. **Companion:** a Quick Settings tile is the
-true one-click-from-anywhere (no `TileService` in the tree today) — do it alongside the card toggle. Not started.
+**Design — agreed 2026-10-10 (maintainer): a 3-state recording control, both "depths" of off, layered on top of
+the existing per-type switches (so resume/start restore the user's carrier/VoIP settings, never clobber them):**
+- **ACTIVE** — daemon up, recording armed (today's normal).
+- **PAUSED** (pause/un-pause) — logical gate only: daemon stays warm, both `CallSessionManager` (carrier) and the
+  VoIP arming path early-return. Instant resume; persistent notification stays.
+- **STOPPED** (stop/start) — physical teardown: stop the daemon + `DaemonKeepAliveService` (so the keep-alive
+  notification goes away [[keep-alive-notification-cannot-be-hidden]]); in Shizuku mode, unbind the user service.
+  Start = cold-start back to ACTIVE. Covers carrier **and** VoIP.
+
+Transitions = the maintainer's "pause/un-pause + stop/start": Pause ACTIVE→PAUSED, Resume PAUSED→ACTIVE, Stop
+(ACTIVE|PAUSED)→STOPPED, Start STOPPED→ACTIVE. Persisted as one `recording_state` pref.
+
+**Surface:** the "Ready to record" home card shows the state + the relevant action(s) (Ready → Pause/Stop;
+Paused → Resume/Stop; Stopped → Start). Plus a **Quick Settings tile** for true one-tap-from-the-shade
+(no `TileService` in the tree today).
+
+**Open decisions before building:**
+1. **Mid-call:** if a recording is already running when Pause/Stop is tapped — let the current one finish and apply
+   to the next call (recommended, non-destructive), or cut it immediately?
+2. **Reboot:** STOPPED (and PAUSED) must **survive reboot** — the boot receiver / keep-alive must respect the
+   persisted state and NOT auto-resurrect the daemon (ties to [[reboot-deadlock-wd-off-by-user]]). Confirm.
+3. **QS tile scope:** tile does Pause/Resume (instant) with Stop left in-app, or the tile cycles all three?
+Not started.
 
 ### 🅿️ alex_812 (a) — second line / call-waiting records into the first call's file
 "When using the second line, everything is recorded for the first call." Call-waiting = both cellular calls share
