@@ -27,6 +27,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.baba.callvault.R
 import com.baba.callvault.data.AppPreferences
+import com.baba.callvault.data.RecordingState
 import com.baba.callvault.data.health.SetupHealthStore
 import com.baba.callvault.integrations.adb.AdbShell
 import com.baba.callvault.integrations.adb.WifiState
@@ -774,6 +775,14 @@ class DaemonKeepAliveService : Service() {
 
         /** Start (or no-op if already running) the persistent keep-alive anchor. Safe to call repeatedly. */
         fun start(context: Context) {
+            // The user explicitly STOPPED recording — honour it here so EVERY caller (boot, app launch,
+            // post-update, Settings) respects it without each having to check. STOPPED survives a reboot:
+            // the recorder stays down until the user taps Start. PAUSED still keeps the daemon warm.
+            if (AppPreferences(context).getRecordingState() == RecordingState.STOPPED) {
+                AppLogger.i(TAG, "Recording is STOPPED by the user: not starting the keep-alive")
+                stop(context)
+                return
+            }
             // Nothing to keep alive in Shizuku mode, and worse than nothing: this service relaunches
             // OUR daemon and turns Wireless debugging on to do it — on a phone whose owner chose
             // Shizuku precisely so none of that would happen. Shizuku restarts its own user service
