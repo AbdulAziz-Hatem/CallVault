@@ -80,7 +80,9 @@ import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PauseCircle
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.StopCircle
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material.icons.filled.Search
@@ -197,6 +199,7 @@ import com.baba.callvault.data.transcripts.export.TranscriptExportFile
 import com.baba.callvault.data.transcripts.export.TranscriptExport
 import com.baba.callvault.data.AppPreferences
 import com.baba.callvault.data.PrivilegedMode
+import com.baba.callvault.data.RecordingState
 import com.baba.callvault.data.health.FailureReason
 import com.baba.callvault.data.health.Prerequisite
 import com.baba.callvault.data.health.SetupHealth
@@ -206,6 +209,8 @@ import com.baba.callvault.data.recordings.RecordingDirection
 import com.baba.callvault.data.recordings.RecordingsRepository.RecordingItem
 import com.baba.callvault.data.recordings.RecordingsRepository.RecordingSource
 import com.baba.callvault.ui.common.CvCard
+import com.baba.callvault.ui.common.CvPrimaryButton
+import com.baba.callvault.ui.common.CvSecondaryButton
 import com.baba.callvault.ui.common.CvScaffold
 import com.baba.callvault.ui.common.CvStatusPill
 import com.baba.callvault.ui.common.CvTone
@@ -970,6 +975,7 @@ fun HomeScreen(
                             }
                             else -> null
                         },
+                        onSetRecordingState = { viewModel.setRecordingState(it) },
                     )
                     if (uiState.usbScreenLockRisk) {
                         UsbReliabilityAdvisoryCard(
@@ -2284,12 +2290,24 @@ private fun HeroStatusCard(
     mode: PrivilegedMode,
     onAction: (() -> Unit)? = null,
     suggestionOverride: String? = null,
+    onSetRecordingState: ((RecordingState) -> Unit)? = null,
 ) {
     val brand = LocalCvBrand.current
+    // Paused/Stopped are the user's own choice, not a fault — show them calmly (neutral), never as a warning.
+    val isUserOff = status == HomeViewModel.HomeStatus.PAUSED || status == HomeViewModel.HomeStatus.STOPPED
     // A healthy setup that has never been proved still reads as ready; only a real problem flips the card.
-    val showsProblem = !status.isReady || health.isProblem
-    val accent: Color = if (showsProblem) brand.warning else MaterialTheme.colorScheme.primary
-    val icon: ImageVector = if (showsProblem) Icons.Filled.WarningAmber else Icons.Filled.CheckCircle
+    val showsProblem = !isUserOff && (!status.isReady || health.isProblem)
+    val accent: Color = when {
+        isUserOff -> MaterialTheme.colorScheme.onSurfaceVariant
+        showsProblem -> brand.warning
+        else -> MaterialTheme.colorScheme.primary
+    }
+    val icon: ImageVector = when {
+        status == HomeViewModel.HomeStatus.PAUSED -> Icons.Filled.PauseCircle
+        status == HomeViewModel.HomeStatus.STOPPED -> Icons.Filled.StopCircle
+        showsProblem -> Icons.Filled.WarningAmber
+        else -> Icons.Filled.CheckCircle
+    }
     val tone = when (status) {
         HomeViewModel.HomeStatus.READY -> CvTone.Success
         HomeViewModel.HomeStatus.NOT_PAIRED -> CvTone.Warning
@@ -2303,6 +2321,9 @@ private fun HeroStatusCard(
         // Error for the same reason: with Shizuku stopped nothing can record, and it stops on every
         // reboot — this is the state a Shizuku user will meet most often and must not read as cosmetic.
         HomeViewModel.HomeStatus.SHIZUKU_NOT_READY -> CvTone.Error
+        // The user's own choice, not a problem — a calm, neutral pill.
+        HomeViewModel.HomeStatus.PAUSED -> CvTone.Neutral
+        HomeViewModel.HomeStatus.STOPPED -> CvTone.Neutral
     }
     val pillText = when (status) {
         HomeViewModel.HomeStatus.READY -> stringResource(R.string.home_hero_pill_ready)
@@ -2313,6 +2334,8 @@ private fun HeroStatusCard(
         HomeViewModel.HomeStatus.PAIRING_LOST -> stringResource(R.string.home_hero_pill_recovery_stuck)
         HomeViewModel.HomeStatus.RECOVERY_STUCK -> stringResource(R.string.home_hero_pill_recovery_stuck)
         HomeViewModel.HomeStatus.SHIZUKU_NOT_READY -> stringResource(R.string.home_hero_pill_shizuku)
+        HomeViewModel.HomeStatus.PAUSED -> stringResource(R.string.home_hero_pill_paused)
+        HomeViewModel.HomeStatus.STOPPED -> stringResource(R.string.home_hero_pill_stopped)
     }
 
     // Subtle accent-tinted surface so the banner reads as a confident state, not a stock card.
@@ -2368,6 +2391,33 @@ private fun HeroStatusCard(
             ),
             tone = tone,
         )
+        // The master recording control. One row on the hero card so it sits exactly where the user looks
+        // to see whether recording is on. Pause keeps everything warm (instant resume); Stop tears the
+        // recorder down. Both cover carrier AND VoIP, and survive a reboot.
+        if (onSetRecordingState != null) {
+            when (status) {
+                HomeViewModel.HomeStatus.PAUSED -> {
+                    Spacer(Modifier.height(14.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        CvPrimaryButton(stringResource(R.string.home_recording_resume), { onSetRecordingState(RecordingState.ACTIVE) }, Modifier.weight(1f), leadingIcon = Icons.Filled.PlayArrow)
+                        CvSecondaryButton(stringResource(R.string.home_recording_stop), { onSetRecordingState(RecordingState.STOPPED) }, Modifier.weight(1f), leadingIcon = Icons.Filled.StopCircle)
+                    }
+                }
+                HomeViewModel.HomeStatus.STOPPED -> {
+                    Spacer(Modifier.height(14.dp))
+                    CvPrimaryButton(stringResource(R.string.home_recording_start), { onSetRecordingState(RecordingState.ACTIVE) }, leadingIcon = Icons.Filled.PlayArrow)
+                }
+                // Any state where recording is actually on (ready, or a fixable setup state): let the user
+                // pause or stop it. Hidden only for PAUSED/STOPPED above, which show their own resume/start.
+                else -> {
+                    Spacer(Modifier.height(14.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        CvSecondaryButton(stringResource(R.string.home_recording_pause), { onSetRecordingState(RecordingState.PAUSED) }, Modifier.weight(1f), leadingIcon = Icons.Filled.PauseCircle)
+                        CvSecondaryButton(stringResource(R.string.home_recording_stop), { onSetRecordingState(RecordingState.STOPPED) }, Modifier.weight(1f), leadingIcon = Icons.Filled.StopCircle)
+                    }
+                }
+            }
+        }
     }
 }
 

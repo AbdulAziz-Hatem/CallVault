@@ -27,7 +27,9 @@ import com.baba.callvault.data.health.SetupFingerprint
 import com.baba.callvault.data.health.SetupHealth
 import com.baba.callvault.data.health.SetupHealthDeriver
 import com.baba.callvault.data.health.SetupHealthStore
+import com.baba.callvault.data.RecordingState
 import com.baba.callvault.services.recording.DaemonKeepAliveService
+import com.baba.callvault.services.recording.RecordingSwitch
 import com.baba.callvault.services.recording.RecordingPolicy
 import com.baba.callvault.data.health.Prerequisite
 import com.baba.callvault.data.health.SetupPrerequisites
@@ -110,6 +112,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         UPDATE_REGRANT_NEEDED(R.string.home_status_update_regrant_title, R.string.home_status_update_regrant_suggestion),
         SHIZUKU_NOT_READY(R.string.home_status_shizuku_title, R.string.home_status_shizuku_suggestion),
         RECOVERY_STUCK(R.string.home_status_recovery_stuck_title, R.string.home_status_recovery_stuck_suggestion),
+        /** The user paused recording (master switch). Daemon stays warm; resuming is instant. */
+        PAUSED(R.string.home_status_paused_title, R.string.home_status_paused_suggestion),
+        /** The user stopped recording (master switch). Daemon is torn down until they start it again. */
+        STOPPED(R.string.home_status_stopped_title, R.string.home_status_stopped_suggestion),
         READY(R.string.home_status_ready_title, R.string.home_status_ready_suggestion, isReady = true)
     }
 
@@ -645,6 +651,17 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         _uiState.update { it.copy(importRefusal = null) }
     }
 
+    /**
+     * Applies the master recording switch (Pause / Resume / Stop / Start). Runs the lifecycle work off the
+     * main thread (a Stop/Start tears down or brings up the daemon), then refreshes the card.
+     */
+    fun setRecordingState(state: RecordingState) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) { RecordingSwitch.apply(appContext, state) }
+            refresh()
+        }
+    }
+
     private fun reloadListQuietly() {
         if (listJob?.isActive == true) {
             listReloadPending = true
@@ -904,6 +921,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
      * launch the daemon or do I/O.
      */
     private fun computeStatus(): HomeStatus {
+        // The master switch is the user's explicit intent and outranks everything else: when they have
+        // paused or stopped recording, say so plainly (and don't record) rather than showing a setup
+        // state they didn't ask about. A setup problem, if any, surfaces when they resume/start.
+        when (AppPreferences(appContext).getRecordingState()) {
+            RecordingState.PAUSED -> return HomeStatus.PAUSED
+            RecordingState.STOPPED -> return HomeStatus.STOPPED
+            RecordingState.ACTIVE -> Unit
+        }
         val base = baseStatus()
         // A lost pairing outranks what follows from it: with Android refusing our key the grant cannot be
         // healed and the recorder cannot be relaunched, and "Pair again" is the only thing that fixes either.
