@@ -524,6 +524,9 @@
     <string name="home_recording_resume">Resume</string>
     <string name="home_recording_stop">Stop</string>
     <string name="home_recording_start">Start</string>
+    <string name="tile_recording_on">Recording on</string>
+    <string name="tile_recording_paused">Paused</string>
+    <string name="tile_recording_stopped">Stopped</string>
 
     <!-- Home: recordings list -->
     <string name="home_recordings_title">Recordings</string>
