@@ -64,13 +64,25 @@ object RecordingSwitch {
     }
 
     private fun bringUp(context: Context) {
-        // Standalone: launches the daemon and its watchdog. Shizuku: start() self-skips, so bind directly.
+        // Start the keep-alive anchor (its watchdog keeps the daemon up from here on)...
         DaemonKeepAliveService.start(context)
-        if (AppPreferences(context).getPrivilegedMode().needsShizuku) {
-            Thread({
-                runCatching { RecorderBackend.ensureRunning(context) }
-                    .onFailure { AppLogger.w(TAG, "Could not bring up the Shizuku recorder: ${it.message}") }
-            }, "cv-recorder-start").apply { isDaemon = true }.start()
-        }
+        // ...but warm the daemon RIGHT NOW rather than leaving it to the watchdog's first relaunch. The
+        // watchdog polls once a minute and debounces (two down reads before it acts), so left to it a
+        // fresh Start takes ~a minute to bring the recorder up — measured at ~60s on the OP9. That is long
+        // enough to miss the first call, and a VoIP call that lands in the window cannot be armed late at
+        // all. An explicit Start is the user asking for it now, so launch synchronously here (off the main
+        // thread — ensureRunning blocks). ensureRunning covers both backends; the pref is already ACTIVE
+        // by the time we get here, so its STOPPED gate lets this through.
+        Thread({
+            val up = runCatching { RecorderBackend.ensureRunning(context) }
+                .onFailure { AppLogger.w(TAG, "Could not bring up the recorder on start: ${it.message}") }
+                .getOrDefault(false)
+            // Push the keep-alive notification to catch up the instant the daemon is actually up. Its
+            // watchdog only re-reads readiness once a minute, so without this it sits on "starting up…"
+            // long after recording is ready — which reads to the user as "it never came up" (the very
+            // doubt that prompted this). A second start() re-posts the notification from the now-ready
+            // state; it is idempotent.
+            if (up) runCatching { DaemonKeepAliveService.start(context) }
+        }, "cv-recorder-start").apply { isDaemon = true }.start()
     }
 }
