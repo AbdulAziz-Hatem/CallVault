@@ -333,7 +333,7 @@ calls to short-code `800` entered standby but never started (record-from-answer;
 calls are captured. Shizuku's scrcpy latency is inherent; on a slow device + short calls it loses the opening.
 (Possible in-app: in Shizuku mode skip the doomed direct attempt and/or keep scrcpy warm in standby — not started.)
 
-### ✅ foxcam — one-click GLOBAL ON/OFF (carrier **and** VoIP) — core VERIFIED 2026-10-11 (standalone); not merged
+### ✅ foxcam — one-click GLOBAL ON/OFF (carrier **and** VoIP) — VERIFIED 2026-10-11 (standalone + Shizuku); not merged
 The existing master switch (`carrier_recording_enabled`, Settings "Record phone calls") is **carrier-only** — it
 does NOT cover VoIP. foxcam wanted a single toggle that stops/starts **everything** (carrier + VoIP) in one tap.
 
@@ -376,11 +376,19 @@ notification contradicted the "stop the app" ask. Collapsed to On/Off in commit 
 **Status — ✅ VERIFIED 2026-10-11 (maintainer, OP9 standalone) for the core On/Off:** Off skips the call (carrier +
 VoIP, no false "not recorded"); On returns to ready instantly and a call made quickly afterwards **recorded**. Also
 exercised: card shows one button per state, Stop removes notif 4720, STOPPED survives relaunch and reboot.
-🧪 STILL VERIFYING: Shizuku mode (OP9 tested in standalone only — gates are mode-agnostic by code but unconfirmed on
-a real Shizuku call). Branch `feat/recording-pause-stop`, local only — push/merge held per maintainer. REMAINING:
-sign-off on card wording; locale strings for the new keys; decide whether to fold in the honest "Starting up…"
-status from [[hyperos-shizuku-recorder-death-research]] (the parked health-gated branch) for the residual ~1s
-Start race. Nothing ships until the maintainer says so.
+✅ Shizuku mode VERIFIED 2026-10-11 too (maintainer, real call on the OP9): switched to Shizuku, Stop retires the
+`com.baba.callvault:recorder` service, Start re-binds it ~1s, card shows "· Shizuku", and a real call recorded. NB:
+VoIP is unsupported in Shizuku by design (scrcpy capture) — carrier only there.
+
+Delivered in this round and VERIFIED on the OP9: Off wording is "CallVault is turned off, calls will not be
+recorded." (translated into all 13 locales); the card shows "Starting up…" **only** when warm-up runs past a 3s
+grace (reuses the keep-alive's own translated wording), then flips to Ready on connect — a fast ~1s warm-up never
+shows it; Start warms the daemon in ~1s instead of ~60s; no false "call not recorded" and no VoIP prompt while Off.
+
+Branch `feat/recording-pause-stop`, local only — **push/merge held per maintainer**. Card wording and locales are
+done. The only open item is whether to fold in the honest live-probe status from
+[[hyperos-shizuku-recorder-death-research]] (the parked health-gated branch) for the residual sub-3s Start race —
+the 3s grace covers the visible case. Nothing ships until the maintainer says so.
 
 ### 🅿️ alex_812 (a) — second line / call-waiting records into the first call's file
 "When using the second line, everything is recorded for the first call." Call-waiting = both cellular calls share
