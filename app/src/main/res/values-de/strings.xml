@@ -718,4 +718,12 @@
     <string name="update_popup_text">Eine neue Version kann installiert werden. Das Update hält die Aufnahme zuverlässig und bringt die neuesten Korrekturen.</string>
     <string name="update_popup_update_now">Jetzt aktualisieren</string>
     <string name="update_popup_later">Später</string>
+    <!-- Master recording On/Off switch -->
+    <string name="home_status_stopped_title">Aufnahme gestoppt</string>
+    <string name="home_status_stopped_suggestion">CallVault ist ausgeschaltet, Anrufe werden nicht aufgezeichnet.</string>
+    <string name="home_hero_pill_stopped">Gestoppt</string>
+    <string name="home_recording_stop">Stopp</string>
+    <string name="home_recording_start">Start</string>
+    <string name="tile_recording_on">Aufnahme aktiv</string>
+    <string name="tile_recording_stopped">Gestoppt</string>
 </resources>

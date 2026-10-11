@@ -515,7 +515,7 @@
     <string name="home_status_ready_title">Ready to record</string>
     <string name="home_status_ready_suggestion">CallVault records calls automatically per your settings.</string>
     <string name="home_status_stopped_title">Recording stopped</string>
-    <string name="home_status_stopped_suggestion">CallVault is turned off and records nothing. Start it again when you want to record.</string>
+    <string name="home_status_stopped_suggestion">CallVault is turned off, calls will not be recorded.</string>
     <string name="home_hero_pill_stopped">Stopped</string>
     <string name="home_recording_stop">Stop</string>
     <string name="home_recording_start">Start</string>

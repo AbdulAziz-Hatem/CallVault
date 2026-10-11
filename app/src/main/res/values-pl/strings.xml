@@ -720,4 +720,12 @@
     <string name="update_popup_text">Nowa wersja jest gotowa do instalacji. Aktualizacja utrzymuje niezawodność nagrywania i wprowadza najnowsze poprawki.</string>
     <string name="update_popup_update_now">Aktualizuj teraz</string>
     <string name="update_popup_later">Później</string>
+    <!-- Master recording On/Off switch -->
+    <string name="home_status_stopped_title">Nagrywanie zatrzymane</string>
+    <string name="home_status_stopped_suggestion">CallVault jest wyłączony, połączenia nie będą nagrywane.</string>
+    <string name="home_hero_pill_stopped">Zatrzymane</string>
+    <string name="home_recording_stop">Zatrzymaj</string>
+    <string name="home_recording_start">Uruchom</string>
+    <string name="tile_recording_on">Nagrywanie włączone</string>
+    <string name="tile_recording_stopped">Zatrzymane</string>
 </resources>

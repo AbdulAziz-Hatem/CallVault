@@ -717,4 +717,12 @@
     <string name="update_popup_text">Phiên bản mới đã sẵn sàng để cài đặt. Cập nhật giúp ghi âm ổn định và mang đến các bản sửa lỗi mới nhất.</string>
     <string name="update_popup_update_now">Cập nhật ngay</string>
     <string name="update_popup_later">Để sau</string>
+    <!-- Master recording On/Off switch -->
+    <string name="home_status_stopped_title">Đã dừng ghi âm</string>
+    <string name="home_status_stopped_suggestion">CallVault đã tắt, các cuộc gọi sẽ không được ghi âm.</string>
+    <string name="home_hero_pill_stopped">Đã dừng</string>
+    <string name="home_recording_stop">Dừng</string>
+    <string name="home_recording_start">Bắt đầu</string>
+    <string name="tile_recording_on">Đang ghi âm</string>
+    <string name="tile_recording_stopped">Đã dừng</string>
 </resources>
