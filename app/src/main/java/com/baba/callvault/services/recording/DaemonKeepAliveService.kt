@@ -599,20 +599,6 @@ class DaemonKeepAliveService : Service() {
     }
 
     private fun buildNotification(ready: Boolean): Notification {
-        // Paused master switch: the daemon is kept warm for an instant resume, so this notification stays
-        // up — but it must say "paused", not "Ready to record calls", which is what readiness would make
-        // it say. (STOPPED tears this service down, so there is no notification to reconcile there.)
-        if (AppPreferences(this).getRecordingState() == RecordingState.PAUSED) {
-            return NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.stat_notify_sync)
-                .setContentTitle(getString(R.string.notif_paused_title))
-                .setContentText(getString(R.string.notif_paused_text))
-                .setOngoing(true)
-                .setOnlyAlertOnce(true)
-                .setPriority(NotificationCompat.PRIORITY_MIN)
-                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
-                .build()
-        }
         val voipRecording = runCatching { voipDetector.isRecording }.getOrDefault(false)
         val notice = ReadinessNoticeText.current(this, ready)
         val baseText = when {
@@ -789,9 +775,9 @@ class DaemonKeepAliveService : Service() {
 
         /** Start (or no-op if already running) the persistent keep-alive anchor. Safe to call repeatedly. */
         fun start(context: Context) {
-            // The user explicitly STOPPED recording — honour it here so EVERY caller (boot, app launch,
+            // The user turned recording off — honour it here so EVERY caller (boot, app launch,
             // post-update, Settings) respects it without each having to check. STOPPED survives a reboot:
-            // the recorder stays down until the user taps Start. PAUSED still keeps the daemon warm.
+            // the recorder stays down until the user turns it back on.
             if (AppPreferences(context).getRecordingState() == RecordingState.STOPPED) {
                 AppLogger.i(TAG, "Recording is STOPPED by the user: not starting the keep-alive")
                 stop(context)

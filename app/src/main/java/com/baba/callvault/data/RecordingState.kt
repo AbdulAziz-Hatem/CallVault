@@ -9,31 +9,30 @@
 package com.baba.callvault.data
 
 /**
- * The user's master recording switch, layered ON TOP of the per-type (carrier / VoIP) settings so that
- * resuming or starting restores those exactly as they were, never clobbers them.
+ * The user's master recording On/Off switch, layered ON TOP of the per-type (carrier / VoIP) settings so
+ * that turning it back on restores those exactly as they were, never clobbers them.
  *
- * - [ACTIVE]  — normal: the recorder is armed and (in standalone) the daemon is kept warm.
- * - [PAUSED]  — a logical gate: no call is recorded, but the daemon stays warm, so resuming is instant
- *               and nothing is torn down. The persistent keep-alive notification stays.
- * - [STOPPED] — fully off: the daemon and the keep-alive service are stopped (so the persistent
- *               notification goes away) and the Shizuku user service is unbound; starting cold-starts
- *               the recorder back up.
+ * - [ACTIVE]  — on: the recorder is armed and (in standalone) the daemon is kept warm.
+ * - [STOPPED] — off: the daemon and the keep-alive service are stopped (so the persistent notification
+ *               goes away) and the Shizuku user service is unbound; turning it back on cold-starts the
+ *               recorder.
  *
- * Both [PAUSED] and [STOPPED] **survive a reboot** — the boot path must honour the stored state and not
- * resurrect the recorder until the user resumes/starts.
+ * [STOPPED] **survives a reboot** — the boot path must honour the stored state and not resurrect the
+ * recorder until the user turns it back on.
+ *
+ * (A warm "pause" state was tried and dropped: entering it was indistinguishable from Stop to the user,
+ * its only real difference — an instant, notification-kept resume — was too narrow to justify a third
+ * state, and keeping a persistent notification contradicted the "stop the app" request this serves.)
  */
 enum class RecordingState(val key: String) {
     ACTIVE("active"),
-    PAUSED("paused"),
     STOPPED("stopped");
 
     /** Whether a call should be recorded right now. Only [ACTIVE] records. */
     val isRecordingAllowed: Boolean get() = this == ACTIVE
 
-    /** Whether the recorder may be kept warm / brought up. [STOPPED] alone tears the daemon down. */
-    val keepsDaemonWarm: Boolean get() = this != STOPPED
-
     companion object {
+        /** Falls back to [ACTIVE] for anything unknown — including the retired "paused" key. */
         fun fromKey(k: String?): RecordingState = entries.firstOrNull { it.key == k } ?: ACTIVE
     }
 }

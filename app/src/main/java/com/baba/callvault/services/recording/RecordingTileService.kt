@@ -16,9 +16,9 @@ import com.baba.callvault.data.AppPreferences
 import com.baba.callvault.data.RecordingState
 
 /**
- * Quick Settings tile that cycles the master recording switch — ACTIVE → PAUSED → STOPPED → ACTIVE — from
- * the notification shade, without opening the app (foxcam's one-tap request). The side effects of a Stop
- * (tear the daemon down) or a Start (bring it back) run on [RecordingSwitch], off the main thread.
+ * Quick Settings tile that toggles the master recording switch — ACTIVE ⇄ STOPPED — from the
+ * notification shade, without opening the app (foxcam's one-tap request). The side effects of turning it
+ * off (tear the daemon down) or on (bring it back) run on [RecordingSwitch], off the main thread.
  */
 class RecordingTileService : TileService() {
 
@@ -30,8 +30,7 @@ class RecordingTileService : TileService() {
     override fun onClick() {
         super.onClick()
         val next = when (AppPreferences(this).getRecordingState()) {
-            RecordingState.ACTIVE -> RecordingState.PAUSED
-            RecordingState.PAUSED -> RecordingState.STOPPED
+            RecordingState.ACTIVE -> RecordingState.STOPPED
             RecordingState.STOPPED -> RecordingState.ACTIVE
         }
         render(next) // reflect the user's tap at once; the lifecycle work follows off-thread
@@ -46,7 +45,6 @@ class RecordingTileService : TileService() {
         tile.subtitle = getString(
             when (state) {
                 RecordingState.ACTIVE -> R.string.tile_recording_on
-                RecordingState.PAUSED -> R.string.tile_recording_paused
                 RecordingState.STOPPED -> R.string.tile_recording_stopped
             }
         )

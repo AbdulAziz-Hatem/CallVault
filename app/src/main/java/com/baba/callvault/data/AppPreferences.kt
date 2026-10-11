@@ -1100,7 +1100,7 @@ class AppPreferences(context: Context) {
     /** Sets the cloud sync cadence. */
     fun setSyncScheduleMode(mode: SyncScheduleMode) = setString(Key.SYNC_SCHEDULE_MODE, mode.key)
 
-    /** The master recording switch (ACTIVE / PAUSED / STOPPED). Survives a reboot. */
+    /** The master recording On/Off switch (ACTIVE / STOPPED). Survives a reboot. */
     fun getRecordingState(): RecordingState = RecordingState.fromKey(getString(Key.RECORDING_STATE, DefaultsValue.RECORDING_STATE))
 
     /** Sets the master recording switch. */

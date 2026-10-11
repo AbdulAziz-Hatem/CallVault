@@ -20,13 +20,11 @@ import com.baba.callvault.utils.AppLogger
  * Applies the user's master recording switch ([RecordingState]) and carries out the side effects of a
  * transition. The pref itself is what the arming gates read; this is only the lifecycle work around it:
  *
- * - **→ STOPPED:** stop the keep-alive (so its watchdog cannot relaunch what we tear down and its
+ * - **→ STOPPED (off):** stop the keep-alive (so its watchdog cannot relaunch what we tear down and its
  *   persistent notification goes away), then tear the daemon down — but never cut a call in progress
  *   (finish-current, apply-to-next). A reboot will not resurrect it, because [DaemonKeepAliveService.start]
  *   itself honours STOPPED.
- * - **leaving STOPPED:** bring the recorder back up (standalone via the keep-alive, Shizuku by binding).
- * - **ACTIVE ⇄ PAUSED:** nothing — the daemon stays warm so resuming is instant; the arming gate in
- *   [com.baba.callvault.services.call.CallSessionManager] / [VoipRecordingCoordinator] does the rest.
+ * - **→ ACTIVE (on):** bring the recorder back up (standalone via the keep-alive, Shizuku by binding).
  *
  * Teardown and bring-up make blocking calls, so **call this off the main thread.**
  */
@@ -39,14 +37,9 @@ object RecordingSwitch {
         if (from == to) return
         prefs.setRecordingState(to)
         AppLogger.i(TAG, "Master recording switch: $from -> $to")
-        when {
-            to == RecordingState.STOPPED -> tearDown(context)
-            from == RecordingState.STOPPED -> bringUp(context)
-            // ACTIVE ⇄ PAUSED: the daemon stays warm, so there is nothing to tear down or bring up — but
-            // the keep-alive's persistent notification has to catch up, or it goes on reading "Ready to
-            // record" through a pause. start() re-posts it from the new state (and self-skips when STOPPED,
-            // which this branch never is).
-            else -> DaemonKeepAliveService.start(context)
+        when (to) {
+            RecordingState.STOPPED -> tearDown(context)
+            RecordingState.ACTIVE -> bringUp(context)
         }
     }
 

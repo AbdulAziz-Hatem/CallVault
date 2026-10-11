@@ -58,7 +58,7 @@ object RecorderBackend {
         // STOPPED is the user's master switch off: no proactive path — app start, boot, the startup
         // warmup — may bring the recorder up. Observed on the OP9 (2026-10-11): after a Stop, the next
         // app launch cold-started the daemon here and even armed VoIP, undoing the teardown. A
-        // Start/Resume flips the pref to ACTIVE/PAUSED before RecordingSwitch.bringUp() reaches this, so
+        // Turning recording back on flips the pref to ACTIVE before RecordingSwitch.bringUp() reaches this, so
         // this never blocks the user turning recording back on.
         if (prefs.getRecordingState() == RecordingState.STOPPED) {
             AppLogger.i(TAG, "Recording is STOPPED by the user: not bringing the recorder up")

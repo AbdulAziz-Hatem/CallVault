@@ -186,8 +186,6 @@
     <string name="voip_recording_arming">Preparing VoIP recording…</string>
     <string name="notif_voip_recording_title">Recording VoIP call</string>
     <string name="notif_voip_recording_text">CallVault is recording an app call.</string>
-    <string name="notif_paused_title">Recording paused</string>
-    <string name="notif_paused_text">No calls are being recorded. Open CallVault and tap Resume to turn it back on.</string>
     <string name="voip_missed_not_ready">An app call was not recorded — CallVault was not ready in time. This can happen for a short while after a phone call ends. The next call should record normally.</string>
     <string name="voip_missed_no_folder">An app call was not recorded — the recordings folder is missing or cannot be written to. Choose it again in Settings.</string>
     <string name="voip_missed_label">App call</string>
@@ -516,18 +514,12 @@
     <string name="home_status_update_regrant_suggestion">An update removed a permission CallVault needs to restart recording. It may still work for now — tap here, then turn Wireless debugging on once to restore it. No reinstall needed.</string>
     <string name="home_status_ready_title">Ready to record</string>
     <string name="home_status_ready_suggestion">CallVault records calls automatically per your settings.</string>
-    <string name="home_status_paused_title">Recording paused</string>
-    <string name="home_status_paused_suggestion">No calls are being recorded. Resume to turn recording back on — it starts again instantly.</string>
     <string name="home_status_stopped_title">Recording stopped</string>
     <string name="home_status_stopped_suggestion">CallVault is turned off and records nothing. Start it again when you want to record.</string>
-    <string name="home_hero_pill_paused">Paused</string>
     <string name="home_hero_pill_stopped">Stopped</string>
-    <string name="home_recording_pause">Pause</string>
-    <string name="home_recording_resume">Resume</string>
     <string name="home_recording_stop">Stop</string>
     <string name="home_recording_start">Start</string>
     <string name="tile_recording_on">Recording on</string>
-    <string name="tile_recording_paused">Paused</string>
     <string name="tile_recording_stopped">Stopped</string>
 
     <!-- Home: recordings list -->

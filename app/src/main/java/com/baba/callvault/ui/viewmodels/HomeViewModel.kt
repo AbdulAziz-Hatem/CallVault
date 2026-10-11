@@ -112,9 +112,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         UPDATE_REGRANT_NEEDED(R.string.home_status_update_regrant_title, R.string.home_status_update_regrant_suggestion),
         SHIZUKU_NOT_READY(R.string.home_status_shizuku_title, R.string.home_status_shizuku_suggestion),
         RECOVERY_STUCK(R.string.home_status_recovery_stuck_title, R.string.home_status_recovery_stuck_suggestion),
-        /** The user paused recording (master switch). Daemon stays warm; resuming is instant. */
-        PAUSED(R.string.home_status_paused_title, R.string.home_status_paused_suggestion),
-        /** The user stopped recording (master switch). Daemon is torn down until they start it again. */
+        /** The user turned recording off (master switch). Daemon is torn down until they turn it back on. */
         STOPPED(R.string.home_status_stopped_title, R.string.home_status_stopped_suggestion),
         READY(R.string.home_status_ready_title, R.string.home_status_ready_suggestion, isReady = true)
     }
@@ -922,10 +920,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
      */
     private fun computeStatus(): HomeStatus {
         // The master switch is the user's explicit intent and outranks everything else: when they have
-        // paused or stopped recording, say so plainly (and don't record) rather than showing a setup
-        // state they didn't ask about. A setup problem, if any, surfaces when they resume/start.
+        // turned recording off, say so plainly (and don't record) rather than showing a setup state they
+        // didn't ask about. A setup problem, if any, surfaces when they turn it back on.
         when (AppPreferences(appContext).getRecordingState()) {
-            RecordingState.PAUSED -> return HomeStatus.PAUSED
             RecordingState.STOPPED -> return HomeStatus.STOPPED
             RecordingState.ACTIVE -> Unit
         }
@@ -986,9 +983,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             // expect this call recorded?", and in app-calls-only mode the answer is no for every
             // phone call, whatever the per-direction switches were left at. Without this, turning
             // phone recording off would fill the status card with gaps for calls deliberately
-            // ignored. The 3-state master switch (PAUSED/STOPPED) is the same situation at a higher
-            // level — the user turned recording off on purpose — so a call that happened then is not a
-            // gap to report. [expectsRecording] carries that: false unless the switch is ACTIVE.
+            // ignored. The master On/Off switch is the same situation at a higher level — the user turned
+            // recording off on purpose — so a call that happened then is not a gap to report.
+            // [expectsRecording] carries that: false unless the switch is ACTIVE.
             autoRecordIncoming = expectsRecording && RecordingPolicy.expectsCarrierRecording(
                 carrierEnabled = preferences.isCarrierRecordingEnabled(),
                 autoRecordForDirection = preferences.isAutoRecordIncomingEnabled(),
