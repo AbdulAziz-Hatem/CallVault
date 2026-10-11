@@ -766,4 +766,5 @@
     <string name="home_recording_start">تشغيل</string>
     <string name="tile_recording_on">التسجيل مُفعّل</string>
     <string name="tile_recording_stopped">متوقّف</string>
+    <string name="home_hero_pill_starting">جارٍ التشغيل…</string>
 </resources>

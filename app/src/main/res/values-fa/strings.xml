@@ -819,4 +819,5 @@
     <string name="home_recording_start">شروع</string>
     <string name="tile_recording_on">ضبط فعال</string>
     <string name="tile_recording_stopped">متوقف</string>
+    <string name="home_hero_pill_starting">در حال شروع…</string>
 </resources>

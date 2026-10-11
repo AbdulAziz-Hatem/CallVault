@@ -82,6 +82,7 @@ import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.StopCircle
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material.icons.filled.Search
@@ -2294,15 +2295,18 @@ private fun HeroStatusCard(
     val brand = LocalCvBrand.current
     // Off is the user's own choice, not a fault — show it calmly (neutral), never as a warning.
     val isUserOff = status == HomeViewModel.HomeStatus.STOPPED
+    // Warming up after a Start: in progress, not a fault — also calm/neutral, never a warning.
+    val isStarting = status == HomeViewModel.HomeStatus.STARTING
     // A healthy setup that has never been proved still reads as ready; only a real problem flips the card.
-    val showsProblem = !isUserOff && (!status.isReady || health.isProblem)
+    val showsProblem = !isUserOff && !isStarting && (!status.isReady || health.isProblem)
     val accent: Color = when {
-        isUserOff -> MaterialTheme.colorScheme.onSurfaceVariant
+        isUserOff || isStarting -> MaterialTheme.colorScheme.onSurfaceVariant
         showsProblem -> brand.warning
         else -> MaterialTheme.colorScheme.primary
     }
     val icon: ImageVector = when {
         status == HomeViewModel.HomeStatus.STOPPED -> Icons.Filled.StopCircle
+        status == HomeViewModel.HomeStatus.STARTING -> Icons.Filled.Sync
         showsProblem -> Icons.Filled.WarningAmber
         else -> Icons.Filled.CheckCircle
     }
@@ -2321,6 +2325,8 @@ private fun HeroStatusCard(
         HomeViewModel.HomeStatus.SHIZUKU_NOT_READY -> CvTone.Error
         // The user's own choice, not a problem — a calm, neutral pill.
         HomeViewModel.HomeStatus.STOPPED -> CvTone.Neutral
+        // Warming up — in progress, neutral while it settles.
+        HomeViewModel.HomeStatus.STARTING -> CvTone.Neutral
     }
     val pillText = when (status) {
         HomeViewModel.HomeStatus.READY -> stringResource(R.string.home_hero_pill_ready)
@@ -2332,6 +2338,7 @@ private fun HeroStatusCard(
         HomeViewModel.HomeStatus.RECOVERY_STUCK -> stringResource(R.string.home_hero_pill_recovery_stuck)
         HomeViewModel.HomeStatus.SHIZUKU_NOT_READY -> stringResource(R.string.home_hero_pill_shizuku)
         HomeViewModel.HomeStatus.STOPPED -> stringResource(R.string.home_hero_pill_stopped)
+        HomeViewModel.HomeStatus.STARTING -> stringResource(R.string.home_hero_pill_starting)
     }
 
     // Subtle accent-tinted surface so the banner reads as a confident state, not a stock card.

@@ -726,4 +726,5 @@
     <string name="home_recording_start">Avvia</string>
     <string name="tile_recording_on">Registrazione attiva</string>
     <string name="tile_recording_stopped">Interrotto</string>
+    <string name="home_hero_pill_starting">Avvio…</string>
 </resources>

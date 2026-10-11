@@ -880,4 +880,5 @@
     <string name="home_recording_start">Έναρξη</string>
     <string name="tile_recording_on">Εγγραφή ενεργή</string>
     <string name="tile_recording_stopped">Διακόπηκε</string>
+    <string name="home_hero_pill_starting">Εκκίνηση…</string>
 </resources>

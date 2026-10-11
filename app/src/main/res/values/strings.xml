@@ -517,6 +517,7 @@
     <string name="home_status_stopped_title">Recording stopped</string>
     <string name="home_status_stopped_suggestion">CallVault is turned off, calls will not be recorded.</string>
     <string name="home_hero_pill_stopped">Stopped</string>
+    <string name="home_hero_pill_starting">Starting…</string>
     <string name="home_recording_stop">Stop</string>
     <string name="home_recording_start">Start</string>
     <string name="tile_recording_on">Recording on</string>

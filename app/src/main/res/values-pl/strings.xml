@@ -728,4 +728,5 @@
     <string name="home_recording_start">Uruchom</string>
     <string name="tile_recording_on">Nagrywanie włączone</string>
     <string name="tile_recording_stopped">Zatrzymane</string>
+    <string name="home_hero_pill_starting">Uruchamianie…</string>
 </resources>
