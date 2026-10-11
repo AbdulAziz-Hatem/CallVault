@@ -333,7 +333,7 @@ calls to short-code `800` entered standby but never started (record-from-answer;
 calls are captured. Shizuku's scrcpy latency is inherent; on a slow device + short calls it loses the opening.
 (Possible in-app: in Shizuku mode skip the doomed direct attempt and/or keep scrcpy warm in standby — not started.)
 
-### 🧪 foxcam — one-click GLOBAL ON/OFF (carrier **and** VoIP) — BUILT 2026-10-11, awaiting sign-off
+### ✅ foxcam — one-click GLOBAL ON/OFF (carrier **and** VoIP) — core VERIFIED 2026-10-11 (standalone); not merged
 The existing master switch (`carrier_recording_enabled`, Settings "Record phone calls") is **carrier-only** — it
 does NOT cover VoIP. foxcam wanted a single toggle that stops/starts **everything** (carrier + VoIP) in one tap.
 
@@ -365,15 +365,22 @@ notification contradicted the "stop the app" ask. Collapsed to On/Off in commit 
 **Also fixed (same branch), from the maintainer's on-device testing 2026-10-11:**
 - A call made while OFF no longer raises a "call not recorded" card/notification — it was a deliberate skip, not a
   miss. Carrier: the status-card sweep ANDs gap detection with the master switch (commit `54fb47b4`, same pattern it
-  already used for the per-direction carrier toggle). VoIP: `reportMissed` stays quiet when the switch is off.
-  🧪 code-verified; needs a real OFF-state call to field-confirm.
+  already used for the per-direction carrier toggle). VoIP: `reportMissed` stays quiet when the switch is off, and
+  the VoIP "Ask me" prompt is no longer raised when OFF (commit `fc586ed6`).
+- **Start warmed the daemon only on the keep-alive watchdog's next cycle** — 60s poll × 2-down debounce = ~60s
+  before the recorder actually came up, so a call right after Start (esp. VoIP, which cannot arm late) was missed
+  while the card already read "Ready". Fixed (commit `9a759ec7`): `bringUp` launches the recorder synchronously via
+  `ensureRunning` for both backends and re-posts the keep-alive notification once it is up. Measured: daemon + VoIP
+  armed ~1s after Start.
 
-**Status 🧪 VERIFYING (2026-10-11):** builds clean; installed over 2.4.5 on the OP9 and the full On/Off cycle
-exercised — card shows one button per state, Stop tears the daemon down + removes notif 4720, Start brings it back
-after the cold-start, STOPPED survives relaunch and reboot (boot receiver itself deferred by ColorOS autostart; the
-identical gated code was proven via the relaunch path). Branch `feat/recording-pause-stop`, 9 commits, local only —
-push/merge held per maintainer. REMAINING for the maintainer: a real OFF-state call to confirm the no-false-warning
-fix; sign-off on card wording; then locale strings for the new keys. Nothing ships until confirmed.
+**Status — ✅ VERIFIED 2026-10-11 (maintainer, OP9 standalone) for the core On/Off:** Off skips the call (carrier +
+VoIP, no false "not recorded"); On returns to ready instantly and a call made quickly afterwards **recorded**. Also
+exercised: card shows one button per state, Stop removes notif 4720, STOPPED survives relaunch and reboot.
+🧪 STILL VERIFYING: Shizuku mode (OP9 tested in standalone only — gates are mode-agnostic by code but unconfirmed on
+a real Shizuku call). Branch `feat/recording-pause-stop`, local only — push/merge held per maintainer. REMAINING:
+sign-off on card wording; locale strings for the new keys; decide whether to fold in the honest "Starting up…"
+status from [[hyperos-shizuku-recorder-death-research]] (the parked health-gated branch) for the residual ~1s
+Start race. Nothing ships until the maintainer says so.
 
 ### 🅿️ alex_812 (a) — second line / call-waiting records into the first call's file
 "When using the second line, everything is recorded for the first call." Call-waiting = both cellular calls share
