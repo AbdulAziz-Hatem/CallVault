@@ -42,7 +42,11 @@ object RecordingSwitch {
         when {
             to == RecordingState.STOPPED -> tearDown(context)
             from == RecordingState.STOPPED -> bringUp(context)
-            // ACTIVE ⇄ PAUSED: the daemon stays warm; nothing to tear down or bring up.
+            // ACTIVE ⇄ PAUSED: the daemon stays warm, so there is nothing to tear down or bring up — but
+            // the keep-alive's persistent notification has to catch up, or it goes on reading "Ready to
+            // record" through a pause. start() re-posts it from the new state (and self-skips when STOPPED,
+            // which this branch never is).
+            else -> DaemonKeepAliveService.start(context)
         }
     }
 
