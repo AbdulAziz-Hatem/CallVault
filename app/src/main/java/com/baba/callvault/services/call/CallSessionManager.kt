@@ -309,8 +309,8 @@ class CallSessionManager private constructor(context: Context) {
      * then sends the appropriate command to the recording service.
      */
     private fun evaluateAndStartService() {
-        // The master switch sits above the per-type carrier setting: when the user has paused or stopped
-        // recording, do nothing at all — not even the OFFER standby notification.
+        // The master On/Off switch sits above the per-type carrier setting: when the user has turned
+        // recording off, do nothing at all — not even the OFFER standby notification.
         val recordingState = preferences.getRecordingState()
         if (!recordingState.isRecordingAllowed) {
             AppLogger.i(TAG, "Master recording switch is $recordingState — not recording this call.")

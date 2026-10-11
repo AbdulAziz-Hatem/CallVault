@@ -220,6 +220,15 @@ class VoipCallDetector(private val context: Context) {
             callActive = true
             AppLogger.i(TAG, "VoIP call detected (mode=IN_COMMUNICATION)")
 
+            // The master On/Off switch is off: the user turned recording off entirely, so a STOPPED
+            // CallVault must be silent on app calls too — don't record and don't even offer to. (The
+            // prompt's own Record action is gated as well, in VoipRecordingCoordinator.onCallStarted, but
+            // the honest behaviour is to not raise a prompt that could not record anything.)
+            if (!AppPreferences(context).getRecordingState().isRecordingAllowed) {
+                AppLogger.i(TAG, "Master recording switch is off — not recording or offering this app call")
+                return
+            }
+
             // "Ask me": arm, but let the user decide. The detector still runs — it has to, or there
             // would be nothing to prompt about — and only the automatic start is withheld.
             val prefs = AppPreferences(context)
