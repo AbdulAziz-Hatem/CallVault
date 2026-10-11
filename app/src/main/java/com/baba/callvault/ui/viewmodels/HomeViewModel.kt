@@ -976,6 +976,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val store = SetupHealthStore(appContext)
         val facts = store.read()
         val windowStart = store.observationWindowStart(isReady, System.currentTimeMillis())
+        // The master recording switch: a paused/stopped user expects nothing recorded, so no phone
+        // call that happened then is a gap to raise on the card (foxcam's 3-state switch).
+        val expectsRecording = preferences.getRecordingState().isRecordingAllowed
         val result = CallGapDetector.sweep(
             entries = CallLogReader.entriesSince(appContext, facts.sweepWatermark),
             observedCallEnds = facts.observedCallEnds,
@@ -983,12 +986,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             // expect this call recorded?", and in app-calls-only mode the answer is no for every
             // phone call, whatever the per-direction switches were left at. Without this, turning
             // phone recording off would fill the status card with gaps for calls deliberately
-            // ignored.
-            autoRecordIncoming = RecordingPolicy.expectsCarrierRecording(
+            // ignored. The 3-state master switch (PAUSED/STOPPED) is the same situation at a higher
+            // level — the user turned recording off on purpose — so a call that happened then is not a
+            // gap to report. [expectsRecording] carries that: false unless the switch is ACTIVE.
+            autoRecordIncoming = expectsRecording && RecordingPolicy.expectsCarrierRecording(
                 carrierEnabled = preferences.isCarrierRecordingEnabled(),
                 autoRecordForDirection = preferences.isAutoRecordIncomingEnabled(),
             ),
-            autoRecordOutgoing = RecordingPolicy.expectsCarrierRecording(
+            autoRecordOutgoing = expectsRecording && RecordingPolicy.expectsCarrierRecording(
                 carrierEnabled = preferences.isCarrierRecordingEnabled(),
                 autoRecordForDirection = preferences.isAutoRecordOutgoingEnabled(),
             ),
