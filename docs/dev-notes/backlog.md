@@ -109,7 +109,8 @@ section. The still-open requests are renumbered below.)*
    `READ_CALL_LOG`). Decisions: list design, correlation to recordings, and what a tap does.
 
 3. **"Select all" in multi-select mode (user request, 2026-10-04).**
-   > **🧪 BUILT 2026-10-12 on `feat/select-all-library` (not merged; build + full unit suite green).**
+   > **✅ VERIFIED 2026-10-12 by the maintainer on device ("feels fine", select/deselect + delete confirmed).**
+   > On `feat/select-all-library`, not merged yet (push/merge held).
    > First cut was an app-bar select-all⇄clear icon (`40c1395b`); the maintainer found the lone icon
    > unclear and picked **Option D** from the mockup (`claude.ai/artifact/NMc31h1BbJPGgZy8ERZTe6`):
    > redesigned in `4e43c8c6` to a **"Select all" row pinned at the top of each list**, shown only while
@@ -1976,7 +1977,7 @@ merged for a single APK (none merged into `main`):
 
 - `fix/drive-sidecars-merge-applock` — app-lock "Allow screenshots" (✅ VERIFIED 2026-10-12), #49 sidecars→Drive (🧪, APPROVED for next release 2026-10-12), Merge Drive-only (🧪).
 - `feat/select-all-library` — #1 select-all, redesigned to the top-of-list "Select all" row (Option D, `4e43c8c6`) + deselect-keeps-mode fix (🧪). Combined build rebuilt + reinstalled on both phones 2026-10-12.
-- `fix/bulk-delete-by-name` — 🧪 bulk "delete both copies" now deletes by NAME across folders (+ sidecars + removeName), like a single-row delete, so a Select-all → Delete no longer strands one row whose stored URI no longer resolves (`7d99eb42`). Found during #1 testing 2026-10-12. Verify on device: Select all → Delete → list empties with nothing left behind.
+- `fix/bulk-delete-by-name` — ✅ VERIFIED 2026-10-12 by the maintainer (Select-all → Delete empties the list, the stuck row included). Bulk "delete both copies" now deletes by NAME across folders (+ sidecars + removeName), like a single-row delete, so a Select-all → Delete no longer strands one row whose stored URI no longer resolves (`7d99eb42`). Found during #1 testing 2026-10-12. Not merged (push/merge held).
 - `fix/transcribe-again-done-only` — #4 drop "Transcribe again" on DONE (🧪).
 
 WRITE_SECURE_SETTINGS re-granted on both after install (`granted=true`); both recorders verified back up
