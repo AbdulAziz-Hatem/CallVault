@@ -1187,6 +1187,31 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    /**
+     * Deletes a whole multi-selection thoroughly — every copy of each recording, matched by name,
+     * plus sidecars — the way a single-row delete does, but batched. This is the "delete both copies"
+     * bulk path; the per-URI [deleteUris] is kept for a narrowed Device-only / Drive-only bulk delete.
+     *
+     * It is here, rather than reusing [deleteUris], because that path missed a recording whose stored
+     * URI no longer resolves: its file delete quietly failed and the row stayed. The name-based delete
+     * gets it, which is why a single-row delete always could.
+     */
+    fun deleteRecordings(items: List<RecordingItem>) {
+        if (items.isEmpty()) return
+        val uris = items.map { it.uri }
+        // Stop the inline player if it is on any copy of anything being removed.
+        val active = playback.value.activeUri
+        if (active != null && items.any { active == it.uri || active == it.localUri || active == it.driveUri }) {
+            playbackController.stop()
+        }
+        _uiState.update { it.copy(deletingUris = it.deletingUris + uris) }
+        viewModelScope.launch {
+            RecordingsRepository.deleteRecordings(appContext, items)
+            refresh()
+            _uiState.update { it.copy(deletingUris = it.deletingUris - uris.toSet()) }
+        }
+    }
+
     /** Starts inline playback of [item]'s primary copy. */
     fun play(item: RecordingItem) = playbackController.play(appContext, item.uri)
 
