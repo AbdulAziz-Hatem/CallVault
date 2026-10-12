@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baba.callvault.R
+import com.baba.callvault.data.merge.MergePhase
 import kotlinx.coroutines.delay
 
 /** How long the "done" state stays up before closing itself. */
@@ -65,7 +66,16 @@ data class MergeProgressState(
     val finished: Boolean = false,
     /** A short line under the label — "4 calls · 23:27". */
     val detail: String = "",
-)
+    /**
+     * The merge phase, when it has to download a Drive-only part or clean up afterwards. Null (the
+     * common case, and every un-merge) means the plain count-driven merge — no extra steps to show.
+     */
+    val phase: MergePhase? = null,
+) {
+    /** A phase with no per-part count to show — a busy spinner and a label, not the "n/total" ring. */
+    val isBusyPhase: Boolean
+        get() = !finished && (phase == MergePhase.DOWNLOADING || phase == MergePhase.DELETING_TEMP)
+}
 
 /**
  * The working half of the merge and un-merge cards.
@@ -109,19 +119,32 @@ fun MergeProgressBody(state: MergeProgressState) {
                 color = MaterialTheme.colorScheme.surfaceVariant,
                 trackColor = MaterialTheme.colorScheme.surfaceVariant,
             )
-            CircularProgressIndicator(
-                progress = { progress },
-                modifier = Modifier.size(RING_SIZE),
-                strokeWidth = RING_STROKE,
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = androidx.compose.ui.graphics.Color.Transparent,
-            )
+            // The determinate arc shows the merge's n/total; a busy phase (download/clean-up) has no
+            // fraction, so it is replaced by the indeterminate spinner below instead of a 0%-stuck arc.
+            if (!state.isBusyPhase) {
+                CircularProgressIndicator(
+                    progress = { progress },
+                    modifier = Modifier.size(RING_SIZE),
+                    strokeWidth = RING_STROKE,
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = androidx.compose.ui.graphics.Color.Transparent,
+                )
+            }
             if (state.finished) {
                 Icon(
                     imageVector = Icons.Filled.Check,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(38.dp)
+                )
+            } else if (state.isBusyPhase) {
+                // Downloading / cleaning up has no per-part count to show, so the inner ring just spins
+                // indeterminately over the track rather than claiming a fraction it does not have.
+                CircularProgressIndicator(
+                    modifier = Modifier.size(RING_SIZE),
+                    strokeWidth = RING_STROKE,
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = androidx.compose.ui.graphics.Color.Transparent,
                 )
             } else {
                 // The count lives inside the ring: it is the one number worth reading, and putting it
@@ -149,6 +172,8 @@ fun MergeProgressBody(state: MergeProgressState) {
                 when {
                     state.finished && state.isUnMerge -> R.string.unmerge_progress_done
                     state.finished -> R.string.merge_progress_done
+                    state.phase == MergePhase.DOWNLOADING -> R.string.merge_progress_downloading
+                    state.phase == MergePhase.DELETING_TEMP -> R.string.merge_progress_cleaning_up
                     state.isUnMerge -> R.string.unmerge_progress_working
                     else -> R.string.merge_progress_working
                 }

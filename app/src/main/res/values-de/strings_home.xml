@@ -201,6 +201,8 @@
     <string name="progress_closing_in">Schließt in %1$d s</string>
     <string name="merge_progress_working">Anrufe werden verbunden</string>
     <string name="unmerge_progress_working">Anrufe werden getrennt</string>
+    <string name="merge_progress_downloading">Wird von Drive heruntergeladen</string>
+    <string name="merge_progress_cleaning_up">Wird bereinigt</string>
     <string name="whatsnew_220_body">Markieren Sie einen Moment, während Sie noch sprechen. Eine Schaltfläche in der Anrufbenachrichtigung setzt ein Lesezeichen genau dort, wo Sie drücken; die Aufnahme zeigt sie als Chips, die von dieser Stelle abspielen – bei Telefonaten wie bei App-Anrufen. App-Anrufe haben überhaupt erst Bedienelemente: Pause, Fortsetzen, Stopp und Markieren, wo sich vorher nur starten und beenden ließ.\n\nEin Gespräch wiederzufinden ist einfacher: Markieren Sie die wichtigen mit einem Stern, vergeben Sie eigene Schlagworte, und suchen Sie auch in Zusammenfassungen und eigenen Notizen statt nur im gesprochenen Wort. Transkripte lassen sich als Text, Markdown, SRT, VTT oder JSON exportieren.\n\nCallVault meldet sich außerdem, wenn es unbemerkt aufgehört hat zu funktionieren – wenn die Aufnahme nach einem Neustart nicht anläuft oder Aufnahmen Drive nicht mehr erreichen. Beides blieb bisher stumm. Neue Aufräumoptionen begrenzen den Speicherplatz oder verwerfen sehr kurze Aufnahmen. Alles ist standardmäßig aus, und eine markierte Aufnahme wird nie automatisch gelöscht.</string>
     <string name="whatsnew_220_title">Ein Gespräch wiederfinden – und es steuern, während es läuft</string>
     <string name="whatsnew_220_where">Einstellungen ▸ Speicher ▸ Aufbewahrung für die Aufräumoptionen</string>

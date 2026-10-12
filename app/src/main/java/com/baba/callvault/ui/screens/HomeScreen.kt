@@ -1446,10 +1446,15 @@ fun HomeScreen(
                     picked,
                     onPartProgress = { index ->
                         mergeProgress = mergeProgress?.copy(current = (index + 1).coerceAtMost(total))
-                    }
+                    },
+                    onPhase = { phase ->
+                        // Download / clean-up swap the ring for a spinner + their own label; MERGING
+                        // returns it to the n/total count. COMPLETED is left to onDone (finished=true).
+                        mergeProgress = mergeProgress?.copy(phase = phase)
+                    },
                 ) { problem ->
-                    // A refusal is the user's to act on — different codecs, or a call that is only
-                    // in Drive — so it is said out loud rather than logged and swallowed.
+                    // A refusal or failure is the user's to act on — different codecs, or a Drive
+                    // download that could not complete — so it is said out loud, not swallowed.
                     if (problem != null) {
                         mergeProgress = null
                         mergeFor = null

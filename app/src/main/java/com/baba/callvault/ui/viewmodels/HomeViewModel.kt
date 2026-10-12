@@ -42,6 +42,7 @@ import androidx.documentfile.provider.DocumentFile
 import com.baba.callvault.data.recordings.RecordingCatalog
 import com.baba.callvault.utils.AppLogger
 import com.baba.callvault.data.merge.MergeCandidates
+import com.baba.callvault.data.merge.MergePhase
 import com.baba.callvault.data.merge.MergeService
 import com.baba.callvault.data.recordings.db.RecordingDatabase
 import com.baba.callvault.data.recordings.RecordingsRepository
@@ -1091,14 +1092,21 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         primary: String,
         others: List<String>,
         onPartProgress: (Int) -> Unit = {},
+        onPhase: (MergePhase) -> Unit = {},
         onDone: (String?) -> Unit,
     ) {
         viewModelScope.launch {
             val outcome = withContext(Dispatchers.IO) {
-                MergeService.merge(appContext, primary, others) { index ->
-                    // Back to the main thread: this drives a dialog the user is watching.
-                    viewModelScope.launch { onPartProgress(index) }
-                }
+                MergeService.merge(
+                    appContext, primary, others,
+                    onPartProgress = { index ->
+                        // Back to the main thread: this drives a dialog the user is watching.
+                        viewModelScope.launch { onPartProgress(index) }
+                    },
+                    onPhase = { phase ->
+                        viewModelScope.launch { onPhase(phase) }
+                    },
+                )
             }
             refresh()
             onDone(

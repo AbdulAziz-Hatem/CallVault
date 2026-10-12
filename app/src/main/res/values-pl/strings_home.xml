@@ -201,6 +201,8 @@
     <string name="progress_closing_in">Zamknięcie za %1$d s</string>
     <string name="merge_progress_working">Łączenie rozmów</string>
     <string name="unmerge_progress_working">Rozdzielanie rozmów</string>
+    <string name="merge_progress_downloading">Pobieranie z Dysku</string>
+    <string name="merge_progress_cleaning_up">Porządkowanie</string>
     <string name="whatsnew_220_body">Zaznacz moment, gdy jeszcze rozmawiasz. Przycisk w powiadomieniu o połączeniu zostawia zakładkę dokładnie tam, gdzie go naciśniesz, a nagranie pokazuje je jako etykiety odtwarzające od tego miejsca — zarówno w rozmowach telefonicznych, jak i w aplikacjach. Rozmowy w aplikacjach mają wreszcie sterowanie: pauza, wznów, zatrzymaj i zaznacz, podczas gdy wcześniej można je było tylko rozpocząć i zakończyć.\n\nOdnalezienie rozmowy jest łatwiejsze: oznacz gwiazdką te warte zachowania, opisz je własnymi słowami i szukaj także w podsumowaniach i własnych notatkach, a nie tylko w wypowiedzianych słowach. Transkrypcje eksportują się jako tekst, Markdown, SRT, VTT lub JSON.\n\nCallVault odzywa się także wtedy, gdy po cichu przestał działać — gdy nagrywanie nie ruszy po ponownym uruchomieniu albo gdy nagrania przestaną trafiać na Drive. Wcześniej oba przypadki były milczące. Nowe porządkowanie może ograniczyć zajmowane miejsce lub odrzucać bardzo krótkie nagrania. Wszystko jest domyślnie wyłączone, a nagranie z gwiazdką nigdy nie jest usuwane automatycznie.</string>
     <string name="whatsnew_220_title">Odnajdź rozmowę i steruj nią w trakcie</string>
     <string name="whatsnew_220_where">Ustawienia ▸ Pamięć ▸ Przechowywanie, aby znaleźć opcje porządkowania</string>

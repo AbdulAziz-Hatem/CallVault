@@ -201,6 +201,8 @@
     <string name="progress_closing_in">Bezárás %1$d mp múlva</string>
     <string name="merge_progress_working">A hívások összefűzése</string>
     <string name="unmerge_progress_working">A hívások szétválasztása</string>
+    <string name="merge_progress_downloading">Letöltés a Drive-ról</string>
+    <string name="merge_progress_cleaning_up">Tisztítás</string>
     <string name="whatsnew_220_body">Jelöljön meg egy pillanatot még beszéd közben. A hívás értesítésén lévő gomb pontosan oda tesz könyvjelzőt, ahol megnyomja, a felvétel pedig chipként mutatja őket, amelyek onnan játszanak le — telefonhívásoknál és alkalmazáshívásoknál egyaránt. Az alkalmazáshívásoknak most már vannak vezérlői: szünet, folytatás, leállítás és jelölés, korábban csak elindítani és befejezni lehetett őket.\n\nEgy hívást könnyebb újra megtalálni: csillagozza meg a fontosakat, címkézze őket saját szavaival, és keressen az összefoglalókban és a saját jegyzeteiben is, ne csak az elhangzottakban. Az átiratok szövegként, Markdown, SRT, VTT vagy JSON formátumban exportálhatók.\n\nA CallVault akkor is szól, ha észrevétlenül leállt — ha a felvétel újraindítás után nem indul el, vagy ha a felvételek nem jutnak el a Drive-ra. Korábban mindkettő némán történt. Az új karbantartás korlátozhatja a felvételek helyfoglalását, vagy eldobhatja a nagyon rövideket. Minden alapértelmezetten ki van kapcsolva, és csillagozott felvételt soha nem töröl automatikusan.</string>
     <string name="whatsnew_220_title">Találja meg újra a hívást, és irányítsa közben</string>
     <string name="whatsnew_220_where">Beállítások ▸ Tárhely ▸ Megőrzés a karbantartási beállításokhoz</string>
