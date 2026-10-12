@@ -137,7 +137,12 @@ section. The still-open requests are renumbered below.)*
 
 ---
 
-## 🐞 Merge can't see Drive-only calls — reported 2026-10-02 (user "gene rator")
+## 🧪 Merge can't see Drive-only calls — FIXED (Merge-Drive-only), merged into `main` 2026-10-12 — reported 2026-10-02 (user "gene rator")
+
+> **🧪 FIXED and merged into `main` 2026-10-12 (`06bf6f62`; code `1d8eb92f`).** `MergeCandidates.of` no longer
+> requires a local file; `MergeService` downloads Drive-only parts to a cache dir, merges, and cleans up.
+> Device-tested on both phones; stays 🧪 until a real affected user confirms (this is the "Merge-Drive-only"
+> item, shipped on the maintainer's accepted risk). Original report kept below.
 
 **Report:** two recordings with the same contact (one outgoing 09:40, one incoming 09:43, right after
 hanging up). "Merge with another call" on one said **"There are no other calls with this number on the
@@ -180,7 +185,12 @@ decision.
 
 ---
 
-## 🐞 App lock blocks screenshots — reported 2026-10-02
+## ✅ App lock blocks screenshots — FIXED & VERIFIED 2026-10-12, merged into `main` — reported 2026-10-02
+
+> **✅ VERIFIED 2026-10-12 by the maintainer; merged into `main` (`06bf6f62`; code `6e84d2fe`).** Added an
+> "Allow screenshots" sub-setting under the app lock (default off): `FLAG_SECURE` is applied only when the
+> lock is on AND screenshots are not allowed, re-applied live on toggle, and honoured by `ShareImportActivity`
+> too. Original report kept below.
 
 **Report (user):** when the app lock (fingerprint/biometric) is enabled, screenshots of the app can't be
 taken. From a user's perspective there's no reason it shouldn't work — treated as a bug.
