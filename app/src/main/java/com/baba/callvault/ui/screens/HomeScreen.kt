@@ -1396,7 +1396,15 @@ fun HomeScreen(
             needsScopeChoice = RecordingSelection.needsScopeChoice(selectedItems),
             onConfirm = { scope ->
                 showBulkDelete = false
-                viewModel.deleteUris(RecordingSelection.urisToDelete(selectedItems, scope))
+                // "Both copies" (the default, and the only scope when nothing is held in two places)
+                // deletes by NAME across both folders — as thorough as a single-row delete, so a row
+                // whose stored URI no longer resolves is removed rather than stranded. A narrowed
+                // Device-only / Drive-only delete still goes per-URI, which is what that choice means.
+                if (scope == DeleteScope.BOTH) {
+                    viewModel.deleteRecordings(selectedItems)
+                } else {
+                    viewModel.deleteUris(RecordingSelection.urisToDelete(selectedItems, scope))
+                }
                 clearSelection()
             },
             onDismiss = { showBulkDelete = false },

@@ -389,6 +389,52 @@ object RecordingsRepository {
     }
 
     /**
+     * Deletes a whole set of recordings as thoroughly as [deleteRecording] does one — every copy in
+     * every configured folder, matched by **name**, plus each file's sidecar — but walking each folder
+     * **once** for the whole set rather than once per recording.
+     *
+     * This is what a bulk "delete (both copies)" runs, and it exists because the per-URI
+     * [deleteFile] used by a narrowed Device/Drive bulk delete is not thorough enough for the general
+     * case: a recording whose stored URI no longer resolves (a stale or MediaStore-style URI) has its
+     * `fromSingleUri(...).delete()` quietly return false and survives — exactly the "one row that will
+     * not delete" after a Select-all. The name walk is what [deleteRecording] already leans on, and the
+     * reason a single-row delete gets that same row where the bulk path missed it.
+     */
+    suspend fun deleteRecordings(context: Context, items: List<RecordingItem>): Unit =
+        withContext(Dispatchers.IO) {
+            if (items.isEmpty()) return@withContext
+
+            // The exact file each row points at — the fast path, and the only one that reaches a copy
+            // sitting outside the configured folders.
+            for (item in items) {
+                runCatching { DocumentFile.fromSingleUri(context, item.uri)?.delete() }
+                    .onFailure { e -> AppLogger.w(TAG, "Failed to delete ${item.uri}: ${e.message}") }
+            }
+
+            // One pass over each folder for the WHOLE set, deleting any audio copy whose name is one
+            // of the selected recordings and the transcript/notes sidecar beside it — so the text does
+            // not outlive the recording. One listing per folder, not one per recording.
+            val names = items.mapTo(HashSet()) { it.displayName }
+            val sidecars = items.mapTo(HashSet()) { TranscriptSidecar.sidecarNameFor(it.displayName) }
+            val prefs = AppPreferences(context)
+            val folders = listOfNotNull(prefs.getRecordingFolderUri(), prefs.getDriveFolderUri())
+            for (folderUri in folders) {
+                runCatching {
+                    val tree = DocumentFile.fromTreeUri(context, folderUri) ?: return@runCatching
+                    for (doc in tree.listFiles()) {
+                        if (doc.isFile && (doc.name in names || doc.name in sidecars)) doc.delete()
+                    }
+                }.onFailure { e ->
+                    AppLogger.w(TAG, "Failed to delete copies in $folderUri: ${e.message}")
+                }
+            }
+
+            // Drop every one from the catalog by name, so Home reflects the deletion even for a row
+            // whose URI delete no-op'd above.
+            for (item in items) RecordingCatalog.removeName(context, item.displayName)
+        }
+
+    /**
      * Deletes ONLY the single file at [uri] (one physical copy), via
      * [DocumentFile.fromSingleUri]. Unlike [deleteRecording], this does NOT touch same-named copies
      * in the other folder — it is used to delete just the Device or just the Drive copy of a BOTH
