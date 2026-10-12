@@ -558,12 +558,18 @@ removes half of this on its own.
 
 ---
 
-## 🧪 Transcript reading: mirror176's design proposals from #27 — two shipped on a branch 2026-10-12, two deferred
+## ✅ Transcript reading: mirror176's design proposals from #27 — two VERIFIED on device 2026-10-12, two deferred
 
-> **🧪 BUILT 2026-10-12 on `feat/transcript-27-polish` (`2e6979e8`; not merged; build + full unit suite +
-> checkTranslations green; installed on OP9 + OP12).** Two of the four done; verify on device by opening a
-> transcript (header now shows number · date/time) and using the new **Sort** chip at the head of the
-> recordings filter row (Newest/Oldest/Name/Longest).
+> **✅ VERIFIED 2026-10-12 on device (OP9) — the maintainer delegated the on-device test ("you can test this
+> yourself … generate fake calls, transcribe them and test"); done with generated BCR-named calls + a
+> contact-matched call.** On `feat/transcript-27-polish` (`2e6979e8` + `ab9d67a4`); build + full unit suite +
+> checkTranslations green; not merged yet.
+> - **Header number/date/time:** opened a transcribed call's reading view → header read **"Alice Tester" /
+>   "+15551230002 · 2026-07-11 14:30"** (the number shows only when a contact name resolves — gated on
+>   `contactName`, after a bidi-isolate dup bug was caught and fixed in `ab9d67a4`).
+> - **Sort chip:** Newest / Oldest / Longest / Name A–Z all reordered correctly; the chip tints when not the
+>   default. Bonus: the select-all row's tri-state (indeterminate → all) and bulk delete emptied the list with
+>   nothing stranded (re-confirmed the bulk-delete-by-name fix on the OP9).
 
 - **Previous / next call from inside the transcript.** ❌ DEFERRED — medium effort; must follow the list's
   current sort+filter order (now that a user-facing Sort exists, this can be built cleanly on top of it). He
