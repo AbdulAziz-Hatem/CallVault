@@ -67,9 +67,9 @@ fix, vivo far-side toggle (hint + SUPPORT doc), Samsung Wi-Fi-calling doc (#45).
     (HyperOS kills the user-service fork); standalone works. Two reporters, same device (detail in the
     "Shizuku mode fails on HyperOS 3" section below). Plus a standalone off-Wi-Fi loopback-arming flakiness
     on the same phone, and WD-toggling that looks like a fault to users.
-  - **Greek transcribes into English** (#46) — 🧪 FIXED 2026-10-06 (`el` added as a pinnable transcription
-    language, `76c2c232`) + initial Greek UI locale added (`f881010c`); awaiting a Greek call + the reporter's
-    polish (detail in the "Issue #46" section below).
+  - **Greek transcribes into English** (#46) — ✅ VERIFIED 2026-10-12 (maintainer) — `el` added as a pinnable
+    transcription language (`76c2c232`) + Greek UI locale added (`f881010c`). Ships in the next release; log it
+    in [[release-history]] + the README impact log when it does (detail in the "Issue #46" section below).
   - **Samsung One UI turns USB debugging off by itself** (UserX, S24 FE) — breaks off-Wi-Fi recovery; CallVault only
     mirrors the system switch (not a CallVault bug). Suspect Auto Blocker (detail in the section below).
   - **"Active" but the call wasn't recorded** (HyperOS/Shizuku — UserW, UserZ) — OS kills/churns the recorder; the
@@ -236,15 +236,14 @@ Wi-Fi, turning Offline recording OFF stops the WD churn.
 
 ---
 
-## 🧪 Issue #46 — Greek: transcription comes out English + a Greek UI translation offer — BUILT 2026-10-06 on `main` (reported 2026-10-04)
+## ✅ Issue #46 — Greek: transcription comes out English + a Greek UI translation offer — VERIFIED 2026-10-12 on `main` (reported 2026-10-04)
 
-> **🧪 BOTH BUILT 2026-10-06 (not yet confirmed), on `main`:** (1) the `el` transcription fix — `el` added to
+> **✅ VERIFIED 2026-10-12 (maintainer):** both parts confirmed. (1) the `el` transcription fix — `el` added to
 > `TranscriptionLanguageChoice.SUPPORTED` + a `transcription_language_greek` label in every locale
-> (`76c2c232`); (2) the full Greek UI locale `values-el/` — initial machine-quality draft, 1007 strings/
-> plurals/arrays, exact key+placeholder parity, `assembleDebug` green, no new lint errors (`f881010c`). The
-> reporter will **polish the wording** (native review), and the transcription fix needs a real Greek call to
-> confirm it transcribes Greek (we don't speak Greek — [[hebrew-cannot-clear-a-quality-change]]). When it ships,
-> log it in [[release-history]] and the README impact log. Detail below is kept for the root cause.
+> (`76c2c232`); (2) the full Greek UI locale `values-el/` — 1007 strings/plurals/arrays, exact key+placeholder
+> parity (`f881010c`). Both on `main`, not yet released. **Still to do:** ships in the next release — log it in
+> [[release-history]] and the README impact log then; the reporter may still send native wording polish for
+> `values-el/`. Detail below is kept for the root cause.
 
 **Two things from issue #46.**
 
