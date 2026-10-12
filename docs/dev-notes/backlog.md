@@ -110,7 +110,7 @@ section. The still-open requests are renumbered below.)*
 
 3. **"Select all" in multi-select mode (user request, 2026-10-04).**
    > **✅ VERIFIED 2026-10-12 by the maintainer on device ("feels fine", select/deselect + delete confirmed).**
-   > On `feat/select-all-library`, not merged yet (push/merge held).
+   > Merged into `main` 2026-10-12 (`ff401b8c`).
    > First cut was an app-bar select-all⇄clear icon (`40c1395b`); the maintainer found the lone icon
    > unclear and picked **Option D** from the mockup (`claude.ai/artifact/NMc31h1BbJPGgZy8ERZTe6`):
    > redesigned in `4e43c8c6` to a **"Select all" row pinned at the top of each list**, shown only while
@@ -312,14 +312,14 @@ generic readiness notice. Do NOT auto-re-assert `adb_enabled` — that starts a 
 
 ---
 
-## 🧪 Issue #49 — sidecar files (.json details, .md transcript) never reach Drive with "Immediately" sync — BUILT 2026-10-12 on `fix/drive-sidecars-merge-applock`, APPROVED for next release (reported 2026-10-10, eduardozacour)
+## 🧪 Issue #49 — sidecar files (.json details, .md transcript) never reach Drive with "Immediately" sync — MERGED into `main` 2026-10-12, APPROVED for next release (reported 2026-10-10, eduardozacour)
 
-> **🧪 BUILT (commit `513933e0`); APPROVED for the next release 2026-10-12 — the maintainer accepts the risk
-> ("#49 will be merged and released as part of the new version and if there will be an issue we will address
-> it").** Not device-confirmed by us, so it stays 🧪 (not promoted to ✅) — the decision is to ship it and fix
-> forward if a user reports trouble, not that it was verified working. Installed in the combined build on
-> OP9 + OP12. Merge into `main` at release time (push/merge still held). The "fix direction" below is kept for
-> the rationale; it was implemented as described (see commit).
+> **🧪 Merged into `main` 2026-10-12 (`06bf6f62`; code `513933e0`); APPROVED for the next release — the
+> maintainer accepts the risk ("#49 will be merged and released as part of the new version and if there will
+> be an issue we will address it").** Not device-confirmed by us, so it stays 🧪 (not promoted to ✅) — the
+> decision is to ship it and fix forward if a user reports trouble, not that it was verified working. On both
+> phones. (`main` is still local — nothing pushed.) The "fix direction" below is kept for the rationale; it was
+> implemented as described (see commit).
 
 Sharp, code-level report (he read the tree at 9933d92). **All three claims verified in the current code:**
 
@@ -356,7 +356,7 @@ calls to short-code `800` entered standby but never started (record-from-answer;
 calls are captured. Shizuku's scrcpy latency is inherent; on a slow device + short calls it loses the opening.
 (Possible in-app: in Shizuku mode skip the doomed direct attempt and/or keep scrcpy warm in standby — not started.)
 
-### ✅ foxcam — one-click GLOBAL ON/OFF (carrier **and** VoIP) — VERIFIED 2026-10-11 (standalone + Shizuku); not merged
+### ✅ foxcam — one-click GLOBAL ON/OFF (carrier **and** VoIP) — VERIFIED 2026-10-11 (standalone + Shizuku); merged into `main` (`1c800e60`, local-only, unpushed)
 The existing master switch (`carrier_recording_enabled`, Settings "Record phone calls") is **carrier-only** — it
 does NOT cover VoIP. foxcam wanted a single toggle that stops/starts **everything** (carrier + VoIP) in one tap.
 
@@ -1155,7 +1155,7 @@ properly; if not, an hour was spent instead of days. **Do that before writing an
 ### ✅ Remove the "Transcribe again" button — VERIFIED 2026-10-12 on `fix/transcribe-again-done-only` (agreed 2026-08-29)
 
 > **✅ VERIFIED 2026-10-12 on device by the maintainer ("#4 is fine").** Installed in the combined build
-> on OP9 + OP12. Not merged to `main` yet (push/merge held). Detail below kept for the rationale.
+> on OP9 + OP12. Merged into `main` 2026-10-12 (`753f5fbe`). Detail below kept for the rationale.
 >
 > **BUILT (build + full unit suite green):** the retranscribe button + `onRetranscribe`
 > param are gone from the reading view (the DONE case); `TranscriptAudio.retranscribeOffered` and its two
@@ -1969,17 +1969,22 @@ before the first word, run through the whisper-cli harness with the app's exact 
 
 ---
 
-## 🧪 What is installed on the test phones right now (2026-10-12)
+## What is installed on the test phones, and what is now on `main` (2026-10-12)
 
-Both OP9 (`daabf34f`, Shizuku mode) and OP12 (`6011b07e`, standalone — daily driver) run one **combined
-debug build** off throwaway branch `build/install-combined-2026-10-12` = `main` + these three branches
-merged for a single APK (none merged into `main`):
+Both OP9 (`daabf34f`, Shizuku mode) and OP12 (`6011b07e`, standalone — daily driver) run a debug build
+carrying all of the below. **All four branches were merged into `main` on 2026-10-12** (maintainer gave the
+go; `main` built + full unit suite green after the merges; **still local — nothing pushed to origin**):
 
-- `fix/drive-sidecars-merge-applock` — app-lock "Allow screenshots" (✅ VERIFIED 2026-10-12), #49 sidecars→Drive (🧪, APPROVED for next release 2026-10-12), Merge Drive-only (🧪).
-- `feat/select-all-library` — #1 select-all, redesigned to the top-of-list "Select all" row (Option D, `4e43c8c6`) + deselect-keeps-mode fix (🧪). Combined build rebuilt + reinstalled on both phones 2026-10-12.
-- `fix/bulk-delete-by-name` — ✅ VERIFIED 2026-10-12 by the maintainer (Select-all → Delete empties the list, the stuck row included). Bulk "delete both copies" now deletes by NAME across folders (+ sidecars + removeName), like a single-row delete, so a Select-all → Delete no longer strands one row whose stored URI no longer resolves (`7d99eb42`). Found during #1 testing 2026-10-12. Not merged (push/merge held).
-- `fix/transcribe-again-done-only` — #4 drop "Transcribe again" on DONE (🧪).
+- `feat/select-all-library` → **`ff401b8c`** — #1 select-all as the top-of-list "Select all" row (Option D) +
+  deselect-keeps-mode fix. ✅ VERIFIED on device.
+- `fix/transcribe-again-done-only` → **`753f5fbe`** — #4 drop "Transcribe again" on DONE. ✅ VERIFIED.
+- `fix/bulk-delete-by-name` → **`6f58462f`** — bulk "delete both copies" deletes by name like a single-row
+  delete (`7d99eb42`). ✅ VERIFIED (Select-all → Delete empties the list, the stuck row included).
+- `fix/drive-sidecars-merge-applock` → **`06bf6f62`** — app-lock "Allow screenshots" (✅ VERIFIED), #49
+  sidecars→Drive (approved for release), **Merge-Drive-only (🧪 — merged on the maintainer's call, only
+  device-tested; watch for real-user feedback)**.
 
-WRITE_SECURE_SETTINGS re-granted on both after install (`granted=true`); both recorders verified back up
-(OP12 `app_process` daemon + `recorder_keepalive`; OP9 `:recorder` fork). The feature branches remain the
-source of truth — the combined branch is only the install artifact for the field-test window.
+Earlier in the session `main` also took the global On/Off master switch (`1c800e60`) and #46 Greek. The
+`build/install-combined-2026-10-12` branch was the pre-merge install artifact and is now redundant.
+WRITE_SECURE_SETTINGS was re-granted after each install (`granted=true`); both recorders verified back up
+(OP12 `app_process` daemon + `recorder_keepalive`; OP9 `:recorder` fork).
