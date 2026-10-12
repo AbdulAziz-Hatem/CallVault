@@ -453,6 +453,8 @@
     <string name="home_share_chooser">اشتراک‌گذاری فایل ضبط‌شده</string>
     <string name="home_row_menu">گزینه‌های بیشتر</string>
     <string name="home_delete">حذف</string>
+    <string name="selection_select_all">انتخاب همه</string>
+    <string name="selection_clear_all">پاک کردن انتخاب</string>
     <string name="home_delete_confirm_title">فایل ضبط‌شده حذف شود؟</string>
     <string name="home_delete_confirm_message">این کار %1$s را برای همیشه حذف می‌کند.</string>
     <string name="home_delete_scope_message">این فایل ضبط‌شده روی این دستگاه و در Drive ذخیره شده است.</string>

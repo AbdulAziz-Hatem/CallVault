@@ -50,6 +50,14 @@ data class LibrarySelection(
         return if (next.isEmpty()) EMPTY else LibrarySelection(section, next)
     }
 
+    /**
+     * [names] selected on [section], replacing whatever was picked before — the "select all" action,
+     * where [names] is the page's currently visible, selectable rows. Empty [names] clears the
+     * selection (so "select all" on an empty page is a no-op that leaves selection mode the one way).
+     */
+    fun selectedAll(section: HomeSection, names: Set<String>): LibrarySelection =
+        if (names.isEmpty()) EMPTY else LibrarySelection(section, names)
+
     companion object {
 
         /** Nothing selected anywhere. */

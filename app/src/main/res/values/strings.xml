@@ -539,6 +539,8 @@
     <string name="home_share_chooser">Share recording</string>
     <string name="home_row_menu">More options</string>
     <string name="home_delete">Delete</string>
+    <string name="selection_select_all">Select all</string>
+    <string name="selection_clear_all">Clear selection</string>
     <string name="home_delete_confirm_title">Delete recording?</string>
     <string name="home_delete_confirm_message">This permanently deletes %1$s.</string>
     <string name="home_delete_scope_message">This recording is saved on this device and in Drive.</string>

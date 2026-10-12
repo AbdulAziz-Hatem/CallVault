@@ -482,6 +482,8 @@
     <string name="home_share_chooser">Κοινοποίηση εγγραφής</string>
     <string name="home_row_menu">Περισσότερες επιλογές</string>
     <string name="home_delete">Διαγραφή</string>
+    <string name="selection_select_all">Επιλογή όλων</string>
+    <string name="selection_clear_all">Εκκαθάριση επιλογής</string>
     <string name="home_delete_confirm_title">Διαγραφή εγγραφής;</string>
     <string name="home_delete_confirm_message">Αυτό διαγράφει οριστικά το %1$s.</string>
     <string name="home_delete_scope_message">Αυτή η εγγραφή είναι αποθηκευμένη σε αυτή τη συσκευή και στο Drive.</string>

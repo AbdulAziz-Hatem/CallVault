@@ -69,6 +69,8 @@
     <string name="home_bulk_delete_scope_label">Cópias a excluir</string>
     <string name="home_bulk_delete_scope_message">Algumas estão salvas neste dispositivo e no Drive.</string>
     <string name="home_delete">Excluir</string>
+    <string name="selection_select_all">Selecionar tudo</string>
+    <string name="selection_clear_all">Limpar seleção</string>
     <string name="home_delete_confirm_message">Isto exclui %1$s permanentemente.</string>
     <string name="home_delete_confirm_title">Excluir a gravação?</string>
     <string name="home_delete_scope_message">Esta gravação está salva neste dispositivo e no Drive.</string>

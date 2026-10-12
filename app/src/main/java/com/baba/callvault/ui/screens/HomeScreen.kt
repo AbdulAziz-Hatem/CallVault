@@ -78,6 +78,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Deselect
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -89,6 +90,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.CallMerge
 import androidx.compose.material.icons.filled.CallSplit
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material.icons.filled.SystemUpdate
@@ -476,8 +478,8 @@ fun HomeScreen(
      * Built per section rather than once, so the toggle, the share and the delete all name the page
      * they were drawn on and a callback cannot be handed to the wrong list.
      */
-    val librarySelectionFor: @Composable (HomeSection, LibraryRowActions.Page) -> LibrarySelectionUi =
-        { section, page ->
+    val librarySelectionFor: @Composable (HomeSection, LibraryRowActions.Page, Set<String>) -> LibrarySelectionUi =
+        { section, page, visibleSelectable ->
             val sectionTitle = stringResource(
                 if (page == LibraryRowActions.Page.Transcripts) R.string.home_transcripts_title
                 else R.string.home_summaries_title
@@ -486,6 +488,11 @@ fun HomeScreen(
                 selected = librarySelection.on(section),
                 onToggle = { name -> librarySelection = librarySelection.toggled(section, name) },
                 onClear = { librarySelection = LibrarySelection.EMPTY },
+                onSelectAll = { librarySelection = librarySelection.selectedAll(section, visibleSelectable) },
+                // True only when every visible, selectable row is already picked — so the toggle flips
+                // to "clear all". Keyed to the visible set, so filtering down then does not read as "all".
+                allSelected = visibleSelectable.isNotEmpty() &&
+                    librarySelection.on(section).containsAll(visibleSelectable),
                 onShare = {
                     val picked = librarySelection.on(section).toList()
                     // Cleared before the chooser, not after it: the share sheet is another app's
@@ -1076,7 +1083,7 @@ fun HomeScreen(
             // view's own "Delete text" raises, so there is one transcript delete in the app rather
             // than a second one that could come to disagree about what it takes.
             onDelete = { displayName -> deleteTranscriptFor = displayName },
-            selection = librarySelectionFor(HomeSection.Transcripts, LibraryRowActions.Page.Transcripts),
+            selection = librarySelectionFor(HomeSection.Transcripts, LibraryRowActions.Page.Transcripts, groups.selectableNames()),
             // The same two answers the share card offers, in the same words. One door asking a
             // question the other does not would make the answer look like a property of how the
             // file arrived, when it is a property of what the user wants from it.
@@ -1161,7 +1168,7 @@ fun HomeScreen(
             // and the tags with it — the text the summary was written FROM, thrown away because
             // somebody disliked the write-up of it.
             onDelete = { displayName -> deleteSummaryFor = displayName },
-            selection = librarySelectionFor(HomeSection.Summaries, LibraryRowActions.Page.Summaries),
+            selection = librarySelectionFor(HomeSection.Summaries, LibraryRowActions.Page.Summaries, groups.selectableNames()),
             // No confirmation, like the card's own Stop: stopping is the safe direction, and the
             // abort has to come first because cancelling the worker does not interrupt a generate.
             onStop = { SummaryScheduler.stopNow(context) },
@@ -1184,6 +1191,21 @@ fun HomeScreen(
         titleTrailing = if (selectionMode) null else titleTrailing,
         actions = {
             if (selectionMode) {
+                // Select all / clear all over the currently FILTERED recordings, so a search or a
+                // filter chip narrows what "all" means — never every recording behind the filter.
+                val allVisibleUris = remember(uiState.filteredRecordings) {
+                    uiState.filteredRecordings.map { it.uri }.toSet()
+                }
+                val allSelected = allVisibleUris.isNotEmpty() && selection.containsAll(allVisibleUris)
+                IconButton(onClick = { selection = if (allSelected) emptySet() else allVisibleUris }) {
+                    Icon(
+                        imageVector = if (allSelected) Icons.Filled.Deselect else Icons.Filled.SelectAll,
+                        contentDescription = stringResource(
+                            if (allSelected) R.string.selection_clear_all else R.string.selection_select_all
+                        ),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
                 IconButton(onClick = {
                     context.shareRecordings(RecordingSelection.urisToShare(selectedItems))
                     clearSelection()

@@ -66,6 +66,8 @@
     <string name="home_bulk_delete_scope_label">Kopie do usunięcia</string>
     <string name="home_bulk_delete_scope_message">Część jest zapisana i na tym urządzeniu, i na Dysku.</string>
     <string name="home_delete">Usuń</string>
+    <string name="selection_select_all">Zaznacz wszystko</string>
+    <string name="selection_clear_all">Wyczyść zaznaczenie</string>
     <string name="home_delete_confirm_message">Spowoduje to trwałe usunięcie %1$s.</string>
     <string name="home_delete_confirm_title">Usunąć nagranie?</string>
     <string name="home_delete_scope_message">To nagranie jest zapisane na tym urządzeniu i na Dysku.</string>

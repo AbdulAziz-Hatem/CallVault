@@ -11,6 +11,8 @@ package com.baba.callvault.ui.screens
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Deselect
+import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +35,9 @@ import com.baba.callvault.R
  * @param onClear  leave selection without acting — the back arrow and the back gesture.
  * @param onShare  send every selected row's text, as one message.
  * @param onDelete ask to delete every selected row's text.
+ * @param onSelectAll pick every currently visible, selectable row on this page.
+ * @param allSelected whether every visible selectable row is already picked — so the one button can
+ *                    flip to "clear all".
  */
 data class LibrarySelectionUi(
     val selected: Set<String>,
@@ -40,6 +45,8 @@ data class LibrarySelectionUi(
     val onClear: () -> Unit,
     val onShare: () -> Unit,
     val onDelete: () -> Unit,
+    val onSelectAll: () -> Unit = {},
+    val allSelected: Boolean = false,
 ) {
     /** Whether the page is in selection mode. Derived, so it cannot fall out of step with the set. */
     val active: Boolean get() = selected.isNotEmpty()
@@ -70,6 +77,16 @@ data class LibrarySelectionUi(
 @Composable
 fun LibrarySelectionActions(selection: LibrarySelectionUi) {
     Row {
+        // One button that flips: pick everything visible, or clear it once everything is picked.
+        IconButton(onClick = if (selection.allSelected) selection.onClear else selection.onSelectAll) {
+            Icon(
+                imageVector = if (selection.allSelected) Icons.Filled.Deselect else Icons.Filled.SelectAll,
+                contentDescription = stringResource(
+                    if (selection.allSelected) R.string.selection_clear_all else R.string.selection_select_all
+                ),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
         IconButton(onClick = selection.onShare) {
             Icon(
                 imageVector = Icons.Filled.Share,
