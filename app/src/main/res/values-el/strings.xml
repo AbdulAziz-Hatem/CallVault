@@ -732,6 +732,8 @@
     <string name="settings_app_lock_title">Απαίτηση ξεκλειδώματος</string>
     <string name="settings_app_lock_description">Ζητά το κλείδωμα οθόνης σας πριν εμφανίσει εγγραφές και απομαγνητοφωνήσεις. Επίσης τις κρατά εκτός στιγμιότυπων οθόνης και της εναλλαγής εφαρμογών.</string>
     <string name="settings_app_lock_unavailable">Ορίστε ένα κλείδωμα οθόνης στο τηλέφωνό σας για να το χρησιμοποιήσετε.</string>
+    <string name="settings_allow_screenshots_title">Να επιτρέπονται στιγμιότυπα οθόνης</string>
+    <string name="settings_allow_screenshots_description">Σας επιτρέπει να τραβάτε στιγμιότυπα οθόνης του CallVault. Έτσι εμφανίζεται και το περιεχόμενό του στην εναλλαγή εφαρμογών. Απενεργοποιημένο, όλα παραμένουν κρυφά.</string>
     <string name="playback_tags_title">Ετικέτες</string>
     <string name="playback_tags_add">Προσθήκη ετικέτας</string>
     <string name="playback_tags_remove">Αφαίρεση ετικέτας</string>

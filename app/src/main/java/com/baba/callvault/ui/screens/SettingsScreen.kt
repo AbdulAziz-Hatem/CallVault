@@ -1856,6 +1856,7 @@ private fun PrivacySubSection(preferences: AppPreferences, updateTrigger: Int) {
     // read as the app being wrong.
     val available = remember(updateTrigger) { AppLock.isAvailable(context) }
     var enabled by remember(updateTrigger) { mutableStateOf(preferences.isAppLockEnabled()) }
+    var allowScreenshots by remember(updateTrigger) { mutableStateOf(preferences.isAllowScreenshots()) }
 
     SettingsToggleRow(
         label = stringResource(R.string.settings_app_lock_title),
@@ -1863,6 +1864,9 @@ private fun PrivacySubSection(preferences: AppPreferences, updateTrigger: Int) {
         onCheckedChange = {
             enabled = it
             preferences.setAppLockEnabled(it)
+            // The secure flag is derived from the lock being on; re-apply so turning the lock off also
+            // lifts the screenshot block straight away rather than on the next visit.
+            (context as? com.baba.callvault.MainActivity)?.applySecureFlag()
         },
         // Disabled rather than hidden when the phone has no screen lock: hiding it would leave
         // someone looking for a feature they have read about with no idea why it is absent.
@@ -1873,6 +1877,23 @@ private fun PrivacySubSection(preferences: AppPreferences, updateTrigger: Int) {
         ),
         descriptionBelow = true,
     )
+
+    // Only meaningful while the lock is on — that is the only time the secure flag is set — so it rides
+    // under the lock row and is disabled when the lock is off.
+    if (enabled && available) {
+        SettingsToggleRow(
+            label = stringResource(R.string.settings_allow_screenshots_title),
+            checked = allowScreenshots,
+            onCheckedChange = {
+                allowScreenshots = it
+                preferences.setAllowScreenshots(it)
+                // Apply immediately so a screenshot works now, not after leaving and re-entering.
+                (context as? com.baba.callvault.MainActivity)?.applySecureFlag()
+            },
+            description = stringResource(R.string.settings_allow_screenshots_description),
+            descriptionBelow = true,
+        )
+    }
 }
 
 @Composable
