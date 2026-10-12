@@ -113,7 +113,9 @@ section. The still-open requests are renumbered below.)*
    > select-all⇄clear-all toggle in every page's selection app bar. "All" = the currently filtered/visible,
    > *selectable* rows (Recordings = `filteredRecordings`; Transcripts/Summaries = the DONE rows via
    > `Groups.selectableNames()`, matching the per-row toggle). `LibrarySelection.selectedAll` +
-   > `LibrarySelectionUi.onSelectAll/allSelected`; strings in 13 locales. Commit `40c1395b`. Verify on device.
+   > `LibrarySelectionUi.onSelectAll/allSelected`; strings in 13 locales. Commit `40c1395b`. **Installed on
+   > OP9 + OP12 2026-10-12** (combined build; see note at end). Verify on device: enter selection mode on each
+   > library page and tap select-all / clear-all.
 
    When a library page is in selection
    mode (the "N selected" app bar with share/delete), offer a one-tap *select all* so the user doesn't
@@ -1141,6 +1143,8 @@ properly; if not, an hour was spent instead of days. **Do that before writing an
 > param are gone from the reading view (the DONE case); `TranscriptAudio.retranscribeOffered` and its two
 > tests removed. A FAILED transcript keeps its retry on the Transcripts row (`onRetry -> startTranscription`),
 > so an undecodable one is never stranded — exactly the safeguard this item required. Commit `ef755692`.
+> **Installed on OP9 + OP12 2026-10-12** (combined build; see note at end). Verify on device: open a DONE
+> transcript (no "Transcribe again" button) and a FAILED one (retry still offered on its Transcripts row).
 
 Drop the retranscribe action from the transcript sheet before the release.
 
@@ -1944,3 +1948,19 @@ that held only the phone's vibration. Analysed from code on 2026-09-11, **not re
 Hebrew test can only falsify a quality change, never clear it. Option 1 only works where turns exist —
 the handoff path with resilient recording on. Needs a real affected recording, or a clip with a vibration
 before the first word, run through the whisper-cli harness with the app's exact settings.
+
+---
+
+## 🧪 What is installed on the test phones right now (2026-10-12)
+
+Both OP9 (`daabf34f`, Shizuku mode) and OP12 (`6011b07e`, standalone — daily driver) run one **combined
+debug build** off throwaway branch `build/install-combined-2026-10-12` = `main` + these three branches
+merged for a single APK (none merged into `main`):
+
+- `fix/drive-sidecars-merge-applock` — app-lock "Allow screenshots" (✅ VERIFIED 2026-10-12), #49 sidecars→Drive (🧪), Merge Drive-only (🧪).
+- `feat/select-all-library` — #1 select-all (🧪).
+- `fix/transcribe-again-done-only` — #4 drop "Transcribe again" on DONE (🧪).
+
+WRITE_SECURE_SETTINGS re-granted on both after install (`granted=true`); both recorders verified back up
+(OP12 `app_process` daemon + `recorder_keepalive`; OP9 `:recorder` fork). The feature branches remain the
+source of truth — the combined branch is only the install artifact for the field-test window.
