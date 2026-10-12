@@ -196,6 +196,19 @@ fun TranscriptsScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
+            // The "Select all" row, pinned at the top while selecting and hidden otherwise. Above the
+            // search and import cards (both of which hide during selection anyway), so it sits
+            // directly over the rows whose ticks it drives.
+            if (selection.active) {
+                item {
+                    LibrarySelectAllRow(
+                        allSelected = selection.allSelected,
+                        someSelected = selection.someSelected,
+                        selectedCount = selection.selected.size,
+                        onClick = selection.onSelectAll,
+                    )
+                }
+            }
             // Before the empty-state branch below, which returns early. An empty Transcripts page is
             // exactly where importing needs to be offered — it is one of the two answers to "there
             // is nothing here yet", and the other one is on a different screen.

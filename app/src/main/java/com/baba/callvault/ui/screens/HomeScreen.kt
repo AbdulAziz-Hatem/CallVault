@@ -78,7 +78,6 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Deselect
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -90,7 +89,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.CallMerge
 import androidx.compose.material.icons.filled.CallSplit
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material.icons.filled.SystemUpdate
@@ -468,7 +466,7 @@ fun HomeScreen(
     // Back leaves selection rather than the page — the same rule the recordings list follows, and
     // without it the only way out of a selection would be to act on it. Registered beside that one,
     // so the reading view's own handler (composed later) still outranks both.
-    BackHandler(enabled = librarySelection.names.isNotEmpty()) {
+    BackHandler(enabled = librarySelection.active) {
         librarySelection = LibrarySelection.EMPTY
     }
 
@@ -484,15 +482,23 @@ fun HomeScreen(
                 if (page == LibraryRowActions.Page.Transcripts) R.string.home_transcripts_title
                 else R.string.home_summaries_title
             )
+            // True only when every visible, selectable row is already picked — so the Select-all row
+            // flips to "Deselect all". Keyed to the visible set, so filtering down does not read as "all".
+            val allSelectedHere = visibleSelectable.isNotEmpty() &&
+                librarySelection.on(section).containsAll(visibleSelectable)
             LibrarySelectionUi(
                 selected = librarySelection.on(section),
                 onToggle = { name -> librarySelection = librarySelection.toggled(section, name) },
                 onClear = { librarySelection = LibrarySelection.EMPTY },
-                onSelectAll = { librarySelection = librarySelection.selectedAll(section, visibleSelectable) },
-                // True only when every visible, selectable row is already picked — so the toggle flips
-                // to "clear all". Keyed to the visible set, so filtering down then does not read as "all".
-                allSelected = visibleSelectable.isNotEmpty() &&
-                    librarySelection.on(section).containsAll(visibleSelectable),
+                // The Select-all row's tap: pick every visible row, or — when all are already picked —
+                // clear to nothing WITHOUT leaving selection mode (an empty set that stays active).
+                onSelectAll = {
+                    librarySelection = librarySelection.selectedAll(
+                        section, if (allSelectedHere) emptySet() else visibleSelectable
+                    )
+                },
+                allSelected = allSelectedHere,
+                active = librarySelection.activeOn(section),
                 onShare = {
                     val picked = librarySelection.on(section).toList()
                     // Cleared before the chooser, not after it: the share sheet is another app's
@@ -759,11 +765,18 @@ fun HomeScreen(
         }
     }
 
-    val selectionMode = selection.isNotEmpty()
+    // Selection mode is its own flag, not "the set is non-empty": the "Deselect all" row clears every
+    // pick but keeps the bar up (only the back arrow leaves), so the mode has to outlive an empty set.
+    // Kept beside the set and restored with it, so the two cannot fall out of step across a rotation.
+    var recordingsSelecting by rememberSaveable { mutableStateOf(false) }
+    val selectionMode = recordingsSelecting || selection.isNotEmpty()
     val selectedItems = remember(selection, uiState.recordings) {
         uiState.recordings.filter { it.uri in selection }
     }
-    val clearSelection = { selection = emptySet() }
+    val clearSelection = {
+        selection = emptySet()
+        recordingsSelecting = false
+    }
 
     // Back leaves selection mode rather than the screen — the standard behaviour, and without it the
     // only way out would be the close button.
@@ -1191,32 +1204,24 @@ fun HomeScreen(
         titleTrailing = if (selectionMode) null else titleTrailing,
         actions = {
             if (selectionMode) {
-                // Select all / clear all over the currently FILTERED recordings, so a search or a
-                // filter chip narrows what "all" means — never every recording behind the filter.
-                val allVisibleUris = remember(uiState.filteredRecordings) {
-                    uiState.filteredRecordings.map { it.uri }.toSet()
-                }
-                val allSelected = allVisibleUris.isNotEmpty() && selection.containsAll(allVisibleUris)
-                IconButton(onClick = { selection = if (allSelected) emptySet() else allVisibleUris }) {
-                    Icon(
-                        imageVector = if (allSelected) Icons.Filled.Deselect else Icons.Filled.SelectAll,
-                        contentDescription = stringResource(
-                            if (allSelected) R.string.selection_clear_all else R.string.selection_select_all
-                        ),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                IconButton(onClick = {
-                    context.shareRecordings(RecordingSelection.urisToShare(selectedItems))
-                    clearSelection()
-                }) {
+                // Select-all is NOT here any more: it is a "Select all" row at the top of the list
+                // (below). The bar carries only the two things done TO a selection, and both go inert
+                // at zero picked — the mode can now be open with nothing selected.
+                val hasPicked = selection.isNotEmpty()
+                IconButton(
+                    enabled = hasPicked,
+                    onClick = {
+                        context.shareRecordings(RecordingSelection.urisToShare(selectedItems))
+                        clearSelection()
+                    },
+                ) {
                     Icon(
                         imageVector = Icons.Filled.Share,
                         contentDescription = stringResource(R.string.home_share),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                IconButton(onClick = { showBulkDelete = true }) {
+                IconButton(enabled = hasPicked, onClick = { showBulkDelete = true }) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
                         contentDescription = stringResource(R.string.home_delete),
@@ -1307,6 +1312,21 @@ fun HomeScreen(
                 // it takes to read the folder — is simply wrong.
                 if (uiState.hasLoaded) item { EmptyRecordings() }
             } else {
+                // The "Select all" row, pinned above the rows while selecting (hidden otherwise), so
+                // it sits over the ticks it drives and below the filter bar — "all" means the
+                // currently FILTERED recordings, never every recording behind a filter.
+                if (selectionMode) {
+                    item {
+                        val allVisibleUris = remember(recordings) { recordings.map { it.uri }.toSet() }
+                        val allSel = allVisibleUris.isNotEmpty() && selection.containsAll(allVisibleUris)
+                        LibrarySelectAllRow(
+                            allSelected = allSel,
+                            someSelected = selection.isNotEmpty() && !allSel,
+                            selectedCount = selection.size,
+                            onClick = { selection = if (allSel) emptySet() else allVisibleUris },
+                        )
+                    }
+                }
                 items(recordings, key = { it.uri.toString() }) { item ->
                     RecordingRow(
                         item = item,
@@ -1315,6 +1335,10 @@ fun HomeScreen(
                         selectionMode = selectionMode,
                         selected = item.uri in selection,
                         onToggleSelected = {
+                            // Long-press enters selection mode; while in it, a tap toggles. Setting
+                            // the flag here means un-picking down to zero no longer drops out of the
+                            // mode — only the back arrow / clearSelection does.
+                            recordingsSelecting = true
                             selection = if (item.uri in selection) selection - item.uri
                                         else selection + item.uri
                         },

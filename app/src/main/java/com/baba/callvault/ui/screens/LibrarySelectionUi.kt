@@ -11,8 +11,6 @@ package com.baba.callvault.ui.screens
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Deselect
-import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,9 +33,12 @@ import com.baba.callvault.R
  * @param onClear  leave selection without acting — the back arrow and the back gesture.
  * @param onShare  send every selected row's text, as one message.
  * @param onDelete ask to delete every selected row's text.
- * @param onSelectAll pick every currently visible, selectable row on this page.
- * @param allSelected whether every visible selectable row is already picked — so the one button can
- *                    flip to "clear all".
+ * @param onSelectAll the "Select all" row's tap: pick every visible selectable row, or — when they
+ *                    are all already picked — clear the selection WITHOUT leaving selection mode.
+ * @param allSelected whether every visible selectable row is already picked, for the row's tri-state.
+ * @param active whether the page is in selection mode. A field, not derived from [selected], because
+ *               a "Deselect all" leaves the mode open with nothing picked; see
+ *               [com.baba.callvault.ui.navigation.LibrarySelection].
  */
 data class LibrarySelectionUi(
     val selected: Set<String>,
@@ -47,9 +48,10 @@ data class LibrarySelectionUi(
     val onDelete: () -> Unit,
     val onSelectAll: () -> Unit = {},
     val allSelected: Boolean = false,
+    val active: Boolean = false,
 ) {
-    /** Whether the page is in selection mode. Derived, so it cannot fall out of step with the set. */
-    val active: Boolean get() = selected.isNotEmpty()
+    /** Some but not all visible rows picked — the tri-state "indeterminate" of the Select-all row. */
+    val someSelected: Boolean get() = selected.isNotEmpty() && !allSelected
 
     companion object {
 
@@ -76,25 +78,20 @@ data class LibrarySelectionUi(
  */
 @Composable
 fun LibrarySelectionActions(selection: LibrarySelectionUi) {
+    // Select-all is NOT here any more: it is a "Select all" row at the top of the list (shown only
+    // while selecting), so the bar carries only the two things done TO a selection. Both go inert at
+    // zero picked — the mode can now be open with nothing selected, and a live Delete there would be
+    // a button that deletes nothing.
+    val hasPicked = selection.selected.isNotEmpty()
     Row {
-        // One button that flips: pick everything visible, or clear it once everything is picked.
-        IconButton(onClick = if (selection.allSelected) selection.onClear else selection.onSelectAll) {
-            Icon(
-                imageVector = if (selection.allSelected) Icons.Filled.Deselect else Icons.Filled.SelectAll,
-                contentDescription = stringResource(
-                    if (selection.allSelected) R.string.selection_clear_all else R.string.selection_select_all
-                ),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        IconButton(onClick = selection.onShare) {
+        IconButton(onClick = selection.onShare, enabled = hasPicked) {
             Icon(
                 imageVector = Icons.Filled.Share,
                 contentDescription = stringResource(R.string.home_share),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        IconButton(onClick = selection.onDelete) {
+        IconButton(onClick = selection.onDelete, enabled = hasPicked) {
             Icon(
                 imageVector = Icons.Filled.Delete,
                 contentDescription = stringResource(R.string.home_delete),

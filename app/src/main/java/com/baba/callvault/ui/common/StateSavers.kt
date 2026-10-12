@@ -39,6 +39,9 @@ typealias TranscribeRequest = Triple<String, Long?, String?>
 /** Marks an absent [Long] or [String] field. No recording name or language tag is ever empty. */
 private const val ABSENT = ""
 
+/** Leading marker for an open library selection (mode can be open with zero rows picked). */
+private const val ACTIVE = "1"
+
 // ---- selection ----
 
 internal fun encodeUriSet(selection: Set<Uri>): List<String> = selection.map(Uri::toString)
@@ -61,7 +64,7 @@ val UriSetStateSaver: Saver<Set<Uri>, Any> = listSaver(
  * overlap and what that would cost.
  */
 internal fun encodeLibrarySelection(selection: LibrarySelection): List<String> =
-    listOf(selection.section?.key ?: ABSENT) + selection.names
+    listOf(if (selection.active) ACTIVE else ABSENT, selection.section?.key ?: ABSENT) + selection.names
 
 /**
  * Falls back to [LibrarySelection.EMPTY] rather than throwing, on the same grounds as the delete
@@ -70,12 +73,14 @@ internal fun encodeLibrarySelection(selection: LibrarySelection): List<String> =
  * picked under a name we can no longer place, with a delete button above them.
  */
 internal fun decodeLibrarySelection(stored: List<String>): LibrarySelection {
-    val section = stored.firstOrNull()
+    // Selection mode can be open with zero rows picked (the "Deselect all" state), so the active
+    // flag is its own leading element rather than being inferred from a non-empty name set.
+    if (stored.firstOrNull() != ACTIVE) return LibrarySelection.EMPTY
+    val section = stored.getOrNull(1)
         ?.takeIf { it != ABSENT }
         ?.let { key -> HomeSection.entries.firstOrNull { it.key == key } }
         ?: return LibrarySelection.EMPTY
-    val names = stored.drop(1).toSet()
-    return if (names.isEmpty()) LibrarySelection.EMPTY else LibrarySelection(section, names)
+    return LibrarySelection(section, stored.drop(2).toSet(), active = true)
 }
 
 val LibrarySelectionStateSaver: Saver<LibrarySelection, Any> = listSaver(

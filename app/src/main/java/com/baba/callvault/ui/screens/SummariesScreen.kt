@@ -158,6 +158,18 @@ fun SummariesScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
+            // The "Select all" row, pinned at the top while selecting and hidden otherwise — sitting
+            // directly over the rows whose ticks it drives.
+            if (selection.active) {
+                item {
+                    LibrarySelectAllRow(
+                        allSelected = selection.allSelected,
+                        someSelected = selection.someSelected,
+                        selectedCount = selection.selected.size,
+                        onClick = selection.onSelectAll,
+                    )
+                }
+            }
             // The search line at the head of the list, as on the other two pages. Only once there
             // is something to search — on an empty page it would be a field that can only ever find
             // nothing.

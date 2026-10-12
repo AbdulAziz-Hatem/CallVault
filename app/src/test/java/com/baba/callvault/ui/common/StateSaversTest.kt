@@ -142,10 +142,23 @@ class StateSaversTest {
     @Test
     fun `a stored section key that no longer exists means nothing is selected`() {
         // A downgrade or a renamed section. Restoring rows picked under a page we can no longer
-        // place, with a delete button over them, is the outcome this refuses.
+        // place, with a delete button over them, is the outcome this refuses. ("1" = the active
+        // marker; the second element is the section key that fails to resolve.)
         assertEquals(
             LibrarySelection.EMPTY,
-            decodeLibrarySelection(listOf("no-such-section", "a.ogg"))
+            decodeLibrarySelection(listOf("1", "no-such-section", "a.ogg"))
         )
+    }
+
+    @Test
+    fun `an open selection with nothing picked round-trips as still open`() {
+        // The "Deselect all" state: selection mode is on with an empty set, so the active flag — not
+        // "the set is non-empty" — has to survive the round-trip, or a rotation would drop the bar.
+        val selection = LibrarySelection(
+            section = HomeSection.Transcripts,
+            names = emptySet(),
+            active = true,
+        )
+        assertEquals(selection, decodeLibrarySelection(encodeLibrarySelection(selection)))
     }
 }
