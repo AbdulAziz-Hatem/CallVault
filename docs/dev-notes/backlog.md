@@ -1361,7 +1361,29 @@ disappears entirely once long calls are transcribed in pieces, so weigh it again
 
 Related: the skip is deliberately *not* recorded as a failure, so nothing has to be un-marked later.
 
-### 🔴 Shell process left with the microphone on after a carrier call — reported 2026-08-25, UNDIAGNOSED
+### 🧪 Shell mic left on after a carrier call — DIAGNOSED + auto-heal shipped v2.3.0; awaiting a field confirmation (reported 2026-08-25)
+
+> **🧪 THE "UNDIAGNOSED" FRAMING BELOW IS STALE — corrected 2026-10-12.** The cause was found and three
+> fixes shipped; authoritative write-up: `docs/dev-notes/2026-09-05-stuck-mic-case-file.md`.
+> **Cause:** when AudioFlinger invalidates a handoff capture mid-call (`CBLK_INVALID`), the recording is
+> rebuilt whole but the shell-uid (2000) `RECORD_AUDIO` app-op from the *invalidated* capture keeps running —
+> dropping the last ref runs `releaseInput()` (clears the client) without `stopInput()`/`finishRecording()`,
+> so the green dot stays lit with nothing recording.
+> **Fixes (all in v2.3.0 → v2.4.5 and on `main`):**
+> (a) stop-before-release at call end — `HandoffReceiver.releaseRefs()` (`a5efcd8c`);
+> (b) stop the invalidated track before the mid-call rebuild — `HandoffReceiver.kt:430` (`9257efbc`) — correct
+> hygiene but proven **insufficient alone** (AudioFlinger accepts a stop on an already-invalidated track but
+> never finishes the op);
+> (c) **the reliable one — `MicOpAutoHeal`** (`32248851`, v2.3.0-rc20): 8 s after a call ends, reads the shell
+> uid's running mic ops via the daemon and, if one is running with nothing recording, restarts the daemon (the
+> keep-alive relaunches it) which clears the op. Wired at carrier end (`RecordingForegroundService.kt:599`) and
+> VoIP end (`VoipRecordingCoordinator.kt:756`).
+> **Why it stays 🧪, not ✅:** (1) no report has yet confirmed the auto-heal clearing a *genuinely* stuck dot —
+> only a no-regression pass (OP12, clean call → no spurious kill); (2) the `NO_WAY_BACK` gate (`MicOpHealPolicy`)
+> refuses to restart the daemon unless it can be relaunched (needs WD on, OR an armed offline-recording
+> loopback, OR WRITE_SECURE_SETTINGS + Wi-Fi) — the original reporter's config (WSS off, WD off) is exactly the
+> population left un-auto-cleared; (3) STANDALONE only — the Shizuku path is excluded by design. Settle this
+> with a stuck-dot report on an auto-heal-capable phone. Original 2026-08-25 investigation kept below.
 
 A user on **1.5.8** reported that after an ordinary carrier call (not VoIP) the shell process stayed
 alive with the microphone on. A force-stop cleared it; no reboot needed.
