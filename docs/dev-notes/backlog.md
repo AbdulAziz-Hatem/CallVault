@@ -129,9 +129,10 @@ section. The still-open requests are renumbered below.)*
 > full). `MergeService.merge` downloads any Drive-only part to a cache temp, joins, then deletes the temp
 > (visible phases: Downloading → Merging → Cleaning up → Done; two new strings × 13 locales). A merge still
 > consumes its parts' originals from local AND Drive (maintainer-confirmed acceptable 2026-10-12). Commit
-> `1d8eb92f`. **To verify on a phone (DRIVE storage):** two same-contact calls on Drive only → Merge → the
-> dialog now offers the other call, shows Downloading→Merging→Cleaning up, and produces one joined file on
-> Drive; also a local merge still works unchanged.
+> `1d8eb92f`. Installed on OP9 + OP12 2026-10-12; **maintainer is leaving final confirmation to real user
+> feedback** (not bench-tested further). **To settle (DRIVE storage):** two same-contact calls on Drive only
+> → Merge → the dialog offers the other call, shows Downloading→Merging→Cleaning up, produces one joined file
+> on Drive; a local merge still works unchanged.
 
 **Report:** two recordings with the same contact (one outgoing 09:40, one incoming 09:43, right after
 hanging up). "Merge with another call" on one said **"There are no other calls with this number on the
@@ -174,15 +175,13 @@ decision.
 
 ---
 
-## 🧪 App lock blocks screenshots — BUILT 2026-10-12 on `fix/drive-sidecars-merge-applock` (reported 2026-10-02)
+## ✅ App lock blocks screenshots — VERIFIED 2026-10-12 (maintainer, on device) — on `fix/drive-sidecars-merge-applock`, not merged
 
-> **🧪 BUILT (build + unit suite green; NOT device-confirmed):** chose the **"Allow screenshots" setting**
-> option. New toggle under the app lock, default **off** (today's secure behaviour unchanged), shown only
+> **✅ VERIFIED 2026-10-12 (maintainer: "app lock + screenshots work"):** chose the **"Allow screenshots"
+> setting**. New toggle under the app lock, default **off** (today's secure behaviour unchanged), shown only
 > while the lock is on; when on, `MainActivity`/`ShareImportActivity` clear `FLAG_SECURE` and
 > `applySecureFlag()` re-applies the instant it flips. Strings in all 13 locales. Commit `6e84d2fe`.
-> **To verify on a phone:** turn the app lock on → confirm a screenshot is blocked; turn "Allow screenshots"
-> on → confirm a screenshot now works (and the Recents thumbnail is no longer blurred); turn the lock off →
-> confirm the sub-row disappears and screenshots work.
+> Branch not merged yet (rides with the other two fixes); push/merge held.
 
 **Report (user):** when the app lock (fingerprint/biometric) is enabled, screenshots of the app can't be
 taken. From a user's perspective there's no reason it shouldn't work — treated as a bug.
@@ -325,6 +324,7 @@ generic readiness notice. Do NOT auto-re-assert `adb_enabled` — that starts a 
 > **To verify on a phone:** IMMEDIATE + DRIVE, with details-file and transcript-sidecar backups on → make a
 > call → confirm the audio, the `.json`, and (after transcription) the `.md` all appear in the Drive folder,
 > and nothing is orphaned on the device; delete a recording → confirm the `.json` goes too.
+> Installed on OP9 + OP12 2026-10-12; **maintainer is leaving final confirmation to real user feedback.**
 
 Sharp, code-level report (he read the tree at 9933d92). **All three claims verified in the current code:**
 
