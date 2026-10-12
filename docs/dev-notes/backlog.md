@@ -558,23 +558,24 @@ removes half of this on its own.
 
 ---
 
-## 🔵 Transcript reading: mirror176's design proposals from #27
+## 🧪 Transcript reading: mirror176's design proposals from #27 — two shipped on a branch 2026-10-12, two deferred
 
-Not defects. Recorded so they are not lost, and so the next person to open that screen sees them
-together rather than as four separate asks.
+> **🧪 BUILT 2026-10-12 on `feat/transcript-27-polish` (`2e6979e8`; not merged; build + full unit suite +
+> checkTranslations green; installed on OP9 + OP12).** Two of the four done; verify on device by opening a
+> transcript (header now shows number · date/time) and using the new **Sort** chip at the head of the
+> recordings filter row (Newest/Oldest/Name/Longest).
 
-- **Previous / next call from inside the transcript.** He reaches a transcript, reads it, and has to
-  go back out to reach the next call. If this is built, the order must follow the list's current sort
-  and filter, not the underlying unsorted order — otherwise "next" means something different from what
-  the screen shows.
-- **A transcript that is fullscreen all the time**, with the number, date and time in its header. He
-  argues the half-height state buys nothing once the header tells you whose call it is. Depends on the
-  height bug above being fixed first; they may turn out to be the same piece of work.
-- **A way to deselect a highlighted line.** Rotation jumps to the highlight, and with no way to clear
-  it, putting the phone down and picking it up at an angle throws away where you were reading. Two
-  parts: let a highlight be cleared, and prefer restoring the scroll position over jumping to it.
-- **Richer filtering and sorting of the call list**, which is what makes the prev/next ordering
-  question above real.
+- **Previous / next call from inside the transcript.** ❌ DEFERRED — medium effort; must follow the list's
+  current sort+filter order (now that a user-facing Sort exists, this can be built cleanly on top of it). He
+  reaches a transcript, reads it, and has to go back out to reach the next call.
+- **A transcript that is fullscreen all the time**, with the number, date and time in its header. ✅ DONE
+  (`2e6979e8`): the sheet was already near-full (`skipPartiallyExpanded`) and the height bug is fixed, and the
+  header now carries number · date/time (`TranscriptView` `subtitle`, fed from the catalog row in HomeScreen).
+- **A way to deselect a highlighted line.** ❌ DEFERRED — medium; two parts (clearable highlight + prefer
+  restoring scroll over jumping on rotation). The highlight is currently the playing line and always re-jumps.
+- **Richer filtering and sorting of the call list.** ✅ DONE (`2e6979e8`): filtering was already fully faceted;
+  added a Sort control (`RecordingSort` NEWEST/OLDEST/NAME/LONGEST on `HomeUiState` + a chip). This is what
+  makes the prev/next ordering question above real, so prev/next is the natural next step.
 
 ---
 
