@@ -385,10 +385,10 @@ recorded." (translated into all 13 locales); the card shows "Starting up…" **o
 grace (reuses the keep-alive's own translated wording), then flips to Ready on connect — a fast ~1s warm-up never
 shows it; Start warms the daemon in ~1s instead of ~60s; no false "call not recorded" and no VoIP prompt while Off.
 
-Branch `feat/recording-pause-stop`, local only — **push/merge held per maintainer**. Card wording and locales are
-done. The only open item is whether to fold in the honest live-probe status from
-[[hyperos-shizuku-recorder-death-research]] (the parked health-gated branch) for the residual sub-3s Start race —
-the 3s grace covers the visible case. Nothing ships until the maintainer says so.
+**Merged into `main` 2026-10-12** (no-ff, local only — **not yet pushed**, push held per maintainer). Card wording
+and locales are done. One optional open item remains: whether to fold in the honest live-probe status from
+[[hyperos-shizuku-recorder-death-research]] (parked on tag `parked/health-gated-recorder-status`) for the residual
+sub-3s Start race — the 3s grace already covers the visible case.
 
 ### 🅿️ alex_812 (a) — second line / call-waiting records into the first call's file
 "When using the second line, everything is recorded for the first call." Call-waiting = both cellular calls share
@@ -432,6 +432,31 @@ screenshot even shows Shizuku's card reading *"not running"* beside CallVault's 
 doze/screen-off kills it on its own). **Value:** this gives us a manual repro we can run on our own OP12
 (Shizuku mode → record → press X → does the status go honest or lie?) to verify items 1–3 below.
 **User fix for this trigger:** lock both cards in Recents (long-press card → 🔒 padlock) so the X skips them.
+
+**🧪 BUILT but NOT merged — code preserved on tag `parked/health-gated-recorder-status` (2026-10-07; branch deleted 2026-10-12). Awaiting maintainer sign-off + HyperOS field confirmation before it goes near main.**
+
+Why it is parked and not on main (maintainer bar 2026-10-12: *"merge only if we are positive it won't affect other people"*): (a) its whole reason to exist — the HyperOS "Active while dead" reconcile — has **never run on a real HyperOS device**; (b) it was built against pre-On/Off main and now needs a real re-merge against `HomeViewModel` (the On/Off STARTING logic touches the same `startListPass`/`RecorderConnection.isConnected`), so today's OP9 results no longer fully cover it; (c) it adds a ≤1.5s probe + possible rebind at Shizuku call-start, the exact path where short calls are already timing-tight ([[shizuku-scrcpy-coldstart-loses-short-calls]]). To resume: `git checkout -b feat/health-gated-recorder-status parked/health-gated-recorder-status`, re-merge onto current main, re-test on the OP9, and get a HyperOS user (UserZ/UserW) to run the clear-all repro.
+
+**On-device run on the OP9 (standalone/ColorOS, branch debug build installed over 2.4.5, same cert) — observed in logcat:**
+- timeout branch: froze the daemon (SIGSTOP) → `CV:RecorderConn: Recorder did not answer a liveness probe within 1500ms; leaving the binder in place` — bounded, no hang, keeps a slow (not dead) binder. ✓
+- happy path: healthy daemon on resume → 0 probe-failure logs, no false reconcile, list pass normal. ✓
+- normal death (`kill -9`) → `Daemon binder died; clearing RecorderConnection` → keep-alive relaunched (fresh pid) → `received daemon binder … alive=true`. Death/recovery intact. ✓
+- NOT provable on ColorOS: the HyperOS "binder nominally alive but host dead → RemoteException → reconcile" path (ColorOS fires linkToDeath normally) — unit-tested (`RecorderConnectionProbeTest`), awaits UserZ/UserW on HyperOS.
+
+- **Item 1 (honest liveness) — DONE.** `RecorderConnection.probeAlive()` (commit 390f480d): a bounded
+  `isRecording()` round-trip (not just `pingBinder`/`isBinderAlive`, which HyperOS leaves nominally alive over
+  a dead host); a definitive failure reconciles the stale binder (identity-guarded) and fires `onDeath`, a
+  timeout leaves it in place. Wired into `HomeViewModel.startListPass` so the card self-corrects on resume —
+  Shizuku mode → `SHIZUKU_NOT_READY`, standalone stays READY and keep-alive relaunches. Unit-tested
+  (`RecorderConnectionProbeTest`).
+- **Item 2 (rebind-at-call-start) — PARTLY DONE.** `ensureShizukuRunning` now gates reuse on `probeAlive()`
+  too (commit 31962311), so a dead-but-nominally-alive host falls through to a fresh bind instead of being
+  trusted. Also fixed a latent quirk: a dead-NODE binder made `retireIfStale` clear it yet return false,
+  which the gate read as "reuse" and returned true with a null `service`.
+- **Item 4 (version-mismatch self-heal) — ALREADY EXISTS on main:** `retireIfStale` → `retireShizukuService`.
+- **Item 2-warn + Item 3 (user-facing warn / self-clearing fault notification) — ❌ DROPPED 2026-10-07
+  (maintainer):** *"I only care about the auto-heal and not lying about status — adding another notification
+  when we have auto-heal is redundant."* The fix is Items 1+2 only. **Verify on the OP9, not the OP12 — the OP12 has no Shizuku.**
 
 **Proposed work (both modes; highest value first):**
 1. **Liveness, not a cached flag.** Gate "ready/active" on: live binder (binder-received/-dead listeners) **+
