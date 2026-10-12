@@ -109,13 +109,19 @@ section. The still-open requests are renumbered below.)*
    `READ_CALL_LOG`). Decisions: list design, correlation to recordings, and what a tap does.
 
 3. **"Select all" in multi-select mode (user request, 2026-10-04).**
-   > **🧪 BUILT 2026-10-12 on `feat/select-all-library` (not merged; build + full unit suite green):** a
-   > select-all⇄clear-all toggle in every page's selection app bar. "All" = the currently filtered/visible,
-   > *selectable* rows (Recordings = `filteredRecordings`; Transcripts/Summaries = the DONE rows via
-   > `Groups.selectableNames()`, matching the per-row toggle). `LibrarySelection.selectedAll` +
-   > `LibrarySelectionUi.onSelectAll/allSelected`; strings in 13 locales. Commit `40c1395b`. **Installed on
-   > OP9 + OP12 2026-10-12** (combined build; see note at end). Verify on device: enter selection mode on each
-   > library page and tap select-all / clear-all.
+   > **🧪 BUILT 2026-10-12 on `feat/select-all-library` (not merged; build + full unit suite green).**
+   > First cut was an app-bar select-all⇄clear icon (`40c1395b`); the maintainer found the lone icon
+   > unclear and picked **Option D** from the mockup (`claude.ai/artifact/NMc31h1BbJPGgZy8ERZTe6`):
+   > redesigned in `4e43c8c6` to a **"Select all" row pinned at the top of each list**, shown only while
+   > selecting, with a tri-state box (all / some / none → "Select all" ⇄ "Deselect all") that lines up over
+   > the per-row ticks. "All" = the currently filtered/visible *selectable* rows (Recordings =
+   > `filteredRecordings`; Transcripts/Summaries = DONE rows via `Groups.selectableNames()`).
+   > **Also fixed the reported bug:** deselect/clear no longer drops out of selection mode — the bar stays
+   > up at zero picked and only the back arrow leaves. `LibrarySelection` gained an `active` flag (restored
+   > with the set); recordings path gained `recordingsSelecting`; shared `LibrarySelectAllRow`; Share/Delete
+   > inert at zero picked. No new strings. **Installed on OP9 + OP12 2026-10-12** (combined build; see note at
+   > end). Verify on device: enter selection mode on each of the 3 lists → a "Select all" row appears at the
+   > top; tap it (fills all), tap again ("Deselect all" → 0 picked, bar stays), back arrow leaves.
 
    When a library page is in selection
    mode (the "N selected" app bar with share/delete), offer a one-tap *select all* so the user doesn't
@@ -1969,7 +1975,7 @@ debug build** off throwaway branch `build/install-combined-2026-10-12` = `main` 
 merged for a single APK (none merged into `main`):
 
 - `fix/drive-sidecars-merge-applock` — app-lock "Allow screenshots" (✅ VERIFIED 2026-10-12), #49 sidecars→Drive (🧪, APPROVED for next release 2026-10-12), Merge Drive-only (🧪).
-- `feat/select-all-library` — #1 select-all (🧪).
+- `feat/select-all-library` — #1 select-all, redesigned to the top-of-list "Select all" row (Option D, `4e43c8c6`) + deselect-keeps-mode fix (🧪). Combined build rebuilt + reinstalled on both phones 2026-10-12.
 - `fix/transcribe-again-done-only` — #4 drop "Transcribe again" on DONE (🧪).
 
 WRITE_SECURE_SETTINGS re-granted on both after install (`granted=true`); both recorders verified back up
