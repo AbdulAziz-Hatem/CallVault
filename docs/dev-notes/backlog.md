@@ -305,7 +305,14 @@ generic readiness notice. Do NOT auto-re-assert `adb_enabled` — that starts a 
 
 ---
 
-## 🐞 Issue #49 — sidecar files (.json details, .md transcript) never reach Drive with "Immediately" sync — reported 2026-10-10 (eduardozacour)
+## 🧪 Issue #49 — sidecar files (.json details, .md transcript) never reach Drive with "Immediately" sync — BUILT 2026-10-12 on `fix/drive-sidecars-merge-applock`, APPROVED for next release (reported 2026-10-10, eduardozacour)
+
+> **🧪 BUILT (commit `513933e0`); APPROVED for the next release 2026-10-12 — the maintainer accepts the risk
+> ("#49 will be merged and released as part of the new version and if there will be an issue we will address
+> it").** Not device-confirmed by us, so it stays 🧪 (not promoted to ✅) — the decision is to ship it and fix
+> forward if a user reports trouble, not that it was verified working. Installed in the combined build on
+> OP9 + OP12. Merge into `main` at release time (push/merge still held). The "fix direction" below is kept for
+> the rationale; it was implemented as described (see commit).
 
 Sharp, code-level report (he read the tree at 9933d92). **All three claims verified in the current code:**
 
@@ -321,10 +328,11 @@ Sharp, code-level report (he read the tree at 9933d92). **All three claims verif
    (`TranscriptSidecar.sidecarNameFor`) but NOT the `.json` details file (`RecordingsRepository.kt:368-382`
    matches only `displayName` or the transcript sidecar) → orphan `.json`.
 
-**Fix direction (not started):** in IMMEDIATE mode, route the sidecars too — either enqueue copies for the
-`.json` (at publish) and the `.md` (after transcription, which runs post-upload, so it needs its own trigger),
-or have the copy worker take the whole sibling set. And add the `.json` to the delete match in (4). He offered
-a PR. 🧪 build-reproducible from code; not device-confirmed by us.
+**Fix (implemented in `513933e0`):** in IMMEDIATE mode, route the sidecars too — the `.json` at carrier/VoIP
+publish and the `.md` after transcription (which runs post-upload, so it has its own trigger) via
+`StorageRouter.routeSidecar()`; `RecordingCopyWorker` gained `KEY_IS_SIDECAR` (skips `markDrive` + the error
+nag). The `.json` is now also matched in the delete cascade (4) via `MetadataSidecar.sidecarNameFor`.
+🧪 build-reproducible from code; not device-confirmed by us — shipping on the maintainer's accepted risk.
 
 ---
 
@@ -1137,9 +1145,12 @@ nothing yet — we have no `InCallService` declared, so there is nothing for Tel
 decisive test is a manifest entry plus an empty service: if Telecom binds it, E1 is worth building
 properly; if not, an hour was spent instead of days. **Do that before writing any of the feature.**
 
-### 🧪 Remove the "Transcribe again" button — BUILT 2026-10-12 on `fix/transcribe-again-done-only` (agreed 2026-08-29)
+### ✅ Remove the "Transcribe again" button — VERIFIED 2026-10-12 on `fix/transcribe-again-done-only` (agreed 2026-08-29)
 
-> **🧪 BUILT (not merged; build + full unit suite green):** the retranscribe button + `onRetranscribe`
+> **✅ VERIFIED 2026-10-12 on device by the maintainer ("#4 is fine").** Installed in the combined build
+> on OP9 + OP12. Not merged to `main` yet (push/merge held). Detail below kept for the rationale.
+>
+> **BUILT (build + full unit suite green):** the retranscribe button + `onRetranscribe`
 > param are gone from the reading view (the DONE case); `TranscriptAudio.retranscribeOffered` and its two
 > tests removed. A FAILED transcript keeps its retry on the Transcripts row (`onRetry -> startTranscription`),
 > so an undecodable one is never stranded — exactly the safeguard this item required. Commit `ef755692`.
@@ -1957,7 +1968,7 @@ Both OP9 (`daabf34f`, Shizuku mode) and OP12 (`6011b07e`, standalone — daily d
 debug build** off throwaway branch `build/install-combined-2026-10-12` = `main` + these three branches
 merged for a single APK (none merged into `main`):
 
-- `fix/drive-sidecars-merge-applock` — app-lock "Allow screenshots" (✅ VERIFIED 2026-10-12), #49 sidecars→Drive (🧪), Merge Drive-only (🧪).
+- `fix/drive-sidecars-merge-applock` — app-lock "Allow screenshots" (✅ VERIFIED 2026-10-12), #49 sidecars→Drive (🧪, APPROVED for next release 2026-10-12), Merge Drive-only (🧪).
 - `feat/select-all-library` — #1 select-all (🧪).
 - `fix/transcribe-again-done-only` — #4 drop "Transcribe again" on DONE (🧪).
 
