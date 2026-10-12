@@ -108,7 +108,14 @@ section. The still-open requests are renumbered below.)*
    recording (we already read the call log via `CallLogReader` for cut-off matching, and hold
    `READ_CALL_LOG`). Decisions: list design, correlation to recordings, and what a tap does.
 
-3. **"Select all" in multi-select mode (user request, 2026-10-04).** When a library page is in selection
+3. **"Select all" in multi-select mode (user request, 2026-10-04).**
+   > **🧪 BUILT 2026-10-12 on `feat/select-all-library` (not merged; build + full unit suite green):** a
+   > select-all⇄clear-all toggle in every page's selection app bar. "All" = the currently filtered/visible,
+   > *selectable* rows (Recordings = `filteredRecordings`; Transcripts/Summaries = the DONE rows via
+   > `Groups.selectableNames()`, matching the per-row toggle). `LibrarySelection.selectedAll` +
+   > `LibrarySelectionUi.onSelectAll/allSelected`; strings in 13 locales. Commit `40c1395b`. Verify on device.
+
+   When a library page is in selection
    mode (the "N selected" app bar with share/delete), offer a one-tap *select all* so the user doesn't
    have to tap every row — e.g. for a bulk delete. Small and additive: the selection state is
    `LibrarySelection` (section + `Set<String>` of names, `ui/navigation/LibrarySelection.kt`), so this is a
@@ -1129,7 +1136,12 @@ nothing yet — we have no `InCallService` declared, so there is nothing for Tel
 decisive test is a manifest entry plus an empty service: if Telecom binds it, E1 is worth building
 properly; if not, an hour was spent instead of days. **Do that before writing any of the feature.**
 
-### 🔵 Remove the "Transcribe again" button — agreed 2026-08-29
+### 🧪 Remove the "Transcribe again" button — BUILT 2026-10-12 on `fix/transcribe-again-done-only` (agreed 2026-08-29)
+
+> **🧪 BUILT (not merged; build + full unit suite green):** the retranscribe button + `onRetranscribe`
+> param are gone from the reading view (the DONE case); `TranscriptAudio.retranscribeOffered` and its two
+> tests removed. A FAILED transcript keeps its retry on the Transcripts row (`onRetry -> startTranscription`),
+> so an undecodable one is never stranded — exactly the safeguard this item required. Commit `ef755692`.
 
 Drop the retranscribe action from the transcript sheet before the release.
 
