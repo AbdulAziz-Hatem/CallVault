@@ -1361,10 +1361,14 @@ disappears entirely once long calls are transcribed in pieces, so weigh it again
 
 Related: the skip is deliberately *not* recorded as a failure, so nothing has to be un-marked later.
 
-### 🧪 Shell mic left on after a carrier call — DIAGNOSED + auto-heal shipped v2.3.0; awaiting a field confirmation (reported 2026-08-25)
+### ✅ Shell mic left on after a carrier call — CLOSED 2026-10-12 (maintainer, on field silence); auto-heal shipped v2.3.0 (reported 2026-08-25)
 
-> **🧪 THE "UNDIAGNOSED" FRAMING BELOW IS STALE — corrected 2026-10-12.** The cause was found and three
-> fixes shipped; authoritative write-up: `docs/dev-notes/2026-09-05-stuck-mic-case-file.md`.
+> **✅ CLOSED 2026-10-12 by the maintainer on field silence** — ~1 month since the fixes shipped (v2.3.0) with
+> no recurrence reported. Promoted on absence of reports, not a captured stuck-dot heal. **Residual gaps still
+> on the record:** the `NO_WAY_BACK` gate leaves a phone with WRITE_SECURE_SETTINGS off + Wireless-debugging off
+> and no armed loopback un-auto-cleared, and the Shizuku path is excluded by design — reopen with those in mind
+> if a stuck-dot report ever returns. The "UNDIAGNOSED" framing below was stale; authoritative write-up:
+> `docs/dev-notes/2026-09-05-stuck-mic-case-file.md`.
 > **Cause:** when AudioFlinger invalidates a handoff capture mid-call (`CBLK_INVALID`), the recording is
 > rebuilt whole but the shell-uid (2000) `RECORD_AUDIO` app-op from the *invalidated* capture keeps running —
 > dropping the last ref runs `releaseInput()` (clears the client) without `stopInput()`/`finishRecording()`,
