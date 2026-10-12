@@ -41,3 +41,14 @@ other party. After enabling it, place an app call and check that both sides are 
 
 (This was reported by a vivo user and matches how vivo's audio system works; if it does not resolve it on
 your vivo/iQOO model, please open an issue and say which model and OriginOS/Funtouch version you are on.)
+
+**If your Recorder app has no "In-app call recording" setting at all** (its Settings show only *About* and
+*Check for updates*), vivo has removed that feature from your phone's regional build. It is gated by region,
+not by OriginOS vs Funtouch — vivo ships it in some markets and strips it in others for legal reasons. On such
+a build the far party in app calls **cannot** be recorded by any app (confirmed: iQOO Z10x, OriginOS 6,
+Bangladesh — CallVault set up the capture correctly and vivo's audio system still returned silence for the
+other side, because the system switch that controls it is off and there is no toggle to turn it on). Your own
+voice, and normal carrier phone calls, still record. Note: the hidden dialer codes (e.g. `*#*#556688#*#*`) and
+"change region to enable call recording" guides you may find online unlock vivo's **phone-dialer** recording of
+*carrier* calls — which CallVault already does — not the in-app toggle that the other party in an app call
+needs, so they will not fix one-sided app-call recordings.
