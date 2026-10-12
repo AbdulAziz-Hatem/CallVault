@@ -229,7 +229,7 @@ Wi-Fi, turning Offline recording OFF stops the WD churn.
 
 ---
 
-## 🐞 + 🌐 Issue #46 — Greek: transcription comes out English, and a Greek UI translation offer (reported 2026-10-04)
+## 🧪 Issue #46 — Greek: transcription comes out English + a Greek UI translation offer — BUILT 2026-10-06 on `main` (reported 2026-10-04)
 
 > **🧪 BOTH BUILT 2026-10-06 (not yet confirmed), on `main`:** (1) the `el` transcription fix — `el` added to
 > `TranscriptionLanguageChoice.SUPPORTED` + a `transcription_language_greek` label in every locale
