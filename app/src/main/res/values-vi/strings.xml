@@ -579,6 +579,8 @@
     <string name="settings_app_lock_title">Yêu cầu mở khóa</string>
     <string name="settings_app_lock_description">Yêu cầu khóa màn hình trước khi hiện bản ghi và bản chép lời. Đồng thời ẩn chúng khỏi ảnh chụp màn hình và trình chuyển ứng dụng.</string>
     <string name="settings_app_lock_unavailable">Hãy đặt khóa màn hình trên điện thoại để dùng tính năng này.</string>
+    <string name="settings_allow_screenshots_title">Cho phép chụp màn hình</string>
+    <string name="settings_allow_screenshots_description">Cho phép bạn chụp màn hình CallVault. Điều này cũng hiển thị nội dung của ứng dụng trong trình chuyển đổi ứng dụng. Tắt sẽ giữ mọi thứ ẩn.</string>
     <string name="playback_tags_title">Thẻ</string>
     <string name="playback_tags_add">Thêm thẻ</string>
     <string name="playback_tags_remove">Xóa thẻ</string>

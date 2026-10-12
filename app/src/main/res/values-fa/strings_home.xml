@@ -223,6 +223,8 @@
     <string name="progress_closing_in">بسته شدن تا %1$d ثانیه</string>
     <string name="merge_progress_working">در حال پیوستن تماس‌ها</string>
     <string name="unmerge_progress_working">در حال جدا کردن تماس‌ها</string>
+    <string name="merge_progress_downloading">در حال دانلود از Drive</string>
+    <string name="merge_progress_cleaning_up">در حال پاک‌سازی</string>
     <string name="offline_failed_no_wifi">فعال نشد — به Wi-Fi متصل نیستید. یک بار به هر شبکه Wi-Fi متصل شوید، سپس دوباره تلاش کنید.</string>
     <string name="offline_failed_wd_refused">فعال نشد — Android اجازه اشکال‌زدایی بی‌سیم را روی این شبکه نداد. یک بار آن را در گزینه‌های توسعه‌دهنده روشن کنید، درخواست را بپذیرید، سپس دوباره تلاش کنید.</string>
     <string name="offline_failed_needs_usb">ابتدا اشکال‌زدایی USB را روشن کنید — ضبط بدون Wi-Fi بدون آن کار نمی‌کند. تنظیمات ▸ آزمایشی ▸ اشکال‌زدایی USB.</string>

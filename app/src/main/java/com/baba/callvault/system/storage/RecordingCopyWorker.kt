@@ -39,9 +39,10 @@ class RecordingCopyWorker(ctx: Context, params: WorkerParameters) : CoroutineWor
         val name = inputData.getString(KEY_NAME) ?: return Result.failure()
         val mime = inputData.getString(KEY_MIME) ?: DEFAULT_MIME
         val deleteLocal = inputData.getBoolean(KEY_DELETE_LOCAL, false)
+        val isSidecar = inputData.getBoolean(KEY_IS_SIDECAR, false)
 
         if (!SafHelper.isFolderValid(applicationContext, destFolder)) {
-            return giveUpOrRetry(name, "the Drive folder is not reachable or writable")
+            return giveUpOrRetry(name, "the Drive folder is not reachable or writable", isSidecar)
         }
 
         val srcSize = SafHelper.fileSize(applicationContext, src)
@@ -60,15 +61,15 @@ class RecordingCopyWorker(ctx: Context, params: WorkerParameters) : CoroutineWor
         return when (val result = SafHelper.copyFileToFolder(applicationContext, src, destFolder, name, mime, srcSize)) {
             is SafHelper.CopyResult.AlreadyPresent -> {
                 AppLogger.i(TAG, "'$name' is already in Drive; not uploading it again")
-                finish(name, result.uri, srcSize, deleteLocal, src)
+                finish(name, result.uri, srcSize, deleteLocal, src, isSidecar)
             }
 
             is SafHelper.CopyResult.Copied -> {
                 AppLogger.i(TAG, "Recording copied to Drive ('$name', ${result.bytes} bytes, deleteLocal=$deleteLocal)")
-                finish(name, result.uri, result.bytes, deleteLocal, src)
+                finish(name, result.uri, result.bytes, deleteLocal, src, isSidecar)
             }
 
-            is SafHelper.CopyResult.Failed -> giveUpOrRetry(name, result.reason)
+            is SafHelper.CopyResult.Failed -> giveUpOrRetry(name, result.reason, isSidecar)
         }
     }
 
@@ -78,14 +79,18 @@ class RecordingCopyWorker(ctx: Context, params: WorkerParameters) : CoroutineWor
         driveUri: Uri,
         sizeBytes: Long,
         deleteLocal: Boolean,
-        src: Uri
+        src: Uri,
+        isSidecar: Boolean
     ): Result {
         if (deleteLocal) {
             SafHelper.deleteDocument(DocumentFile.fromSingleUri(applicationContext, src), "the device copy of '$name'")
         }
-        // Stamp the Drive copy onto the catalog row (clearing the local copy when cloud-only deletes it),
-        // so the Home list reflects where the file now lives without re-scanning the Drive folder.
-        RecordingCatalog.markDrive(applicationContext, name, driveUri, sizeBytes.takeIf { it > 0L }, deleteLocal)
+        // A sidecar (.json/.md) has no catalog row of its own — it belongs to its recording, which was
+        // stamped when the audio uploaded — so there is nothing to mark. Only the audio copy updates the
+        // catalog, so the Home list reflects where the file now lives without re-scanning the Drive folder.
+        if (!isSidecar) {
+            RecordingCatalog.markDrive(applicationContext, name, driveUri, sizeBytes.takeIf { it > 0L }, deleteLocal)
+        }
         return Result.success()
     }
 
@@ -93,16 +98,20 @@ class RecordingCopyWorker(ctx: Context, params: WorkerParameters) : CoroutineWor
      * Asks for another retry while the budget lasts, and reports an honest failure once it is spent —
      * rather than retrying until the end of time, which is what filled Drive with duplicates.
      */
-    private fun giveUpOrRetry(name: String, reason: String): Result {
+    private fun giveUpOrRetry(name: String, reason: String, isSidecar: Boolean): Result {
         if (!CloudCopyPolicy.isLastAttempt(runAttemptCount)) {
             AppLogger.w(TAG, "Copy of '$name' to Drive failed ($reason); retrying (attempt ${runAttemptCount + 1})")
             return Result.retry()
         }
         AppLogger.e(TAG, "Giving up on copying '$name' to Drive after ${runAttemptCount + 1} attempts ($reason). The device copy is kept.")
-        runCatching {
-            RecordingNotificationHelper(applicationContext)
-                .showErrorNotification(applicationContext.getString(R.string.recording_error_drive_copy_failed))
-        }.onFailure { AppLogger.w(TAG, "Could not warn about the failed Drive copy: ${it.message}") }
+        // Only the audio copy is worth interrupting the user over. A sidecar that misses Drive is a
+        // details/transcript file whose recording is already backed up; log it and stay quiet.
+        if (!isSidecar) {
+            runCatching {
+                RecordingNotificationHelper(applicationContext)
+                    .showErrorNotification(applicationContext.getString(R.string.recording_error_drive_copy_failed))
+            }.onFailure { AppLogger.w(TAG, "Could not warn about the failed Drive copy: ${it.message}") }
+        }
         return Result.failure()
     }
 
@@ -114,5 +123,6 @@ class RecordingCopyWorker(ctx: Context, params: WorkerParameters) : CoroutineWor
         const val KEY_NAME = "displayName"
         const val KEY_MIME = "mimeType"
         const val KEY_DELETE_LOCAL = "deleteLocalAfter"
+        const val KEY_IS_SIDECAR = "isSidecar"
     }
 }

@@ -606,6 +606,8 @@
     <string name="settings_app_lock_title">تطلب إلغاء القفل</string>
     <string name="settings_app_lock_description">اطلب قفل شاشتك قبل عرض التسجيلات والنصوص. كما يحافظ عليها خارج لقطات الشاشة ومحول التطبيقات.</string>
     <string name="settings_app_lock_unavailable">قم بتعيين قفل شاشة على هاتفك لاستخدام هذا.</string>
+    <string name="settings_allow_screenshots_title">السماح بلقطات الشاشة</string>
+    <string name="settings_allow_screenshots_description">يتيح لك التقاط لقطات شاشة لـ CallVault. كما يُظهر محتواه في مبدّل التطبيقات. إيقافه يُبقي كل شيء مخفيًا.</string>
     <string name="playback_tags_title">العلامات</string>
     <string name="playback_tags_add">إضافة علامة</string>
     <string name="playback_tags_remove">إزالة العلامة</string>

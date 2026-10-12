@@ -32,18 +32,33 @@ object MergeCandidates {
     /**
      * The other calls with [primary]'s number that could continue it, newest first.
      *
-     * Filtered to what is actually on the phone: joining copies frame by frame needs the audio here,
-     * not in Drive. Unbounded by date on purpose — a cut-off can only ever hide the row someone came
-     * looking for.
+     * Drive-only calls ARE offered: a DRIVE-storage user has no local copy of any call (it is deleted
+     * after upload), so requiring the audio on the phone here hid every candidate and the dialog wrongly
+     * said "no other calls with this number". The merge itself downloads a Drive-only part before
+     * joining. Unbounded by date on purpose — a cut-off can only ever hide the row someone came looking for.
      */
     fun of(primary: RecordingItem, all: List<RecordingItem>): List<RecordingItem> {
         if (!canMerge(primary)) return emptyList()
-        val key = primary.contactName ?: primary.number ?: return emptyList()
+        val key = mergeKey(primary) ?: return emptyList()
         return all.filter { other ->
             other.displayName != primary.displayName &&
-                other.localUri != null &&
                 canMerge(other) &&
-                (other.contactName ?: other.number) == key
+                mergeKey(other) == key
         }
     }
+
+    /**
+     * The value two calls must share to be the same party. A contact name is used verbatim; otherwise
+     * the number is reduced to its last [TAIL_DIGITS] digits so an incoming "+35679…" and an outgoing
+     * "079…" to the same person match even when contact lookup missed and the raw strings differ. A
+     * short code (fewer than [TAIL_DIGITS] digits) must match in full. Mirrors ContactIgnoreRule.
+     */
+    private fun mergeKey(item: RecordingItem): String? {
+        item.contactName?.let { return it }
+        val digits = item.number?.filter { it.isDigit() }?.takeIf { it.isNotEmpty() } ?: return null
+        return if (digits.length >= TAIL_DIGITS) digits.takeLast(TAIL_DIGITS) else digits
+    }
+
+    /** Digits a subscriber number keeps across its national and international forms. */
+    private const val TAIL_DIGITS = 9
 }

@@ -201,6 +201,8 @@
     <string name="progress_closing_in">Si chiude tra %1$d s</string>
     <string name="merge_progress_working">Unione delle chiamate</string>
     <string name="unmerge_progress_working">Separazione delle chiamate</string>
+    <string name="merge_progress_downloading">Download da Drive</string>
+    <string name="merge_progress_cleaning_up">Pulizia in corso</string>
     <string name="whatsnew_220_body">Segna un momento mentre stai ancora parlando. Un pulsante sulla notifica della chiamata lascia un segnalibro esattamente dove lo premi, e la registrazione li mostra come chip che riproducono da quel punto, sia per le telefonate sia per le chiamate delle app. Le chiamate delle app ora hanno dei comandi: pausa, ripresa, stop e segna, mentre prima si potevano solo avviare e concludere.\n\nRitrovare una chiamata è più semplice: metti una stella su quelle che contano, etichettale con parole tue e cerca anche nei riepiloghi e nelle tue note, non solo in ciò che è stato detto. Le trascrizioni si esportano come testo, Markdown, SRT, VTT o JSON.\n\nCallVault avvisa anche quando ha smesso di funzionare in silenzio: se la registrazione non parte dopo un riavvio, o se le registrazioni non arrivano più su Drive. Prima entrambe le cose passavano inosservate. La nuova pulizia può limitare lo spazio occupato dalle registrazioni o scartare quelle molto brevi. È tutto disattivato per impostazione predefinita, e una registrazione con la stella non viene mai eliminata automaticamente.</string>
     <string name="whatsnew_220_title">Ritrova una chiamata e guidala mentre accade</string>
     <string name="whatsnew_220_where">Impostazioni ▸ Archiviazione ▸ Conservazione per le opzioni di pulizia</string>

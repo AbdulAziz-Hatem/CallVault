@@ -224,7 +224,10 @@ class ShareImportActivity : AppCompatActivity() {
      * legible in the app switcher has given away most of what the lock was for.
      */
     private fun applySecureFlag() {
-        if (AppLock.isEnabled(this)) {
+        // Mirrors MainActivity: honour the owner's "allow screenshots" choice so this brief screen does
+        // not stay locked down when they have opted out of the secure flag everywhere else.
+        val secure = AppLock.isEnabled(this) && !AppPreferences(this).isAllowScreenshots()
+        if (secure) {
             window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)

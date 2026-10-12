@@ -340,6 +340,7 @@ class AppPreferences(context: Context) {
         SPEAKER_MAP_OVERRIDE("speaker_map_override"),
         SPEAKER_MAP_CONFIRMED("speaker_map_confirmed"),
         APP_LOCK_ENABLED("app_lock_enabled"),
+        ALLOW_SCREENSHOTS("allow_screenshots"),
 
         // --- Retention ---
         RETENTION_LINKED("retention_linked"),
@@ -1091,6 +1092,19 @@ class AppPreferences(context: Context) {
     fun isAppLockEnabled(): Boolean = getBoolean(Key.APP_LOCK_ENABLED, false)
 
     fun setAppLockEnabled(enabled: Boolean) = setBoolean(Key.APP_LOCK_ENABLED, enabled)
+
+    /**
+     * Whether to allow screenshots (and the Recents thumbnail) while the app lock is on.
+     *
+     * Default false: with the lock on, [com.baba.callvault.MainActivity.applySecureFlag] sets
+     * `FLAG_SECURE`, which Android uses for both the screenshot block and the Recents blur — there is no
+     * way to keep one without the other. Turning this on clears the flag so the owner can screenshot
+     * their own app, at the cost of the Recents thumbnail no longer being hidden. Meaningless when the
+     * lock is off (the flag is never set then), so the UI only exposes it alongside the lock.
+     */
+    fun isAllowScreenshots(): Boolean = getBoolean(Key.ALLOW_SCREENSHOTS, false)
+
+    fun setAllowScreenshots(allow: Boolean) = setBoolean(Key.ALLOW_SCREENSHOTS, allow)
 
     // -------- Sync Schedule --------
 

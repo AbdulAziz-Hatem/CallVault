@@ -743,6 +743,11 @@ object VoipRecordingCoordinator {
                     }
                     AppLogger.i(TAG, "VoIP recording catalogued: $name ($size bytes)")
                     StorageRouter.route(context, safUri, name, codecMime)
+                    // Route the .json details to Drive too (issue #49). The sidecar was written just
+                    // above (686-699), so it exists by now. IMMEDIATE only; the sweep handles DAILY/WEEKLY;
+                    // no-op if the user did not ask for a details file. The .md transcript is routed later,
+                    // from the transcription-complete hook, since it does not exist yet.
+                    StorageRouter.routeSidecar(context, name, MetadataSidecar.sidecarNameFor(name), "application/json")
                 }.onFailure { AppLogger.e(TAG, "Cataloguing the VoIP recording failed: ${it.message}", it) }
             }
         }

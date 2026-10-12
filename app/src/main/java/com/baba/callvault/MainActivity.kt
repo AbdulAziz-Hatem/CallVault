@@ -239,8 +239,12 @@ class MainActivity : AppCompatActivity() {
      * as a thumbnail in the app switcher is not a lock, and nobody who wanted the first would decline
      * the second.
      */
-    private fun applySecureFlag() {
-        if (AppLock.isEnabled(this)) {
+    fun applySecureFlag() {
+        // The lock hides content from screenshots and the recents thumbnail — unless the owner has
+        // opted to allow screenshots of their own app, which clears the flag (and with it the recents
+        // blur, since Android ties the two together). With the lock off, the flag is never set.
+        val secure = AppLock.isEnabled(this) && !AppPreferences(this).isAllowScreenshots()
+        if (secure) {
             window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)

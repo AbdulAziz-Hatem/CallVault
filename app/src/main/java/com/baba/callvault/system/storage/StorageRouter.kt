@@ -10,6 +10,7 @@ package com.baba.callvault.system.storage
 
 import android.content.Context
 import android.net.Uri
+import androidx.documentfile.provider.DocumentFile
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.Data
@@ -66,5 +67,52 @@ object StorageRouter {
             .build()
         WorkManager.getInstance(context).enqueue(request)
         AppLogger.i(TAG, "Enqueued copy-to-Drive for '$displayName' (target=$target)")
+    }
+
+    /**
+     * Routes a recording's sidecar (the `.json` details file or the `.md` transcript) to Drive the same
+     * way [route] does the audio — but ONLY in [SyncScheduleMode.IMMEDIATE]. DAILY/WEEKLY already copy the
+     * whole folder in the scheduled sweep, so the sidecars ride along there; it is only IMMEDIATE that
+     * uploads the audio alone and would otherwise leave the sidecars behind (issue #49). Cloud-only
+     * deletes the local sidecar after upload, matching the audio, so a DRIVE user is not left with an
+     * orphan `.json`/`.md` next to a recording that is gone.
+     *
+     * [recordingName] is the audio's display name, used only for the import gate (a sidecar name is
+     * derived from it); [sidecarName] is the actual file to copy.
+     */
+    fun routeSidecar(context: Context, recordingName: String, sidecarName: String, mimeType: String) {
+        if (!CloudCopyPolicy.mayGoToCloud(recordingName)) return
+        val prefs = AppPreferences(context)
+        val target = prefs.getStorageTarget()
+        if (target == StorageTarget.LOCAL) return
+        if (prefs.getSyncScheduleMode() != SyncScheduleMode.IMMEDIATE) return // the sweep handles DAILY/WEEKLY
+        val driveFolder = prefs.getDriveFolderUri() ?: return
+        val recordingFolder = prefs.getRecordingFolderUri()
+        if (recordingFolder == null) {
+            AppLogger.w(TAG, "No recording folder; cannot find sidecar '$sidecarName' to copy to Drive.")
+            return
+        }
+        val sidecarUri = runCatching {
+            DocumentFile.fromTreeUri(context, recordingFolder)?.findFile(sidecarName)?.uri
+        }.getOrNull()
+        if (sidecarUri == null) {
+            AppLogger.w(TAG, "Sidecar '$sidecarName' not found in the recording folder; nothing to copy.")
+            return
+        }
+        val data = Data.Builder()
+            .putString(RecordingCopyWorker.KEY_SRC, sidecarUri.toString())
+            .putString(RecordingCopyWorker.KEY_DEST_FOLDER, driveFolder.toString())
+            .putString(RecordingCopyWorker.KEY_NAME, sidecarName)
+            .putString(RecordingCopyWorker.KEY_MIME, mimeType)
+            .putBoolean(RecordingCopyWorker.KEY_DELETE_LOCAL, target == StorageTarget.DRIVE)
+            .putBoolean(RecordingCopyWorker.KEY_IS_SIDECAR, true)
+            .build()
+        val request = OneTimeWorkRequestBuilder<RecordingCopyWorker>()
+            .setInputData(data)
+            .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+            .setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.SECONDS)
+            .build()
+        WorkManager.getInstance(context).enqueue(request)
+        AppLogger.i(TAG, "Enqueued sidecar copy-to-Drive for '$sidecarName' (target=$target)")
     }
 }

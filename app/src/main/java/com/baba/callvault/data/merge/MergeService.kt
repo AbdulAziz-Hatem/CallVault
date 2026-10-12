@@ -38,6 +38,10 @@ import java.io.FileInputStream
  * frames without re-encoding, so [unMerge] cuts them back out exactly. That is proven by
  * `MergeRoundTripTest`, and if that test ever fails this class must stop deleting.
  */
+/** The visible stages of a merge, surfaced to the progress dialog. Download/clean-up only appear
+ *  when a Drive-only part had to be pulled down first; a plain local merge goes straight to MERGING. */
+enum class MergePhase { DOWNLOADING, MERGING, DELETING_TEMP, COMPLETED }
+
 object MergeService {
 
     private const val TAG = "CV:Merge"
@@ -68,6 +72,8 @@ object MergeService {
         thenNames: List<String>,
         /** Called with each call's index as it is joined, for the progress dialog. */
         onPartProgress: (Int) -> Unit = {},
+        /** Called as the merge moves between phases (download → merge → clean up), for the progress dialog. */
+        onPhase: (MergePhase) -> Unit = {},
     ): Outcome {
         if (thenNames.isEmpty()) return Outcome.Refused("A merge needs at least two calls")
 
@@ -78,84 +84,137 @@ object MergeService {
         val entries = names.map { name ->
             db.recordingDao().findByName(name) ?: return Outcome.Failed("$name is not in the catalog")
         }
-        val sources = entries.map { entry ->
-            entry.localUri?.let(Uri::parse)
-                ?: return Outcome.Refused("${entry.displayName} is only in Drive; it must be on the phone to merge")
-        }
 
-        val folderUri = AppPreferences(context).getRecordingFolderUri()
-            ?: return Outcome.Failed("No recordings folder is set")
-        val extension = primaryName.substringAfterLast('.', "m4a")
-        val mime = mimeFor(extension)
-
-        // 1. Join into app-private staging. Nothing of the user's is touched yet.
-        val staged = SafHelper.createAudioFile(context, folderUri, primaryName, mime, recoverable = false)
-            ?: return Outcome.Failed("Could not open the recordings folder for writing")
-        val stagingFile = staged.stagingFile
-            ?: run {
-                runCatching { staged.descriptor.close() }
-                return Outcome.Failed("Expected a staged file to verify before deleting anything")
+        // Temp copies of any Drive-only parts, pulled down so the frame-copy join (which reads local
+        // file descriptors) can see them. Always cleaned up — on success as a visible step, on any
+        // failure in the finally below — so a merge never leaves downloads in the cache.
+        val tempFiles = mutableListOf<File>()
+        try {
+            // 0. Resolve each part to a local source. A Drive-only part is downloaded to a temp cache
+            //    file first; this is what lets a DRIVE-storage user merge at all (their local copies
+            //    were deleted after upload). The download phase is announced only when one is needed.
+            if (entries.any { it.localUri == null }) onPhase(MergePhase.DOWNLOADING)
+            val sources = entries.map { entry ->
+                entry.localUri?.let(Uri::parse) ?: run {
+                    val driveUri = entry.driveUri?.let(Uri::parse)
+                        ?: return Outcome.Refused("${entry.displayName} is not on the phone or in Drive")
+                    val temp = downloadToCache(context, driveUri, entry.displayName)
+                        ?: return Outcome.Failed("Couldn't download ${entry.displayName} from Drive — check your connection")
+                    tempFiles += temp
+                    Uri.fromFile(temp)
+                }
             }
 
-        val boundaries = try {
-            openAll(context, sources) { fds ->
-                AudioConcat.concat(fds, staged.descriptor.fileDescriptor, onPartProgress)
+            val folderUri = AppPreferences(context).getRecordingFolderUri()
+                ?: return Outcome.Failed("No recordings folder is set")
+            val extension = primaryName.substringAfterLast('.', "m4a")
+            val mime = mimeFor(extension)
+
+            // 1. Join into app-private staging. Nothing of the user's is touched yet.
+            onPhase(MergePhase.MERGING)
+            val staged = SafHelper.createAudioFile(context, folderUri, primaryName, mime, recoverable = false)
+                ?: return Outcome.Failed("Could not open the recordings folder for writing")
+            val stagingFile = staged.stagingFile
+                ?: run {
+                    runCatching { staged.descriptor.close() }
+                    return Outcome.Failed("Expected a staged file to verify before deleting anything")
+                }
+
+            val boundaries = try {
+                openAll(context, sources) { fds ->
+                    AudioConcat.concat(fds, staged.descriptor.fileDescriptor, onPartProgress)
+                }
+            } catch (e: MergeFormat.Incompatible) {
+                cleanUp(staged.descriptor, stagingFile)
+                return Outcome.Refused(e.message ?: "These calls were not recorded the same way")
+            } catch (e: Exception) {
+                AppLogger.e(TAG, "Joining failed", e)
+                cleanUp(staged.descriptor, stagingFile)
+                return Outcome.Failed(e.message ?: "The recordings could not be joined")
             }
-        } catch (e: MergeFormat.Incompatible) {
-            cleanUp(staged.descriptor, stagingFile)
-            return Outcome.Refused(e.message ?: "These calls were not recorded the same way")
-        } catch (e: Exception) {
-            AppLogger.e(TAG, "Joining failed", e)
-            cleanUp(staged.descriptor, stagingFile)
-            return Outcome.Failed(e.message ?: "The recordings could not be joined")
-        }
-        runCatching { staged.descriptor.close() }
+            runCatching { staged.descriptor.close() }
 
-        // 2. VERIFY the staged file before anything is deleted.
-        val expected = boundaries.sumOf { it.frameCount }
-        val actual = runCatching {
-            FileInputStream(stagingFile).use { MergeFormat.frameCount(it.fd) }
-        }.getOrElse { e ->
-            AppLogger.e(TAG, "Could not re-open the merged file to verify it", e)
+            // 2. VERIFY the staged file before anything is deleted.
+            val expected = boundaries.sumOf { it.frameCount }
+            val actual = runCatching {
+                FileInputStream(stagingFile).use { MergeFormat.frameCount(it.fd) }
+            }.getOrElse { e ->
+                AppLogger.e(TAG, "Could not re-open the merged file to verify it", e)
+                stagingFile.delete()
+                return Outcome.Failed("The merged recording could not be read back")
+            }
+            if (actual != expected) {
+                AppLogger.e(TAG, "Verification failed: expected $expected frames, read $actual. Nothing deleted.")
+                stagingFile.delete()
+                return Outcome.Failed("The merged recording was incomplete, so nothing was changed")
+            }
+
+            // 3. Flatten the manifest. A part that was itself merged contributes its own parts, never
+            //    itself, so un-merge is always one level and partName always names an original call.
+            val manifest = flatten(context, entries, boundaries)
+
+            // 4. Only now is it safe to remove what the user had. removeEverywhere drops both the local
+            //    and the Drive copy of each consumed part — a Drive-only part's Drive original is
+            //    replaced by the merged file, same as a local merge replaces the local originals.
+            val keepOriginals = AppPreferences(context).isKeepOriginalsAfterMerge()
+            if (!keepOriginals) entries.forEach { removeEverywhere(context, it) }
+
+            // 5. Publish. With the originals gone the primary's name is free again, which is what makes
+            //    the merged recording read as that conversation continued rather than as a new one.
+            val mergedName = freeName(context, primaryName)
+            val published = SafHelper.publishStagedRecording(context, folderUri, mergedName, mime, stagingFile)
+                ?: return Outcome.Failed("The merged recording could not be saved to your folder")
             stagingFile.delete()
-            return Outcome.Failed("The merged recording could not be read back")
+
+            val size = SafHelper.fileSize(context, published)
+            RecordingCatalog.recordLocal(
+                context, mergedName, published, size,
+                entries.first().lastModified.takeIf { it > 0 } ?: System.currentTimeMillis()
+            )
+            RecordingCatalog.setDuration(context, mergedName, boundaries.sumOf { it.durationUs } / 1_000_000L)
+            // Same reason as on the way back: the merged recording is a new file, and the parts' Drive
+            // copies were just deleted, so without this a library kept in Drive loses the conversation.
+            StorageRouter.route(context, published, mergedName, mime)
+            val stamped = manifest.map { it.copy(mergedName = mergedName) }
+            db.mergePartDao().insertAll(stamped)
+            MergeMetadata.onMerge(context, mergedName, stamped)
+
+            // 6. The merge is done; clean up the downloads as a visible step before reporting success.
+            if (tempFiles.isNotEmpty()) {
+                onPhase(MergePhase.DELETING_TEMP)
+                tempFiles.forEach { runCatching { it.delete() } }
+                tempFiles.clear()
+            }
+            onPhase(MergePhase.COMPLETED)
+
+            AppLogger.i(TAG, "Merged ${names.size} calls into $mergedName (${manifest.size} parts, $actual frames)")
+            return Outcome.Merged(mergedName, manifest.size)
+        } finally {
+            // Anything still here means we left on an error path — never keep orphaned downloads.
+            tempFiles.forEach { runCatching { it.delete() } }
         }
-        if (actual != expected) {
-            AppLogger.e(TAG, "Verification failed: expected $expected frames, read $actual. Nothing deleted.")
-            stagingFile.delete()
-            return Outcome.Failed("The merged recording was incomplete, so nothing was changed")
+    }
+
+    /**
+     * Pulls a Drive-only recording down to an app-private cache file so the frame-copy join can read
+     * it by file descriptor. Returns null (not throwing) on any read/write failure — offline, a gone
+     * Drive file — so the caller can report an honest "couldn't download" rather than crash the merge.
+     */
+    private fun downloadToCache(context: Context, driveUri: Uri, displayName: String): File? = runCatching {
+        val dir = File(context.cacheDir, "merge-temp").apply { mkdirs() }
+        // Unique per attempt so two merges of the same call cannot collide on the cache file.
+        val temp = File(dir, "${System.nanoTime()}-$displayName")
+        context.contentResolver.openInputStream(driveUri)?.use { input ->
+            temp.outputStream().use { output -> input.copyTo(output) }
+        } ?: return null
+        if (temp.length() <= 0L) {
+            temp.delete()
+            return null
         }
-
-        // 3. Flatten the manifest. A part that was itself merged contributes its own parts, never
-        //    itself, so un-merge is always one level and partName always names an original call.
-        val manifest = flatten(context, entries, boundaries)
-
-        // 4. Only now is it safe to remove what the user had.
-        val keepOriginals = AppPreferences(context).isKeepOriginalsAfterMerge()
-        if (!keepOriginals) entries.forEach { removeEverywhere(context, it) }
-
-        // 5. Publish. With the originals gone the primary's name is free again, which is what makes
-        //    the merged recording read as that conversation continued rather than as a new one.
-        val mergedName = freeName(context, primaryName)
-        val published = SafHelper.publishStagedRecording(context, folderUri, mergedName, mime, stagingFile)
-            ?: return Outcome.Failed("The merged recording could not be saved to your folder")
-        stagingFile.delete()
-
-        val size = SafHelper.fileSize(context, published)
-        RecordingCatalog.recordLocal(
-            context, mergedName, published, size,
-            entries.first().lastModified.takeIf { it > 0 } ?: System.currentTimeMillis()
-        )
-        RecordingCatalog.setDuration(context, mergedName, boundaries.sumOf { it.durationUs } / 1_000_000L)
-        // Same reason as on the way back: the merged recording is a new file, and the parts' Drive
-        // copies were just deleted, so without this a library kept in Drive loses the conversation.
-        StorageRouter.route(context, published, mergedName, mime)
-        val stamped = manifest.map { it.copy(mergedName = mergedName) }
-        db.mergePartDao().insertAll(stamped)
-        MergeMetadata.onMerge(context, mergedName, stamped)
-
-        AppLogger.i(TAG, "Merged ${names.size} calls into $mergedName (${manifest.size} parts, $actual frames)")
-        return Outcome.Merged(mergedName, manifest.size)
+        temp
+    }.getOrElse { e ->
+        AppLogger.w(TAG, "Could not download '$displayName' from Drive for merge: ${e.message}")
+        null
     }
 
     /**

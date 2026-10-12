@@ -201,6 +201,8 @@
     <string name="progress_closing_in">Fecha em %1$d s</string>
     <string name="merge_progress_working">Juntando as chamadas</string>
     <string name="unmerge_progress_working">Separando as chamadas</string>
+    <string name="merge_progress_downloading">Baixando do Drive</string>
+    <string name="merge_progress_cleaning_up">Limpando</string>
     <string name="whatsnew_220_body">Marque um momento enquanto ainda está falando. Um botão na notificação da chamada deixa um marcador exatamente onde você toca, e a gravação os mostra como fichas que tocam a partir dali — tanto em ligações telefônicas quanto de aplicativos. Chamadas de aplicativos agora têm controles: pausar, retomar, parar e marcar, quando antes só era possível começar e terminar.\n\nEncontrar uma ligação ficou mais fácil: marque com estrela as que valem a pena, rotule com suas próprias palavras e pesquise também nos resumos e nas suas notas, não apenas no que foi dito. As transcrições são exportadas como texto, Markdown, SRT, VTT ou JSON.\n\nO CallVault também avisa quando parou de funcionar em silêncio — se a gravação não iniciar após reiniciar, ou se as gravações deixarem de chegar ao Drive. Antes, os dois casos eram silenciosos. A nova limpeza pode limitar o espaço ocupado pelas gravações ou descartar as muito curtas. Tudo vem desativado, e uma gravação com estrela nunca é excluída automaticamente.</string>
     <string name="whatsnew_220_title">Encontre uma ligação de novo e conduza uma enquanto acontece</string>
     <string name="whatsnew_220_where">Configurações ▸ Armazenamento ▸ Retenção para as opções de limpeza</string>

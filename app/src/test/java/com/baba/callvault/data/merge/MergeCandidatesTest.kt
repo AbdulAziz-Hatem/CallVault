@@ -58,9 +58,35 @@ class MergeCandidatesTest {
     }
 
     @Test
-    fun `a copy only in Drive is not, because the join needs the audio here`() {
+    fun `a copy only in Drive IS offered now — the merge downloads it before joining`() {
+        // Was excluded while merge needed local audio; a DRIVE-storage user has no local copy of any
+        // call, so that rule hid every candidate (issue #49 sibling). The merge now pulls it down first.
         val inDriveOnly = call("20260916_101500.123+0300_out_5551234.ogg", "5551234", onDevice = false)
-        assertTrue(MergeCandidates.of(first, listOf(first, inDriveOnly)).isEmpty())
+        assertEquals(
+            listOf(inDriveOnly.displayName),
+            MergeCandidates.of(first, listOf(first, inDriveOnly)).map { it.displayName }
+        )
+    }
+
+    @Test
+    fun `the same party matches across national and international number formats`() {
+        // Contact lookup missed on both, so the raw numbers differ by country-code/leading-zero; the
+        // last-nine-digit key still recognises them as one person. Previously these would not merge.
+        val intl = call("20260916_101010.123+0300_in_356791234567.ogg", "+356791234567")
+        val natl = call("20260916_101500.123+0300_out_0791234567.ogg", "0791234567")
+        assertEquals(
+            listOf(natl.displayName),
+            MergeCandidates.of(intl, listOf(intl, natl)).map { it.displayName }
+        )
+    }
+
+    @Test
+    fun `short codes must match in full, not on a shared tail`() {
+        // Fewer than nine digits means an exact compare — two different short codes are two different
+        // parties even if they share trailing digits, so they are never offered to merge together.
+        val a = call("20260916_101010.123+0300_in_800.ogg", "800")
+        val b = call("20260916_101500.123+0300_out_4800.ogg", "4800")
+        assertTrue(MergeCandidates.of(a, listOf(a, b)).isEmpty())
     }
 
     @Test

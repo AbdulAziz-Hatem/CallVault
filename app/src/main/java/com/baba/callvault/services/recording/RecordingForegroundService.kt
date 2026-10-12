@@ -743,6 +743,14 @@ class RecordingForegroundService : Service() {
             // name, after any call-log rename: a sidecar written against the pre-rename name would
             // sit beside nothing and be invisible to every tool that looks for it.
             writeMetadataSidecar(name, lastModified, "com.android.phone")
+            // Route the .json details to Drive too (issue #49). Must be here, after the write above,
+            // because the audio's StorageRouter.route runs synchronously below while this coroutine is
+            // still going — routing the sidecar from there could fire before the file exists. In
+            // IMMEDIATE mode only; DAILY/WEEKLY copy it in the folder sweep. No-op if the user did not
+            // ask for a details file (nothing to find).
+            StorageRouter.routeSidecar(
+                applicationContext, name, MetadataSidecar.sidecarNameFor(name), "application/json"
+            )
             // Marks are keyed to the FINAL name, for the same reason the sidecar is: an anonymous
             // number gets renamed from the call log after the call, and rows written mid-call would
             // point at a recording that no longer exists.

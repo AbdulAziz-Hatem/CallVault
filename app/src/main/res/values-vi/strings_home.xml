@@ -201,6 +201,8 @@
     <string name="progress_closing_in">Đóng sau %1$d giây</string>
     <string name="merge_progress_working">Đang ghép các cuộc gọi</string>
     <string name="unmerge_progress_working">Đang tách các cuộc gọi</string>
+    <string name="merge_progress_downloading">Đang tải xuống từ Drive</string>
+    <string name="merge_progress_cleaning_up">Đang dọn dẹp</string>
     <string name="whatsnew_220_body">Đánh dấu một khoảnh khắc ngay khi bạn còn đang nói. Một nút trên thông báo cuộc gọi đặt dấu trang đúng chỗ bạn nhấn, và bản ghi hiển thị chúng thành các thẻ phát từ đó — với cả cuộc gọi điện thoại lẫn cuộc gọi trong ứng dụng. Cuộc gọi trong ứng dụng giờ đã có nút điều khiển: tạm dừng, tiếp tục, dừng và đánh dấu, trước đây chỉ có thể bắt đầu và kết thúc.\n\nTìm lại một cuộc gọi dễ hơn: gắn sao cho những cuộc đáng giữ, gắn nhãn bằng từ ngữ của riêng bạn, và tìm kiếm cả trong bản tóm tắt lẫn ghi chú của bạn chứ không chỉ những gì đã nói. Bản ghi lời xuất ra dạng văn bản, Markdown, SRT, VTT hoặc JSON.\n\nCallVault cũng lên tiếng khi nó âm thầm ngừng hoạt động — nếu ghi âm không khởi động sau khi khởi động lại máy, hoặc bản ghi không còn đến được Drive. Trước đây cả hai đều im lặng. Tính năng dọn dẹp mới có thể giới hạn dung lượng bản ghi chiếm hoặc bỏ đi những bản rất ngắn. Tất cả đều tắt mặc định, và bản ghi đã gắn sao không bao giờ bị xoá tự động.</string>
     <string name="whatsnew_220_title">Tìm lại một cuộc gọi, và điều khiển nó ngay khi đang diễn ra</string>
     <string name="whatsnew_220_where">Cài đặt ▸ Lưu trữ ▸ Thời gian giữ để xem các tùy chọn dọn dẹp</string>
