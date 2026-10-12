@@ -562,8 +562,8 @@ removes half of this on its own.
 
 > **✅ VERIFIED 2026-10-12 on device (OP9) — the maintainer delegated the on-device test ("you can test this
 > yourself … generate fake calls, transcribe them and test"); done with generated BCR-named calls + a
-> contact-matched call.** On `feat/transcript-27-polish` (`2e6979e8` + `ab9d67a4`); build + full unit suite +
-> checkTranslations green; not merged yet.
+> contact-matched call.** Merged into `main` 2026-10-12 (`6b67bbcf`; code `2e6979e8` + `ab9d67a4`); build +
+> full unit suite + checkTranslations green. (`main` is still local — nothing pushed.)
 > - **Header number/date/time:** opened a transcribed call's reading view → header read **"Alice Tester" /
 >   "+15551230002 · 2026-07-11 14:30"** (the number shows only when a contact name resolves — gated on
 >   `contactName`, after a bidi-isolate dup bug was caught and fixed in `ab9d67a4`).
