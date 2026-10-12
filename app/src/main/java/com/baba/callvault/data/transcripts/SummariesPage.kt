@@ -67,6 +67,13 @@ object SummariesPage {
         val isEmpty: Boolean get() = working.isEmpty() && failed.isEmpty() && ready.isEmpty()
 
         /**
+         * The rows a "select all" may pick: the stored ([ready]) summaries only — the same rows that
+         * render a selection toggle (working and failed summaries are display-only), so select-all can
+         * never pick something the user could not pick by hand.
+         */
+        fun selectableNames(): Set<String> = ready.toSet()
+
+        /**
          * The groups as the search line shows them: only the stored summaries named in [names], in
          * their order. A summary being written has no words yet, so a search shows none of those.
          */

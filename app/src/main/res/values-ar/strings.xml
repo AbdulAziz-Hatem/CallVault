@@ -374,6 +374,8 @@
     <string name="home_share_chooser">مشاركة التسجيل</string>
     <string name="home_row_menu">المزيد من الخيارات</string>
     <string name="home_delete">حذف</string>
+    <string name="selection_select_all">تحديد الكل</string>
+    <string name="selection_clear_all">مسح التحديد</string>
     <string name="home_delete_confirm_title">حذف التسجيل؟</string>
     <string name="home_delete_confirm_message">سيؤدي هذا إلى حذف %1$s بشكل دائم.</string>
     <string name="home_delete_scope_message">تم حفظ هذا التسجيل على هذا الجهاز وفي Drive.</string>

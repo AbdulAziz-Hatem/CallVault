@@ -20,20 +20,26 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TriStateCheckbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.baba.callvault.R
 import com.baba.callvault.data.recordings.RecordingsRepository.RecordingItem
 import com.baba.callvault.data.transcripts.PageSearch
 import com.baba.callvault.data.transcripts.db.RecordingLabelEntry
@@ -222,6 +228,68 @@ private fun SelectionTick(selected: Boolean) {
                else MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier.size(22.dp),
     )
+}
+
+/**
+ * The "Select all" row, pinned at the top of a library list while selecting.
+ *
+ * Shown only in selection mode — the caller gates it. Replaces the old app-bar select-all icon, which
+ * read as just one more unlabelled action beside Share and Delete. Its tri-state box lines up with the
+ * per-row ticks directly beneath it: filled when every visible selectable row is picked, a dash when
+ * some are, empty when none. A tap picks them all; a tap when all are already picked clears the
+ * selection but **stays in selection mode** (only the back arrow leaves).
+ *
+ * Shared by all three lists so the recordings, transcripts and summaries pages cannot drift apart on
+ * what it says or how it behaves.
+ */
+@Composable
+internal fun LibrarySelectAllRow(
+    allSelected: Boolean,
+    someSelected: Boolean,
+    selectedCount: Int,
+    onClick: () -> Unit,
+) {
+    CvCard(
+        onClick = onClick,
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(
+                        if (allSelected) R.string.selection_clear_all else R.string.selection_select_all
+                    ),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                if (selectedCount > 0) {
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        text = pluralStringResource(
+                            R.plurals.home_selected_count, selectedCount, selectedCount
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            Spacer(Modifier.width(12.dp))
+            Box(modifier = Modifier.size(TRAILING_SLOT), contentAlignment = Alignment.Center) {
+                TriStateCheckbox(
+                    state = when {
+                        allSelected -> ToggleableState.On
+                        someSelected -> ToggleableState.Indeterminate
+                        else -> ToggleableState.Off
+                    },
+                    // The CvCard owns the tap; the box only shows state. Stated primary tint, not a
+                    // role that resolves to CoralDeep in this theme.
+                    onClick = null,
+                    colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary),
+                )
+            }
+        }
+    }
 }
 
 /** Says what would put something here, rather than only that there is nothing. */

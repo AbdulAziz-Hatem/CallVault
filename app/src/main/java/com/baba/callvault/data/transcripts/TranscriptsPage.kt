@@ -55,6 +55,13 @@ object TranscriptsPage {
             get() = working.isEmpty() && failed.isEmpty() && ready.isEmpty() && waiting.isEmpty()
 
         /**
+         * The rows a "select all" may pick: the DONE ([ready]) transcripts only. It matches the rows
+         * that render a selection toggle — a working, failed or waiting row has no selectable line — so
+         * select-all can never pick something the user could not pick by hand.
+         */
+        fun selectableNames(): Set<String> = ready.mapTo(mutableSetOf()) { it.displayName }
+
+        /**
          * The groups as the search line shows them: only the readable transcripts named in [names],
          * in their order. The other groups have no words to search yet, so a search shows none of
          * them — a row with nothing in it that could have matched is not a result.

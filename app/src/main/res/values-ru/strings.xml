@@ -66,6 +66,8 @@
     <string name="home_bulk_delete_scope_label">Какие копии удалить</string>
     <string name="home_bulk_delete_scope_message">Некоторые сохранены и на устройстве, и в Диске.</string>
     <string name="home_delete">Удалить</string>
+    <string name="selection_select_all">Выбрать все</string>
+    <string name="selection_clear_all">Очистить выбор</string>
     <string name="home_delete_confirm_message">Это безвозвратно удалит «%1$s».</string>
     <string name="home_delete_confirm_title">Удалить запись?</string>
     <string name="home_delete_scope_message">Эта запись сохранена на этом устройстве и в Drive.</string>

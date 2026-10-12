@@ -31,6 +31,12 @@ class LibrarySelectionTest {
     }
 
     @Test
+    fun selection_mode_is_closed_to_begin_with() {
+        assertFalse(LibrarySelection.EMPTY.active)
+        assertFalse(LibrarySelection.EMPTY.activeOn(HomeSection.Transcripts))
+    }
+
+    @Test
     fun a_row_picked_on_transcripts_is_selected_there() {
         val selection = LibrarySelection.EMPTY.toggled(HomeSection.Transcripts, "a.ogg")
         assertEquals(setOf("a.ogg"), selection.on(HomeSection.Transcripts))
@@ -66,15 +72,43 @@ class LibrarySelectionTest {
     }
 
     @Test
-    fun deselecting_the_last_row_leaves_selection_mode_entirely() {
-        // One representation of "nothing selected", so selection mode ends the same way wherever it
-        // ends — including when it ends by un-picking rather than by backing out.
+    fun deselecting_the_last_row_keeps_selection_mode_open() {
+        // The maintainer's rule (2026-10-12): clearing a selection — by un-picking the last row, or
+        // by the "Deselect all" row — must NOT drop out of selection mode. The bar stays up at zero
+        // picked; only the back arrow leaves (which sets EMPTY). So the section and the active flag
+        // survive an empty name set.
         val selection = LibrarySelection.EMPTY
             .toggled(HomeSection.Transcripts, "a.ogg")
             .toggled(HomeSection.Transcripts, "a.ogg")
 
-        assertEquals(LibrarySelection.EMPTY, selection)
-        assertNull(selection.section)
+        assertTrue(selection.names.isEmpty())
+        assertTrue(selection.active)
+        assertEquals(HomeSection.Transcripts, selection.section)
+        assertTrue(selection.activeOn(HomeSection.Transcripts))
+        // Still gated by page: the other library is not in selection mode.
+        assertFalse(selection.activeOn(HomeSection.Summaries))
+    }
+
+    @Test
+    fun select_all_then_deselect_all_stays_in_mode() {
+        val all = LibrarySelection.EMPTY.selectedAll(HomeSection.Summaries, setOf("a", "b", "c"))
+        assertEquals(setOf("a", "b", "c"), all.on(HomeSection.Summaries))
+        assertTrue(all.activeOn(HomeSection.Summaries))
+
+        // Empty names is the "Deselect all" action: cleared, but the mode stays open on the page.
+        val cleared = all.selectedAll(HomeSection.Summaries, emptySet())
+        assertTrue(cleared.names.isEmpty())
+        assertTrue(cleared.active)
+        assertTrue(cleared.activeOn(HomeSection.Summaries))
+    }
+
+    @Test
+    fun backing_out_is_the_only_thing_that_closes_selection_mode() {
+        val selection = LibrarySelection.EMPTY.toggled(HomeSection.Transcripts, "a.ogg")
+        assertTrue(selection.active)
+
+        // The back arrow / clearSelection sets EMPTY — the one representation of "mode closed".
+        assertFalse(LibrarySelection.EMPTY.active)
     }
 
     @Test

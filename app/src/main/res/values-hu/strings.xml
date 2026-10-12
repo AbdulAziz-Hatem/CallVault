@@ -66,6 +66,8 @@
     <string name="home_bulk_delete_scope_label">Törlendő másolatok</string>
     <string name="home_bulk_delete_scope_message">Néhány ezen az eszközön és a Drive-ban is el van mentve.</string>
     <string name="home_delete">Törlés</string>
+    <string name="selection_select_all">Összes kijelölése</string>
+    <string name="selection_clear_all">Kijelölés törlése</string>
     <string name="home_delete_confirm_message">Ez véglegesen törli a következőt: %1$s.</string>
     <string name="home_delete_confirm_title">Törli a felvételt?</string>
     <string name="home_delete_scope_message">Ez a felvétel ezen az eszközön és a Drive-ban is el van mentve.</string>
