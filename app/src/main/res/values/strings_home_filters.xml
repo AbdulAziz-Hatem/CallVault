@@ -8,6 +8,13 @@
   -->
 <resources>
 
+    <!-- Sort order (chip label + options). %1$s = current value shown on the chip. -->
+    <string name="home_sort_chip">Sort: %1$s</string>
+    <string name="home_sort_newest">Newest</string>
+    <string name="home_sort_oldest">Oldest</string>
+    <string name="home_sort_name">Name A–Z</string>
+    <string name="home_sort_longest">Longest</string>
+
     <!-- Source facet (chip label + options). %1$s = current value shown on the chip. -->
     <string name="home_filter_source_label">Source</string>
     <string name="home_filter_source_chip">Source: %1$s</string>

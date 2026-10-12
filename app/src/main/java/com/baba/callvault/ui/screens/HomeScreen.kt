@@ -221,6 +221,7 @@ import com.baba.callvault.ui.navigation.LibrarySelection
 import com.baba.callvault.ui.theme.LocalCvBrand
 import com.baba.callvault.ui.viewmodels.HomeViewModel
 import com.baba.callvault.ui.viewmodels.HomeViewModel.DirectionFilter
+import com.baba.callvault.ui.viewmodels.HomeViewModel.RecordingSort
 import com.baba.callvault.ui.viewmodels.HomeViewModel.SourceFilter
 import com.baba.callvault.ui.viewmodels.RecordingPlaybackController
 import kotlinx.coroutines.delay
@@ -1301,7 +1302,9 @@ fun HomeScreen(
                         onFavouritesOnlyChange = { viewModel.setFavouritesOnly(it) },
                         onSourceFilterChange = { viewModel.setSourceFilter(it) },
                         onDirectionFilterChange = { viewModel.setDirectionFilter(it) },
-                        onDateFilterChange = { viewModel.setDateFilter(it) }
+                        onDateFilterChange = { viewModel.setDateFilter(it) },
+                        sortOrder = uiState.sortOrder,
+                        onSortChange = { viewModel.setSortOrder(it) },
                     )
                 }
             }
@@ -1594,6 +1597,18 @@ fun HomeScreen(
         // across three lines, where the row that opened it said "PTT-20260916-WA0007".
         val title = RecordingLabel.of(row) ?: RecordingLabel.forName(displayName)
 
+        // #27: a second header line that names WHICH call this is — the number (only when the title
+        // is a resolved CONTACT name, so the number is useful extra info rather than a repeat of the
+        // title) and the date/time. Gated on contactName, not a string compare against the title: the
+        // title is bidi-isolated, so "number != title" would never match and would print it twice.
+        // Null for an import or a transcript whose catalog row is gone, so the header stays the title.
+        val headerSubtitle = row?.let { r ->
+            listOfNotNull(
+                r.number?.takeIf { it.isNotBlank() && r.contactName != null },
+                r.displayDate,
+            ).joinToString(" · ").ifBlank { null }
+        }
+
         // Re-read whenever a transcript is opened rather than held for the life of the screen: the
         // mapping is learned in the background from calls that happen while the app is running, and
         // it can be un-learned by deleting the calls that taught it.
@@ -1649,6 +1664,7 @@ fun HomeScreen(
             transcript = transcript,
             isTranscriptSettled = read is TranscriptRepository.TranscriptRead.Read,
             title = title,
+            subtitle = headerSubtitle,
             presentation = if (readingPresentation) TranscriptPresentation.Screen
                            else TranscriptPresentation.Sheet,
             summaryFirst = readingPresentation && readingFromSummary,
@@ -2562,8 +2578,19 @@ private fun RecordingFilterBar(
     onFavouritesOnlyChange: (Boolean) -> Unit,
     onSourceFilterChange: (SourceFilter) -> Unit,
     onDirectionFilterChange: (DirectionFilter) -> Unit,
-    onDateFilterChange: (String?) -> Unit
+    onDateFilterChange: (String?) -> Unit,
+    sortOrder: RecordingSort,
+    onSortChange: (RecordingSort) -> Unit,
 ) {
+    // Sort options + current value label. First in the row because it reorders the whole list rather
+    // than narrowing it; active (tinted) whenever it is not the default newest-first.
+    val sortOptions = listOf(
+        FilterOption(RecordingSort.NEWEST, stringResource(R.string.home_sort_newest)),
+        FilterOption(RecordingSort.OLDEST, stringResource(R.string.home_sort_oldest)),
+        FilterOption(RecordingSort.NAME, stringResource(R.string.home_sort_name)),
+        FilterOption(RecordingSort.LONGEST, stringResource(R.string.home_sort_longest)),
+    )
+    val sortValueLabel = sortOptions.first { it.value == sortOrder }.label
     // Source facet options + current value label.
     val sourceOptions = listOf(
         FilterOption(SourceFilter.ALL, stringResource(R.string.home_filter_source_all)),
@@ -2613,6 +2640,13 @@ private fun RecordingFilterBar(
                 onToggle = { onFavouritesOnlyChange(!favouritesOnly) }
             )
         }
+        FilterChip(
+            text = stringResource(R.string.home_sort_chip, sortValueLabel),
+            active = sortOrder != RecordingSort.NEWEST,
+            options = sortOptions,
+            selected = sortOrder,
+            onSelected = onSortChange
+        )
         FilterChip(
             text = stringResource(R.string.home_filter_source_chip, sourceValueLabel),
             active = sourceFilter != SourceFilter.ALL,

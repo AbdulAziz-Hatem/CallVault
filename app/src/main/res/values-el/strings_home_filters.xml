@@ -52,4 +52,11 @@
     <string name="home_filter_tag_all">Όλες οι ετικέτες</string>
     <string name="home_filter_tag_all_short">Όλες</string>
 
+    <!-- Sort order (chip label + options). %1$s = current value shown on the chip. -->
+    <string name="home_sort_chip">Ταξινόμηση: %1$s</string>
+    <string name="home_sort_newest">Νεότερα</string>
+    <string name="home_sort_oldest">Παλαιότερα</string>
+    <string name="home_sort_name">Όνομα Α–Ω</string>
+    <string name="home_sort_longest">Μεγαλύτερα</string>
+
 </resources>

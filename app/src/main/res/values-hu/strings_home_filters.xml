@@ -31,4 +31,11 @@
     <string name="home_filter_tag_all">Összes címke</string>
     <string name="home_filter_tag_all_short">Összes</string>
 
+    <!-- Sort order (chip label + options). %1$s = current value shown on the chip. -->
+    <string name="home_sort_chip">Rendezés: %1$s</string>
+    <string name="home_sort_newest">Legújabb</string>
+    <string name="home_sort_oldest">Legrégebbi</string>
+    <string name="home_sort_name">Név A–Z</string>
+    <string name="home_sort_longest">Leghosszabb</string>
+
 </resources>
