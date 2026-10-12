@@ -1598,11 +1598,13 @@ fun HomeScreen(
         val title = RecordingLabel.of(row) ?: RecordingLabel.forName(displayName)
 
         // #27: a second header line that names WHICH call this is — the number (only when the title
-        // is a contact name, not already the number) and the date/time. Null for an import or a
-        // transcript whose catalog row is gone, which have neither, so the header stays just the title.
+        // is a resolved CONTACT name, so the number is useful extra info rather than a repeat of the
+        // title) and the date/time. Gated on contactName, not a string compare against the title: the
+        // title is bidi-isolated, so "number != title" would never match and would print it twice.
+        // Null for an import or a transcript whose catalog row is gone, so the header stays the title.
         val headerSubtitle = row?.let { r ->
             listOfNotNull(
-                r.number?.takeIf { it.isNotBlank() && it != title },
+                r.number?.takeIf { it.isNotBlank() && r.contactName != null },
                 r.displayDate,
             ).joinToString(" · ").ifBlank { null }
         }
