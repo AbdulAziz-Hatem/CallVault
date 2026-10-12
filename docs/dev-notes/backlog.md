@@ -526,7 +526,11 @@ The batch shipped in 2.4.4 (pulled) → 2.4.5; the shipped pieces are in **Compl
 
 ---
 
-## 🐞 The transcript sheet's height follows its content — one line explains most of #27's follow-up
+## ✅ The transcript sheet's height follows its content — FIXED + shipped in 2.3.0 (#27)
+
+> **✅ DONE (commit `830459f9`, shipped 2.3.0):** `TranscriptView.kt` now uses `Modifier.weight(1f)` (fill
+> = true) — verified in code 2026-10-12. The same commit also fixed the delete-confirmation half below
+> ("a cancelled delete puts it back"). Kept for the record; no longer open.
 
 **Read from source on 2026-09-07, not measured.** `TranscriptSheet.kt:201`:
 
