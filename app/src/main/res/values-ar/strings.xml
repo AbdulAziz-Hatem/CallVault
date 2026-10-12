@@ -758,4 +758,13 @@
     <string name="update_popup_text">يتوفر إصدار جديد جاهز للتثبيت. يحافظ التحديث على موثوقية التسجيل ويجلب أحدث الإصلاحات.</string>
     <string name="update_popup_update_now">التحديث الآن</string>
     <string name="update_popup_later">لاحقًا</string>
+    <!-- Master recording On/Off switch -->
+    <string name="home_status_stopped_title">تم إيقاف التسجيل</string>
+    <string name="home_status_stopped_suggestion">‏CallVault متوقّف، لن يتم تسجيل المكالمات.</string>
+    <string name="home_hero_pill_stopped">متوقّف</string>
+    <string name="home_recording_stop">إيقاف</string>
+    <string name="home_recording_start">تشغيل</string>
+    <string name="tile_recording_on">التسجيل مُفعّل</string>
+    <string name="tile_recording_stopped">متوقّف</string>
+    <string name="home_hero_pill_starting">جارٍ التشغيل…</string>
 </resources>

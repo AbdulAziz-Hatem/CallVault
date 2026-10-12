@@ -170,6 +170,9 @@ class AppPreferences(context: Context) {
         val SYNC_SCHEDULE_MODE = SyncScheduleMode.IMMEDIATE.key
         const val SYNC_TIME_HOUR = 2          // 0-23
         const val SYNC_TIME_MINUTE = 0        // 0-59
+
+        // Master recording switch (layered on top of the per-type carrier/VoIP settings). ACTIVE = record.
+        val RECORDING_STATE = RecordingState.ACTIVE.key
         const val SYNC_DAY_OF_WEEK = 2        // java.util.Calendar: SUNDAY=1..SATURDAY=7 (2 = Monday)
 
         // --- Transcription (on-device speech to text) ---
@@ -309,6 +312,9 @@ class AppPreferences(context: Context) {
         // --- Storage Routing ---
         STORAGE_TARGET("storage_target"),
         DRIVE_FOLDER_URI("drive_folder_uri"),
+
+        // --- Master recording switch ---
+        RECORDING_STATE("recording_state"),
 
         // --- Sync Schedule ---
         SYNC_SCHEDULE_MODE("sync_schedule_mode"),
@@ -1093,6 +1099,12 @@ class AppPreferences(context: Context) {
 
     /** Sets the cloud sync cadence. */
     fun setSyncScheduleMode(mode: SyncScheduleMode) = setString(Key.SYNC_SCHEDULE_MODE, mode.key)
+
+    /** The master recording On/Off switch (ACTIVE / STOPPED). Survives a reboot. */
+    fun getRecordingState(): RecordingState = RecordingState.fromKey(getString(Key.RECORDING_STATE, DefaultsValue.RECORDING_STATE))
+
+    /** Sets the master recording switch. */
+    fun setRecordingState(state: RecordingState) = setString(Key.RECORDING_STATE, state.key)
 
     /** Gets the scheduled sweep hour (0-23) for Daily/Weekly modes. */
     fun getSyncTimeHour() = getInt(Key.SYNC_TIME_HOUR, DefaultsValue.SYNC_TIME_HOUR)

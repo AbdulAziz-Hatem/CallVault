@@ -514,6 +514,14 @@
     <string name="home_status_update_regrant_suggestion">An update removed a permission CallVault needs to restart recording. It may still work for now — tap here, then turn Wireless debugging on once to restore it. No reinstall needed.</string>
     <string name="home_status_ready_title">Ready to record</string>
     <string name="home_status_ready_suggestion">CallVault records calls automatically per your settings.</string>
+    <string name="home_status_stopped_title">Recording stopped</string>
+    <string name="home_status_stopped_suggestion">CallVault is turned off, calls will not be recorded.</string>
+    <string name="home_hero_pill_stopped">Stopped</string>
+    <string name="home_hero_pill_starting">Starting…</string>
+    <string name="home_recording_stop">Stop</string>
+    <string name="home_recording_start">Start</string>
+    <string name="tile_recording_on">Recording on</string>
+    <string name="tile_recording_stopped">Stopped</string>
 
     <!-- Home: recordings list -->
     <string name="home_recordings_title">Recordings</string>

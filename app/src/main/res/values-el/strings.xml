@@ -872,4 +872,13 @@
     <string name="update_popup_text">Μια νέα έκδοση είναι έτοιμη για εγκατάσταση. Η ενημέρωση διατηρεί την εγγραφή αξιόπιστη και φέρνει τις τελευταίες διορθώσεις.</string>
     <string name="update_popup_update_now">Ενημέρωση τώρα</string>
     <string name="update_popup_later">Αργότερα</string>
+    <!-- Master recording On/Off switch -->
+    <string name="home_status_stopped_title">Η εγγραφή διακόπηκε</string>
+    <string name="home_status_stopped_suggestion">Το CallVault είναι απενεργοποιημένο, οι κλήσεις δεν θα καταγράφονται.</string>
+    <string name="home_hero_pill_stopped">Διακόπηκε</string>
+    <string name="home_recording_stop">Διακοπή</string>
+    <string name="home_recording_start">Έναρξη</string>
+    <string name="tile_recording_on">Εγγραφή ενεργή</string>
+    <string name="tile_recording_stopped">Διακόπηκε</string>
+    <string name="home_hero_pill_starting">Εκκίνηση…</string>
 </resources>

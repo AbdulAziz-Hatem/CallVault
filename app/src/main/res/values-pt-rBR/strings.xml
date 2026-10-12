@@ -721,4 +721,13 @@
     <string name="update_popup_text">Uma nova versão está pronta para instalar. Atualizar mantém a gravação confiável e traz as últimas correções.</string>
     <string name="update_popup_update_now">Atualizar agora</string>
     <string name="update_popup_later">Depois</string>
+    <!-- Master recording On/Off switch -->
+    <string name="home_status_stopped_title">Gravação interrompida</string>
+    <string name="home_status_stopped_suggestion">O CallVault está desligado, as chamadas não serão gravadas.</string>
+    <string name="home_hero_pill_stopped">Interrompido</string>
+    <string name="home_recording_stop">Parar</string>
+    <string name="home_recording_start">Iniciar</string>
+    <string name="tile_recording_on">Gravação ativada</string>
+    <string name="tile_recording_stopped">Interrompido</string>
+    <string name="home_hero_pill_starting">Iniciando…</string>
 </resources>

@@ -333,37 +333,62 @@ calls to short-code `800` entered standby but never started (record-from-answer;
 calls are captured. Shizuku's scrcpy latency is inherent; on a slow device + short calls it loses the opening.
 (Possible in-app: in Shizuku mode skip the doomed direct attempt and/or keep scrcpy warm in standby — not started.)
 
-### 🔵 foxcam — one-click GLOBAL ON/OFF (carrier **and** VoIP) — clarified 2026-10-10
+### ✅ foxcam — one-click GLOBAL ON/OFF (carrier **and** VoIP) — VERIFIED 2026-10-11 (standalone + Shizuku); not merged
 The existing master switch (`carrier_recording_enabled`, Settings "Record phone calls") is **carrier-only** — it
-does NOT cover VoIP. foxcam wants a single toggle that stops/starts **everything** (carrier + VoIP) in one tap.
-**Design — agreed 2026-10-10 (maintainer): a 3-state recording control, both "depths" of off, layered on top of
-the existing per-type switches (so resume/start restore the user's carrier/VoIP settings, never clobber them):**
-- **ACTIVE** — daemon up, recording armed (today's normal).
-- **PAUSED** (pause/un-pause) — logical gate only: daemon stays warm, both `CallSessionManager` (carrier) and the
-  VoIP arming path early-return. Instant resume; persistent notification stays.
-- **STOPPED** (stop/start) — physical teardown: stop the daemon + `DaemonKeepAliveService` (so the keep-alive
-  notification goes away [[keep-alive-notification-cannot-be-hidden]]); in Shizuku mode, unbind the user service.
-  Start = cold-start back to ACTIVE. Covers carrier **and** VoIP.
+does NOT cover VoIP. foxcam wanted a single toggle that stops/starts **everything** (carrier + VoIP) in one tap.
 
-Transitions = the maintainer's "pause/un-pause + stop/start": Pause ACTIVE→PAUSED, Resume PAUSED→ACTIVE, Stop
-(ACTIVE|PAUSED)→STOPPED, Start STOPPED→ACTIVE. Persisted as one `recording_state` pref.
+**Shipped shape — a single On/Off master switch** (`recording_state` pref = ACTIVE/STOPPED), layered on top of the
+per-type switches so turning it back on restores the user's carrier/VoIP settings, never clobbers them:
+- **ACTIVE (on)** — daemon up, recording armed (today's normal).
+- **STOPPED (off)** — physical teardown: stop the daemon + `DaemonKeepAliveService` (so the keep-alive notification
+  goes away [[keep-alive-notification-cannot-be-hidden]]); in Shizuku mode, unbind the user service; `ensureRunning`
+  no-ops so NO proactive path (app start, boot, warmup) resurrects it. Start = cold-start back to ACTIVE
+  (standalone ~a few s, up to ~30s right after a reboot). Covers carrier **and** VoIP.
 
-**Surface:** the "Ready to record" home card shows the state + the relevant action(s) (Ready → Pause/Stop;
-Paused → Resume/Stop; Stopped → Start). Plus a **Quick Settings tile** for true one-tap-from-the-shade
-(no `TileService` in the tree today).
+**Pause was tried and dropped (maintainer, 2026-10-11).** A warm PAUSED state was built first (3-state:
+ACTIVE/PAUSED/STOPPED), but on-device testing showed entering Pause and Stop are indistinguishable to the user —
+both take effect instantly, since the pref flip is what gates recording and the daemon work is background. Pause's
+only real difference (instant, notification-kept resume) was too narrow for a third state and keeping a persistent
+notification contradicted the "stop the app" ask. Collapsed to On/Off in commit `1105e48e`.
 
-**Decisions — maintainer, 2026-10-10:**
-1. **Mid-call = finish current, apply to next.** A recording already running completes normally; Pause/Stop takes
-   effect from the next call. Non-destructive — never cut a live recording.
-2. **Survive reboot = YES.** The persisted `recording_state` wins: the boot receiver / keep-alive must respect
-   PAUSED/STOPPED and NOT auto-resurrect the daemon until the user taps Resume/Start (ties to
-   [[reboot-deadlock-wd-off-by-user]] — add a state check to the boot/keep-alive start path).
-3. **QS tile = cycles all three** (Active→Paused→Stopped→Active), one control for everything.
+**Surface:** the "Ready to record" home card shows the state + one action (on → **Stop**; off → **Start**). Plus a
+**Quick Settings tile** toggling the two from the shade.
 
-**Build shape (not started):** `recording_state` pref (ACTIVE/PAUSED/STOPPED) + a small controller; gate
-`CallSessionManager.evaluateAndStartService` + VoIP arming on it; Stop path tears down daemon + keep-alive (and
-Shizuku unbind) and the boot path honours it; home-card new states + actions; `TileService` cycling the three.
-Branch it; nothing ships until on-device confirmed.
+**Decisions — maintainer:**
+1. **Mid-call = finish current, apply to next.** A recording already running completes normally; Stop takes effect
+   from the next call. Non-destructive — never cut a live recording.
+2. **Survive reboot = YES.** The persisted `recording_state` wins: `DaemonKeepAliveService.start` AND
+   `RecorderBackend.ensureRunning` both honour STOPPED, so boot/launch/update/Settings do not resurrect the daemon
+   until the user taps Start (ties to [[reboot-deadlock-wd-off-by-user]]).
+3. **QS tile = toggles the two** (On⇄Off).
+
+**Also fixed (same branch), from the maintainer's on-device testing 2026-10-11:**
+- A call made while OFF no longer raises a "call not recorded" card/notification — it was a deliberate skip, not a
+  miss. Carrier: the status-card sweep ANDs gap detection with the master switch (commit `54fb47b4`, same pattern it
+  already used for the per-direction carrier toggle). VoIP: `reportMissed` stays quiet when the switch is off, and
+  the VoIP "Ask me" prompt is no longer raised when OFF (commit `fc586ed6`).
+- **Start warmed the daemon only on the keep-alive watchdog's next cycle** — 60s poll × 2-down debounce = ~60s
+  before the recorder actually came up, so a call right after Start (esp. VoIP, which cannot arm late) was missed
+  while the card already read "Ready". Fixed (commit `9a759ec7`): `bringUp` launches the recorder synchronously via
+  `ensureRunning` for both backends and re-posts the keep-alive notification once it is up. Measured: daemon + VoIP
+  armed ~1s after Start.
+
+**Status — ✅ VERIFIED 2026-10-11 (maintainer, OP9 standalone) for the core On/Off:** Off skips the call (carrier +
+VoIP, no false "not recorded"); On returns to ready instantly and a call made quickly afterwards **recorded**. Also
+exercised: card shows one button per state, Stop removes notif 4720, STOPPED survives relaunch and reboot.
+✅ Shizuku mode VERIFIED 2026-10-11 too (maintainer, real call on the OP9): switched to Shizuku, Stop retires the
+`com.baba.callvault:recorder` service, Start re-binds it ~1s, card shows "· Shizuku", and a real call recorded. NB:
+VoIP is unsupported in Shizuku by design (scrcpy capture) — carrier only there.
+
+Delivered in this round and VERIFIED on the OP9: Off wording is "CallVault is turned off, calls will not be
+recorded." (translated into all 13 locales); the card shows "Starting up…" **only** when warm-up runs past a 3s
+grace (reuses the keep-alive's own translated wording), then flips to Ready on connect — a fast ~1s warm-up never
+shows it; Start warms the daemon in ~1s instead of ~60s; no false "call not recorded" and no VoIP prompt while Off.
+
+Branch `feat/recording-pause-stop`, local only — **push/merge held per maintainer**. Card wording and locales are
+done. The only open item is whether to fold in the honest live-probe status from
+[[hyperos-shizuku-recorder-death-research]] (the parked health-gated branch) for the residual sub-3s Start race —
+the 3s grace covers the visible case. Nothing ships until the maintainer says so.
 
 ### 🅿️ alex_812 (a) — second line / call-waiting records into the first call's file
 "When using the second line, everything is recorded for the first call." Call-waiting = both cellular calls share

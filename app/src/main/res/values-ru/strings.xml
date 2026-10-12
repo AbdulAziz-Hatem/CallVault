@@ -720,4 +720,13 @@
     <string name="update_popup_text">Новая версия готова к установке. Обновление сохраняет надёжность записи и приносит последние исправления.</string>
     <string name="update_popup_update_now">Обновить сейчас</string>
     <string name="update_popup_later">Позже</string>
+    <!-- Master recording On/Off switch -->
+    <string name="home_status_stopped_title">Запись остановлена</string>
+    <string name="home_status_stopped_suggestion">CallVault выключен, звонки не будут записываться.</string>
+    <string name="home_hero_pill_stopped">Остановлено</string>
+    <string name="home_recording_stop">Остановить</string>
+    <string name="home_recording_start">Запустить</string>
+    <string name="tile_recording_on">Запись включена</string>
+    <string name="tile_recording_stopped">Остановлено</string>
+    <string name="home_hero_pill_starting">Запуск…</string>
 </resources>

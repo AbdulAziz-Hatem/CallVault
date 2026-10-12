@@ -717,4 +717,13 @@
     <string name="update_popup_text">新版本已可安装。更新可保持录音稳定并带来最新修复。</string>
     <string name="update_popup_update_now">立即更新</string>
     <string name="update_popup_later">稍后</string>
+    <!-- Master recording On/Off switch -->
+    <string name="home_status_stopped_title">录音已停止</string>
+    <string name="home_status_stopped_suggestion">CallVault 已关闭，通话将不会被录音。</string>
+    <string name="home_hero_pill_stopped">已停止</string>
+    <string name="home_recording_stop">停止</string>
+    <string name="home_recording_start">开始</string>
+    <string name="tile_recording_on">录音已开启</string>
+    <string name="tile_recording_stopped">已停止</string>
+    <string name="home_hero_pill_starting">正在启动…</string>
 </resources>

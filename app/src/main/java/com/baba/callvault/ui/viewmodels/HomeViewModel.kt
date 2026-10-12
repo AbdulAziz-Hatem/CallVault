@@ -11,6 +11,8 @@ package com.baba.callvault.ui.viewmodels
 import android.app.Application
 import android.media.AudioManager
 import android.net.Uri
+import android.os.SystemClock
+import com.baba.callvault.server.RecorderConnection
 import androidx.annotation.StringRes
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,7 +29,9 @@ import com.baba.callvault.data.health.SetupFingerprint
 import com.baba.callvault.data.health.SetupHealth
 import com.baba.callvault.data.health.SetupHealthDeriver
 import com.baba.callvault.data.health.SetupHealthStore
+import com.baba.callvault.data.RecordingState
 import com.baba.callvault.services.recording.DaemonKeepAliveService
+import com.baba.callvault.services.recording.RecordingSwitch
 import com.baba.callvault.services.recording.RecordingPolicy
 import com.baba.callvault.data.health.Prerequisite
 import com.baba.callvault.data.health.SetupPrerequisites
@@ -110,6 +114,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         UPDATE_REGRANT_NEEDED(R.string.home_status_update_regrant_title, R.string.home_status_update_regrant_suggestion),
         SHIZUKU_NOT_READY(R.string.home_status_shizuku_title, R.string.home_status_shizuku_suggestion),
         RECOVERY_STUCK(R.string.home_status_recovery_stuck_title, R.string.home_status_recovery_stuck_suggestion),
+        /** The user turned recording off (master switch). Daemon is torn down until they turn it back on. */
+        STOPPED(R.string.home_status_stopped_title, R.string.home_status_stopped_suggestion),
+        /**
+         * Recording was just turned on and the recorder has not finished warming up. Only shown when the
+         * warm-up runs past the grace ([STARTING_GRACE_MS]); a fast warm-up (~1s) goes straight to READY,
+         * so this never flashes for the common case. Reuses the keep-alive notification's own wording.
+         */
+        STARTING(R.string.notif_readiness_starting_title, R.string.notif_readiness_starting_text),
         READY(R.string.home_status_ready_title, R.string.home_status_ready_suggestion, isReady = true)
     }
 
@@ -585,6 +597,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private var watchingCatalog = false
 
     /**
+     * [SystemClock.elapsedRealtime] when recording was last turned on, or 0 if it was turned off. Drives
+     * the grace-gated [HomeStatus.STARTING]: the card only admits a warm-up once it has run past the grace.
+     */
+    @Volatile private var recordingTurnedOnAt: Long = 0L
+
+    /**
      * Re-reads the list when something else changes the catalog.
      *
      * A Drive copy is stamped asynchronously — by the copy worker after a recording, a merge or an
@@ -643,6 +661,34 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     /** The user has read why the import was refused. */
     fun importRefusalSeen() {
         _uiState.update { it.copy(importRefusal = null) }
+    }
+
+    /**
+     * Applies the master recording switch (Pause / Resume / Stop / Start). Runs the lifecycle work off the
+     * main thread (a Stop/Start tears down or brings up the daemon), then refreshes the card.
+     */
+    fun setRecordingState(state: RecordingState) {
+        viewModelScope.launch {
+            if (state == RecordingState.ACTIVE) recordingTurnedOnAt = SystemClock.elapsedRealtime()
+            withContext(Dispatchers.IO) { RecordingSwitch.apply(appContext, state) }
+            refresh()
+            // After turning on, keep the card honest while the recorder warms up: flip to "Starting up…"
+            // only once the grace has passed without a connection (a ~1s warm-up never crosses it, so
+            // nothing flashes), then back to "Ready" the moment it connects. Bounded so it cannot spin.
+            if (state == RecordingState.ACTIVE) {
+                val startedAt = recordingTurnedOnAt
+                var shownStarting = false
+                while (SystemClock.elapsedRealtime() - startedAt < STARTING_MAX_MS) {
+                    if (RecorderConnection.isConnected) break
+                    delay(STARTING_POLL_MS)
+                    if (!shownStarting && SystemClock.elapsedRealtime() - startedAt >= STARTING_GRACE_MS) {
+                        shownStarting = true
+                        refresh() // crossed the grace without connecting → show STARTING
+                    }
+                }
+                if (shownStarting) refresh() // connected (or timed out) → back to the real status
+            }
+        }
     }
 
     private fun reloadListQuietly() {
@@ -904,6 +950,22 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
      * launch the daemon or do I/O.
      */
     private fun computeStatus(): HomeStatus {
+        // The master switch is the user's explicit intent and outranks everything else: when they have
+        // turned recording off, say so plainly (and don't record) rather than showing a setup state they
+        // didn't ask about. A setup problem, if any, surfaces when they turn it back on.
+        when (AppPreferences(appContext).getRecordingState()) {
+            RecordingState.STOPPED -> return HomeStatus.STOPPED
+            RecordingState.ACTIVE -> Unit
+        }
+        // Just turned on and still warming up past the grace: say "Starting up…" honestly rather than
+        // claiming Ready. A fast warm-up (~1s) never crosses STARTING_GRACE_MS, so this never flashes for
+        // the common case; capped at STARTING_MAX_MS so a long-settled daemon that later drops is left to
+        // the normal status, not frozen here.
+        val startedAt = recordingTurnedOnAt
+        if (startedAt > 0L && !RecorderConnection.isConnected) {
+            val elapsed = SystemClock.elapsedRealtime() - startedAt
+            if (elapsed in STARTING_GRACE_MS until STARTING_MAX_MS) return HomeStatus.STARTING
+        }
         val base = baseStatus()
         // A lost pairing outranks what follows from it: with Android refusing our key the grant cannot be
         // healed and the recorder cannot be relaunched, and "Pair again" is the only thing that fixes either.
@@ -951,6 +1013,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val store = SetupHealthStore(appContext)
         val facts = store.read()
         val windowStart = store.observationWindowStart(isReady, System.currentTimeMillis())
+        // The master recording switch: a paused/stopped user expects nothing recorded, so no phone
+        // call that happened then is a gap to raise on the card (foxcam's 3-state switch).
+        val expectsRecording = preferences.getRecordingState().isRecordingAllowed
         val result = CallGapDetector.sweep(
             entries = CallLogReader.entriesSince(appContext, facts.sweepWatermark),
             observedCallEnds = facts.observedCallEnds,
@@ -958,12 +1023,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             // expect this call recorded?", and in app-calls-only mode the answer is no for every
             // phone call, whatever the per-direction switches were left at. Without this, turning
             // phone recording off would fill the status card with gaps for calls deliberately
-            // ignored.
-            autoRecordIncoming = RecordingPolicy.expectsCarrierRecording(
+            // ignored. The master On/Off switch is the same situation at a higher level — the user turned
+            // recording off on purpose — so a call that happened then is not a gap to report.
+            // [expectsRecording] carries that: false unless the switch is ACTIVE.
+            autoRecordIncoming = expectsRecording && RecordingPolicy.expectsCarrierRecording(
                 carrierEnabled = preferences.isCarrierRecordingEnabled(),
                 autoRecordForDirection = preferences.isAutoRecordIncomingEnabled(),
             ),
-            autoRecordOutgoing = RecordingPolicy.expectsCarrierRecording(
+            autoRecordOutgoing = expectsRecording && RecordingPolicy.expectsCarrierRecording(
                 carrierEnabled = preferences.isCarrierRecordingEnabled(),
                 autoRecordForDirection = preferences.isAutoRecordOutgoingEnabled(),
             ),
@@ -1184,6 +1251,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         /** How long the catalog must stop changing before the list is re-read. */
         private const val CATALOG_SETTLE_MS = 400L
+
+        /** After turning recording on, how long the recorder may warm up before the card admits "Starting up…". */
+        private const val STARTING_GRACE_MS = 3_000L
+        /** Upper bound on the "Starting up…" window, so a long-settled recorder that later drops is not frozen in it. */
+        private const val STARTING_MAX_MS = 60_000L
+        /** How often to re-check the recorder's connection while it warms up. */
+        private const val STARTING_POLL_MS = 500L
 
         private const val TAG = "CV:HomeViewModel"
 

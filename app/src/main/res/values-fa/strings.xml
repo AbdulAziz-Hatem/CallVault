@@ -811,4 +811,13 @@
     <string name="update_popup_text">نسخه جدیدی برای نصب آماده است. به‌روزرسانی، ضبط را قابل اعتماد نگه می‌دارد و جدیدترین رفع‌اشکال‌ها را می‌آورد.</string>
     <string name="update_popup_update_now">اکنون به‌روزرسانی کن</string>
     <string name="update_popup_later">بعداً</string>
+    <!-- Master recording On/Off switch -->
+    <string name="home_status_stopped_title">ضبط متوقف شد</string>
+    <string name="home_status_stopped_suggestion">‏CallVault خاموش است، تماس‌ها ضبط نخواهند شد.</string>
+    <string name="home_hero_pill_stopped">متوقف</string>
+    <string name="home_recording_stop">توقف</string>
+    <string name="home_recording_start">شروع</string>
+    <string name="tile_recording_on">ضبط فعال</string>
+    <string name="tile_recording_stopped">متوقف</string>
+    <string name="home_hero_pill_starting">در حال شروع…</string>
 </resources>

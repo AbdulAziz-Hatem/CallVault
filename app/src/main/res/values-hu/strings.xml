@@ -718,4 +718,13 @@
     <string name="update_popup_text">Új verzió telepíthető. A frissítés megbízhatóan tartja a rögzítést, és tartalmazza a legújabb javításokat.</string>
     <string name="update_popup_update_now">Frissítés most</string>
     <string name="update_popup_later">Később</string>
+    <!-- Master recording On/Off switch -->
+    <string name="home_status_stopped_title">Rögzítés leállítva</string>
+    <string name="home_status_stopped_suggestion">A CallVault ki van kapcsolva, a hívások nem lesznek rögzítve.</string>
+    <string name="home_hero_pill_stopped">Leállítva</string>
+    <string name="home_recording_stop">Leállítás</string>
+    <string name="home_recording_start">Indítás</string>
+    <string name="tile_recording_on">Rögzítés bekapcsolva</string>
+    <string name="tile_recording_stopped">Leállítva</string>
+    <string name="home_hero_pill_starting">Indítás…</string>
 </resources>

@@ -105,6 +105,12 @@ object VoipRecordingCoordinator {
     fun onCallStarted(context: Context) {
         if (recording) return
         val prefs = AppPreferences(context)
+        // The master switch sits above the per-type VoIP setting: paused/stopped records nothing.
+        val recordingState = prefs.getRecordingState()
+        if (!recordingState.isRecordingAllowed) {
+            AppLogger.i(TAG, "Master recording switch is $recordingState — not recording this VoIP call.")
+            return
+        }
         if (!prefs.isVoipRecordingEnabled()) return
 
         val service = RecorderConnection.service
@@ -389,6 +395,13 @@ object VoipRecordingCoordinator {
      *   since one excuses the miss and the other is precisely the failure worth chasing.
      */
     private fun reportMissed(context: Context, messageRes: Int, prerequisite: Prerequisite?) {
+        // The user turned recording off on purpose (foxcam's master switch): a call they chose not to
+        // record is not a miss to warn about — neither the notification nor the status-card gap. Matches
+        // the carrier sweep's master-switch gate in HomeViewModel.sweepSetupHealth.
+        if (!AppPreferences(context).getRecordingState().isRecordingAllowed) {
+            AppLogger.i(TAG, "Master recording switch is off — not warning about this deliberately-skipped app call")
+            return
+        }
         // Reading health can fail; a failure there must not decide to shout. False is the quiet
         // direction, and matches the carrier path's gate in `recordMissedForMissingPrerequisite`.
         val everWorked = runCatching { SetupHealthStore(context).read().lastVerifiedAt > 0L }
