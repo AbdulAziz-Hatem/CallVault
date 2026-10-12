@@ -145,6 +145,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     enum class DirectionFilter { ALL, INCOMING, OUTGOING }
 
     /**
+     * How the recordings list is ordered (#27: mirror176 asked for sorting, not just filtering).
+     *
+     *  - [NEWEST]:  most recent call first (the default, the repository's own order).
+     *  - [OLDEST]:  oldest call first.
+     *  - [NAME]:    by who the call was with, A→Z (contact, else the number/name slot).
+     *  - [LONGEST]: longest call first; calls of unknown length sort last.
+     */
+    enum class RecordingSort { NEWEST, OLDEST, NAME, LONGEST }
+
+    /**
      * The post-update note, listing the last few releases together.
      *
      * Per-release rather than per-feature: someone who skips a couple of updates should still learn
@@ -197,6 +207,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val tagFilter: String? = null,
         /** True when the list is narrowed to starred recordings only. */
         val favouritesOnly: Boolean = false,
+        /** How the filtered list is ordered; see [RecordingSort]. */
+        val sortOrder: RecordingSort = RecordingSort.NEWEST,
         /**
          * The starred recordings, by display name.
          *
@@ -322,19 +334,35 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 .map { it.key }
 
         /**
-         * The recordings to render: [recordings] narrowed by all four facets (AND), preserving the
-         * repository's newest-first ordering. Derived on read so it always reflects the current
-         * filters without a repo reload.
+         * The recordings to render: [recordings] narrowed by all facets (AND), then ordered by
+         * [sortOrder]. Derived on read so it always reflects the current filters and sort without a
+         * repo reload. NEWEST preserves the repository's own newest-first order rather than re-sorting
+         * it, so the default path is unchanged.
          */
         val filteredRecordings: List<RecordingItem>
-            get() = recordings.filter { item ->
-                matchesSource(item) &&
-                    matchesDirection(item) &&
-                    matchesContact(item) &&
-                    (dateFilter == null || RecordingsRepository.dayKey(item) == dateFilter) &&
-                    (tagFilter == null || tagsByRecording[item.displayName]?.contains(tagFilter) == true) &&
-                    (!favouritesOnly || item.displayName in favourites)
+            get() {
+                val filtered = recordings.filter { item ->
+                    matchesSource(item) &&
+                        matchesDirection(item) &&
+                        matchesContact(item) &&
+                        (dateFilter == null || RecordingsRepository.dayKey(item) == dateFilter) &&
+                        (tagFilter == null || tagsByRecording[item.displayName]?.contains(tagFilter) == true) &&
+                        (!favouritesOnly || item.displayName in favourites)
+                }
+                return when (sortOrder) {
+                    RecordingSort.NEWEST -> filtered
+                    RecordingSort.OLDEST -> filtered.sortedBy { it.startedAtMillis ?: it.lastModified }
+                    RecordingSort.NAME ->
+                        filtered.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { sortName(it) })
+                    // Unknown length (null) sorts last, not as zero.
+                    RecordingSort.LONGEST ->
+                        filtered.sortedByDescending { it.durationSeconds ?: -1L }
+                }
             }
+
+        /** What a NAME sort orders by: the contact, else the number/name slot, else the file name. */
+        private fun sortName(item: RecordingItem): String =
+            item.contactName ?: item.number?.takeUnless { it.isBlank() } ?: item.displayName
 
         private fun matchesSource(item: RecordingItem): Boolean = when (sourceFilter) {
             SourceFilter.ALL -> true
@@ -904,6 +932,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     /** Narrows the list to starred recordings, or back to all of them. */
     fun setFavouritesOnly(on: Boolean) {
         _uiState.update { it.copy(favouritesOnly = on) }
+    }
+
+    /** Sets how the list is ordered; the derived list re-sorts on the next read. */
+    fun setSortOrder(order: RecordingSort) {
+        _uiState.update { it.copy(sortOrder = order) }
     }
 
     /** Sets what the search line holds; empty for "all contacts". */

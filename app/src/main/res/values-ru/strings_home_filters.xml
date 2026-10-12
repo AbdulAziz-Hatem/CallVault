@@ -31,4 +31,11 @@
     <string name="home_filter_tag_all">Все метки</string>
     <string name="home_filter_tag_all_short">Все</string>
 
+    <!-- Sort order (chip label + options). %1$s = current value shown on the chip. -->
+    <string name="home_sort_chip">Сортировка: %1$s</string>
+    <string name="home_sort_newest">Сначала новые</string>
+    <string name="home_sort_oldest">Сначала старые</string>
+    <string name="home_sort_name">Имя А–Я</string>
+    <string name="home_sort_longest">Самые длинные</string>
+
 </resources>

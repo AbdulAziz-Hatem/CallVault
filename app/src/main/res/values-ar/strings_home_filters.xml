@@ -34,4 +34,11 @@
     <string name="home_filter_tag_chip">العلامة: %1$s</string>
     <string name="home_filter_tag_all">جميع العلامات</string>
     <string name="home_filter_tag_all_short">الكل</string>
+    <!-- Sort order (chip label + options). %1$s = current value shown on the chip. -->
+    <string name="home_sort_chip">الترتيب: %1$s</string>
+    <string name="home_sort_newest">الأحدث</string>
+    <string name="home_sort_oldest">الأقدم</string>
+    <string name="home_sort_name">الاسم أ–ي</string>
+    <string name="home_sort_longest">الأطول</string>
+
 </resources>

@@ -44,4 +44,11 @@
     <string name="home_filter_tag_all">همه برچسب‌ها</string>
     <string name="home_filter_tag_all_short">همه</string>
 
+    <!-- Sort order (chip label + options). %1$s = current value shown on the chip. -->
+    <string name="home_sort_chip">مرتب‌سازی: %1$s</string>
+    <string name="home_sort_newest">جدیدترین</string>
+    <string name="home_sort_oldest">قدیمی‌ترین</string>
+    <string name="home_sort_name">نام الف–ی</string>
+    <string name="home_sort_longest">طولانی‌ترین</string>
+
 </resources>

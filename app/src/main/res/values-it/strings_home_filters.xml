@@ -31,4 +31,11 @@
     <string name="home_filter_tag_all">Tutte le etichette</string>
     <string name="home_filter_tag_all_short">Tutte</string>
 
+    <!-- Sort order (chip label + options). %1$s = current value shown on the chip. -->
+    <string name="home_sort_chip">Ordina: %1$s</string>
+    <string name="home_sort_newest">Più recenti</string>
+    <string name="home_sort_oldest">Meno recenti</string>
+    <string name="home_sort_name">Nome A–Z</string>
+    <string name="home_sort_longest">Più lunghe</string>
+
 </resources>

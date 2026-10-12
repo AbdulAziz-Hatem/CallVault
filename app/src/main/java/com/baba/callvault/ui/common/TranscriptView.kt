@@ -126,6 +126,12 @@ fun TranscriptView(
      */
     isTranscriptSettled: Boolean,
     title: String,
+    /**
+     * A second header line under [title] — the number and date/time of the call (#27: mirror176 asked
+     * the header to say which call this is, so the always-near-full sheet does not need a half-height
+     * state just to show it). Null draws nothing and leaves the title alone.
+     */
+    subtitle: String? = null,
     presentation: TranscriptPresentation = TranscriptPresentation.Sheet,
     /** True when the reader arrived from a summary, so the summary opens rather than the words. */
     summaryFirst: Boolean = false,
@@ -239,8 +245,19 @@ fun TranscriptView(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                    modifier = Modifier.padding(
+                        start = 24.dp, end = 24.dp, top = 8.dp,
+                        bottom = if (subtitle != null) 0.dp else 8.dp,
+                    )
                 )
+                if (subtitle != null) {
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 8.dp),
+                    )
+                }
                 body()
             }
         }
@@ -251,6 +268,7 @@ fun TranscriptView(
         TranscriptPresentation.Screen -> CvScaffold(
             modifier = modifier.fillMaxSize(),
             title = title,
+            subtitle = subtitle,
             onBack = onDismiss,
         ) { innerPadding ->
             // Inset with a Column rather than passed down: the body ends with a transport bar that
