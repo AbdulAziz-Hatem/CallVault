@@ -1691,14 +1691,6 @@ fun HomeScreen(
                     context.shareTranscriptFile(file, format.mimeType)
                 }
             },
-            // Leaving without stopping the audio even on the page: a re-transcription throws the
-            // stored text away, so there is nothing left to read, but the recording is still the
-            // recording and is now back in a list that shows it playing.
-            onRetranscribe = {
-                startTranscription(displayName)
-                transcriptFor = null
-                readingFor = null
-            },
             onDelete = {
                 // The SHEET is closed first: an AlertDialog raised over a ModalBottomSheet leaves
                 // the user looking at the very text they asked to destroy. Cancelling puts it back —

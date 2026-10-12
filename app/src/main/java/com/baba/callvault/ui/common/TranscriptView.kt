@@ -112,7 +112,6 @@ enum class TranscriptPresentation {
  *                        is only text, which is why the timestamps are stored at all. It starts
  *                        playback rather than merely seeking, so a tap works on a call that is not
  *                        loaded yet.
- * @param onRetranscribe  run it again, e.g. after switching to a better model.
  * @param onDelete        discard the text and keep the audio. Someone may want the recording without
  *                        a searchable transcript of what was said in it.
  */
@@ -180,7 +179,6 @@ fun TranscriptView(
      */
     onNoteChange: ((String) -> Unit)? = null,
     tags: List<String> = emptyList(),
-    onRetranscribe: () -> Unit,
     onDelete: () -> Unit,
     /**
      * How to name the two captured channels.
@@ -223,7 +221,6 @@ fun TranscriptView(
             note = note,
             onNoteChange = onNoteChange,
             tags = tags,
-            onRetranscribe = onRetranscribe,
             onDelete = onDelete,
             speakerNames = speakerNames,
             onChooseSpeakerMap = onChooseSpeakerMap,
@@ -304,7 +301,6 @@ private fun ColumnScope.TranscriptBody(
     note: String,
     onNoteChange: ((String) -> Unit)?,
     tags: List<String>,
-    onRetranscribe: () -> Unit,
     onDelete: () -> Unit,
     speakerNames: SpeakerNames,
     onChooseSpeakerMap: (ChannelMap) -> Unit,
@@ -516,15 +512,12 @@ private fun ColumnScope.TranscriptBody(
                 )
             }
         }
-        // Only where there is something to transcribe. A transcript can outlive its recording — every
-        // finished "Transcribe only" import does, by design — and offering to run the model again on
-        // a file that is gone would destroy the stored text in exchange for a run that refuses
-        // itself. See TranscriptAudio.retranscribeOffered for why the rest of this row stays.
-        if (TranscriptAudio.retranscribeOffered(hasAudio)) {
-            TextButton(onClick = onRetranscribe) {
-                Text(stringResource(R.string.transcript_retranscribe))
-            }
-        }
+        // "Transcribe again" is deliberately NOT here. On a DONE transcript — which is the only
+        // thing this reading view shows — it cost minutes of CPU to repair a wrong-model/wrong-language
+        // result that a settled, shipped model and a pinned language almost never produce, on a sheet
+        // the user reached to *read*. A transcript that actually FAILED keeps its retry on the
+        // Transcripts row, where the failure is shown, so an undecodable one is still never stranded
+        // (agreed 2026-08-29; #27).
         // The way back, once the question above has been answered and stops being asked.
         //
         // Without this, answering it was a one-way door: a mis-tap pinned an override that
