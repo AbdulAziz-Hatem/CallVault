@@ -714,6 +714,34 @@ port open; the setting's description should say so.
 
 ---
 
+## 🔵 Release hardening: APK size (R8) + release supply-chain (attestation/immutability) — raised 2026-10-13
+
+Two independent, actionable items raised by a public critique from **kitsumed** (ShizuCallRecorder author,
+our upstream). His other two points — that CallVault is a fork, and is AI-assisted — are true and already
+disclosed, so nothing to do there. Full analysis, evidence and options:
+`docs/dev-notes/release-hardening-size-and-attestation.md`.
+
+### 🔵 1. Turn R8/minification on (cut the APK size)
+`isMinifyEnabled`/`isShrinkResources` are **off**, so the APK is ~68 MB — **~56 MB of it unshrunk DEX**
+(native libs are only ~14 MB). R8 is off deliberately: the daemon is launched by `app_process` via a **string**
+classpath, so R8 strips it and **silently breaks recording** (documented in `build.gradle.kts`). Fix =
+comprehensive `-keep` rules for the whole daemon class graph + reflective entry points, **gated on on-device
+verification** (real carrier + VoIP call + daemon-up-after-install-over on both phones), not on a green build.
+Realistic floor ~30–40 MB, not the 6–9 MB of a call-recorder-only app — the transcription/ADB stack stays.
+Medium effort, **real risk** (a wrong keep set = silent no-record). Own branch.
+
+### 🔵 2. Attested / immutable releases
+CI (`build-app.yml`) wires up `actions/attest-build-provenance`, but releases are **built locally and
+published with `gh release create`**, so the **published APKs are not attested**; GitHub **immutable releases**
+aren't used either. Steps, cheapest first: (1) **enable immutable releases** — cheap, no downside, do it
+first; (2) **provenance for the shipped APK** — either build+sign in CI (puts the signing key in CI secrets,
+the exact exposure local signing avoids — a maintainer decision) or attest the locally-built APK out-of-band
+(`gh attestation`/sigstore, keeps the key local); (3) **reproducible builds** — strongest answer, pairs with
+F-Droid readiness. Our current guard is local key custody + a pinned cert SHA-256 the updater verifies — which
+is not third-party-verifiable provenance. Process/infra, low code risk.
+
+---
+
 ## ✅ Completed
 
 Shipped/verified work, condensed to one line each. Newest first. Full detail lives in each release's memory note, the dev-notes, and git history.
