@@ -481,14 +481,35 @@ as a known limitation. 🧪 unconfirmed on our devices.
 second-line split — what signal they use (default-dialer InCallService? CallScreeningService? per-call
 `Call.Details`?), and whether it's reachable for us without becoming the default dialer. See [[reuse-proven-implementations]].
 
-### 🔵 alex_812 (b) — recordings show numbers, not contact names (contacts exist in Google)
-The contact name is resolved via `ContactsContract`/`PhoneLookup` (READ_CONTACTS declared) and baked into the
-filename/`.json` **at record time** (`RecordingFileNameFormatter`). So numbers-not-names means at record time
-CallVault couldn't resolve them: **READ_CONTACTS not granted**, or **Google contacts not synced to the device
-provider**, or the **contact was added after** the call (old recordings keep the number). **Advice:** grant
-Contacts permission; enable Google → Contacts sync; note older recordings may stay as numbers. (Open question worth
-checking: does the list re-resolve names at display time or only read the baked-in value? If only baked-in, a
-"re-resolve names" pass would help — RecordingsRepository is in the contacts path; not confirmed.)
+### ✅ alex_812 (b) — recordings show numbers, not contact names — REPORTER SELF-RESOLVED 2026-10-13: it was the file-name template, not the phone
+**Reporter's own conclusion (2026-10-13):** *"I found the reason. These are the application settings… the person
+selected the display number / contact / date, changed it, made a call and now it is visually convenient… the
+display is based on the created name of the call recording. It's a pity that it doesn't define and change the
+display on its own… the problem may not be with the phone, but with the choice of recording display, and then
+you need to make a call to make sure that the desired display is displayed."* In plain terms: he had a
+file-name template that wrote the **number** into the name; he switched to a **contact** template, made a **new**
+call, and it now shows the contact. Old recordings keep their created name.
+
+**Confirmed against code — the open question is answered: the list DOES re-resolve, but only when the template
+carries a number.** `RecordingsRepository.list()` (lines ~220-228) does a live `lookupContactName(number)` on
+every pass and overrides the baked `contactName` — **but only when `parsed.number` is non-blank.** The parser
+only fills `number` when the filename contains `{phone_number}` (`FileNameTemplates.FILE_NAME_TEMPLATE_PRESETS`).
+So:
+- Template **with** `{phone_number}` → names re-resolve live each refresh (grant Contacts + sync → old
+  recordings light up too).
+- Template **contact-only** (`{date}_{contact_name}`, `{contact_name}_{date}`, `{date}_{direction}_{contact_name}`)
+  → if the contact was unresolved **at record time**, the formatter bakes the **number into the name slot**, there
+  is no `{phone_number}` to look up from, and the display is stuck on that created name forever. ← his case.
+
+**Not a bug; a template-choice behaviour.** Advice stands (grant Contacts, enable Google→Contacts sync), plus:
+to get live name resolution on a contact-only template too, we'd need to keep the number available regardless of
+template. The `.json` sidecar already records the number — so the list could re-resolve from that when
+`parsed.number` is blank.
+
+**🔵 Feature (his ask, optional):** "resolve the display name on its own, including old recordings" — re-resolve
+contact names from the `.json` number when the filename has none, so a template change / newly-saved contact
+updates existing rows without re-recording. Small, self-contained; RecordingsRepository is already in the
+contacts path. Not started.
 
 ---
 
