@@ -730,15 +730,16 @@ verification** (real carrier + VoIP call + daemon-up-after-install-over on both 
 Realistic floor ~30–40 MB, not the 6–9 MB of a call-recorder-only app — the transcription/ADB stack stays.
 Medium effort, **real risk** (a wrong keep set = silent no-record). Own branch.
 
-### 🔵 2. Attested / immutable releases
+### 🟡 2. Attested / immutable releases (immutable DONE)
 CI (`build-app.yml`) wires up `actions/attest-build-provenance`, but releases are **built locally and
-published with `gh release create`**, so the **published APKs are not attested**; GitHub **immutable releases**
-aren't used either. Steps, cheapest first: (1) **enable immutable releases** — cheap, no downside, do it
-first; (2) **provenance for the shipped APK** — either build+sign in CI (puts the signing key in CI secrets,
-the exact exposure local signing avoids — a maintainer decision) or attest the locally-built APK out-of-band
-(`gh attestation`/sigstore, keeps the key local); (3) **reproducible builds** — strongest answer, pairs with
-F-Droid readiness. Our current guard is local key custody + a pinned cert SHA-256 the updater verifies — which
-is not third-party-verifiable provenance. Process/infra, low code risk.
+published with `gh release create`**, so the **published APKs are not attested**. Steps, cheapest first:
+(1) ✅ **immutable releases — DONE 2026-10-13 (maintainer)**; (2) **provenance for the shipped APK** —
+🚫 **do NOT build+sign in CI** (that puts the update-signing cert — the trust anchor for silent in-place
+updates — into CI secrets, the one genuinely risky option; see [[release-build-signing]]); instead, if wanted,
+**cosign keyless** the locally-built APK (key stays local, low risk); (3) **reproducible builds** — strongest
+answer, pairs with F-Droid readiness. Current guard is local key custody + a pinned cert SHA-256 the updater
+verifies. **Whole item is lower risk than item 1 — process/infra, cannot break recording; the only real risk
+is key custody, avoided by keeping signing local.** Full detail + verdict in the dev-note.
 
 ---
 

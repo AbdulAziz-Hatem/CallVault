@@ -86,28 +86,36 @@ third parties a verifiable "this binary was built from this commit" proof.
 
 ### Options (a decision is needed; these trade off)
 
-1. **Enable GitHub immutable releases** — cheap, no real downside, closes the "immutable" half outright.
-   Likely the first thing to do.
-2. **Publish build provenance for the shipped APK.** Two sub-paths, and they conflict with current key
-   custody:
-   - Build+sign the release **in CI** (keystore in CI secrets) so `attest-build-provenance` covers the exact
-     published artifact. **Trade-off:** the signing key then lives in CI — the exact exposure the local-build
-     model was chosen to avoid. A real decision, not a quick fix.
-   - Keep local signing but **attest the local artifact** out-of-band (e.g. `gh attestation` / sigstore over
-     the locally-built APK). Keeps the key local; adds a provenance step to the release checklist.
+1. **Enable GitHub immutable releases** — ✅ **DONE 2026-10-13 (maintainer).** Cheap, no downside, closes the
+   "immutable" half outright.
+2. **Publish build provenance for the shipped APK.** Two sub-paths:
+   - 🚫 **Build+sign the release in CI** (keystore in CI secrets) so `attest-build-provenance` covers the
+     published artifact. **This is the only genuinely risky item here and the recommendation is NOT to do it.**
+     The cert is the trust anchor for silent in-place updates on strangers' phones; today the key lives only on
+     the maintainer's machine. In CI it is decrypted into the runner every build, so a poisoned workflow step,
+     a compromised third-party Action, or an account compromise could exfiltrate it — and a *leaked*
+     update-signing key is as bad as losing it ([[release-build-signing]]). The provenance benefit does not
+     justify that blast radius.
+   - ✅ **recommended path:** keep local signing, **attest the local artifact** out-of-band with
+     sigstore/cosign **keyless** signing (OIDC identity + artifact digest into the public Rekor transparency
+     log). **The key never leaves the maintainer's machine.** Weaker than CI build-from-source provenance (it
+     attests the artifact + who published it, not the build process), but low-risk and real. Adds a release
+     step.
 3. **Reproducible builds** — let anyone rebuild the published APK bit-for-bit from the tagged source. The
    strongest answer to "is this binary really this source", and it pairs well with F-Droid readiness
-   ([[fdroid-readiness]]). Larger effort.
+   ([[fdroid-readiness]]) — F-Droid building from source IS independent third-party provenance. Larger effort.
 
-### Recommendation
+### Recommendation (updated 2026-10-13)
 
-Do **(1)** now (cheap). Treat **(2)** as a deliberate key-custody decision for the maintainer — don't move
-signing to CI by default. Consider **(3)** as part of the F-Droid track, where it earns its keep anyway.
+(1) **done**. **Do NOT move signing to CI** — the only high-risk option. If provenance is wanted now, use the
+cosign keyless path (low risk). Pursue **(3)** reproducible builds as part of the F-Droid track, where it earns
+its keep. The whole of item 2 is **lower risk than item 1 (R8)**: it is process/infra and cannot silently
+break recording; the one real risk is key custody, avoided by keeping signing local.
 
 ### Effort / risk
 
-(1) trivial. (2) small-to-medium + a key-custody decision. (3) medium-large. Low code risk throughout; this is
-process/infra, not recording-path code.
+(1) trivial — done. (2) cosign path: small, low risk; CI-signing path: 🚫 not recommended (key exposure).
+(3) medium-large, low security risk. No recording-path code is touched by any of this.
 
 ---
 
