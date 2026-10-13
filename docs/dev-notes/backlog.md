@@ -353,12 +353,13 @@ nag). The `.json` is now also matched in the delete cascade (4) via `MetadataSid
 
 ---
 
-## 🧪 Issue #52 — long calls draw no waveform and can't be scrubbed — FIXED on branch `fix/waveform-long-call-oom-52` (not merged), device-verified on OP9 2026-10-13 (reported 2026-10-12, StateConscious)
+## 🧪 Issue #52 — long calls draw no waveform and can't be scrubbed — FIXED, MERGED into `main` 2026-10-13, installed on both phones, device-verified on OP9 (reported 2026-10-12, StateConscious)
 
-> **🧪 FIXED (both parts), committed to `fix/waveform-long-call-oom-52` (`3a05cd93` + `57ad1e35`) — NOT merged,
-> nothing pushed.** Device-verified on the OP9 by Claude (maintainer-delegated: "proceed with the plan").
-> Stays 🧪 — the reporter is on an S24 Ultra, so like #49 the real confirmation is the reporter's, not ours.
-> Awaiting: reporter confirms on the S24U, and the maintainer's merge decision.
+> **🧪 FIXED (both parts), MERGED into `main` 2026-10-13 (`3a05cd93` + `57ad1e35`; merge commit on `main`).
+> Installed on both phones; recorder confirmed back up after install-over (OP9 `:recorder`, OP12 `app_process`).
+> `main` is still local — nothing pushed.** Device-verified on the OP9 by Claude (maintainer-delegated: "proceed
+> with the plan" → "merge + install"). Stays 🧪 — the reporter is on an S24 Ultra, so like #49 the real
+> confirmation is the reporter's, not ours. Awaiting: reporter confirms on the S24U.
 
 **Report.** S24 Ultra, Android 16, v2.4.5. A VoIP recording shows a flat line instead of a waveform and the
 timeline can't be tapped/dragged to seek (only the 10 s skip buttons work); total duration is correct and
