@@ -27,6 +27,48 @@ object Waveform {
     /** How many bars a waveform is stored as. Enough to show structure, small enough to cache as text. */
     const val BUCKETS = 240
 
+    /**
+     * Builds the same [BUCKETS] peaks as [reduce], but from audio handed over in pieces, so the whole
+     * recording never has to be resident at once.
+     *
+     * This is what lets a long call be drawn at all. [reduce] needs every sample of the call in one
+     * `FloatArray`; a decode big enough to fill it runs the heap out of memory on a long recording,
+     * which left the waveform empty — and, because the waveform *is* the scrubber, left nothing to seek
+     * with either (issue #52). Decoding in bounded time-windows and folding each into this accumulator
+     * keeps peak memory independent of call length.
+     *
+     * Samples are placed into bars by **where they are in time**, not by index into one array, so
+     * windows decoded separately — and even overlapping, as a seek-to-previous-sync run-up produces —
+     * land in the right bars no matter where the cuts fell. Bar `b` covers
+     * `[b/buckets, (b+1)/buckets)` of [totalMs].
+     */
+    class PeakAccumulator(private val buckets: Int, private val totalMs: Long) {
+        private val out = FloatArray(buckets.coerceAtLeast(0))
+
+        /**
+         * Folds the first [length] mono samples of [samples], which begin at [startMs] in the call, into
+         * the bars they fall in. Loudest-wins, exactly as [reduce] does.
+         *
+         * [sampleRateHz] is the rate of [samples] — the decoded rate the waveform is computed at, not the
+         * file's rate. A sample landing past the declared end (a container that under-declares its
+         * length) clamps into the last bar rather than being dropped.
+         */
+        fun add(samples: FloatArray, length: Int, startMs: Long, sampleRateHz: Int) {
+            if (buckets <= 0 || totalMs <= 0L || sampleRateHz <= 0) return
+            val msPerSample = 1000.0 / sampleRateHz
+            val scale = buckets.toDouble() / totalMs
+            for (i in 0 until length) {
+                val atMs = startMs + i * msPerSample
+                val bucket = (atMs * scale).toInt().coerceIn(0, buckets - 1)
+                val magnitude = abs(samples[i])
+                if (magnitude > out[bucket]) out[bucket] = magnitude
+            }
+        }
+
+        /** The bars accumulated so far, each clamped to 0..1. Safe to read more than once. */
+        fun peaks(): FloatArray = FloatArray(out.size) { out[it].coerceIn(0f, 1f) }
+    }
+
     /** Peaks in 0..1, one per bucket, always exactly [buckets] long. */
     fun reduce(samples: FloatArray, buckets: Int): FloatArray {
         if (buckets <= 0) return FloatArray(0)
