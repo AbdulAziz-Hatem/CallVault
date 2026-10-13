@@ -55,6 +55,11 @@ the maintainer's real-use confirmation; ✅ = maintainer-confirmed.
   the sidecar. <!-- 🧪 device-verified on OP9 2026-10-12; awaiting real-use confirmation. -->
 - **Merge sees Drive-only calls.** A call that lives only on Drive can now be merged (download-then-merge),
   and numbers are matched across formats. <!-- 🧪 merged 2026-10-12; awaiting a real affected user. -->
+- **No stray "Press to start recording" during an app call.** On One UI a VoIP call raised the telephony
+  state too, so the carrier service posted its "Call in progress — Press to start recording" notification
+  (with a Record button) and left it in the shade for the whole call, beside the recording that was already
+  under way. The carrier path now stands aside silently and stops. (#54)
+  <!-- 🧪 built + unit-tested 2026-10-13; needs a real two-sided VoIP call to confirm on device. -->
 
 ## [2.4.5] — 2026-09-30
 
