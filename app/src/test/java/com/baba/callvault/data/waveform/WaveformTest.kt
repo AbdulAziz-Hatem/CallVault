@@ -83,4 +83,87 @@ class WaveformTest {
         assertTrue(Waveform.decode("").isEmpty())
         assertTrue(Waveform.decode("not,a,waveform").isEmpty())
     }
+
+    // --- Streaming accumulator (issue #52): the same bars, built from pieces so a long call never has
+    // to be decoded whole and run the heap out of memory. ---
+
+    @Test
+    fun streaming_a_whole_call_in_pieces_matches_decoding_it_at_once() {
+        // 1 kHz so one sample is exactly one millisecond: eight samples span eight ms. The shape is the
+        // same spike-in-each-half the first test uses, so the loudest-per-bar answer is known.
+        val samples = floatArrayOf(0f, 0f, 0.9f, 0f, 0f, 0f, 0.2f, 0f)
+        val expected = Waveform.reduce(samples, buckets = 2)
+
+        val accumulator = Waveform.PeakAccumulator(buckets = 2, totalMs = 8)
+        // Two separate decodes, each placed by where it starts in the call — never both resident at once.
+        accumulator.add(samples.copyOfRange(0, 4), length = 4, startMs = 0, sampleRateHz = 1000)
+        accumulator.add(samples.copyOfRange(4, 8), length = 4, startMs = 4, sampleRateHz = 1000)
+
+        val peaks = accumulator.peaks()
+        assertEquals(expected.size, peaks.size)
+        expected.forEachIndexed { i, v -> assertEquals(v, peaks[i], 0.001f) }
+    }
+
+    @Test
+    fun a_sample_lands_in_the_bar_for_its_place_in_time() {
+        // A single loud sample three quarters of the way through a four-bar, 100 ms call must fall in the
+        // last bar — placement is by time, not by arrival order.
+        val accumulator = Waveform.PeakAccumulator(buckets = 4, totalMs = 100)
+        accumulator.add(floatArrayOf(0.7f), length = 1, startMs = 75, sampleRateHz = 1000)
+
+        val peaks = accumulator.peaks()
+        assertEquals(0f, peaks[0], 0.001f)
+        assertEquals(0.7f, peaks[3], 0.001f)
+    }
+
+    @Test
+    fun a_window_redecoded_as_run_up_does_not_corrupt_its_bar() {
+        // Seeking to the previous sync point can start a window slightly before it was asked for, so the
+        // tail of one window and the head of the next overlap. Loudest-wins makes that harmless: feeding
+        // the same stretch twice must leave the bar exactly where one pass would.
+        val once = Waveform.PeakAccumulator(buckets = 2, totalMs = 10)
+        once.add(floatArrayOf(0.5f), length = 1, startMs = 2, sampleRateHz = 1000)
+
+        val twice = Waveform.PeakAccumulator(buckets = 2, totalMs = 10)
+        twice.add(floatArrayOf(0.5f), length = 1, startMs = 2, sampleRateHz = 1000)
+        twice.add(floatArrayOf(0.5f), length = 1, startMs = 2, sampleRateHz = 1000)
+
+        assertEquals(once.peaks()[0], twice.peaks()[0], 0.001f)
+    }
+
+    @Test
+    fun a_sample_past_the_declared_end_clamps_into_the_last_bar() {
+        // A container can under-declare its length; the extra audio belongs at the end, not dropped.
+        val accumulator = Waveform.PeakAccumulator(buckets = 2, totalMs = 10)
+        accumulator.add(floatArrayOf(0.6f), length = 1, startMs = 999, sampleRateHz = 1000)
+
+        assertEquals(0.6f, accumulator.peaks()[1], 0.001f)
+    }
+
+    @Test
+    fun the_accumulator_is_always_the_width_that_was_asked_for() {
+        // The drawing indexes straight into this, exactly as it does into reduce().
+        val accumulator = Waveform.PeakAccumulator(buckets = 64, totalMs = 1000)
+        accumulator.add(FloatArray(500) { 0.5f }, length = 500, startMs = 0, sampleRateHz = 1000)
+
+        assertEquals(64, accumulator.peaks().size)
+    }
+
+    @Test
+    fun an_unknown_length_accumulator_stays_flat_rather_than_crashing() {
+        // totalMs 0 is what a container declaring no duration reports; there is no timeline to place
+        // samples on, so nothing is folded in and the bars stay flat — the caller falls back elsewhere.
+        val accumulator = Waveform.PeakAccumulator(buckets = 4, totalMs = 0)
+        accumulator.add(floatArrayOf(0.9f), length = 1, startMs = 0, sampleRateHz = 1000)
+
+        assertTrue(accumulator.peaks().all { it == 0f })
+    }
+
+    @Test
+    fun accumulated_peaks_stay_inside_zero_to_one() {
+        val accumulator = Waveform.PeakAccumulator(buckets = 1, totalMs = 10)
+        accumulator.add(floatArrayOf(1.4f, -2f), length = 2, startMs = 0, sampleRateHz = 1000)
+
+        assertTrue(accumulator.peaks().all { it in 0f..1f })
+    }
 }

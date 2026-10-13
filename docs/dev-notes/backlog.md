@@ -353,6 +353,52 @@ nag). The `.json` is now also matched in the delete cascade (4) via `MetadataSid
 
 ---
 
+## 🧪 Issue #52 — long calls draw no waveform and can't be scrubbed — FIXED on branch `fix/waveform-long-call-oom-52` (not merged), device-verified on OP9 2026-10-13 (reported 2026-10-12, StateConscious)
+
+> **🧪 FIXED (both parts), committed to `fix/waveform-long-call-oom-52` (`3a05cd93` + `57ad1e35`) — NOT merged,
+> nothing pushed.** Device-verified on the OP9 by Claude (maintainer-delegated: "proceed with the plan").
+> Stays 🧪 — the reporter is on an S24 Ultra, so like #49 the real confirmation is the reporter's, not ours.
+> Awaiting: reporter confirms on the S24U, and the maintainer's merge decision.
+
+**Report.** S24 Ultra, Android 16, v2.4.5. A VoIP recording shows a flat line instead of a waveform and the
+timeline can't be tapped/dragged to seek (only the 10 s skip buttons work); total duration is correct and
+playback from the start is fine. A 1-min cellular call is fine. Follow-up from the reporter settled it:
+a **19-min Zoom call works, a 41-min one doesn't — "so it seems to be length related,"** and the attached log
+showed `CV:RecordingExtras: Could not draw …_voip-MAX_…ogg: Failed to allocate … until OOM`.
+
+**Root cause — not VoIP, it's length.** The waveform was decoded **whole** into memory
+(`RecordingExtrasRepository.waveform` → `AudioDecoder.decodeToMono16k`, no length cap) before being reduced to
+240 bars. Cost grows with length (~9.6 MB/min of 16 kHz float, more during decode), so a long call throws
+`OutOfMemoryError`, which `runCatching` swallowed into an **empty peak list**. Empty peaks give both symptoms:
+(1) `WaveformBar` draws its resting line, and (2) **the waveform *is* the scrubber** — the tap/drag gesture was
+only attached in the non-empty branch, so with no bars there was nothing to seek with. The 10 s buttons use the
+same `MediaPlayer.seekTo`, which is why they still worked and proved the OGG/Opus container is seekable. A
+cellular call of the same length fails identically; VoIP vs carrier was a length confound.
+
+**Fix (two commits):**
+1. **`3a05cd93` — decouple scrubbing from peaks.** Moved the tap/drag `pointerInput` from the drawn bars to the
+   outer `Box` in `WaveformBar.kt`, so the resting line is a scrub target too. A long call is seekable even
+   while its shape is still computing, or if it never decodes.
+2. **`57ad1e35` — bound the decode.** New `Waveform.PeakAccumulator` places samples into bars **by position in
+   time**; `RecordingExtrasRepository.drawShape()` feeds it the same bounded time-windows transcription already
+   uses (`ChunkPlan.plan(totalMs)` + `AudioDecoder.decodeRange`). Peak memory now rests on one ~6-min window
+   whatever the call length. A container with no declared duration falls back to the one-shot `reduce` (only
+   short clips lack a duration). The swallowed error's type is now named in the log. Unit tests added
+   (parity with `reduce`, time-placement, overlap-safety, edge cases); full suite green.
+
+**Device verification — OP9, 2026-10-13 (release build install-over, WSS re-granted).** Pushed a generated
+**52:22** OGG/Opus (past the reporter's 41-min threshold). (1) **Phase 1:** while the shape was still a resting
+line, tapping it at ~60% jumped playback from 0:02 → **31:42** — the flat line scrubs. (2) **Phase 2:** the logs
+show the decode running in **5-min windows** ("300013 ms" chunks) through to the tail, **no OOM, no "Could not
+draw,"** and the screen then rendered a **full waveform** (bars, played portion filled) for the 52-min call —
+the exact length that OOM'd before. Test file + cached shape deleted afterward. *Not installed on the OP12 yet —
+it dropped off USB mid-session.*
+
+**Deferred (Phase 3, optional):** distinguish failed-vs-pending waveform state in the UI. Unnecessary now that
+the OOM is gone; the clearer log covers diagnosis.
+
+---
+
 ## 📋 Field reports 2026-10-10 — abdo kamel, foxcam, alex_812
 
 ### 🐞 abdo kamel — short calls save empty recordings (Shizuku on a low-end Redmi) — self-reported as "low RAM"

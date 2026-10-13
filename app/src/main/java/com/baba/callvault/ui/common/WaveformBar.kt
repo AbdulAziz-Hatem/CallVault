@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,17 +49,34 @@ fun WaveformBar(
     val played = MaterialTheme.colorScheme.primary
     val remaining = MaterialTheme.colorScheme.primary.copy(alpha = 0.22f)
 
+    // The whole bar is the scrub target, bars or not. The gesture lives on the outer Box rather than on
+    // the drawn bars, so the resting line — shown while the shape is still being computed, or when a
+    // recording was too damaged to decode and left no peaks — can be tapped and dragged all the same.
+    // The waveform is a picture of where to aim; losing the picture must never lose the control. A long
+    // call whose shape failed to decode is exactly the case that made this matter — see issue #52.
+    // rememberUpdatedState so the keyed-on-Unit detectors always call the current onSeekTo.
+    val seek by rememberUpdatedState(onSeekTo)
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(HEIGHT),
+            .height(HEIGHT)
+            .pointerInput(Unit) {
+                detectTapGestures { offset -> seek((offset.x / size.width).coerceIn(0f, 1f)) }
+            }
+            .pointerInput(Unit) {
+                detectHorizontalDragGestures { change, _ ->
+                    seek((change.position.x / size.width).coerceIn(0f, 1f))
+                }
+            },
         contentAlignment = Alignment.Center
     ) {
         if (peaks.isEmpty()) {
             // A resting line, never a spinner. The shape has to be read off the audio, which takes a
             // moment on a long call — but a spinner turns that moment into something the user is made
             // to wait for, and it replaces the control rather than filling it in. The line is the same
-            // width and in the same place as the bars that arrive, so nothing jumps when they do.
+            // width and in the same place as the bars that arrive, so nothing jumps when they do, and it
+            // is just as seekable (the gesture is on the Box above).
             Canvas(modifier = Modifier.fillMaxWidth().height(HEIGHT)) {
                 val centre = size.height / 2f
                 drawRoundedBar(
@@ -75,14 +94,6 @@ fun WaveformBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(HEIGHT)
-                .pointerInput(peaks.size) {
-                    detectTapGestures { offset -> onSeekTo((offset.x / size.width).coerceIn(0f, 1f)) }
-                }
-                .pointerInput(peaks.size) {
-                    detectHorizontalDragGestures { change, _ ->
-                        onSeekTo((change.position.x / size.width).coerceIn(0f, 1f))
-                    }
-                }
         ) {
             val slot = size.width / peaks.size
             val barWidth = max(1f, slot * BAR_FILL)
