@@ -3,6 +3,59 @@
 All notable changes to CallVault are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project uses semantic-ish versioning.
 
+## [2.4.6] — unreleased
+
+Everything merged into `main` since 2.4.5. Built for the maintainer's own devices first; released only
+after a few days with no regression. Status markers: 🧪 = built + tested (unit/on-device by us), awaiting
+the maintainer's real-use confirmation; ✅ = maintainer-confirmed.
+
+### Added
+
+- **Master On/Off switch.** One tap turns all recording on or off — carrier **and** VoIP — from the home
+  status card or a Quick Settings tile. Off stops the daemon and the keep-alive, silences the app-call
+  prompt and the "call not recorded" warning, and **survives a reboot**. (A warm "Paused" state was built
+  and then dropped — Pause and Off were indistinguishable in use.)
+  <!-- ✅ On/Off VERIFIED 2026-10-11 (maintainer, OP9 standalone + Shizuku). Commits 83a3323e…1c800e60. -->
+- **Greek transcription.** Greek (`el`) can be pinned as a transcription language. (#46)
+  <!-- ✅ VERIFIED 2026-10-12 (maintainer). -->
+- **Select all / clear all** in selection mode, on every library page — Recordings, Transcripts and
+  Summaries. Shown as a row at the top of the list; tap again to clear, which keeps you in selection mode.
+  (#1) <!-- ✅ VERIFIED 2026-10-12 (maintainer, "feels fine"). -->
+- **Sort the call list** by newest, oldest, longest, or name, from a Sort chip. (#27)
+  <!-- ✅ VERIFIED 2026-10-12 on device (OP9, maintainer-delegated). -->
+- **Call identity in the transcript header** — the number, date and time now show at the top of a
+  transcript, in the sheet and full-screen. (#27)
+  <!-- ✅ VERIFIED 2026-10-12 on device (OP9, maintainer-delegated). -->
+- **Allow screenshots with the app lock on** — a new setting lifts the screenshot block that app-lock's
+  FLAG_SECURE imposed. <!-- ✅ VERIFIED 2026-10-12 (maintainer). -->
+
+### Changed
+
+- **Contact names resolve at display time**, even when the file name has no number in it. A call saved as a
+  number (contact-only file-name template, no contact at record time) now shows the contact's name once the
+  contact is saved — and updates existing recordings — without re-recording. The file on disk keeps its
+  name. Reported by alex_812 (b).
+  <!-- 🧪 built + unit-tested + device-verified on OP9 2026-10-13; awaiting real-use confirmation. -->
+- **Transcript/details sidecars reach Drive in "Immediately" sync too.** Daily/Weekly already copied them
+  via the folder sweep; Immediately uploaded the audio only, orphaning the `.json`/`.md`. Now the sidecars
+  are routed on Immediately as well, and deleting a recording also removes the `.json`. (#49)
+  <!-- 🧪 merged 2026-10-12; shipping on the maintainer's accepted risk; not real-user-confirmed. -->
+- **Transcribe again** is gone from a finished transcript's reading view; a **failed** transcription still
+  offers retry. (#4/#27) <!-- ✅ VERIFIED 2026-10-12 (maintainer "#4 is fine"). -->
+
+### Fixed
+
+- **Long calls draw a waveform and can be scrubbed, however long.** The waveform decoded the whole file
+  into memory, so a long call threw an out-of-memory error and fell back to a flat line — and, since the
+  waveform is the scrubber, left the timeline dead. It is now decoded in bounded time-windows, and the
+  whole bar is a scrub target even before (or without) a waveform. (#52)
+  <!-- 🧪 built + unit-tested + device-verified on OP9 2026-10-13; awaiting the S24U reporter's confirmation. -->
+- **"Delete both copies" removes every copy.** Bulk delete of a Device+Drive recording deleted by stored
+  URI and could strand a copy; it now deletes by name across folders, like a single-row delete, and clears
+  the sidecar. <!-- 🧪 device-verified on OP9 2026-10-12; awaiting real-use confirmation. -->
+- **Merge sees Drive-only calls.** A call that lives only on Drive can now be merged (download-then-merge),
+  and numbers are matched across formats. <!-- 🧪 merged 2026-10-12; awaiting a real affected user. -->
+
 ## [2.4.5] — 2026-09-30
 
 2.4.4 was published briefly and pulled the same day after the cut-off bug below was found; 2.4.5 is 2.4.4
