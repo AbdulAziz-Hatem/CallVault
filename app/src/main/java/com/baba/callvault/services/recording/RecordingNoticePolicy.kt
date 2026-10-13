@@ -27,6 +27,16 @@ object RecordingNoticePolicy {
 
         /** Keep describing the state the service is already in. */
         AS_IS,
+
+        /**
+         * A VoIP call already owns this one, so the carrier start is about to be ignored and the
+         * service stopped. Android still demands a foreground notification the instant the service
+         * starts — but it must be a benign, silent placeholder, not the actionable Standby. Posting
+         * Standby here left "Call in progress — Press to start recording", with a Record button,
+         * sitting in the shade for the whole app call beside the real VoIP recording (likefreddy-lab,
+         * issue #54). The carrier service has nothing to record; it only needs to get out of the way.
+         */
+        STAND_DOWN,
     }
 
     /**
@@ -44,7 +54,7 @@ object RecordingNoticePolicy {
         !isStartRequest -> Opening.AS_IS
         hasSession -> Opening.AS_IS
         !hasMetadata -> Opening.AS_IS
-        isVoipCall -> Opening.AS_IS
+        isVoipCall -> Opening.STAND_DOWN
         else -> Opening.PREPARING
     }
 }

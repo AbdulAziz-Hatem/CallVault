@@ -29,12 +29,28 @@ class RecordingNoticePolicyTest {
         )
     }
 
-    /** The VoIP recorder already has this call; the carrier start is about to be ignored. */
+    /**
+     * The VoIP recorder already has this call; the carrier start is about to be ignored and the
+     * service stopped. The opening notice must be the benign stand-aside placeholder, never the
+     * actionable Standby that lingered beside the VoIP recording all call (issue #54).
+     */
     @Test
-    fun a_start_during_a_voip_call_does_not_claim_to_be_preparing() {
+    fun a_start_during_a_voip_call_stands_the_carrier_service_down() {
+        assertEquals(
+            Opening.STAND_DOWN,
+            RecordingNoticePolicy.opening(isStartRequest = true, hasSession = false, hasMetadata = true, isVoipCall = true),
+        )
+    }
+
+    /**
+     * A VoIP flag that arrives while the carrier already holds the call (hasSession) does not force a
+     * stand-down: the running recording's notice must stay as it is, not drop to a placeholder.
+     */
+    @Test
+    fun a_voip_flag_while_already_recording_still_leaves_the_notification_as_it_is() {
         assertEquals(
             Opening.AS_IS,
-            RecordingNoticePolicy.opening(isStartRequest = true, hasSession = false, hasMetadata = true, isVoipCall = true),
+            RecordingNoticePolicy.opening(isStartRequest = true, hasSession = true, hasMetadata = true, isVoipCall = true),
         )
     }
 
