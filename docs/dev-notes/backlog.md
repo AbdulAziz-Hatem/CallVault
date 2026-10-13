@@ -506,10 +506,17 @@ to get live name resolution on a contact-only template too, we'd need to keep th
 template. The `.json` sidecar already records the number — so the list could re-resolve from that when
 `parsed.number` is blank.
 
-**🔵 Feature (his ask, optional):** "resolve the display name on its own, including old recordings" — re-resolve
-contact names from the `.json` number when the filename has none, so a template change / newly-saved contact
-updates existing rows without re-recording. Small, self-contained; RecordingsRepository is already in the
-contacts path. Not started.
+**🧪 Feature (his ask) — BUILT, MERGED into `main` 2026-10-13, device-verified on OP9, slated for 2.4.6.**
+"Resolve the display name on its own, including old recordings." The list already re-resolves from a parsed
+number each pass; now, when the filename carries **no** number, it falls back to the baked contact slot when
+that slot still **looks like a number** (`looksLikePhoneNumber` — digits + number punctuation only, ≥5 digits,
+so a real name is never sent to PhoneLookup) and resolves from that. The file on disk keeps its name; only the
+displayed name updates. So a contact saved later, or the template changed later, shows the name without
+re-recording. The `.json` fallback is **not** used (it is opt-in/off by default, so unreliable) — the number is
+read from the name itself. Commit `6cc8e9f4` + merge; unit tests `LooksLikePhoneNumberTest`.
+**Device-verified (OP9, 2026-10-13):** a recording named `…_in_+15551230002.ogg` (number in the contact slot)
+showed **"AliceTester"** with the contact present, and reverted to **+15551230002** when the contact was
+deleted — live resolution with a safe fallback. Stays 🧪 (not maintainer-confirmed in real use).
 
 ---
 
