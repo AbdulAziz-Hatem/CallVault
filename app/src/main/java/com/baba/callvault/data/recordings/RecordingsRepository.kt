@@ -217,12 +217,19 @@ object RecordingsRepository {
                     }
                 }
                 val withDuration = seconds?.let { item.copy(durationSeconds = it) } ?: item
-                val number = withDuration.number
-                if (number.isNullOrBlank()) withDuration
+                // What to resolve a current contact name from. Normally the parsed number. But a
+                // contact-only file-name template carries no number, and when no contact was resolved
+                // at record time the formatter baked the NUMBER into the contact slot — so fall back to
+                // that slot when it still looks like a number. This is what lets a contact saved (or
+                // the template changed) after the call show the name without re-recording: the list is
+                // re-resolved live each pass, while the file on disk keeps its name. See alex_812 (b).
+                val lookupKey = withDuration.number?.takeUnless { it.isBlank() }
+                    ?: withDuration.contactName?.takeIf { looksLikePhoneNumber(it) }
+                if (lookupKey == null) withDuration
                 else {
-                    val name = nameCache.getOrPut(number) {
-                        (if (hasContactsPermission) lookupContactName(context, number) else null)
-                            ?: VoicemailLabel.labelOrNull(context, number)
+                    val name = nameCache.getOrPut(lookupKey) {
+                        (if (hasContactsPermission) lookupContactName(context, lookupKey) else null)
+                            ?: VoicemailLabel.labelOrNull(context, lookupKey)
                             ?: ""
                     }
                     if (name.isEmpty()) withDuration else withDuration.copy(contactName = name)
@@ -536,6 +543,29 @@ object RecordingsRepository {
     internal fun isAudioName(displayName: String?): Boolean {
         val name = displayName?.lowercase().orEmpty()
         return AUDIO_EXTENSIONS.any { name.endsWith(it) }
+    }
+
+    /** A number needs at least this many digits to be taken for a phone number rather than a name. */
+    private const val MIN_NUMBER_DIGITS = 5
+
+    /** Non-digit characters a phone number is allowed to carry. Anything else means it is a name. */
+    private const val PHONE_PUNCTUATION = "+-() ."
+
+    /**
+     * Whether [value] looks like a raw phone number rather than a person's name.
+     *
+     * The fallback key for display-time name resolution: a contact-only file-name template has no
+     * `{phone_number}` to parse, and when no contact was resolved at record time the formatter baked
+     * the number into the contact slot ([RecordingFileNameFormatter]) — so when that slot is itself a
+     * number, the list can still resolve it live. Conservative on purpose: a real name must never be
+     * sent to PhoneLookup, so every character has to be a digit or ordinary number punctuation, with
+     * at least [MIN_NUMBER_DIGITS] digits present.
+     */
+    internal fun looksLikePhoneNumber(value: String?): Boolean {
+        val s = value?.trim().orEmpty()
+        if (s.isEmpty()) return false
+        if (s.any { !it.isDigit() && it !in PHONE_PUNCTUATION }) return false
+        return s.count { it.isDigit() } >= MIN_NUMBER_DIGITS
     }
 
     private fun toItem(doc: DocumentFile): RecordingItem {
