@@ -296,7 +296,14 @@ class RecordingForegroundService : Service() {
                 // Checked here rather than at OFFHOOK because the telephony state arrives ~230 ms BEFORE
                 // the VoIP call is detected, so there is nothing to see yet at that point.
                 if (voipCall) {
-                    AppLogger.i(TAG, "Start request ignored: VoIP call, already handled by the VoIP recorder")
+                    // Stand down AND stop: the VoIP recorder owns this call, so this carrier service
+                    // has nothing to record. Leaving it running kept its benign opening notice up as a
+                    // foreground service for the whole call — and before the stand-aside notice, that
+                    // was the actionable "Call in progress — Press to start recording" (#54). The
+                    // no-session path below removes the foreground notice, hands "Ready" back to the
+                    // keep-alive, and stops the service.
+                    AppLogger.i(TAG, "Start request ignored: VoIP call, already handled by the VoIP recorder; standing the carrier service down (#54)")
+                    stopRecordingSessionAndService()
                     return START_NOT_STICKY
                 }
 
@@ -421,11 +428,19 @@ class RecordingForegroundService : Service() {
             hasMetadata = currentMeta != null,
             isVoipCall = voipCall,
         )
-        val openingState = currentMeta
-            ?.takeIf { opening == RecordingNoticePolicy.Opening.PREPARING }
-            ?.let { RecordingServiceState.Starting(it) }
-            ?: currentState
-        startForegroundWithType(notificationHelper.getNotification(openingState))
+        val notification = if (opening == RecordingNoticePolicy.Opening.STAND_DOWN) {
+            // The VoIP recorder owns this call; this carrier service is about to stop (see the
+            // voipCall branch in onStartCommand). Post the benign placeholder, never the actionable
+            // Standby — otherwise its Record button lingers beside the VoIP recording all call (#54).
+            notificationHelper.getStandingAsideNotification()
+        } else {
+            val openingState = currentMeta
+                ?.takeIf { opening == RecordingNoticePolicy.Opening.PREPARING }
+                ?.let { RecordingServiceState.Starting(it) }
+                ?: currentState
+            notificationHelper.getNotification(openingState)
+        }
+        startForegroundWithType(notification)
         return voipCall
     }
 

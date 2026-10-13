@@ -200,6 +200,26 @@ class RecordingNotificationHelper(private val context: Context) {
     }
 
     /**
+     * A benign, silent, action-free foreground notice for the single instant the carrier service
+     * must satisfy Android's "post a notification the moment you start" rule before it stands down
+     * for a VoIP call it will not record. It carries NO Record button and makes no sound, and the
+     * service removes it in the same turn — so the VoIP recorder's own notifications are the only
+     * ones left, instead of "Call in progress — Press to start recording" lingering all call (#54).
+     */
+    fun getStandingAsideNotification(): Notification =
+        NotificationCompat.Builder(context, CHANNEL_ID_SERVICE)
+            .setSmallIcon(R.drawable.ic_mic)
+            .setContentTitle(context.getString(R.string.recording_standby_notification_title))
+            .setContentText(context.getString(R.string.recording_notification_waiting))
+            .setOngoing(true)
+            .setSilent(true)
+            .setOnlyAlertOnce(true)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+            .build()
+
+    /**
      * Confirms that a mark landed, with the running total.
      *
      * A toast rather than a change to the notification: the marks cannot be listed until the call
