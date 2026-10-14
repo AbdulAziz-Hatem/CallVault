@@ -12,6 +12,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import com.baba.callvault.data.AppPreferences
+import com.baba.callvault.data.transcripts.SpeakerTurnsRepository
 import com.baba.callvault.integrations.scrcpy.ScrcpyAudioCodec
 import com.baba.callvault.utils.AppLogger
 
@@ -53,8 +54,14 @@ object MetadataSidecar {
      * @param packageName "com.android.phone" for a carrier call, the messenger's package for a VoIP one.
      * @param direction   "in" / "out" / "conference", or null when we genuinely do not know — an app
      *                    call has no reliable direction, and BCR's format has a null for that.
+     * @param nearChannel which captured channel carries the user ("A"/"B"), or null when not known —
+     *                    "A" for an app call (near is on the left by construction), the learned
+     *                    carrier mapping only when it is trusted. Goes in the `callvault` block.
+     *
+     * `suspend`, and meant to be called **after** the call's speaker turns have been collected: it
+     * reads those stored turns back for the recording and folds them into the file (issue #50).
      */
-    fun writeIfEnabled(
+    suspend fun writeIfEnabled(
         context: Context,
         folderUri: Uri?,
         audioName: String,
@@ -63,7 +70,8 @@ object MetadataSidecar {
         direction: String?,
         phoneNumber: String?,
         contactName: String?,
-        durationSecsEncoded: Double?
+        durationSecsEncoded: Double?,
+        nearChannel: String?
     ) {
         val prefs = AppPreferences(context)
         if (!prefs.isWriteMetadataFileEnabled()) return
@@ -71,6 +79,11 @@ object MetadataSidecar {
             AppLogger.w(TAG, "No recording folder; not writing a details file for '$audioName'.")
             return
         }
+
+        // The turns the daemon or handoff measured during the call, stored by collectAfterCall just
+        // before this runs. Blank for a mono capture, a Shizuku recording, or an older daemon — in
+        // which case the block simply omits the key rather than claiming empty turns.
+        val speakerTurns = SpeakerTurnsRepository.turnsFor(context, audioName).ifBlank { null }
 
         runCatching {
             val codec = ScrcpyAudioCodec.entries
@@ -91,7 +104,9 @@ object MetadataSidecar {
                     parameter = prefs.getAudioBitRate(),
                     sampleRate = null,
                     channelCount = 1,
-                    durationSecsEncoded = durationSecsEncoded
+                    durationSecsEncoded = durationSecsEncoded,
+                    speakerTurns = speakerTurns,
+                    nearChannel = nearChannel
                 )
             )
 

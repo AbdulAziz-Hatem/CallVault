@@ -679,10 +679,24 @@ object VoipRecordingCoordinator {
                     // Marks collected during the call, keyed to the final name — the same rule the
                     // carrier path follows and for the same reason.
                     FlagRepository.save(context, name, PendingFlags.drain())
+                    // Collect the speaker turns the capture just measured, before transcription is
+                    // queued and before the details file below — the runner reads them from the
+                    // database when it labels segments, and the details file now carries them too
+                    // (issue #50), so both must run after this or they would see no turns.
+                    //
+                    // The capture interleaves L=near, R=far and had that separation all along; it was
+                    // simply thrown away at the downmix, so app calls came out with no speaker labels
+                    // while carrier calls had them. `outgoing = false`: an app call has no reliable
+                    // direction here, and guessing wrong would teach the You/Them mapping the wrong
+                    // side, which is worse than leaving the sides neutral.
+                    runCatching {
+                        SpeakerTurnsRepository.collectAfterCall(context, name, outgoing = false)
+                    }.onFailure { AppLogger.w(TAG, "Could not collect VoIP speaker turns: ${it.message}") }
                     // Same details file as the carrier path, derived the same way from the same
                     // final name. `direction` comes out null here and that is correct rather than
                     // lazy: an app call has no reliable direction, and BCR's format already has a
-                    // null for a field that cannot be determined.
+                    // null for a field that cannot be determined. Written after the turns above so
+                    // the `callvault` block can carry them (issue #50).
                     run {
                         val parsed = RecordingsRepository.parseName(name)
                         MetadataSidecar.writeIfEnabled(
@@ -694,21 +708,12 @@ object VoipRecordingCoordinator {
                             direction = null,
                             phoneNumber = parsed.number,
                             contactName = parsed.contactName,
-                            durationSecsEncoded = null
+                            durationSecsEncoded = null,
+                            // The app call's own stereo puts the near party on the left (channel A) by
+                            // construction, so unlike a carrier call this never has to be learned.
+                            nearChannel = "A"
                         )
                     }
-                    // Collect the speaker turns the capture just measured, before transcription is
-                    // queued — the runner reads them from the database when it labels segments, so
-                    // arriving afterwards would mean an unlabelled transcript.
-                    //
-                    // The capture interleaves L=near, R=far and had that separation all along; it was
-                    // simply thrown away at the downmix, so app calls came out with no speaker labels
-                    // while carrier calls had them. `outgoing = false`: an app call has no reliable
-                    // direction here, and guessing wrong would teach the You/Them mapping the wrong
-                    // side, which is worse than leaving the sides neutral.
-                    runCatching {
-                        SpeakerTurnsRepository.collectAfterCall(context, name, outgoing = false)
-                    }.onFailure { AppLogger.w(TAG, "Could not collect VoIP speaker turns: ${it.message}") }
                     // Same order as the carrier path: catalog first, then queue.
                     TranscriptionScheduler.transcribeAfterCallIfEnabled(context, name)
                     // Draw it now rather than when the user opens it: this phone has just come
@@ -743,10 +748,10 @@ object VoipRecordingCoordinator {
                     }
                     AppLogger.i(TAG, "VoIP recording catalogued: $name ($size bytes)")
                     StorageRouter.route(context, safUri, name, codecMime)
-                    // Route the .json details to Drive too (issue #49). The sidecar was written just
-                    // above (686-699), so it exists by now. IMMEDIATE only; the sweep handles DAILY/WEEKLY;
-                    // no-op if the user did not ask for a details file. The .md transcript is routed later,
-                    // from the transcription-complete hook, since it does not exist yet.
+                    // Route the .json details to Drive too (issue #49). The sidecar was written
+                    // earlier in this block, so it exists by now. IMMEDIATE only; the sweep handles
+                    // DAILY/WEEKLY; no-op if the user did not ask for a details file. The .md transcript
+                    // is routed later, from the transcription-complete hook, since it does not exist yet.
                     StorageRouter.routeSidecar(context, name, MetadataSidecar.sidecarNameFor(name), "application/json")
                 }.onFailure { AppLogger.e(TAG, "Cataloguing the VoIP recording failed: ${it.message}", it) }
             }
