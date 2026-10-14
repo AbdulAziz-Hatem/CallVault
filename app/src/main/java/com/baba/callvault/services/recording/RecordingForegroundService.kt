@@ -662,7 +662,7 @@ class RecordingForegroundService : Service() {
      * Everything it reports is read back out of the final file name rather than carried down from
      * the call, so the two capture paths derive it identically and neither can drift from the other.
      */
-    private fun writeMetadataSidecar(name: String, lastModified: Long, packageName: String) {
+    private suspend fun writeMetadataSidecar(name: String, lastModified: Long, packageName: String) {
         val parsed = RecordingsRepository.parseName(name)
         MetadataSidecar.writeIfEnabled(
             context = applicationContext,
@@ -677,7 +677,10 @@ class RecordingForegroundService : Service() {
             },
             phoneNumber = parsed.number,
             contactName = parsed.contactName,
-            durationSecsEncoded = null
+            durationSecsEncoded = null,
+            // Carrier capture mixes the two directions onto channels whose order is an OEM detail, so
+            // name the near side only when the learned mapping is trusted; null otherwise (issue #50).
+            nearChannel = SpeakerTurnsRepository.trustedMap(applicationContext).nearChannelKey()
         )
     }
 
@@ -754,9 +757,25 @@ class RecordingForegroundService : Service() {
         // CallLog fallback above). Written for every storage target, regardless of where the file lands.
         CoroutineScope(Dispatchers.IO).launch {
             RecordingCatalog.recordLocal(applicationContext, name, uri, sizeBytes, lastModified)
+            // Marks are keyed to the FINAL name, for the same reason the sidecar is: an anonymous
+            // number gets renamed from the call log after the call, and rows written mid-call would
+            // point at a recording that no longer exists.
+            FlagRepository.save(applicationContext, name, PendingFlags.drain())
+            // Collect the speaker turns BEFORE the details file and before transcription is queued,
+            // never after. A transcript labels its segments from these turns, so they have to be on
+            // disk by the time whisper starts; and the details file now carries them too (issue #50),
+            // so it has to run after this or it would write a file with no turns in it.
+            //
+            // The daemon gathered them during the call, from the two capture channels before the
+            // mono downmix averaged them away. They cannot be recovered from the finished file —
+            // it is mono — so this is the only moment they can be collected at all.
+            SpeakerTurnsRepository.collectAfterCall(
+                applicationContext, name, outgoing = direction == RecordingDirection.OUTGOING
+            )
             // The BCR-compatible details file, when the user asked for one. Driven off the FINAL
             // name, after any call-log rename: a sidecar written against the pre-rename name would
-            // sit beside nothing and be invisible to every tool that looks for it.
+            // sit beside nothing and be invisible to every tool that looks for it. After the turns
+            // above, so the `callvault` block can carry them.
             writeMetadataSidecar(name, lastModified, "com.android.phone")
             // Route the .json details to Drive too (issue #49). Must be here, after the write above,
             // because the audio's StorageRouter.route runs synchronously below while this coroutine is
@@ -765,19 +784,6 @@ class RecordingForegroundService : Service() {
             // ask for a details file (nothing to find).
             StorageRouter.routeSidecar(
                 applicationContext, name, MetadataSidecar.sidecarNameFor(name), "application/json"
-            )
-            // Marks are keyed to the FINAL name, for the same reason the sidecar is: an anonymous
-            // number gets renamed from the call log after the call, and rows written mid-call would
-            // point at a recording that no longer exists.
-            FlagRepository.save(applicationContext, name, PendingFlags.drain())
-            // Before transcription is queued, never after: a transcript labels its segments from
-            // these turns, so they have to be on disk by the time whisper starts writing.
-            //
-            // The daemon gathered them during the call, from the two capture channels before the
-            // mono downmix averaged them away. They cannot be recovered from the finished file —
-            // it is mono — so this is the only moment they can be collected at all.
-            SpeakerTurnsRepository.collectAfterCall(
-                applicationContext, name, outgoing = direction == RecordingDirection.OUTGOING
             )
             // After the catalog entry exists, never before: the transcription runner resolves the
             // audio through the catalog, so queueing first would race it to "no longer in the catalog".

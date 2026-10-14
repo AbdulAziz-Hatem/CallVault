@@ -43,6 +43,21 @@ enum class ChannelMap(val key: String) {
         UNKNOWN -> false
     }
 
+    /**
+     * The near party's channel letter — the side that is *not* the far party — or null while
+     * [UNKNOWN]. The letters match `SpeakerChannel`'s keys ("A" is index 0, "B" is index 1).
+     *
+     * Null is deliberate, not a gap: it says "we have not confidently worked out which channel is
+     * yours", the same honest position the neutral "Speaker A / Speaker B" labels take. A reader that
+     * gets null must not assume a side. Used to fill the details file's `near_channel` for a carrier
+     * call (issue #50); app calls do not consult this (see the class note).
+     */
+    fun nearChannelKey(): String? = when (this) {
+        A_IS_FAR -> "B"
+        B_IS_FAR -> "A"
+        UNKNOWN -> null
+    }
+
     companion object {
         fun fromKey(key: String?): ChannelMap = entries.firstOrNull { it.key == key } ?: UNKNOWN
     }
