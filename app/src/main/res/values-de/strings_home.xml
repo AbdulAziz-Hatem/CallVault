@@ -115,6 +115,17 @@
     <string name="merge_note_will_keep">Die anderen Anrufe bleiben ebenfalls auf dem Telefon.</string>
     <string name="home_scroll_to_top">Nach oben</string>
     <string name="home_whatsnew_full_notes">Vollständige Versionshinweise</string>
+    <string name="whatsnew_246_title">Ein zentraler Ein/Aus-Schalter, Griechisch und Fehlerbehebungen</string>
+    <string-array name="whatsnew_246_items">
+        <item>Zentraler Ein/Aus-Schalter — alle Aufnahmen ein- oder ausschalten, Mobilfunk- und App-Anrufe, über die Startkarte oder die Schnelleinstellungen (übersteht einen Neustart)</item>
+        <item>Griechische Transkription</item>
+        <item>Alle auswählen / Auswahl aufheben auf jeder Bibliotheksseite</item>
+        <item>Anrufliste sortieren; Nummer, Datum und Uhrzeit stehen jetzt über jedem Transkript</item>
+        <item>Kontaktnamen erscheinen, sobald du den Kontakt speicherst — ohne neue Aufnahme</item>
+        <item>Transkripte und Detaildateien landen jetzt auch bei „Sofort“-Synchronisierung in Drive, und du kannst reine Drive-Anrufe zusammenführen</item>
+        <item>Die Detaildatei kann die Sprecherwechsel enthalten, für Tools, die sie lesen</item>
+        <item>Behoben — lange Anrufe lassen sich wieder scrubben, keine falsche Meldung „Zum Aufnehmen tippen“ bei App-Anrufen, und „Beide Kopien löschen“ entfernt jede Kopie</item>
+    </string-array>
     <string name="whatsnew_245_title">Neue Sprachen, Sicherungen und mehr</string>
     <string-array name="whatsnew_245_items">
         <item>Persisch und Arabisch — zwei neue App-Sprachen, von rechts nach links</item>

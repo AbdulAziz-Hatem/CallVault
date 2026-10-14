@@ -116,6 +116,17 @@
     <string name="merge_note_will_keep">Les autres appels sont également conservés sur le téléphone.</string>
     <string name="home_scroll_to_top">Haut</string>
     <string name="home_whatsnew_full_notes">Notes de version complètes</string>
+    <string name="whatsnew_246_title">Un interrupteur général, le grec et des corrections</string>
+    <string-array name="whatsnew_246_items">
+        <item>Interrupteur général marche/arrêt — activez ou désactivez tout l’enregistrement, appels réseau et appels d’applis, depuis la carte d’accueil ou les Réglages rapides (résiste à un redémarrage)</item>
+        <item>Transcription en grec</item>
+        <item>Tout sélectionner / tout effacer sur chaque page de la bibliothèque</item>
+        <item>Triez la liste des appels ; le numéro, la date et l’heure apparaissent maintenant au-dessus de chaque transcription</item>
+        <item>Les noms de contact s’affichent dès que vous enregistrez le contact — sans réenregistrer</item>
+        <item>Les transcriptions et les fichiers de détails arrivent désormais aussi sur Drive avec la synchro “Immédiate”, et vous pouvez fusionner les appels présents uniquement sur Drive</item>
+        <item>Le fichier de détails peut contenir les tours de parole, pour les outils qui le lisent</item>
+        <item>Corrections — les longs appels se parcourent à nouveau, plus de fausse notification “Appuyez pour démarrer l’enregistrement” pendant les appels d’applis, et “Supprimer les deux copies” efface chaque copie</item>
+    </string-array>
     <string name="whatsnew_245_title">Nouvelles langues, sauvegardes et plus encore</string>
     <string-array name="whatsnew_245_items">
         <item>Persan et arabe — deux nouvelles langues de l\'appli, de droite à gauche</item>

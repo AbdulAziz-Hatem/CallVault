@@ -115,6 +115,17 @@
     <string name="merge_note_will_keep">Las demás llamadas también se conservan en el teléfono.</string>
     <string name="home_scroll_to_top">Arriba</string>
     <string name="home_whatsnew_full_notes">Notas de versión completas</string>
+    <string name="whatsnew_246_title">Un interruptor general, griego y correcciones</string>
+    <string-array name="whatsnew_246_items">
+        <item>Interruptor general de activación/desactivación — activa o desactiva toda la grabación, llamadas de red y de apps, desde la tarjeta de inicio o los Ajustes rápidos (sobrevive a un reinicio)</item>
+        <item>Transcripción en griego</item>
+        <item>Seleccionar todo / borrar selección en todas las páginas de la biblioteca</item>
+        <item>Ordena la lista de llamadas; el número, la fecha y la hora aparecen ahora sobre cada transcripción</item>
+        <item>Los nombres de contacto aparecen en cuanto guardas el contacto — sin volver a grabar</item>
+        <item>Las transcripciones y los archivos de detalles ahora también llegan a Drive con la sincronización “Inmediata”, y puedes combinar llamadas que solo están en Drive</item>
+        <item>El archivo de detalles puede incluir los turnos de habla, para las herramientas que lo leen</item>
+        <item>Correcciones — las llamadas largas vuelven a poder desplazarse, ya no aparece el aviso erróneo “Pulsa para empezar a grabar” durante las llamadas de apps, y “Eliminar ambas copias” borra todas las copias</item>
+    </string-array>
     <string name="whatsnew_245_title">Nuevos idiomas, copias de seguridad y más</string>
     <string-array name="whatsnew_245_items">
         <item>Persa y árabe — dos nuevos idiomas de la app, de derecha a izquierda</item>

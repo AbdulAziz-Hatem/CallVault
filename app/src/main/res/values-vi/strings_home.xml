@@ -115,6 +115,17 @@
     <string name="merge_note_will_keep">Các cuộc gọi kia cũng được giữ lại trên máy.</string>
     <string name="home_scroll_to_top">Lên đầu</string>
     <string name="home_whatsnew_full_notes">Ghi chú phát hành đầy đủ</string>
+    <string name="whatsnew_246_title">Công tắc bật/tắt tổng, tiếng Hy Lạp và các bản sửa lỗi</string>
+    <string-array name="whatsnew_246_items">
+        <item>Công tắc bật/tắt tổng — bật hoặc tắt toàn bộ ghi âm, cuộc gọi mạng và cuộc gọi ứng dụng, từ thẻ trang chủ hoặc Cài đặt nhanh (vẫn giữ sau khi khởi động lại)</item>
+        <item>Phiên âm tiếng Hy Lạp</item>
+        <item>Chọn tất cả / bỏ chọn trên mọi trang thư viện</item>
+        <item>Sắp xếp danh sách cuộc gọi; số, ngày và giờ nay hiển thị phía trên mỗi bản ghi lời</item>
+        <item>Tên liên hệ tự điền ngay khi bạn lưu liên hệ — không cần ghi âm lại</item>
+        <item>Bản ghi lời và tệp chi tiết giờ cũng được đưa lên Drive khi đồng bộ “Ngay lập tức”, và bạn có thể gộp các cuộc gọi chỉ có trên Drive</item>
+        <item>Tệp chi tiết có thể chứa lượt nói của từng người, dành cho các công cụ đọc nó</item>
+        <item>Sửa lỗi — cuộc gọi dài lại tua được, không còn thông báo sai “Nhấn để bắt đầu ghi” trong cuộc gọi ứng dụng, và “Xóa cả hai bản sao” xóa mọi bản sao</item>
+    </string-array>
     <string name="whatsnew_245_title">Ngôn ngữ mới, bản sao lưu và hơn thế nữa</string>
     <string-array name="whatsnew_245_items">
         <item>Tiếng Ba Tư và tiếng Ả Rập — hai ngôn ngữ ứng dụng mới, viết từ phải sang trái</item>

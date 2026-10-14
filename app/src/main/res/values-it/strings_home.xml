@@ -115,6 +115,17 @@
     <string name="merge_note_will_keep">Le altre chiamate restano anche sul telefono.</string>
     <string name="home_scroll_to_top">Su</string>
     <string name="home_whatsnew_full_notes">Note di rilascio complete</string>
+    <string name="whatsnew_246_title">Un interruttore generale, il greco e correzioni</string>
+    <string-array name="whatsnew_246_items">
+        <item>Interruttore generale on/off — attiva o disattiva tutte le registrazioni, chiamate di rete e di app, dalla scheda iniziale o dalle Impostazioni rapide (resiste al riavvio)</item>
+        <item>Trascrizione in greco</item>
+        <item>Seleziona tutto / deseleziona in ogni pagina della libreria</item>
+        <item>Ordina l’elenco delle chiamate; numero, data e ora ora compaiono sopra ogni trascrizione</item>
+        <item>I nomi dei contatti compaiono appena salvi il contatto — senza registrare di nuovo</item>
+        <item>Le trascrizioni e i file dei dettagli ora arrivano su Drive anche con la sincronizzazione “Immediata”, e puoi unire le chiamate presenti solo su Drive</item>
+        <item>Il file dei dettagli può contenere i turni di conversazione, per gli strumenti che lo leggono</item>
+        <item>Correzioni — le chiamate lunghe si scorrono di nuovo, niente più falsa notifica “Tocca per avviare la registrazione” durante le chiamate di app, e “Elimina entrambe le copie” rimuove ogni copia</item>
+    </string-array>
     <string name="whatsnew_245_title">Nuove lingue, backup e altro</string>
     <string-array name="whatsnew_245_items">
         <item>Persiano e arabo — due nuove lingue dell\'app, da destra a sinistra</item>

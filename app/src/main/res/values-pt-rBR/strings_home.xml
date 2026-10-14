@@ -115,6 +115,17 @@
     <string name="merge_note_will_keep">As outras chamadas também são mantidas no telefone.</string>
     <string name="home_scroll_to_top">Topo</string>
     <string name="home_whatsnew_full_notes">Notas de versão completas</string>
+    <string name="whatsnew_246_title">Um botão geral, grego e correções</string>
+    <string-array name="whatsnew_246_items">
+        <item>Botão geral liga/desliga — ative ou desative toda a gravação, chamadas da rede e de apps, pelo cartão inicial ou pelas Configurações rápidas (resiste a uma reinicialização)</item>
+        <item>Transcrição em grego</item>
+        <item>Selecionar tudo / limpar seleção em todas as páginas da biblioteca</item>
+        <item>Ordene a lista de chamadas; o número, a data e a hora agora aparecem acima de cada transcrição</item>
+        <item>Os nomes dos contatos aparecem assim que você salva o contato — sem regravar</item>
+        <item>Transcrições e arquivos de detalhes agora chegam ao Drive também na sincronização “Imediata”, e você pode mesclar chamadas que só estão no Drive</item>
+        <item>O arquivo de detalhes pode conter os turnos de fala, para ferramentas que o leem</item>
+        <item>Correções — chamadas longas voltam a ser navegáveis, sem a notificação errada “Toque para iniciar a gravação” durante chamadas de apps, e “Excluir as duas cópias” remove todas as cópias</item>
+    </string-array>
     <string name="whatsnew_245_title">Novos idiomas, backups e mais</string>
     <string-array name="whatsnew_245_items">
         <item>Persa e árabe — dois novos idiomas do app, da direita para a esquerda</item>

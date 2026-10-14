@@ -115,6 +115,17 @@
     <string name="merge_note_will_keep">其余通话也会保留在手机上。</string>
     <string name="home_scroll_to_top">回到顶部</string>
     <string name="home_whatsnew_full_notes">完整发行说明</string>
+    <string name="whatsnew_246_title">总开关、希腊语和多项修复</string>
+    <string-array name="whatsnew_246_items">
+        <item>录音总开关 — 从主页卡片或快捷设置一键开启或关闭所有录音，包括运营商通话和应用通话（重启后依然保留）</item>
+        <item>希腊语转写</item>
+        <item>在每个媒体库页面全选 / 清除选择</item>
+        <item>为通话列表排序；号码、日期和时间现在显示在每条转写文字的顶部</item>
+        <item>保存联系人后，联系人姓名会自动填入 — 无需重新录制</item>
+        <item>转写文字和详情文件现在在“立即”同步时也会上传到 Drive，并且可以合并仅存在于 Drive 的通话</item>
+        <item>详情文件可包含说话人轮次，供读取它的工具使用</item>
+        <item>修复 — 长通话可再次拖动进度，应用通话期间不再出现错误的“点按开始录音”通知，“删除两份副本”会清除每一份副本</item>
+    </string-array>
     <string name="whatsnew_245_title">新增语言、备份以及更多</string>
     <string-array name="whatsnew_245_items">
         <item>波斯语和阿拉伯语 — 两种新的应用语言，从右到左</item>

@@ -115,6 +115,17 @@
     <string name="merge_note_will_keep">A többi hívás is a telefonon marad.</string>
     <string name="home_scroll_to_top">Az elejére</string>
     <string name="home_whatsnew_full_notes">Teljes kiadási jegyzék</string>
+    <string name="whatsnew_246_title">Központi be/ki kapcsoló, görög és javítások</string>
+    <string-array name="whatsnew_246_items">
+        <item>Központi be/ki kapcsoló — az összes rögzítés be- vagy kikapcsolása, hálózati és alkalmazáshívások, a kezdőkártyáról vagy a gyorsbeállításokból (újraindítás után is megmarad)</item>
+        <item>Görög átírás</item>
+        <item>Összes kijelölése / kijelölés törlése minden könyvtároldalon</item>
+        <item>Híváslista rendezése; a szám, a dátum és az idő most minden átirat tetején megjelenik</item>
+        <item>A névjegynevek megjelennek, amint menti a névjegyet — újrarögzítés nélkül</item>
+        <item>Az átiratok és a részletfájlok most már „Azonnali“ szinkronnál is eljutnak a Drive-ra, és egyesítheti a csak a Drive-on lévő hívásokat</item>
+        <item>A részletfájl tartalmazhatja a beszélőváltásokat az azt olvasó eszközök számára</item>
+        <item>Javítások — a hosszú hívások ismét tekerhetők, nincs több téves „Koppintson a rögzítés indításához“ értesítés alkalmazáshívások közben, és a „Mindkét másolat törlése“ minden másolatot eltávolít</item>
+    </string-array>
     <string name="whatsnew_245_title">Új nyelvek, biztonsági mentések és még több</string>
     <string-array name="whatsnew_245_items">
         <item>Perzsa és arab — két új alkalmazásnyelv, jobbról balra</item>

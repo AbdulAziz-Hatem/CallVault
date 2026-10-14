@@ -115,6 +115,17 @@
     <string name="merge_note_will_keep">Pozostałe rozmowy zostaną też zachowane w telefonie.</string>
     <string name="home_scroll_to_top">Do góry</string>
     <string name="home_whatsnew_full_notes">Pełne informacje o wydaniu</string>
+    <string name="whatsnew_246_title">Główny włącznik, grecki i poprawki</string>
+    <string-array name="whatsnew_246_items">
+        <item>Główny włącznik nagrywania — włącz lub wyłącz całe nagrywanie, połączenia sieciowe i w aplikacjach, z karty głównej lub Szybkich ustawień (przetrwa ponowne uruchomienie)</item>
+        <item>Transkrypcja po grecku</item>
+        <item>Zaznacz wszystko / wyczyść zaznaczenie na każdej stronie biblioteki</item>
+        <item>Sortuj listę połączeń; numer, data i godzina pojawiają się teraz nad każdą transkrypcją</item>
+        <item>Nazwy kontaktów pojawiają się po zapisaniu kontaktu — bez ponownego nagrywania</item>
+        <item>Transkrypcje i pliki szczegółów trafiają teraz na Dysk także przy synchronizacji “Natychmiast”, a połączenia tylko z Dysku można scalać</item>
+        <item>Plik szczegółów może zawierać tury mówców, dla narzędzi, które go odczytują</item>
+        <item>Poprawki — długie połączenia znów można przewijać, nie ma już błędnego powiadomienia “Naciśnij, aby rozpocząć nagrywanie” podczas połączeń w aplikacjach, a “Usuń obie kopie” usuwa każdą kopię</item>
+    </string-array>
     <string name="whatsnew_245_title">Nowe języki, kopie zapasowe i więcej</string>
     <string-array name="whatsnew_245_items">
         <item>Perski i arabski — dwa nowe języki aplikacji, od prawej do lewej</item>
