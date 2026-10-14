@@ -122,10 +122,12 @@ class SyncSweepWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(
             } ?: continue
 
             existingInDrive[name.lowercase()] = DriveCopy(driveUri, sourceSize)
-            if (deleteLocal) SafHelper.deleteDocument(file, "the device copy of '$name'")
-            // Stamp the Drive copy onto the catalog (clearing the local copy for DRIVE-only mode) so
-            // the Home list reflects the swept file without re-scanning the Drive folder.
-            RecordingCatalog.markDrive(applicationContext, name, driveUri, sourceSize, deleteLocal)
+            val deletedLocally = deleteLocal &&
+                SafHelper.deleteDocument(file, "the device copy of '$name'")
+            // A failed SAF delete leaves the local recording intact, so keep the
+            // catalog pointer to it. Only clear that pointer on confirmed deletion.
+            RecordingCatalog.markDrive(applicationContext, name, driveUri, sourceSize,
+                CloudCopyPolicy.shouldClearLocalReference(deleteLocal, deletedLocally))
         }
 
         AppLogger.i(TAG, "Sweep complete (target=$target copied=$copied failures=$failures skipped=$skipped deleteLocal=$deleteLocal).")

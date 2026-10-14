@@ -60,6 +60,14 @@ object CloudCopyPolicy {
     fun isLastAttempt(runAttemptCount: Int): Boolean = runAttemptCount >= MAX_ATTEMPTS - 1
 
     /**
+     * Only clear a local catalog link when the provider actually deleted the
+     * corresponding document. A failed/denied deletion must leave the recording
+     * visible on-device even though a cloud copy was also created.
+     */
+    fun shouldClearLocalReference(deleteRequested: Boolean, deletionSucceeded: Boolean): Boolean =
+        deleteRequested && deletionSucceeded
+
+    /**
      * The staging name a copy of [displayName] is written under until its bytes are all there.
      *
      * The marker goes *before* the extension ("call.ogg" -> "call.cvpart.ogg") so the name still matches
