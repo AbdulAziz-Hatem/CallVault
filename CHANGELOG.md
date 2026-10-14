@@ -3,7 +3,7 @@
 All notable changes to CallVault are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project uses semantic-ish versioning.
 
-## [2.4.6] — unreleased
+## [2.4.6] — 2026-10-14
 
 Everything merged into `main` since 2.4.5. Built for the maintainer's own devices first; released only
 after a few days with no regression. Status markers: 🧪 = built + tested (unit/on-device by us), awaiting
