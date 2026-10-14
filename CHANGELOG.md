@@ -32,10 +32,12 @@ the maintainer's real-use confirmation; ✅ = maintainer-confirmed.
   recording now carries a `callvault` block with the speaker turns CallVault measured during the call and
   which channel is yours — so a tool processing the mono Drive copy can tell who spoke when without
   re-deriving it. Additive and namespaced, so BCR readers are unaffected. Carrier and app calls both. (#50)
-  <!-- ✅ VERIFIED 2026-10-14 on device (OP12 standalone, maintainer-delegated): a real outgoing
-       carrier call's .json carried the callvault block — version 1, a trusted near_channel "A"
-       consistent with the turns (first speaker B = far party), real A/B/silence speaker_turns.
-       App-call (VoIP) path still 🧪: unit-tested, not yet seen on a real WhatsApp/RingCentral .json. -->
+  <!-- ✅ VERIFIED 2026-10-14 on device (OP12 standalone, maintainer-delegated), both paths:
+       a real outgoing CARRIER call's .json carried the block — version 1, a trusted near_channel
+       "A" consistent with the turns (first speaker B = far party), real A/B/silence speaker_turns;
+       and a real WhatsApp VOIP call's .json carried version 1, near_channel "A" (near on the left
+       by construction) and real speaker_turns with A/B/both(+)/silence. Shizuku path carries no
+       speaker_turns by design (scrcpy captures+encodes in its own process). -->
   <!-- Thanks eduardozacour for the report and the design. -->
 
 
