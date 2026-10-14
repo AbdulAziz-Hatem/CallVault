@@ -28,6 +28,13 @@ the maintainer's real-use confirmation; ✅ = maintainer-confirmed.
   <!-- ✅ VERIFIED 2026-10-12 on device (OP9, maintainer-delegated). -->
 - **Allow screenshots with the app lock on** — a new setting lifts the screenshot block that app-lock's
   FLAG_SECURE imposed. <!-- ✅ VERIFIED 2026-10-12 (maintainer). -->
+- **Speaker turns in the details file.** When "Write a details file" is on, the `.json` beside each
+  recording now carries a `callvault` block with the speaker turns CallVault measured during the call and
+  which channel is yours — so a tool processing the mono Drive copy can tell who spoke when without
+  re-deriving it. Additive and namespaced, so BCR readers are unaffected. Carrier and app calls both. (#50)
+  <!-- 🧪 built + unit-tested 2026-10-14; awaiting a real call with the details-file setting on. -->
+  <!-- Thanks eduardozacour for the report and the design. -->
+
 
 ### Changed
 
