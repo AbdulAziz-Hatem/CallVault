@@ -22,6 +22,7 @@ object LanguageScript {
         "he" to Character.UnicodeScript.HEBREW,
         "ar" to Character.UnicodeScript.ARABIC,
         "ru" to Character.UnicodeScript.CYRILLIC,
+        "uk" to Character.UnicodeScript.CYRILLIC,
         "zh" to Character.UnicodeScript.HAN,
         "el" to Character.UnicodeScript.GREEK,
         // Persian is written in the Arabic script, so a Latin transcript under a Persian pin is caught

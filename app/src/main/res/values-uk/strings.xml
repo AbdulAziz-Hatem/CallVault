@@ -419,5 +419,6 @@
     <string name="transcription_language_portuguese">Португальська</string>
     <string name="transcription_language_vietnamese">Вʼєтнамська</string>
     <string name="transcription_language_greek">Грецька</string>
+    <string name="transcription_language_ukrainian">Українська</string>
     <string name="transcription_language_auto">Визначати автоматично</string>
 </resources>
