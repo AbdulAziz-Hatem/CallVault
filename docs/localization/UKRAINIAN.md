@@ -1,6 +1,6 @@
 # Ukrainian localization — progressive rollout
 Locale: `uk` (native Android resources, `values-uk`).
-This commit translates **648 of 1012** English `<string>` entries
+This commit translates **915 of 1012** English `<string>` entries
 used by the app. UI strings in the other resources or without translations
 continue using the default English strings from `values`.
 
