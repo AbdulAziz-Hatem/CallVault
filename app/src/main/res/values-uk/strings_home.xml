@@ -276,4 +276,11 @@
         <item quantity="many">%1$d дзвінків · %2$s</item>
         <item quantity="other">%1$d дзвінка · %2$s</item>
     </plurals>
+    <string name="whatsnew_245_title">Нові мови, резервні копії та інші можливості</string>
+    <string name="whatsnew_244_title">Надійніший запис, повторне сполучення та сповіщення про оновлення</string>
+    <string name="whatsnew_243_title">Синхронізація VoIP, збереження нотаток і вибір контактів</string>
+    <string name="whatsnew_241_title">Пошук у кожному розділі та запис після відповіді</string>
+    <string name="whatsnew_241_where">Налаштування ▸ Запис ▸ Вихідні дзвінки ▸ Починати після відповіді</string>
+    <string name="whatsnew_240_where">Головна ▸ Транскрипції ▸ Імпорт аудіо</string>
+    <string name="whatsnew_230_where">Меню ⋮ запису ▸ Обʼєднати з іншим дзвінком</string>
 </resources>

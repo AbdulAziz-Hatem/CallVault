@@ -1,6 +1,6 @@
 # Ukrainian localization — progressive rollout
 Locale: `uk` (native Android resources, `values-uk`).
-This commit translates **1012 of 1012** English `<string>` entries
+This commit translates **1029 of 1029** English `<string>` entries
 used by the app. UI strings in the other resources or without translations
 continue using the default English strings from `values`.
 
@@ -9,9 +9,7 @@ selection, notifications, recording controls, filters, storage settings,
 transcription controls, and the essential Home hub.
 
 This is a broad Ukrainian pass; a native-speaker proofreading review remains recommended.
-The existing `checkTranslations` Gradle gate will still flag the remaining
-missing Ukrainian strings on `assembleRelease`. Do not bypass it for a
-production release. Debug builds can use native fallback while translating.
+All base translatable strings, arrays and plurals now have Ukrainian entries.\nKeep `checkTranslations` as a release gate to catch future drift and formatting issues.
 Non-translatable app-brand resources remain controlled by upstream/fork branding.
 
 ## Optional Ukrainian speech recognition
