@@ -462,6 +462,7 @@
     <string name="transcription_language_arabic">阿拉伯语</string>
     <string name="transcription_language_greek">希腊语</string>
     <string name="transcription_language_persian">波斯语</string>
+    <string name="transcription_language_ukrainian">乌克兰语</string>
     <string name="transcription_language_auto">自动检测</string>
     <string name="transcription_language_auto_hint">对于不用拉丁字母书写的语言，自动检测并不可靠——希伯来语、阿拉伯语、俄语和中文常常会以英文字母拼写的形式返回，或者变成一整段没有断句的文字。如果可以，请直接指定语言。</string>
     <string name="transcription_language_chinese">中文</string>

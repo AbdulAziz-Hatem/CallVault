@@ -462,6 +462,7 @@
     <string name="transcription_language_arabic">Arab</string>
     <string name="transcription_language_greek">Görög</string>
     <string name="transcription_language_persian">Perzsa</string>
+    <string name="transcription_language_ukrainian">Ukrán</string>
     <string name="transcription_language_auto">Automatikus felismerés</string>
     <string name="transcription_language_auto_hint">A felismerés megbízhatatlan azoknál a nyelveknél, amelyeket nem latin betűkkel írnak — a héber, az arab, az orosz és a kínai gyakran angol betűkkel kiírva jön vissza, vagy egyetlen hosszú szövegtömbként. Ha teheti, nevezze meg a nyelvet.</string>
     <string name="transcription_language_chinese">Kínai</string>
