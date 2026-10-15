@@ -1,6 +1,6 @@
 # Ukrainian localization — progressive rollout
 Locale: `uk` (native Android resources, `values-uk`).
-This commit translates **915 of 1012** English `<string>` entries
+This commit translates **1012 of 1012** English `<string>` entries
 used by the app. UI strings in the other resources or without translations
 continue using the default English strings from `values`.
 
@@ -8,7 +8,7 @@ Priority completed: onboarding, ADB pairing, call recording, cloud folder
 selection, notifications, recording controls, filters, storage settings,
 transcription controls, and the essential Home hub.
 
-This is a *first Ukrainian pass*, not a complete professional translation.
+This is a broad Ukrainian pass; a native-speaker proofreading review remains recommended.
 The existing `checkTranslations` Gradle gate will still flag the remaining
 missing Ukrainian strings on `assembleRelease`. Do not bypass it for a
 production release. Debug builds can use native fallback while translating.
@@ -23,8 +23,8 @@ Recognition remains optional and manual by default.
 
 ## Follow-up
 - Translate all remaining `strings.xml` and `strings_home.xml` keys,
-  including multi-line legal text and version-history descriptions.
-- Add Ukrainian plural forms to `<plurals>`, and string arrays.
+  including the legal disclaimer and sensitive system warnings.
+- Ukrainian plural forms and all string arrays have been added.
 - Run `:app:checkTranslations` and `:app:lintDebug`.
 - Review on an Android 12 Xiaomi and Android 13+ per-app language picker.
 - Keep `%1$s`, `%1$d`, and format escapes intact.

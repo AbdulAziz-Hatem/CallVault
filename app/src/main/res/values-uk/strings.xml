@@ -687,4 +687,59 @@
     <string name="update_popup_text">Нова версія готова до встановлення. Оновлення містить виправлення й покращення.</string>
     <string name="update_popup_update_now">Оновити зараз</string>
     <string name="update_popup_later">Пізніше</string>
+
+    <string name="list_separator">", "</string>
+    <string name="transcript_too_long_message">Тривалість дзвінка приблизно %1$d хв. Зараз CallVault може розпізнавати записи до %2$d хв, оскільки для довших може бракувати памʼяті. Сам аудіозапис залишиться.</string>
+    <string name="notif_health_shizuku_stopped_text">CallVault перезапустив налагодження Android і цим зупинив Shizuku. Якщо використовуєте Shizuku з іншими програмами, запустіть його знову.</string>
+    <string name="notif_health_shizuku_restarted_text">CallVault перезапустив службу налагодження Android і після цього успішно запустив Shizuku. Додаткових дій не потрібно.</string>
+    <string name="notif_health_shizuku_restart_failed_text">Після перезапуску налагодження Android службу Shizuku не вдалося запустити. Відкрийте Shizuku та запустіть її вручну.</string>
+    <string name="notif_health_recorder_text">Для відновлення запису підключіть телефон до будь-якої мережі Wi-Fi один раз. Доступ до інтернету не потрібен: достатньо кількох секунд.</string>
+    <string name="settings_offline_recording_reboot_note">Після перезавантаження телефону потрібно хоча б раз підключитися до Wi-Fi. Інтернет не потрібен. CallVault повідомить, якщо знадобиться цей крок.</string>
+    <string name="settings_metadata_file_hint">Використовує формат BCR, тому сумісні застосунки, наприклад bcr-gui, зможуть читати метадані записів.</string>
+    <string name="settings_transcript_sidecar_hint">Зберігає транскрипцію, нотатки та підсумок у текстовому файлі поряд з аудіо. Під час копіювання на компʼютер тексти залишаться із записами.</string>
+    <string name="settings_voip_apps_hint">Вимкніть запис для конкретного застосунку, і його дзвінки не записуватимуться. За замовчуванням усі підтримувані застосунки ввімкнені.</string>
+    <string name="oem_gate_body_oppo">На OnePlus, OPPO та realme дозвіл може бути недоступним, доки в параметрах розробника не ввімкнути «Вимкнути системну оптимізацію» або «Вимкнути контроль дозволів». Увімкніть цей параметр і повторіть.</string>
+    <string name="oem_gate_body_other">Телефон не надає необхідний дозвіл CallVault. У параметрах розробника перевірте керування дозволами та оптимізацію системи, потім спробуйте ще раз.</string>
+    <plurals name="home_selected_count">
+        <item quantity="one">Вибрано %1$d</item>
+        <item quantity="few">Вибрано %1$d</item>
+        <item quantity="many">Вибрано %1$d</item>
+        <item quantity="other">Вибрано %1$d</item>
+    </plurals>
+    <plurals name="home_bulk_delete_title">
+        <item quantity="one">Видалити %1$d запис?</item>
+        <item quantity="few">Видалити %1$d записи?</item>
+        <item quantity="many">Видалити %1$d записів?</item>
+        <item quantity="other">Видалити %1$d запису?</item>
+    </plurals>
+    <plurals name="home_bulk_delete_kept_count">
+        <item quantity="one">%1$d запис</item>
+        <item quantity="few">%1$d записи</item>
+        <item quantity="many">%1$d записів</item>
+        <item quantity="other">%1$d запису</item>
+    </plurals>
+    <plurals name="settings_voip_apps_some">
+        <item quantity="one">%1$d застосунок не записуватиметься</item>
+        <item quantity="few">%1$d застосунки не записуватимуться</item>
+        <item quantity="many">%1$d застосунків не записуватимуться</item>
+        <item quantity="other">%1$d застосунку не записуватиметься</item>
+    </plurals>
+    <plurals name="library_bulk_delete_transcripts_title">
+        <item quantity="one">Видалити %1$d транскрипцію?</item>
+        <item quantity="few">Видалити %1$d транскрипції?</item>
+        <item quantity="many">Видалити %1$d транскрипцій?</item>
+        <item quantity="other">Видалити %1$d транскрипції?</item>
+    </plurals>
+    <plurals name="library_bulk_delete_summaries_title">
+        <item quantity="one">Видалити %1$d підсумок?</item>
+        <item quantity="few">Видалити %1$d підсумки?</item>
+        <item quantity="many">Видалити %1$d підсумків?</item>
+        <item quantity="other">Видалити %1$d підсумку?</item>
+    </plurals>
+    <plurals name="library_bulk_delete_text_only_warning">
+        <item quantity="one">Для %1$d запису залишився лише текст без аудіо. Цю дію неможливо скасувати.</item>
+        <item quantity="few">Для %1$d записів залишився лише текст без аудіо. Цю дію неможливо скасувати.</item>
+        <item quantity="many">Для %1$d записів залишився лише текст без аудіо. Цю дію неможливо скасувати.</item>
+        <item quantity="other">Для %1$d запису залишився лише текст без аудіо. Цю дію неможливо скасувати.</item>
+    </plurals>
 </resources>
