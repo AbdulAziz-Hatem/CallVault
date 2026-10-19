@@ -58,7 +58,9 @@ import java.util.Locale
  * and marked `voip`, which is honest about what we know rather than guessing at who was on the call.
  *
  * Kept deliberately small and independent of [AudioRecordingEngine]: that engine is built around a
- * carrier call's metadata (number, direction, ignore-rules), none of which exists here.
+ * carrier call's metadata (number, direction), none of which exists here. The ignore list can still apply,
+ * by the caller's name or number from the call notification, when the user opts in — see
+ * [VoipIgnoredCallers] (issue #51).
  */
 object VoipRecordingCoordinator {
 
@@ -101,8 +103,15 @@ object VoipRecordingCoordinator {
     @Volatile private var codecMime: String = "audio/ogg"
 
     /** Starts a VoIP recording. No-op when the feature is off, already recording, or unavailable. */
+    /** Set when the caller turned out to be on the ignore list after the recording began (#51). */
+    @Volatile private var discardAsIgnored = false
+
+    /**
+     * @param manual the user pressed Record (the "Ask me" prompt). An explicit ask outranks the ignore
+     *   list, as it does for phone calls.
+     */
     @Synchronized
-    fun onCallStarted(context: Context) {
+    fun onCallStarted(context: Context, manual: Boolean = false) {
         if (recording) return
         val prefs = AppPreferences(context)
         // The master switch sits above the per-type VoIP setting: paused/stopped records nothing.
@@ -157,6 +166,11 @@ object VoipRecordingCoordinator {
             AppLogger.i(TAG, "Not recording this call: $callPackage is switched off for recording.")
             return
         }
+        // Issue #51, at the same point and for the same reason as the per-app choice: before any file.
+        if (!manual && VoipIgnoredCallers.isIgnored(context, caller)) {
+            AppLogger.i(TAG, "Not recording this call: the caller is on the ignore list.")
+            return
+        }
 
         val folderUri = prefs.getRecordingFolderUri()
         if (!SafHelper.isFolderValid(context, folderUri)) {
@@ -208,7 +222,8 @@ object VoipRecordingCoordinator {
         // The notification is the only place the name exists, and it may not be posted yet at the
         // instant the audio mode flipped. Ask again a few times into the call; the file is only
         // published at the end, so a late answer still names it.
-        if (caller == null && callPackage != null) lateCallerJob = askAgainForCaller(callPackage)
+        discardAsIgnored = false
+        if (caller == null && callPackage != null) lateCallerJob = askAgainForCaller(context, callPackage, manual)
         routeJob?.cancel()
         routeJob = reportAudioRoute(context, callPackage)
         answerHoldJob?.cancel()
@@ -328,7 +343,7 @@ object VoipRecordingCoordinator {
         VoipRecordingNotification.show(context, currentAppLabel, PendingFlags.count(), paused || hold)
     }
 
-    private fun askAgainForCaller(callPackage: String): Job = CoroutineScope(Dispatchers.IO).launch {
+    private fun askAgainForCaller(context: Context, callPackage: String, manual: Boolean): Job = CoroutineScope(Dispatchers.IO).launch {
         var elapsed = 0L
         for (at in VoipLateCaller.RETRY_DELAYS_MS) {
             delay(at - elapsed)
@@ -339,6 +354,14 @@ object VoipRecordingCoordinator {
             if (found != null) {
                 lateCaller = found
                 AppLogger.i(TAG, "Caller name found ${at / 1000} s into the call")
+                // The name came too late for the start check (#51). Nothing has been published — the
+                // recording is still in private staging — so ending it here and discarding it leaves no
+                // trace in the folder, on Drive or in a sync tool.
+                if (!manual && VoipIgnoredCallers.isIgnored(context, found)) {
+                    AppLogger.i(TAG, "The caller is on the ignore list; stopping and discarding this recording")
+                    discardAsIgnored = true
+                    onCallEnded(context)
+                }
                 return@launch
             }
         }
@@ -575,6 +598,17 @@ object VoipRecordingCoordinator {
         isSuspendedForCarrierCall = false
         runCatching { RecorderConnection.service?.stopRecording() }
             .onFailure { AppLogger.w(TAG, "stopRecording failed: ${it.message}") }
+        if (discardAsIgnored) {
+            // Before any warning or diagnostic: a call the user asked us to skip is not a one-sided or
+            // failed recording, and nothing about it should be reported or kept.
+            discardAsIgnored = false
+            runCatching { saf?.descriptor?.close() }
+            runCatching { saf?.stagingFile?.delete() }
+            saf?.uri?.let { uri ->
+                runCatching { SafHelper.deleteDocument(DocumentFile.fromSingleUri(context, uri), "the ignored caller's app call") }
+            }
+            return
+        }
         // The capture's own account of how its two sides lined up, written to the APP's log — the
         // same route the carrier path uses — so a report carries it even when the host's ring was
         // not on for the whole call. Issue #41 is diagnosed from this line. Empty from an older host.
@@ -794,6 +828,14 @@ object VoipRecordingCoordinator {
      * daemon (only it can see who owns the call audio), so this returns null whenever the daemon is
      * not connected — the prompt then falls back to generic wording rather than not appearing.
      */
+    /** Whether the app call now under way is with someone on the ignore list (#51) — for the "Ask me" prompt. */
+    fun isCurrentCallerIgnored(context: Context): Boolean {
+        val service = RecorderConnection.service ?: return false
+        val pkg = runCatching { resolveCallPackage(context, service) }.getOrNull() ?: return false
+        val caller = runCatching { service.voipCallerName(pkg) }.getOrNull()
+        return VoipIgnoredCallers.isIgnored(context, caller)
+    }
+
     fun currentCallAppLabel(context: Context): String? {
         val service = RecorderConnection.service ?: return null
         val pkg = runCatching { resolveCallPackage(context, service) }.getOrNull() ?: return null

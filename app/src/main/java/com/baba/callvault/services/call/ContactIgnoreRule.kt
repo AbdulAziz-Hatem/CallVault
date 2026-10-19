@@ -71,7 +71,7 @@ object ContactIgnoreRule {
      * has them ("050-000 0000") and the phone reports the caller internationally ("+972500000000"), so a
      * full-length number also matches on its last [TAIL_DIGITS] digits. Short codes must match exactly.
      */
-    private fun sameNumber(listed: String, normalisedCaller: String): Boolean {
+    internal fun sameNumber(listed: String, normalisedCaller: String): Boolean {
         val a = normalisePhoneNumber(listed).filter { it.isDigit() }
         val b = normalisedCaller.filter { it.isDigit() }
         if (a.isEmpty() || b.isEmpty()) return false

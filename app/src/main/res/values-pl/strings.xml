@@ -641,6 +641,9 @@
     <string name="voip_recording_text">Oznacz moment, aby znaleźć go później, albo zatrzymaj nagrywanie.</string>
     <string name="playback_marked_moments">Oznaczone momenty</string>
     <string name="settings_voip_apps_label">Wybierz aplikacje do nagrywania</string>
+    <string name="settings_voip_ignore_contacts_label">Pomijaj też ignorowane kontakty</string>
+    <string name="settings_voip_ignore_contacts_desc">Stosuj listę ignorowanych kontaktów także do rozmów w aplikacjach</string>
+    <string name="settings_voip_ignore_contacts_hint">Dopasowanie jest dokładne, po nazwie lub numerze, które aplikacja pokazuje dla rozmowy — nazwa pasująca tylko częściowo jest nagrywana. Telegram może pokazywać własną nazwę zamiast nazwy kontaktu, więc tam dopasowanie może nie zadziałać. Jeśli sam naciśniesz Nagraj, rozmowa zostanie nagrana.</string>
     <string name="settings_voip_apps_loading">Szukanie aplikacji…</string>
     <string name="settings_voip_apps_all">Nagrywane są wszystkie aplikacje</string>
     <plurals name="settings_voip_apps_some">

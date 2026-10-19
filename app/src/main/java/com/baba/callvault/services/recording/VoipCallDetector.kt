@@ -128,7 +128,7 @@ class VoipCallDetector(private val context: Context) {
         }
         AppLogger.i(TAG, "Recording this app call on the user's request")
         VoipRecordPrompt.cancel(context)
-        runCatching { VoipRecordingCoordinator.onCallStarted(context) }
+        runCatching { VoipRecordingCoordinator.onCallStarted(context, manual = true) }
             .onFailure { AppLogger.w(TAG, "Manual VoIP start failed: ${it.message}") }
         isRecording = VoipRecordingCoordinator.isRecording
         onRecordingStateChanged?.invoke()
@@ -237,6 +237,12 @@ class VoipCallDetector(private val context: Context) {
                 autoStart = prefs.isVoipAutoStartEnabled(),
             )
             if (action == RecordingPolicy.VoipAction.OFFER) {
+                // An ignored caller gets no prompt either (#51): asking "record this?" about someone the
+                // user listed to skip would make the list mean nothing.
+                if (VoipRecordingCoordinator.isCurrentCallerIgnored(context)) {
+                    AppLogger.i(TAG, "App call with an ignored contact — not offering to record")
+                    return
+                }
                 AppLogger.i(TAG, "App-call auto-start is off — offering to record instead")
                 VoipRecordPrompt.show(context, VoipRecordingCoordinator.currentCallAppLabel(context))
                 onRecordingStateChanged?.invoke()

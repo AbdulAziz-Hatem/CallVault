@@ -2481,6 +2481,19 @@ internal fun VoipRecordingToggle(onEnabledChange: (Boolean) -> Unit = {}) {
             SettingsDivider()
 
             VoipAppPicker(prefs)
+
+            // Issue #51. Beside the per-app choice: both narrow which app calls are recorded.
+            var applyIgnored by remember { mutableStateOf(prefs.isVoipApplyIgnoredContactsEnabled()) }
+            SettingsToggleRow(
+                label = stringResource(R.string.settings_voip_ignore_contacts_label),
+                description = stringResource(R.string.settings_voip_ignore_contacts_desc),
+                checked = applyIgnored,
+                onCheckedChange = { on ->
+                    applyIgnored = on
+                    prefs.setVoipApplyIgnoredContactsEnabled(on)
+                }
+            )
+            SettingsHint(stringResource(R.string.settings_voip_ignore_contacts_hint))
         }
     }
 

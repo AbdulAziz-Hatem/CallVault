@@ -641,6 +641,9 @@
     <string name="voip_recording_text">Jelöljön meg egy pillanatot, hogy később megtalálja, vagy állítsa le a felvételt.</string>
     <string name="playback_marked_moments">Megjelölt pillanatok</string>
     <string name="settings_voip_apps_label">Válassza ki, mely alkalmazásokat rögzítse</string>
+    <string name="settings_voip_ignore_contacts_label">A figyelmen kívül hagyott névjegyek kihagyása itt is</string>
+    <string name="settings_voip_ignore_contacts_desc">A figyelmen kívül hagyott névjegyek listája az alkalmazáshívásokra is vonatkozzon</string>
+    <string name="settings_voip_ignore_contacts_hint">Az egyezés pontosan azzal a névvel vagy számmal történik, amelyet az alkalmazás a hívásnál mutat — a csak részben egyező név esetén a hívás rögzül. A Telegram néha saját nevet mutat a névjegynév helyett, ezért ott tévedhet. Ha Ön nyomja meg a Rögzítés gombot, a hívás rögzül.</string>
     <string name="settings_voip_apps_loading">Alkalmazások keresése…</string>
     <string name="settings_voip_apps_all">Minden alkalmazás rögzítve</string>
     <plurals name="settings_voip_apps_some">

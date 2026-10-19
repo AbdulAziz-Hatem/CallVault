@@ -644,6 +644,9 @@
     <string name="voip_recording_text">Marque um momento para achar depois, ou pare a gravação.</string>
     <string name="playback_marked_moments">Momentos marcados</string>
     <string name="settings_voip_apps_label">Escolher quais apps gravar</string>
+    <string name="settings_voip_ignore_contacts_label">Pular também os contatos ignorados</string>
+    <string name="settings_voip_ignore_contacts_desc">Aplicar sua lista de contatos ignorados também às chamadas de apps</string>
+    <string name="settings_voip_ignore_contacts_hint">A comparação é exata com o nome ou número que o app mostra para a chamada — um nome que só coincide em parte é gravado mesmo assim. O Telegram pode mostrar um nome próprio em vez do nome do seu contato, então pode falhar lá. Se você mesmo tocar em Gravar, a chamada é gravada.</string>
     <string name="settings_voip_apps_loading">Procurando apps…</string>
     <string name="settings_voip_apps_all">Todos os apps são gravados</string>
     <plurals name="settings_voip_apps_some">

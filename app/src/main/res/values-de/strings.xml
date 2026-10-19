@@ -641,6 +641,9 @@
     <string name="voip_recording_text">Einen Moment markieren, um ihn später zu finden, oder Aufnahme stoppen.</string>
     <string name="playback_marked_moments">Markierte Momente</string>
     <string name="settings_voip_apps_label">Aufzuzeichnende Apps wählen</string>
+    <string name="settings_voip_ignore_contacts_label">Ignorierte Kontakte auch hier überspringen</string>
+    <string name="settings_voip_ignore_contacts_desc">Die Liste ignorierter Kontakte auch auf App-Anrufe anwenden</string>
+    <string name="settings_voip_ignore_contacts_hint">Abgeglichen wird exakt mit dem Namen oder der Nummer, die die App für den Anruf anzeigt — ein nur teilweise passender Name wird trotzdem aufgenommen. Telegram zeigt manchmal einen eigenen Namen statt deines Kontaktnamens und kann dort danebenliegen. Wenn du selbst auf Aufnehmen tippst, wird aufgenommen.</string>
     <string name="settings_voip_apps_loading">Apps werden gesucht …</string>
     <string name="settings_voip_apps_all">Jede App wird aufgezeichnet</string>
     <plurals name="settings_voip_apps_some">

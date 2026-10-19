@@ -735,6 +735,9 @@
     <string name="voip_recording_text">یک لحظه را نشان‌گذاری کنید تا بعداً پیدایش کنید، یا ضبط را متوقف کنید.</string>
     <string name="playback_marked_moments">لحظه‌های نشان‌گذاری‌شده</string>
     <string name="settings_voip_apps_label">انتخاب کنید کدام برنامه‌ها ضبط شوند</string>
+    <string name="settings_voip_ignore_contacts_label">مخاطبان نادیده‌گرفته‌شده را هم رد کن</string>
+    <string name="settings_voip_ignore_contacts_desc">فهرست مخاطبان نادیده‌گرفته‌شده را روی تماس‌های برنامه‌ها هم اعمال کن</string>
+    <string name="settings_voip_ignore_contacts_hint">مطابقت دقیقاً با نام یا شماره‌ای است که برنامه برای تماس نشان می‌دهد — نامی که فقط بخشی از آن مطابقت دارد همچنان ضبط می‌شود. Telegram ممکن است به‌جای نام مخاطب شما، نام خودش را نشان دهد، پس آنجا ممکن است مطابقت نیابد. اگر خودتان «ضبط» را بزنید، تماس ضبط می‌شود.</string>
     <string name="settings_voip_apps_loading">در حال جستجوی برنامه‌ها…</string>
     <string name="settings_voip_apps_all">هر برنامه‌ای ضبط می‌شود</string>
     <plurals name="settings_voip_apps_some">

@@ -641,6 +641,9 @@
     <string name="voip_recording_text">Отметьте момент, чтобы найти его позже, или остановите запись.</string>
     <string name="playback_marked_moments">Отмеченные моменты</string>
     <string name="settings_voip_apps_label">Выбрать, какие приложения записывать</string>
+    <string name="settings_voip_ignore_contacts_label">Пропускать и игнорируемые контакты</string>
+    <string name="settings_voip_ignore_contacts_desc">Применять список игнорируемых контактов и к звонкам в приложениях</string>
+    <string name="settings_voip_ignore_contacts_hint">Сравнение идёт точно по имени или номеру, которые приложение показывает для звонка, — имя, совпадающее лишь частично, всё равно записывается. Telegram может показывать собственное имя вместо имени контакта, поэтому там совпадение возможно не найдётся. Если вы сами нажмёте «Записать», звонок запишется.</string>
     <string name="settings_voip_apps_loading">Поиск приложений…</string>
     <string name="settings_voip_apps_all">Записываются все приложения</string>
     <plurals name="settings_voip_apps_some">

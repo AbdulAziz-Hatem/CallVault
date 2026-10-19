@@ -47,7 +47,7 @@ class AppPreferences(context: Context) {
             // Who to record / ignore
             "ignore_anonymous_incoming", "ignore_cross_country_incoming", "ignore_cross_country_outgoing",
             "ignore_contacts_mode_incoming", "ignore_contacts_mode_outgoing",
-            "ignored_contacts_incoming", "ignored_contacts_outgoing",
+            "ignored_contacts_incoming", "ignored_contacts_outgoing", "voip_apply_ignored_contacts",
             "record_only_contacts_incoming", "record_only_contacts_outgoing",
             // Audio + file naming
             "audio_source", "audio_codec", "audio_bitrate", "file_name_template",
@@ -227,6 +227,9 @@ class AppPreferences(context: Context) {
         // something they look at — and it only earns its keep for someone using a tool that reads it.
         const val WRITE_METADATA_FILE = false
         const val WRITE_TRANSCRIPT_SIDECAR = false
+        // Off. Issue #51 asked for it off by default: matching app calls by a notification's name is
+        // looser than matching a number, and a wrong match skips a call for good.
+        const val VOIP_APPLY_IGNORED_CONTACTS = false
 
         const val MIN_DURATION_SECONDS = 0
 
@@ -347,6 +350,7 @@ class AppPreferences(context: Context) {
         WRITE_METADATA_FILE("write_metadata_file"),
         WRITE_TRANSCRIPT_SIDECAR("write_transcript_sidecar"),
         VOIP_EXCLUDED_PACKAGES("voip_excluded_packages"),
+        VOIP_APPLY_IGNORED_CONTACTS("voip_apply_ignored_contacts"),
         MIN_DURATION_SECONDS("min_duration_seconds"),
         STORAGE_CAP_BYTES("storage_cap_bytes"),
         RETENTION_LOCAL_DAYS("retention_local_days"),
@@ -1155,6 +1159,12 @@ class AppPreferences(context: Context) {
      * both the safe default and the behaviour before the setting existed.
      */
     fun getVoipExcludedPackages() = getStringSet(Key.VOIP_EXCLUDED_PACKAGES)
+
+    /** Whether the ignored-contacts lists also apply to app calls, by the caller's name or number (#51). */
+    fun isVoipApplyIgnoredContactsEnabled() =
+        getBoolean(Key.VOIP_APPLY_IGNORED_CONTACTS, DefaultsValue.VOIP_APPLY_IGNORED_CONTACTS)
+
+    fun setVoipApplyIgnoredContactsEnabled(enabled: Boolean) = setBoolean(Key.VOIP_APPLY_IGNORED_CONTACTS, enabled)
 
     /** Replaces the set of apps whose calls are not recorded. */
     fun setVoipExcludedPackages(packages: Set<String>) = setStringSet(Key.VOIP_EXCLUDED_PACKAGES, packages)
