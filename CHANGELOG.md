@@ -3,6 +3,17 @@
 All notable changes to CallVault are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project uses semantic-ish versioning.
 
+## [Unreleased]
+
+### Added
+
+- **App calls record in Shizuku mode too** (Android 14 and newer). The Shizuku-hosted recorder now
+  presents itself as the shell, as CallVault's own recorder does, so Android lets it capture both sides.
+  <!-- ✅ VERIFIED 2026-10-19 (maintainer): WhatsApp call OP9→OP12 in Shizuku mode "recorded properly";
+       dumpsys confirms the Shizuku host (pid of :recorder) registered the policy and held both records as
+       com.android.shell. Open: 7 near-side mic re-takes in 14 s on the OP9. Carrier calls in Shizuku mode
+       now use direct capture instead of scrcpy — 🧪 not yet tried on a real call. -->
+
 ## [2.4.6] — 2026-10-14
 
 Everything merged into `main` since 2.4.5. Built for the maintainer's own devices first; released only

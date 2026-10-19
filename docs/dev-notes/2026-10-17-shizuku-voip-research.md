@@ -24,6 +24,23 @@ call. Same test, same process type, before/after:
   then a real WhatsApp call and a carrier call in Shizuku mode (direct capture now succeeds instead of
   falling back to scrcpy — a behaviour change that needs its own two-sided call).
 
+## 2026-10-19 real call — ✅ VERIFIED (maintainer) WhatsApp in Shizuku mode, OP9 → OP12
+
+The maintainer placed a WhatsApp call from the OP9 (Shizuku mode, build `2137e7d5`) and reports it
+"recorded properly". Proof it went through the Shizuku host, from `dumpsys audio`:
+
+- `registerAudioPolicy … u/pid:2000/18762` at 11:20:24; pid 18762 = `com.baba.callvault:recorder` (the
+  Shizuku user service). No `RecorderServer` app_process existed.
+- During the call (12:12:09–12:12:26): `src:REMOTE_SUBMIX … pack:com.android.shell` (far side) and
+  `src:MIC … pack:com.android.shell` (near side), all `not silenced` — the shell identity, not ours.
+- File `20261019_121209.682+0300_voip-WhatsApp_פרוזה.ogg`, 16 s, Opus 48 kHz mono (the shipped mono
+  encode), levels continuous, no dead stretch.
+
+⚠️ Open: the near MIC record was re-taken 7 times in ~14 s (riid 239→287), i.e. `VoipCaptureSession`'s
+zero-chunk re-take fired repeatedly — WhatsApp kept winning the mic on the OP9. Each re-take can cost a
+fraction of a second of the near side. Not yet known whether the OP9 does the same in standalone mode
+(A/B needed) or whether it is Shizuku-specific.
+
 Below is the original research (📐, from source), kept as written.
 
 ## The short answer
