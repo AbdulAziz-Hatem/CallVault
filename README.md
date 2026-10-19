@@ -111,12 +111,19 @@ Switch whenever you like; any setting a mode couldn't honour comes back when you
 | **Where they differ** | | |
 | Works without installing another app | ✅ | ❌ |
 | Nothing to pair, and no wireless debugging of CallVault's own | ❌ | ✅ |
-| Recording works after a reboot, with nothing to do | ✅ | ❌ |
+| After a reboot, recording starts again by itself once the phone is on Wi-Fi | ✅ | Only with Shizuku's own auto-start (Android 13+, trusted Wi-Fi) |
 | App calls (opt-in) | ✅ | ❌ |
 | Speaker labels | ✅ | ❌ |
 | Keeps recording if Android kills the background process (opt-in) | ✅ | ❌ |
 | Recording away from Wi-Fi (opt-in) | ✅ | ❌ |
 | Full bug-report export | ✅ | ❌ |
+
+> [!IMPORTANT]
+> **After every reboot, the phone has to be on Wi-Fi once before CallVault can record** — in either mode.
+> Android clears the debugging access CallVault starts from on every reboot, and it can only be set up
+> again over Wi-Fi. Any network will do, for a few seconds, with no internet needed — your home Wi-Fi
+> joining automatically, or another phone's hotspot. There is no one-time setup that removes this without
+> root. CallVault tells you when it is waiting, so a missed call is not how you find out.
 
 > [!NOTE]
 > Recording away from Wi-Fi needs **USB debugging** switched on — see [the two debugging switches](#the-two-debugging-switches). It is armed over your network, and a reboot clears it. It comes back as soon as the phone joins *any* Wi-Fi network for a few seconds — it needs no internet, and a café or a hotspot will do. CallVault says when that is needed, so a missed call is not how you find out.
