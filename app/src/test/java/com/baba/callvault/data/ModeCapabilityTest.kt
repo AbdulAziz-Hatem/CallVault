@@ -38,10 +38,10 @@ class ModeCapabilityTest {
     }
 
     @Test
-    fun shizuku_still_lacks_what_has_not_been_proven_there() {
-        // Not yet tried on a real call in the Shizuku host, so still off there.
-        assertFalse(ModeCapability.RESILIENT_RECORDING.isAvailableIn(PrivilegedMode.SHIZUKU))
-        assertFalse(ModeCapability.SPEAKER_ATTRIBUTION.isAvailableIn(PrivilegedMode.SHIZUKU))
+    fun shizuku_does_everything_that_needs_a_privileged_audiorecord() {
+        // One host code, one shell identity: the capture-side features no longer differ by mode.
+        assertTrue(ModeCapability.RESILIENT_RECORDING.isAvailableIn(PrivilegedMode.SHIZUKU))
+        assertTrue(ModeCapability.SPEAKER_ATTRIBUTION.isAvailableIn(PrivilegedMode.SHIZUKU))
     }
 
     @Test

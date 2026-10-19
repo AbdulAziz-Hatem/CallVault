@@ -113,7 +113,7 @@
     <string name="mode_switch_problem_title">هنوز آماده نیست</string>
     <string name="mode_switch_done_shizuku">آماده — با استفاده از Shizuku</string>
     <string name="mode_switch_done_standalone">آماده — با استفاده از CallVault</string>
-    <string name="mode_switch_ready_shizuku">CallVault از طریق Shizuku ضبط می‌کند. تماس‌های برنامه‌ها هم ضبط می‌شوند (Android 14 و جدیدتر)؛ ضبط تاب‌آور و نام گویندگان در این حالت در دسترس نیست.</string>
+    <string name="mode_switch_ready_shizuku">CallVault از طریق Shizuku ضبط می‌کند. همه‌چیز در دسترس است به‌جز ضبط بدون Wi-Fi که به ضبط‌کنندهٔ خود CallVault نیاز دارد.</string>
     <string name="mode_switch_ready_standalone">CallVault با ضبط‌کننده اختصاصی خودش ضبط می‌کند. همه‌چیز در دسترس است، از جمله تماس‌های VoIP و نام گویندگان.</string>
     <string name="mode_switch_ready">ضبط‌کننده در حال اجراست. تماس‌ها ضبط خواهند شد.</string>
     <string name="mode_switch_shizuku_not_installed">Shizuku نصب نیست، پس چیزی برای تغییر به آن وجود ندارد.</string>

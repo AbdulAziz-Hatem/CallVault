@@ -45,25 +45,25 @@ class ModeSwitchRestoreTest {
 
     @Test
     fun `a switch CallVault turned off comes back on returning to standalone`() {
-        prefs.setHandoffPersistEnabled(true)
+        prefs.setOfflineRecordingEnabled(true)
 
         enterShizuku()
-        assertFalse("Shizuku cannot do handoff, so it must be off there", prefs.isHandoffPersistEnabled())
+        assertFalse("Shizuku cannot record off Wi-Fi, so it must be off there", prefs.isOfflineRecordingEnabled())
 
         returnToStandalone()
-        assertTrue("Standalone can do handoff again, so it must come back", prefs.isHandoffPersistEnabled())
+        assertTrue("Standalone can record off Wi-Fi again, so it must come back", prefs.isOfflineRecordingEnabled())
     }
 
     @Test
     fun `a switch the user turned off stays off`() {
-        prefs.setHandoffPersistEnabled(false)
+        prefs.setOfflineRecordingEnabled(false)
 
         enterShizuku()
         returnToStandalone()
 
         assertFalse(
             "Restoring must never enable something the user had deliberately off",
-            prefs.isHandoffPersistEnabled()
+            prefs.isOfflineRecordingEnabled()
         )
     }
 
@@ -74,8 +74,9 @@ class ModeSwitchRestoreTest {
         prefs.setVoipRecordingEnabled(true)
         prefs.setVoipAutoStartEnabled(false)
 
-        enterShizuku()
-        returnToStandalone()
+        // Shizuku no longer takes VoIP away; Android 13 does, through the same record-and-restore.
+        prefs.disableWhatModeCannotDo(PrivilegedMode.STANDALONE, sdk = 33)
+        prefs.restoreWhatModeCanDoAgain(PrivilegedMode.STANDALONE, sdk = 34)
 
         assertTrue("VoIP recording was on before, so it comes back", prefs.isVoipRecordingEnabled())
         assertFalse("Auto-start was off before, so it stays off", prefs.isVoipAutoStartEnabled())
@@ -83,60 +84,58 @@ class ModeSwitchRestoreTest {
 
     @Test
     fun `every capability the mode took away is restored`() {
-        prefs.setHandoffPersistEnabled(true)
-        prefs.setVoipRecordingEnabled(true)
         prefs.setOfflineRecordingEnabled(true)
+        prefs.setPersistentServerEnabled(true)
 
         val turnedOff = enterShizuku()
         val restored = returnToStandalone()
 
         assertEquals("What came back must be exactly what went away", turnedOff, restored)
-        assertTrue(prefs.isHandoffPersistEnabled())
-        assertTrue(prefs.isVoipRecordingEnabled())
         assertTrue(prefs.isOfflineRecordingEnabled())
+        assertTrue(prefs.isPersistentServerEnabled())
     }
 
     @Test
     fun `restoring twice does not resurrect a switch turned off in between`() {
-        prefs.setHandoffPersistEnabled(true)
+        prefs.setOfflineRecordingEnabled(true)
         enterShizuku()
         returnToStandalone()
 
         // The user changes their mind while back in standalone.
-        prefs.setHandoffPersistEnabled(false)
+        prefs.setOfflineRecordingEnabled(false)
 
         // Anything that re-runs the reconcile — an app start, say — must leave that alone.
         assertTrue(
             "The record should have been consumed by the first restore",
             prefs.restoreWhatModeCanDoAgain(PrivilegedMode.STANDALONE).isEmpty()
         )
-        assertFalse(prefs.isHandoffPersistEnabled())
+        assertFalse(prefs.isOfflineRecordingEnabled())
     }
 
     @Test
     fun `a second round trip remembers the newer answer`() {
-        prefs.setHandoffPersistEnabled(true)
+        prefs.setOfflineRecordingEnabled(true)
         enterShizuku()
         returnToStandalone()
 
-        prefs.setHandoffPersistEnabled(false)
+        prefs.setOfflineRecordingEnabled(false)
         enterShizuku()
         returnToStandalone()
 
-        assertFalse("The second trip started from off, so it must end off", prefs.isHandoffPersistEnabled())
+        assertFalse("The second trip started from off, so it must end off", prefs.isOfflineRecordingEnabled())
     }
 
     @Test
     fun `restoring in a mode that still cannot do it keeps the record for later`() {
-        prefs.setHandoffPersistEnabled(true)
+        prefs.setOfflineRecordingEnabled(true)
         enterShizuku()
 
         // An app start while still in Shizuku mode must not restore, and must not forget either.
         assertTrue(prefs.restoreWhatModeCanDoAgain(PrivilegedMode.SHIZUKU).isEmpty())
-        assertFalse(prefs.isHandoffPersistEnabled())
+        assertFalse(prefs.isOfflineRecordingEnabled())
 
         returnToStandalone()
-        assertTrue("The record survived the no-op restore", prefs.isHandoffPersistEnabled())
+        assertTrue("The record survived the no-op restore", prefs.isOfflineRecordingEnabled())
     }
 
     @Test
