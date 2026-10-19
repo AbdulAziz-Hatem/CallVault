@@ -623,6 +623,9 @@
     <string name="settings_transcript_sidecar_label">Lưu bản chép lời và ghi chú bên cạnh bản ghi âm</string>
     <string name="settings_transcript_sidecar_desc">Tạo một tệp văn bản .md bên cạnh mỗi bản ghi âm</string>
     <string name="settings_transcript_sidecar_hint">Lưu bản chép lời, ghi chú và bản tóm tắt thành một tệp văn bản cùng tên với bản ghi âm, nên khi sao chép thư mục sang PC thì văn bản vẫn đi kèm với âm thanh. Bật tính năng này cũng lưu lại những bản bạn đã có.</string>
+    <string name="settings_hide_recordings_label">Ẩn bản ghi âm</string>
+    <string name="settings_hide_recordings_desc">Không để bản ghi âm xuất hiện trong trình phát nhạc, thư viện ảnh và các ứng dụng đa phương tiện khác</string>
+    <string name="settings_hide_recordings_hint">Thêm một tệp .nomedia ẩn vào thư mục ghi âm, được hầu hết ứng dụng tôn trọng. Bản ghi âm giữ nguyên tên và vẫn đồng bộ. Trình quản lý tệp vẫn hiển thị chúng — để ẩn cả ở đó, hãy đặt tên thư mục bắt đầu bằng dấu chấm.</string>
     <string name="settings_backup_title">Sao lưu cài đặt</string>
     <string name="settings_backup_desc">Lưu cài đặt của bạn vào một tệp hoặc khôi phục từ một tệp.</string>
     <string name="settings_export">Xuất</string>

@@ -3,6 +3,15 @@
 All notable changes to CallVault are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project uses semantic-ish versioning.
 
+## [Unreleased]
+
+### Added
+
+- **Hide Recordings.** A setting that keeps your recordings out of music players, galleries and other
+  media apps, by adding a hidden `.nomedia` file to the recordings folder. Recordings keep their names and
+  still sync; file managers still show them. Turning it off removes the file only if CallVault added it.
+  <!-- 🧪 VERIFYING — unit tests; needs checking on a phone that media apps stop listing the recordings. -->
+
 ## [2.4.6] — 2026-10-14
 
 Everything merged into `main` since 2.4.5. Built for the maintainer's own devices first; released only

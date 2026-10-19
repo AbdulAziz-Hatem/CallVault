@@ -623,6 +623,9 @@
     <string name="settings_transcript_sidecar_label">Zapisuj transkrypcję i notatki obok nagrania</string>
     <string name="settings_transcript_sidecar_desc">Twórz plik tekstowy .md obok każdego nagrania</string>
     <string name="settings_transcript_sidecar_hint">Zapisuje transkrypcję, notatki i podsumowanie jako plik tekstowy o tej samej nazwie co nagranie, więc po skopiowaniu folderu na komputer tekst pozostaje razem z dźwiękiem. Włączenie zapisuje też te, które już masz.</string>
+    <string name="settings_hide_recordings_label">Ukryj nagrania</string>
+    <string name="settings_hide_recordings_desc">Nie pokazuj nagrań w odtwarzaczach muzyki, galeriach i innych aplikacjach multimedialnych</string>
+    <string name="settings_hide_recordings_hint">Dodaje ukryty plik .nomedia do folderu z nagraniami, respektowany przez większość aplikacji. Nagrania zachowują nazwy i nadal się synchronizują. Menedżery plików nadal je pokazują — aby ukryć je i tam, nadaj folderowi nazwę zaczynającą się od kropki.</string>
     <string name="settings_backup_title">Kopia zapasowa ustawień</string>
     <string name="settings_backup_desc">Zapisz swoje ustawienia do pliku lub przywróć je z pliku.</string>
     <string name="settings_export">Eksportuj</string>

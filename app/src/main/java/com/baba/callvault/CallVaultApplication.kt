@@ -49,6 +49,10 @@ class CallVaultApplication : Application() {
         super.onCreate()
         AppLogger.init(applicationContext)
 
+        // Hide Recordings is a property of the folder, and the folder can change under us: a settings
+        // import, a wizard re-pick, a user deleting the marker by hand. Re-checking is one folder lookup.
+        com.baba.callvault.system.storage.HideRecordings.applyAsync(applicationContext)
+
         // Shizuku mode has no keep-alive, so nothing else would notice Shizuku dying while the app runs.
         com.baba.callvault.server.ShizukuLifecycleWatcher.install(applicationContext)
 

@@ -650,6 +650,9 @@
     <string name="settings_transcript_sidecar_label">حفظ النص والملاحظات بجانب التسجيل</string>
     <string name="settings_transcript_sidecar_desc">إنشاء ملف نصي .md بجانب كل تسجيل</string>
     <string name="settings_transcript_sidecar_hint">يحفظ النص والملاحظات والملخص كملف نصي بالاسم نفسه الخاص بالتسجيل، بحيث يبقى النص مع الصوت عند نسخ مجلدك إلى حاسوب. تفعيله يحفظ أيضًا ما لديك بالفعل.</string>
+    <string name="settings_hide_recordings_label">إخفاء التسجيلات</string>
+    <string name="settings_hide_recordings_desc">إبقاء تسجيلاتك خارج مشغلات الموسيقى والمعارض وتطبيقات الوسائط الأخرى</string>
+    <string name="settings_hide_recordings_hint">يضيف ملف ‎.nomedia‎ مخفيًا إلى مجلد التسجيلات، وتحترمه معظم التطبيقات. تحتفظ التسجيلات بأسمائها وتستمر مزامنتها. ستظل مديرات الملفات تعرضها — لإخفائها هناك أيضًا، اجعل اسم المجلد يبدأ بنقطة.</string>
     <string name="settings_backup_title">نسخ احتياطي للإعدادات</string>
     <string name="settings_backup_desc">احفظ إعداداتك في ملف، أو استعِدها من ملف.</string>
     <string name="settings_export">تصدير</string>

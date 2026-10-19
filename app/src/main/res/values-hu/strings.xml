@@ -623,6 +623,9 @@
     <string name="settings_transcript_sidecar_label">Átirat és jegyzetek mentése a felvétel mellé</string>
     <string name="settings_transcript_sidecar_desc">.md szövegfájl létrehozása minden felvétel mellé</string>
     <string name="settings_transcript_sidecar_hint">Az átiratot, a jegyzeteket és az összefoglalót a felvétellel azonos nevű szövegfájlként menti, így ha a mappát egy PC-re másolod, a szöveg a hanggal együtt marad. A bekapcsoláskor a meglévőket is menti.</string>
+    <string name="settings_hide_recordings_label">Felvételek elrejtése</string>
+    <string name="settings_hide_recordings_desc">Tartsa távol a felvételeket a zenelejátszóktól, galériáktól és más médiaalkalmazásoktól</string>
+    <string name="settings_hide_recordings_hint">Egy rejtett .nomedia fájlt tesz a felvételek mappájába, amelyet a legtöbb alkalmazás figyelembe vesz. A felvételek megtartják a nevüket, és továbbra is szinkronizálódnak. A fájlkezelők továbbra is mutatják őket — ha ott is el akarja rejteni, adjon a mappának ponttal kezdődő nevet.</string>
     <string name="settings_backup_title">Beállítások mentése</string>
     <string name="settings_backup_desc">Mentsd a beállításaidat egy fájlba, vagy állítsd vissza egy fájlból.</string>
     <string name="settings_export">Exportálás</string>
