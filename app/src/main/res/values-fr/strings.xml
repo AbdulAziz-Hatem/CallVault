@@ -624,6 +624,9 @@
     <string name="settings_transcript_sidecar_label">Enregistrer la transcription et les notes à côté de l\'enregistrement</string>
     <string name="settings_transcript_sidecar_desc">Créer un fichier texte .md à côté de chaque enregistrement</string>
     <string name="settings_transcript_sidecar_hint">Enregistre la transcription, les notes et le résumé dans un fichier texte portant le même nom que l\'enregistrement, de sorte qu\'en copiant votre dossier sur un PC le texte reste avec l\'audio. L\'activer enregistre aussi ceux que vous avez déjà.</string>
+    <string name="settings_hide_recordings_label">Masquer les enregistrements</string>
+    <string name="settings_hide_recordings_desc">Tenir vos enregistrements à l’écart des lecteurs de musique, galeries et autres applis multimédias</string>
+    <string name="settings_hide_recordings_hint">Ajoute un fichier .nomedia caché dans votre dossier d’enregistrements, respecté par la plupart des applis. Les enregistrements gardent leur nom et restent synchronisés. Les gestionnaires de fichiers les affichent toujours ; pour les y masquer aussi, donnez au dossier un nom qui commence par un point.</string>
     <string name="settings_backup_title">Sauvegarder les paramètres</string>
     <string name="settings_backup_desc">Enregistrez vos paramètres dans un fichier, ou restaurez-les depuis un fichier.</string>
     <string name="settings_export">Exporter</string>

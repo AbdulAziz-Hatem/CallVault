@@ -718,6 +718,9 @@
     <string name="settings_transcript_sidecar_label">ذخیره رونوشت و یادداشت‌ها در کنار فایل ضبط</string>
     <string name="settings_transcript_sidecar_desc">نوشتن یک فایل متنی .md کنار هر ضبط</string>
     <string name="settings_transcript_sidecar_hint">رونوشت، یادداشت‌ها و خلاصه را به‌صورت یک فایل متنی هم‌نام با فایل ضبط ذخیره می‌کند، بنابراین هنگام کپی کردن پوشه‌تان روی رایانه، متن همراه صوت باقی می‌ماند. با روشن کردن آن، موارد موجود هم ذخیره می‌شوند.</string>
+    <string name="settings_hide_recordings_label">پنهان کردن ضبط‌ها</string>
+    <string name="settings_hide_recordings_desc">ضبط‌هایتان را از پخش‌کننده‌های موسیقی، گالری‌ها و دیگر برنامه‌های رسانه دور نگه دارید</string>
+    <string name="settings_hide_recordings_hint">یک فایل پنهان ‎.nomedia‎ به پوشهٔ ضبط‌ها اضافه می‌کند که بیشتر برنامه‌ها به آن احترام می‌گذارند. ضبط‌ها نامشان را نگه می‌دارند و همچنان همگام می‌شوند. مدیرهای فایل همچنان آن‌ها را نشان می‌دهند — برای پنهان کردن در آنجا هم، نام پوشه را با نقطه شروع کنید.</string>
     <string name="settings_backup_title">پشتیبان‌گیری از تنظیمات</string>
     <string name="settings_backup_desc">تنظیمات خود را در یک فایل ذخیره کنید یا آن‌ها را از یک فایل بازیابی کنید.</string>
     <string name="settings_export">صادر کردن</string>

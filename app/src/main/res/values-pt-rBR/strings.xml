@@ -627,6 +627,9 @@
     <string name="settings_transcript_sidecar_label">Salvar a transcrição e as notas ao lado da gravação</string>
     <string name="settings_transcript_sidecar_desc">Criar um arquivo de texto .md ao lado de cada gravação</string>
     <string name="settings_transcript_sidecar_hint">Salva a transcrição, as notas e o resumo como um arquivo de texto com o mesmo nome da gravação, assim ao copiar sua pasta para um PC o texto permanece junto do áudio. Ativar também salva as que você já tem.</string>
+    <string name="settings_hide_recordings_label">Ocultar gravações</string>
+    <string name="settings_hide_recordings_desc">Mantenha suas gravações fora de players de música, galerias e outros apps de mídia</string>
+    <string name="settings_hide_recordings_hint">Adiciona um arquivo .nomedia oculto à pasta de gravações, que a maioria dos apps respeita. As gravações mantêm o nome e continuam sincronizando. Gerenciadores de arquivos ainda as mostram — para ocultá-las lá também, dê à pasta um nome que comece com ponto.</string>
     <string name="settings_backup_title">Fazer backup das configurações</string>
     <string name="settings_backup_desc">Salve suas configurações em um arquivo ou restaure-as de um.</string>
     <string name="settings_export">Exportar</string>

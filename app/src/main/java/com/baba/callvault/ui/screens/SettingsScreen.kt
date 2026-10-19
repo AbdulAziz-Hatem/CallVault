@@ -290,6 +290,9 @@ fun SettingsScreen(
             } else {
                 context.takePersistableFolderPermission(uri)
                 viewModel.preferences.setRecordingFolderUri(uri)
+                // A new folder starts unhidden; carry the setting over to it.
+                viewModel.preferences.setNomediaCreatedByUs(false)
+                com.baba.callvault.system.storage.HideRecordings.applyAsync(context)
             }
         }
         viewModel.refresh()
@@ -1009,6 +1012,15 @@ private fun StorageSection(
             onCheckedChange = { actions.setWriteTranscriptSidecarEnabled(it) }
         )
         SettingsHint(stringResource(R.string.settings_transcript_sidecar_hint))
+
+        // A property of the folder, like the two above: what other apps get to see of it.
+        SettingsToggleRow(
+            label = stringResource(R.string.settings_hide_recordings_label),
+            description = stringResource(R.string.settings_hide_recordings_desc),
+            checked = remember(updateTrigger) { preferences.isHideRecordingsEnabled() },
+            onCheckedChange = { actions.setHideRecordingsEnabled(it) }
+        )
+        SettingsHint(stringResource(R.string.settings_hide_recordings_hint))
 
         SettingsDivider()
 
@@ -3362,6 +3374,7 @@ private fun SettingsScreenPreview() {
             override fun setRetentionLinked(linked: Boolean) {}
             override fun setMinDurationSeconds(seconds: Int) {}
             override fun setWriteMetadataFileEnabled(enabled: Boolean) {}
+            override fun setHideRecordingsEnabled(enabled: Boolean) {}
             override fun setWriteTranscriptSidecarEnabled(enabled: Boolean) {}
             override fun exportSettingsJson(): String = "{}"
             override fun importSettings(json: String): Int = 0

@@ -838,6 +838,9 @@
     <string name="settings_transcript_sidecar_label">Save transcript and notes beside the recording</string>
     <string name="settings_transcript_sidecar_desc">Write a .md text file next to each recording</string>
     <string name="settings_transcript_sidecar_hint">Saves the transcript, notes and summary as a text file with the same name as the recording, so copying your folder to a PC keeps the text with the audio. Turning it on also saves the ones you already have.</string>
+    <string name="settings_hide_recordings_label">Hide Recordings</string>
+    <string name="settings_hide_recordings_desc">Keep your recordings out of music players, galleries and other media apps</string>
+    <string name="settings_hide_recordings_hint">Adds a hidden .nomedia file to your recordings folder, which most apps respect. Your recordings keep their names and still sync. File managers still show them — to hide them there too, give the folder a name that starts with a dot.</string>
     <string name="settings_backup_title">Back up settings</string>
     <string name="settings_backup_desc">Save your settings to a file, or restore them from one.</string>
     <string name="settings_export">Export</string>

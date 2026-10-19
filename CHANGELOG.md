@@ -28,6 +28,10 @@ All notable changes to CallVault are documented here. The format is based on
   wherever it sits, picks out the number and the contact, and takes the direction from the call log.
   <!-- 🧪 VERIFYING — unit tests for all 8 presets; needs a real call recorded with "Contact · Number ·
        Date" on a phone, checking the arrow, a merge offer, and a name search. -->
+- **Hide Recordings.** A setting that keeps your recordings out of music players, galleries and other
+  media apps, by adding a hidden `.nomedia` file to the recordings folder. Recordings keep their names and
+  still sync; file managers still show them. Turning it off removes the file only if CallVault added it.
+  <!-- 🧪 VERIFYING — unit tests; needs checking on a phone that media apps stop listing the recordings. -->
 
 ## [2.4.6] — 2026-10-14
 

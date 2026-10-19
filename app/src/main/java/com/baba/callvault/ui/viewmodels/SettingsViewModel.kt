@@ -76,6 +76,7 @@ interface SettingsActions {
     fun setMinDurationSeconds(seconds: Int)
 
     fun setWriteMetadataFileEnabled(enabled: Boolean)
+    fun setHideRecordingsEnabled(enabled: Boolean)
     fun setWriteTranscriptSidecarEnabled(enabled: Boolean)
     fun exportSettingsJson(): String
     fun importSettings(json: String): Int
@@ -353,6 +354,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     /** Saves whether a BCR-compatible details file is written beside each recording. */
+    override fun setHideRecordingsEnabled(enabled: Boolean) {
+        preferences.setHideRecordingsEnabled(enabled)
+        com.baba.callvault.system.storage.HideRecordings.applyAsync(getApplication())
+        refresh()
+    }
+
     override fun setWriteMetadataFileEnabled(enabled: Boolean) {
         preferences.setWriteMetadataFileEnabled(enabled)
         refresh()

@@ -624,6 +624,9 @@
     <string name="settings_transcript_sidecar_label">Сохранять расшифровку и заметки рядом с записью</string>
     <string name="settings_transcript_sidecar_desc">Создавать текстовый файл .md рядом с каждой записью</string>
     <string name="settings_transcript_sidecar_hint">Сохраняет расшифровку, заметки и краткое содержание в текстовый файл с тем же именем, что и запись, поэтому при копировании папки на ПК текст остаётся вместе со звуком. При включении также сохраняются уже имеющиеся.</string>
+    <string name="settings_hide_recordings_label">Скрыть записи</string>
+    <string name="settings_hide_recordings_desc">Не показывать записи в музыкальных плеерах, галереях и других медиаприложениях</string>
+    <string name="settings_hide_recordings_hint">Добавляет скрытый файл .nomedia в папку с записями — большинство приложений его учитывают. Записи сохраняют свои имена и продолжают синхронизироваться. Файловые менеджеры по-прежнему их показывают — чтобы скрыть их и там, назовите папку с точки в начале.</string>
     <string name="settings_backup_title">Резервная копия настроек</string>
     <string name="settings_backup_desc">Сохраните свои настройки в файл или восстановите их из файла.</string>
     <string name="settings_export">Экспорт</string>

@@ -56,7 +56,7 @@ class AppPreferences(context: Context) {
             // Retention / storage policy (not the folder URIs, which are per-device)
             "retention_linked", "retention_local_days", "retention_drive_days",
             "retention_time_hour", "retention_time_minute", "storage_cap_bytes", "min_duration_seconds",
-            "write_metadata_file", "write_transcript_sidecar", "keep_originals_after_merge",
+            "write_metadata_file", "write_transcript_sidecar", "hide_recordings", "keep_originals_after_merge",
             // Sync schedule
             "sync_schedule_mode", "sync_time_hour", "sync_time_minute", "sync_day_of_week",
             // Transcription + summary policy
@@ -227,6 +227,8 @@ class AppPreferences(context: Context) {
         // something they look at — and it only earns its keep for someone using a tool that reads it.
         const val WRITE_METADATA_FILE = false
         const val WRITE_TRANSCRIPT_SIDECAR = false
+        // Off. Hiding recordings from every media app is a privacy choice for the user to make.
+        const val HIDE_RECORDINGS = false
 
         const val MIN_DURATION_SECONDS = 0
 
@@ -346,6 +348,8 @@ class AppPreferences(context: Context) {
         RETENTION_LINKED("retention_linked"),
         WRITE_METADATA_FILE("write_metadata_file"),
         WRITE_TRANSCRIPT_SIDECAR("write_transcript_sidecar"),
+        HIDE_RECORDINGS("hide_recordings"),
+        NOMEDIA_CREATED_BY_US("nomedia_created_by_us"),
         VOIP_EXCLUDED_PACKAGES("voip_excluded_packages"),
         MIN_DURATION_SECONDS("min_duration_seconds"),
         STORAGE_CAP_BYTES("storage_cap_bytes"),
@@ -1158,6 +1162,16 @@ class AppPreferences(context: Context) {
 
     /** Replaces the set of apps whose calls are not recorded. */
     fun setVoipExcludedPackages(packages: Set<String>) = setStringSet(Key.VOIP_EXCLUDED_PACKAGES, packages)
+
+    /** Whether the recordings folder carries a `.nomedia` file, hiding it from media apps. */
+    fun isHideRecordingsEnabled() = getBoolean(Key.HIDE_RECORDINGS, DefaultsValue.HIDE_RECORDINGS)
+
+    fun setHideRecordingsEnabled(enabled: Boolean) = setBoolean(Key.HIDE_RECORDINGS, enabled)
+
+    /** Whether the folder's `.nomedia` file is CallVault's — only then may turning the setting off remove it. */
+    fun isNomediaCreatedByUs() = getBoolean(Key.NOMEDIA_CREATED_BY_US, false)
+
+    fun setNomediaCreatedByUs(created: Boolean) = setBoolean(Key.NOMEDIA_CREATED_BY_US, created)
 
     /** Whether to write a BCR-compatible `.json` details file beside each recording. */
     fun isWriteMetadataFileEnabled() = getBoolean(Key.WRITE_METADATA_FILE, DefaultsValue.WRITE_METADATA_FILE)
