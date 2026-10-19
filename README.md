@@ -112,10 +112,6 @@ Switch whenever you like; any setting a mode couldn't honour comes back when you
 | Works without installing another app | ✅ | ❌ |
 | Nothing to pair, and no wireless debugging of CallVault's own | ❌ | ✅ |
 | After a reboot, recording starts again by itself once the phone is on Wi-Fi | ✅ | Only with Shizuku's own auto-start (Android 13+, trusted Wi-Fi) |
-| App calls (opt-in) | ✅ | ❌ |
-| Speaker labels | ✅ | ❌ |
-| Keeps recording if Android kills the background process (opt-in) | ✅ | ❌ |
-| Recording works after a reboot, with nothing to do | ✅ | ❌ |
 | App calls (opt-in, Android 14+) | ✅ | ✅ |
 | Speaker labels | ✅ | ✅ |
 | Keeps recording if Android kills the background process (opt-in) | ✅ | ✅ |

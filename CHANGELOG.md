@@ -7,41 +7,6 @@ All notable changes to CallVault are documented here. The format is based on
 
 ### Added
 
-- **Persian transcription.** Persian (`fa`) can be pinned as a transcription language, and a phone set to
-  Persian pins it by default. Every language the app is translated into can now be pinned. (#55)
-  <!-- 🧪 VERIFYING — unit tests green; needs a real Persian call transcribed and summarised. -->
-
-### Fixed
-
-- **Greek and Persian summaries are written in the right language.** The summary prompt had no name for
-  Greek (it asked for "EL"), and a Persian transcript was read as Arabic, so its summary came out in
-  Arabic. (#46, #55)
-- **Greek is treated as Greek letters,** not Latin: a Greek contact name can now help transcription, and a
-  Greek call that comes back in Latin letters is decoded again, as Hebrew, Arabic, Russian and Chinese
-  already were.
-  <!-- 🧪 VERIFYING — unit tests only. -->
-### Fixed
-
-- **Recordings named with a contact- or number-first format show their arrow, merge, and are found by
-  search again.** Five of the eight file-name formats (four added in 2.4.5) have no in/out marker, and the
-  list read nothing at all from them — no date, number, contact or direction. It now reads the date
-  wherever it sits, picks out the number and the contact, and takes the direction from the call log.
-  <!-- 🧪 VERIFYING — unit tests for all 8 presets; needs a real call recorded with "Contact · Number ·
-       Date" on a phone, checking the arrow, a merge offer, and a name search. -->
-- **Hide Recordings.** A setting that keeps your recordings out of music players, galleries and other
-  media apps, by adding a hidden `.nomedia` file to the recordings folder. Recordings keep their names and
-  still sync; file managers still show them. Turning it off removes the file only if CallVault added it.
-  <!-- 🧪 VERIFYING — unit tests; needs checking on a phone that media apps stop listing the recordings. -->
-### Fixed
-
-- **Shizuku mode: the recorder comes back after Android kills it.** CallVault kept treating a dead
-  Shizuku recorder as connected, so it never asked for a new one — calls could not be recorded (and app
-  calls were never armed) until something else reset it.
-  <!-- ✅ VERIFIED 2026-10-19 on the OP9 (maintainer-delegated): recorder killed → "binding is stale" →
-       back in ~0.3 s with VoIP re-armed. Before the fix it stayed down ("Already bound" + 10 s timeout). -->
-
-### Added
-
 - **App calls record in Shizuku mode too** (Android 14 and newer). The Shizuku-hosted recorder now
   presents itself as the shell, as CallVault's own recorder does, so Android lets it capture both sides.
   <!-- ✅ VERIFIED 2026-10-19 (maintainer): WhatsApp call OP9→OP12 in Shizuku mode "recorded properly";
@@ -57,6 +22,34 @@ All notable changes to CallVault are documented here. The format is based on
        for both sides across the whole call, including after the kill. -->
 - **Phone calls in Shizuku mode start recording faster.** They now record directly instead of through
   scrcpy, which took about two seconds to spin up and could lose the start of a short call.
+- **Persian transcription.** Persian (`fa`) can be pinned as a transcription language, and a phone set to
+  Persian pins it by default. Every language the app is translated into can now be pinned. (#55)
+  <!-- 🧪 VERIFYING — unit tests green; needs a real Persian call transcribed and summarised. -->
+- **Hide Recordings.** A setting that keeps your recordings out of music players, galleries and other
+  media apps, by adding a hidden `.nomedia` file to the recordings folder. Recordings keep their names and
+  still sync; file managers still show them. Turning it off removes the file only if CallVault added it.
+  <!-- 🧪 VERIFYING — unit tests; needs checking on a phone that media apps stop listing the recordings. -->
+
+### Fixed
+
+- **Recordings named with a contact- or number-first format show their arrow, merge, and are found by
+  search again.** Five of the eight file-name formats (four added in 2.4.5) have no in/out marker, and the
+  list read nothing at all from them — no date, number, contact or direction. It now reads the date
+  wherever it sits, picks out the number and the contact, and takes the direction from the call log.
+  <!-- 🧪 VERIFYING — unit tests for all 8 presets; needs a real call recorded with "Contact · Number ·
+       Date" on a phone, checking the arrow, a merge offer, and a name search. -->
+- **Shizuku mode: the recorder comes back after Android kills it.** CallVault kept treating a dead
+  Shizuku recorder as connected, so it never asked for a new one — calls could not be recorded (and app
+  calls were never armed) until something else reset it.
+  <!-- ✅ VERIFIED 2026-10-19 on the OP9 (maintainer-delegated): recorder killed → "binding is stale" →
+       back in ~0.3 s with VoIP re-armed. Before the fix it stayed down ("Already bound" + 10 s timeout). -->
+- **Greek and Persian summaries are written in the right language.** The summary prompt had no name for
+  Greek (it asked for "EL"), and a Persian transcript was read as Arabic, so its summary came out in
+  Arabic. (#46, #55)
+- **Greek is treated as Greek letters,** not Latin: a Greek contact name can now help transcription, and a
+  Greek call that comes back in Latin letters is decoded again, as Hebrew, Arabic, Russian and Chinese
+  already were.
+  <!-- 🧪 VERIFYING — unit tests only. -->
 
 ## [2.4.6] — 2026-10-14
 
