@@ -657,6 +657,7 @@
     <string name="transcription_language_portuguese">Πορτογαλικά</string>
     <string name="transcription_language_vietnamese">Βιετναμέζικα</string>
     <string name="transcription_language_greek">Ελληνικά</string>
+    <string name="transcription_language_persian">Περσικά</string>
     <string name="transcription_language_auto">Αυτόματη ανίχνευση</string>
     <string name="transcription_language_auto_hint">Η ανίχνευση είναι αναξιόπιστη για γλώσσες που δεν γράφονται με λατινικούς χαρακτήρες — τα Εβραϊκά, τα Αραβικά, τα Ρωσικά και τα Κινεζικά συχνά επιστρέφουν γραμμένα με αγγλικούς χαρακτήρες, ή ως ένα μεγάλο μπλοκ κειμένου. Ονομάστε τη γλώσσα αν μπορείτε.</string>
     <string name="transcription_note_manual">Οι απομαγνητοφωνήσεις δημιουργούνται μόνο όταν τις ζητήσετε, από το κουμπί σε μια εγγραφή.</string>

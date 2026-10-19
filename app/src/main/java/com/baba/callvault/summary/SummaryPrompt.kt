@@ -37,8 +37,10 @@ object SummaryPrompt {
     private val LANGUAGE_NAMES = mapOf(
         "ar" to "Arabic",
         "de" to "German",
+        "el" to "Greek",
         "en" to "English",
         "es" to "Spanish",
+        "fa" to "Persian",
         "fr" to "French",
         "he" to "Hebrew",
         "hu" to "Hungarian",
