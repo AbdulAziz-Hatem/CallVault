@@ -20,6 +20,14 @@ All notable changes to CallVault are documented here. The format is based on
   Greek call that comes back in Latin letters is decoded again, as Hebrew, Arabic, Russian and Chinese
   already were.
   <!-- 🧪 VERIFYING — unit tests only. -->
+### Fixed
+
+- **Recordings named with a contact- or number-first format show their arrow, merge, and are found by
+  search again.** Five of the eight file-name formats (four added in 2.4.5) have no in/out marker, and the
+  list read nothing at all from them — no date, number, contact or direction. It now reads the date
+  wherever it sits, picks out the number and the contact, and takes the direction from the call log.
+  <!-- 🧪 VERIFYING — unit tests for all 8 presets; needs a real call recorded with "Contact · Number ·
+       Date" on a phone, checking the arrow, a merge offer, and a name search. -->
 
 ## [2.4.6] — 2026-10-14
 

@@ -9,6 +9,7 @@
 package com.baba.callvault.data.recordings
 
 import android.content.Context
+import com.baba.callvault.data.health.CallLogEntry
 import com.baba.callvault.data.health.CallLogReader
 import kotlin.math.abs
 
@@ -43,21 +44,33 @@ object CallDurationLookup {
      *
      * @param startedAt every recording's start time; entries that match nothing are simply absent.
      */
-    fun durationsFor(context: Context, startedAt: List<Long>): Map<Long, Long> {
-        if (startedAt.isEmpty()) return emptyMap()
+    /** What the call log says about one recording's call. [durationSeconds] is null for a call that never connected. */
+    data class CallMatch(val durationSeconds: Long?, val isIncoming: Boolean)
 
+    fun durationsFor(context: Context, startedAt: List<Long>): Map<Long, Long> =
+        matchesFor(context, startedAt).mapNotNull { (start, m) -> m.durationSeconds?.let { start to it } }.toMap()
+
+    /**
+     * Duration AND direction per recording start. The direction is what a file name without an in/out
+     * marker cannot carry — five of the eight file-name presets — so the list asks the call log instead
+     * (field report 2026-10-19: no arrow on any recording made with "Contact · Number · Date").
+     */
+    fun matchesFor(context: Context, startedAt: List<Long>): Map<Long, CallMatch> {
+        if (startedAt.isEmpty()) return emptyMap()
         // One query covering every recording on screen, rather than one per row.
         val oldest = startedAt.min() - MATCH_TOLERANCE_MS
-        val entries = CallLogReader.entriesSince(context, oldest)
-        if (entries.isEmpty()) return emptyMap()
+        return match(CallLogReader.entriesSince(context, oldest), startedAt)
+    }
 
+    internal fun match(entries: List<CallLogEntry>, startedAt: List<Long>): Map<Long, CallMatch> {
+        if (entries.isEmpty()) return emptyMap()
         return startedAt.distinct().mapNotNull { start ->
             // Nearest entry within tolerance. Nearest rather than first, so back-to-back calls cannot
             // steal each other's duration when both fall inside the window.
             val best = entries.minByOrNull { abs(it.startedAt - start) } ?: return@mapNotNull null
             if (abs(best.startedAt - start) > MATCH_TOLERANCE_MS) return@mapNotNull null
             // A zero-second entry is a call that never connected; it has no duration worth showing.
-            best.durationSeconds.takeIf { it > 0 }?.let { start to it }
+            start to CallMatch(best.durationSeconds.takeIf { it > 0 }, best.isIncoming)
         }.toMap()
     }
 }

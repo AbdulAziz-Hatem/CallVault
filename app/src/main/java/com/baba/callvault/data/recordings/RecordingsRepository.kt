@@ -170,7 +170,7 @@ object RecordingsRepository {
             // How long each call lasted, from the system call log — one query for the whole list. It
             // cannot account for every recording: an **app call is never in the call log at all**, and
             // neither is one older than the log keeps.
-            val durations = CallDurationLookup.durationsFor(context, items.mapNotNull { it.startedAtMillis })
+            val callLog = CallDurationLookup.matchesFor(context, items.mapNotNull { it.startedAtMillis })
             // A merged recording keeps the timestamp of the call it began with, so the system call
             // log answers for that ONE call — 5 minutes for a conversation that is now twenty-five.
             // The log cannot know about merging, so for these the stored length is the only truth.
@@ -182,8 +182,8 @@ object RecordingsRepository {
             val startedAtNs = System.nanoTime()
 
             items.map { item ->
-                val fromCallLog = if (item.displayName in mergedNames) null
-                else item.startedAtMillis?.let { durations[it] }
+                val logged = item.startedAtMillis?.let { callLog[it] }
+                val fromCallLog = if (item.displayName in mergedNames) null else logged?.durationSeconds
                 // Fall back to the recording's own container duration. It is not a guess: it is the
                 // length of the audio actually captured, which is the more direct answer for a list of
                 // recordings. Without it every WhatsApp row showed a blank where its length should be,
@@ -216,7 +216,13 @@ object RecordingsRepository {
                         read
                     }
                 }
-                val withDuration = seconds?.let { item.copy(durationSeconds = it) } ?: item
+                val withDuration = (seconds?.let { item.copy(durationSeconds = it) } ?: item).let { row ->
+                    // A file name with no in/out marker (five presets) cannot say which way the call went;
+                    // the call log can. Never for an app call or an import — neither is in the call log,
+                    // and a carrier call that happened at the same minute must not lend them an arrow.
+                    if (row.direction != null || logged == null || !isCarrierCallWithoutDirection(row.displayName)) row
+                    else row.copy(direction = if (logged.isIncoming) RecordingDirection.INCOMING else RecordingDirection.OUTGOING)
+                }
                 // What to resolve a current contact name from. Normally the parsed number. But a
                 // contact-only file-name template carries no number, and when no contact was resolved
                 // at record time the formatter baked the NUMBER into the contact slot — so fall back to
@@ -681,7 +687,7 @@ object RecordingsRepository {
         }
 
         val dirIndex = parts.indexOfFirst { it == "in" || it == "out" }
-        if (dirIndex <= 0) return ParsedName(null, null, null, null)
+        if (dirIndex <= 0) return parseByDate(base)
 
         val direction = when (parts[dirIndex]) {
             "in" -> RecordingDirection.INCOMING
@@ -692,6 +698,48 @@ object RecordingsRepository {
         val number = parts.subList(dirIndex + 1, parts.size).joinToString("_").ifBlank { null }
         return ParsedName(direction, formatDate(rawDate), parseStartedAt(rawDate), number)
     }
+
+    /**
+     * A carrier call whose file name has no in/out marker, so its direction must come from the call log.
+     * Not an app call (legacy "_voip" names carry no app either, so [RecordingItem.voipApp] cannot tell)
+     * and not an import: neither is in the call log, and a phone call at the same minute must not lend
+     * them its arrow.
+     */
+    internal fun isCarrierCallWithoutDirection(displayName: String): Boolean {
+        if (ImportedRecording.isImported(displayName)) return false
+        val parts = displayName.substringBeforeLast('.').split('_')
+        if (parts.any { it == VOIP_TOKEN || it.startsWith(VOIP_APP_PREFIX) }) return false
+        return parts.none { it == "in" || it == "out" }
+    }
+
+    /**
+     * The presets with no in/out marker — "Contact · Number · Date" and the four others added in 2.4.5.
+     *
+     * Anchored on the DATE instead, wherever it sits: it is the one token whose shape is fixed. What is
+     * left is the number (whatever passes [looksLikePhoneNumber]) and the contact name (everything else,
+     * underscores and all). Before this, these names read as nothing at all, and the user lost the
+     * direction arrow, merging, search and live name fill-in (field report 2026-10-19). The direction
+     * itself is not in these names; the list recovers it from the call log.
+     */
+    private fun parseByDate(base: String): ParsedName {
+        val match = DATE_TOKEN.find(base) ?: return ParsedName(null, null, null, null)
+        val rawDate = match.value
+        val rest = (base.substring(0, match.range.first) + "_" + base.substring(match.range.last + 1))
+            .split('_').filter { it.isNotBlank() }
+        val numberIndex = rest.indexOfFirst { looksLikePhoneNumber(it) }
+        val number = rest.getOrNull(numberIndex)
+        val name = rest.filterIndexed { i, _ -> i != numberIndex }.joinToString("_").ifBlank { null }
+        return ParsedName(
+            direction = null,
+            displayDate = formatDate(rawDate),
+            startedAtMillis = parseStartedAt(rawDate),
+            number = number,
+            contactName = name,
+        )
+    }
+
+    /** "yyyyMMdd_HHmmss[.SSS][±hhmm]", as RecordingFileNameFormatter writes it — never starting or ending inside a longer run of digits, so a phone number beside it cannot donate its tail. */
+    private val DATE_TOKEN = Regex("""(?<!\d)\d{8}_\d{6}(?:\.\d{3})?(?:[+-]\d{4})?(?!\d)""")
 
     /**
      * Reformats the raw "yyyyMMdd_HHmmss.SSSZ" date token into a friendlier "yyyy-MM-dd HH:mm".
