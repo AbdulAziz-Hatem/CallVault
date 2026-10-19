@@ -113,7 +113,7 @@
     <string name="mode_switch_problem_title">Δεν είναι έτοιμο ακόμα</string>
     <string name="mode_switch_done_shizuku">Έτοιμο — χρήση Shizuku</string>
     <string name="mode_switch_done_standalone">Έτοιμο — χρήση CallVault</string>
-    <string name="mode_switch_ready_shizuku">Το CallVault καταγράφει μέσω Shizuku. Οι κλήσεις VoIP και η ανθεκτική εγγραφή δεν είναι διαθέσιμες σε αυτή τη λειτουργία.</string>
+    <string name="mode_switch_ready_shizuku">Το CallVault ηχογραφεί μέσω Shizuku. Ηχογραφούνται και οι κλήσεις εφαρμογών (Android 14 και νεότερα)· η ανθεκτική εγγραφή και τα ονόματα ομιλητών δεν είναι διαθέσιμα σε αυτήν τη λειτουργία.</string>
     <string name="mode_switch_ready_standalone">Το CallVault καταγράφει με τη δική του εγγραφή. Όλα είναι διαθέσιμα, συμπεριλαμβανομένων των κλήσεων VoIP και των ονομάτων ομιλητών.</string>
     <string name="mode_switch_ready">Η εγγραφή εκτελείται. Οι κλήσεις θα καταγράφονται.</string>
     <string name="mode_switch_shizuku_not_installed">Το Shizuku δεν είναι εγκατεστημένο, οπότε δεν υπάρχει τίποτα για μετάβαση.</string>

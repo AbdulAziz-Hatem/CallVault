@@ -69,8 +69,12 @@ enum class ModeCapability {
 
     /** Whether this capability works in [mode]. */
     fun isAvailableIn(mode: PrivilegedMode): Boolean = when (this) {
-        // Needs a privileged AudioRecord inside the recorder process.
-        RESILIENT_RECORDING, VOIP_RECORDING, SPEAKER_ATTRIBUTION -> !mode.needsShizuku
+        // Works in the Shizuku host since it presents the shell identity (ShellAttribution; measured
+        // on the OP9 2026-10-19 with a call-free self-test).
+        VOIP_RECORDING -> true
+        // Need a privileged AudioRecord in the recorder process; not yet proven in the Shizuku host on a
+        // real call, so still standalone-only.
+        RESILIENT_RECORDING, SPEAKER_ATTRIBUTION -> !mode.needsShizuku
         // Needs our own embedded ADB.
         OFFLINE_RECORDING, WIRELESS_DEBUGGING_CONTROL, DAEMON_KEEP_ALIVE, SILENT_UPDATE_INSTALL ->
             !mode.needsShizuku

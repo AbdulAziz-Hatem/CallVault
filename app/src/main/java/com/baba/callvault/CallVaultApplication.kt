@@ -186,9 +186,9 @@ class CallVaultApplication : Application() {
         runCatching {
             if (AppPreferences(applicationContext).getPrivilegedMode().needsShizuku) {
                 // Also on every start, not only on a switch: a keep-alive can outlive the process that
-                // started it, and one left running in Shizuku mode is a foreground service burning
-                // battery to watch for a daemon that must not be there.
-                DaemonKeepAliveService.stop(applicationContext)
+                // started it. In Shizuku mode it is only wanted as the app-call detector; start() stops
+                // it when app calls are off, and starts it when they are on.
+                DaemonKeepAliveService.start(applicationContext)
             } else {
                 ShizukuBackend.stop(remove = true)
             }

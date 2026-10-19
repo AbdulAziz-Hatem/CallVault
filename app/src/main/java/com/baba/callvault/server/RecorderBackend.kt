@@ -241,9 +241,9 @@ object RecorderBackend {
         switchTo(context, to)
         val connected = ensureRunning(context)
 
-        if (!to.needsShizuku) {
-            // Safe to call unconditionally: the service checks the mode itself and stands down in
-            // Shizuku mode, and starting one that is already running is a no-op.
+        run {
+            // Safe to call unconditionally: start() applies KeepAlivePolicy (in Shizuku mode it runs only
+            // as the app-call detector), and starting one that is already running is a no-op.
             runCatching { DaemonKeepAliveService.start(context) }
                 .onFailure { AppLogger.w(TAG, "Could not restart the keep-alive after the switch: ${it.message}") }
         }
@@ -288,7 +288,9 @@ object RecorderBackend {
         //
         // Stopping it here (rather than after `setPrivilegedMode`, where it used to live) closes the
         // window entirely: there is nothing left to resurrect the daemon we are about to destroy.
-        if (to.needsShizuku) {
+        // In both directions now: in Shizuku mode the keep-alive hosts app-call detection, and the death
+        // of the Shizuku service being retired would otherwise send it straight back to Shizuku.
+        if (BackendChoice.toTearDown(from, to) != null) {
             runCatching { DaemonKeepAliveService.stop(context) }
                 .onFailure { AppLogger.w(TAG, "Could not stop the keep-alive before teardown: ${it.message}") }
         }

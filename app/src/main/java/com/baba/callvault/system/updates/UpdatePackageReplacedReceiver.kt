@@ -78,7 +78,7 @@ class UpdatePackageReplacedReceiver : BroadcastReceiver() {
     private fun recoverAfterReplace(context: Context) {
         val mode = AppPreferences(context).getPrivilegedMode()
         val grantSurvived = !mode.needsShizuku && AdbShell.hasWriteSecureSettings(context)
-        val plan = PostUpdateRecovery.plan(mode, grantSurvived)
+        val plan = PostUpdateRecovery.plan(mode, grantSurvived, AppPreferences(context).isVoipRecordingEnabled())
         AppLogger.i(TAG, "App replaced (mode=$mode, grant survived=$grantSurvived): $plan")
 
         // FIRST, and on this thread: the keep-alive is a foreground service, and from Android 12 an app

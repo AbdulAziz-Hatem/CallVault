@@ -95,7 +95,7 @@ class DaemonKeepAliveService : Service() {
                 // moment to find out the USB mode if we never managed to. The recording path's own
                 // attempt gets one un-retried shot while a call is starting, and on the device in issue
                 // #22 that shot always failed, leaving the advice permanently unsayable.
-                if (alive) readUsbDefaultIfStillUnknown()
+                if (alive && usesAdb()) readUsbDefaultIfStillUnknown()
             } else if (!alive) {
                 // Down and still down: what the notice should say can change without the daemon
                 // changing — the failure streak trips, Wi-Fi drops or returns — so re-read it each tick
@@ -331,7 +331,9 @@ class DaemonKeepAliveService : Service() {
             },
         )
 
-        runCatching {
+        // The debugging switches are our embedded ADB's business only. A mode switch always stops this
+        // service first, so the mode read here holds for the instance's whole life.
+        if (usesAdb()) runCatching {
             contentResolver.registerContentObserver(
                 Settings.Global.getUriFor("adb_enabled"), false, usbDebuggingObserver,
             )
@@ -454,6 +456,10 @@ class DaemonKeepAliveService : Service() {
      * calls this, so an active recording is implicitly skipped and never churned.
      */
     private fun maybeRewarm(force: Boolean = false) {
+        if (!usesAdb()) {
+            rebindShizuku(force)
+            return
+        }
         val offline = runCatching { AppPreferences(this).isOfflineRecordingEnabled() }.getOrDefault(false)
         if (!offline && !isWifiConnected()) return // the WD relaunch path needs Wi-Fi; loopback doesn't
         // Nothing to try while recovery is known to be impossible — the user turned the only way in off, or
@@ -572,6 +578,24 @@ class DaemonKeepAliveService : Service() {
         return if (ok.get()) LaunchOutcome.CONNECTED else LaunchOutcome.FAILED
     }
 
+    /**
+     * Shizuku mode's whole recovery: ask Shizuku for the user service again. No Wi-Fi check (Shizuku
+     * needs none once running), no adbd, no Wireless debugging, and no ADB connection to drop — none of
+     * that is ours to touch in this mode. A Shizuku that is not running simply fails, and the
+     * "start Shizuku" notice already covers that.
+     */
+    private fun rebindShizuku(force: Boolean) {
+        if (!rewarmGate.tryEnter(SystemClock.elapsedRealtime(), force)) return
+        Thread {
+            AppLogger.i(TAG, "keep-alive (Shizuku): recorder down — asking Shizuku for it again (force=$force)")
+            val outcome = try { launchDaemonBounded() } finally { rewarmGate.leave() }
+            if (outcome == LaunchOutcome.CONNECTED) watchdogHandler.post { lastReady = true; updateNotification(true) }
+        }.apply { isDaemon = true; name = "cv-keepalive-rebind" }.start()
+    }
+
+    private fun usesAdb(): Boolean =
+        KeepAlivePolicy.mayUseAdb(AppPreferences(applicationContext).getPrivilegedMode())
+
     /** How a bounded relaunch ended. A timeout also needs its ADB connection dropped. */
     private enum class LaunchOutcome { CONNECTED, FAILED, TIMED_OUT }
 
@@ -676,8 +700,9 @@ class DaemonKeepAliveService : Service() {
 
     /** True when this service has no business running, having stopped itself. */
     private fun standDownIfShizuku(): Boolean {
-        if (!AppPreferences(applicationContext).getPrivilegedMode().needsShizuku) return false
-        AppLogger.i(TAG, "Shizuku mode: the keep-alive has nothing to keep alive; stopping")
+        val prefs = AppPreferences(applicationContext)
+        if (KeepAlivePolicy.shouldRun(prefs.getPrivilegedMode(), prefs.isVoipRecordingEnabled())) return false
+        AppLogger.i(TAG, "Shizuku mode without app calls: the keep-alive has nothing to do; stopping")
         stopSelf()
         return true
     }
@@ -787,8 +812,12 @@ class DaemonKeepAliveService : Service() {
             // OUR daemon and turns Wireless debugging on to do it — on a phone whose owner chose
             // Shizuku precisely so none of that would happen. Shizuku restarts its own user service
             // (bound with daemon(true)), so the job this exists for is already someone else's.
-            if (AppPreferences(context).getPrivilegedMode().needsShizuku) {
-                AppLogger.i(TAG, "Shizuku mode: not starting the keep-alive; Shizuku owns the recorder")
+            // In Shizuku mode Shizuku keeps its own user service alive, so this runs only as the app-call
+            // detector — and must not run at all without app calls: it would be a foreground service
+            // watching nothing, on a phone whose owner chose Shizuku so none of ours would run.
+            val prefs = AppPreferences(context)
+            if (!KeepAlivePolicy.shouldRun(prefs.getPrivilegedMode(), prefs.isVoipRecordingEnabled())) {
+                AppLogger.i(TAG, "Shizuku mode without app calls: not starting the keep-alive")
                 stop(context)
                 return
             }

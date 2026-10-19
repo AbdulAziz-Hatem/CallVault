@@ -47,13 +47,13 @@ internal object PostUpdateRecovery {
         val restartKeepAlive: Boolean,
     )
 
-    fun plan(mode: PrivilegedMode, grantSurvived: Boolean): Plan = Plan(
+    fun plan(mode: PrivilegedMode, grantSurvived: Boolean, voipEnabled: Boolean = false): Plan = Plan(
         // Only the embedded-ADB mode has this grant to lose, and only when it actually went missing.
         healGrant = !mode.needsShizuku && !grantSurvived,
         // The one thing that is never conditional.
         ensureRecorder = true,
         restartShizukuService = mode.needsShizuku,
-        // Shizuku mode has nothing to keep alive — the service stands down there itself.
-        restartKeepAlive = !mode.needsShizuku,
+        // In Shizuku mode it is only the app-call detector, so it comes back only when that is on.
+        restartKeepAlive = com.baba.callvault.services.recording.KeepAlivePolicy.shouldRun(mode, voipEnabled),
     )
 }
