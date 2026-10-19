@@ -645,6 +645,9 @@
     <string name="voip_recording_text">Segna un momento per ritrovarlo dopo, o ferma la registrazione.</string>
     <string name="playback_marked_moments">Momenti segnati</string>
     <string name="settings_voip_apps_label">Scegli quali app registrare</string>
+    <string name="settings_voip_ignore_contacts_label">Salta anche i contatti ignorati</string>
+    <string name="settings_voip_ignore_contacts_desc">Applica l’elenco dei contatti ignorati anche alle chiamate delle app</string>
+    <string name="settings_voip_ignore_contacts_hint">Il confronto avviene esattamente sul nome o sul numero che l’app mostra per la chiamata: un nome che corrisponde solo in parte viene comunque registrato. Telegram può mostrare un proprio nome invece del nome del contatto, quindi lì può sbagliare. Se premi tu Registra, la chiamata viene registrata.</string>
     <string name="settings_voip_apps_loading">Ricerca delle app…</string>
     <string name="settings_voip_apps_all">Tutte le app vengono registrate</string>
     <plurals name="settings_voip_apps_some">

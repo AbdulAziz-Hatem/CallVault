@@ -645,6 +645,9 @@
     <string name="voip_recording_text">Đánh dấu một thời điểm để tìm lại sau, hoặc dừng ghi.</string>
     <string name="playback_marked_moments">Thời điểm đã đánh dấu</string>
     <string name="settings_voip_apps_label">Chọn ứng dụng cần ghi</string>
+    <string name="settings_voip_ignore_contacts_label">Bỏ qua cả danh bạ đã chọn bỏ qua</string>
+    <string name="settings_voip_ignore_contacts_desc">Áp dụng danh sách liên hệ bỏ qua cho cả cuộc gọi trong ứng dụng</string>
+    <string name="settings_voip_ignore_contacts_hint">So khớp chính xác theo tên hoặc số mà ứng dụng hiển thị cho cuộc gọi — tên chỉ khớp một phần vẫn được ghi âm. Telegram có thể hiển thị tên riêng thay cho tên trong danh bạ của bạn, nên có thể không khớp ở đó. Nếu bạn tự nhấn Ghi âm, cuộc gọi vẫn được ghi.</string>
     <string name="settings_voip_apps_loading">Đang tìm ứng dụng…</string>
     <string name="settings_voip_apps_all">Mọi ứng dụng đều được ghi</string>
     <plurals name="settings_voip_apps_some">

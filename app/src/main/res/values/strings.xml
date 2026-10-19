@@ -859,6 +859,9 @@
     <string name="voip_recording_text">Mark a moment to find it later, or stop recording.</string>
     <string name="playback_marked_moments">Marked moments</string>
     <string name="settings_voip_apps_label">Choose which apps to record</string>
+    <string name="settings_voip_ignore_contacts_label">Also skip ignored contacts</string>
+    <string name="settings_voip_ignore_contacts_desc">Apply your ignored-contacts list to app calls too</string>
+    <string name="settings_voip_ignore_contacts_hint">Matched by the name or number the app shows for the call, exactly — a name that only partly matches is still recorded. Telegram may show its own name for someone rather than your contact name, so it can miss there. Pressing Record yourself still records.</string>
     <string name="settings_voip_apps_loading">Looking for apps…</string>
     <string name="settings_voip_apps_all">Every app is recorded</string>
     <plurals name="settings_voip_apps_some">

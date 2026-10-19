@@ -52,6 +52,12 @@ All notable changes to CallVault are documented here. The format is based on
   Greek call that comes back in Latin letters is decoded again, as Hebrew, Arabic, Russian and Chinese
   already were.
   <!-- 🧪 VERIFYING — unit tests only. -->
+- **Skip ignored contacts on app calls too.** A new switch under app calls applies your ignored-contacts
+  list to WhatsApp, Signal and Telegram calls, matching the name or number the app shows for the call —
+  exactly, never partly. Off by default. If the name only appears a few seconds into the call, the
+  recording is stopped and discarded before it ever reaches your folder or Drive. Pressing Record yourself
+  still records. (#51)
+  <!-- 🧪 VERIFYING — unit tests; needs an app call from a listed contact on a phone. -->
 
 ## [2.4.6] — 2026-10-14
 

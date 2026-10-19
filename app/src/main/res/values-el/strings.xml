@@ -800,6 +800,9 @@
     <string name="voip_recording_text">Σημειώστε μια στιγμή για να την βρείτε αργότερα, ή σταματήστε την εγγραφή.</string>
     <string name="playback_marked_moments">Σημειωμένες στιγμές</string>
     <string name="settings_voip_apps_label">Επιλέξτε ποιες εφαρμογές να καταγράφονται</string>
+    <string name="settings_voip_ignore_contacts_label">Παράλειψη και των αγνοημένων επαφών</string>
+    <string name="settings_voip_ignore_contacts_desc">Εφαρμογή της λίστας αγνοημένων επαφών και στις κλήσεις εφαρμογών</string>
+    <string name="settings_voip_ignore_contacts_hint">Η αντιστοίχιση γίνεται ακριβώς με το όνομα ή τον αριθμό που δείχνει η εφαρμογή για την κλήση — ένα όνομα που ταιριάζει μόνο εν μέρει ηχογραφείται κανονικά. Το Telegram μπορεί να δείχνει δικό του όνομα αντί για το όνομα επαφής σας, οπότε εκεί μπορεί να αστοχήσει. Αν πατήσετε εσείς Ηχογράφηση, η κλήση ηχογραφείται.</string>
     <string name="settings_voip_apps_loading">Αναζήτηση εφαρμογών…</string>
     <string name="settings_voip_apps_all">Κάθε εφαρμογή καταγράφεται</string>
     <plurals name="settings_voip_apps_some">

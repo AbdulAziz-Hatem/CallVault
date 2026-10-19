@@ -645,6 +645,9 @@
     <string name="voip_recording_text">标记某个时刻以便稍后查找，或停止录音。</string>
     <string name="playback_marked_moments">标记的时刻</string>
     <string name="settings_voip_apps_label">选择要录制的应用</string>
+    <string name="settings_voip_ignore_contacts_label">同样跳过已忽略的联系人</string>
+    <string name="settings_voip_ignore_contacts_desc">将忽略联系人列表也应用于应用内通话</string>
+    <string name="settings_voip_ignore_contacts_hint">按应用为该通话显示的名称或号码精确匹配——仅部分匹配的名称仍会录音。Telegram 可能显示自己的名称而非你的联系人名称，因此在那里可能匹配不到。你自己按下“录音”时仍会录音。</string>
     <string name="settings_voip_apps_loading">正在查找应用…</string>
     <string name="settings_voip_apps_all">所有应用都会被录制</string>
     <plurals name="settings_voip_apps_some">
