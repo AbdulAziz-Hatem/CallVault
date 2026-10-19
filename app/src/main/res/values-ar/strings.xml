@@ -527,6 +527,7 @@
     <string name="transcription_language_portuguese">البرتغالية</string>
     <string name="transcription_language_vietnamese">الفيتنامية</string>
     <string name="transcription_language_greek">اليونانية</string>
+    <string name="transcription_language_persian">الفارسية</string>
     <string name="transcription_language_auto">الكشف تلقائياً</string>
     <string name="transcription_language_auto_hint">الكشف غير موثوق به للغات التي لا تكتب بالحروف اللاتينية — غالبًا ما تعود العبرية والعربية والروسية والصينية مكتوبة بأحرف إنجليزية، أو ككتلة نصية طويلة. سمِ اللغة إذا استطعت.</string>
     <string name="transcription_note_manual">يتم إنشاء النصوص فقط عندما تطلب ذلك، من الزر الموجود على التسجيل.</string>

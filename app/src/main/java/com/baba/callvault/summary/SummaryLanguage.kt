@@ -49,7 +49,12 @@ object SummaryLanguage {
             ?: transcriptLanguage
             ?: transcriptionSetting
             ?: scriptOf(transcriptText)
-            ?: deviceLanguage.ifBlank { FINAL_FALLBACK }
+            ?: normalised(deviceLanguage).ifBlank { FINAL_FALLBACK }
+
+    /** Java still reports a Hebrew phone as "iw" (and Indonesian as "in"); the prompt needs the modern code. */
+    private fun normalised(code: String): String = LEGACY_LANGUAGE_CODES[code] ?: code
+
+    private val LEGACY_LANGUAGE_CODES = mapOf("iw" to "he", "in" to "id", "ji" to "yi")
 
     /**
      * The language a text's script implies, or null when the script does not imply one.
@@ -71,6 +76,7 @@ object SummaryLanguage {
                 code in 0x0590..0x05FF -> "he"
                 code in 0x0600..0x06FF || code in 0x0750..0x077F -> "ar"
                 code in 0x0400..0x04FF -> "ru"
+                code in 0x0370..0x03FF || code in 0x1F00..0x1FFF -> "el"
                 // CJK ideographs. Japanese kana are excluded on purpose: this app offers no
                 // Japanese, so a kana-heavy text has no honest answer here.
                 code in 0x4E00..0x9FFF -> "zh"
@@ -81,8 +87,23 @@ object SummaryLanguage {
 
         val (language, count) = counts.maxByOrNull { it.value } ?: return null
         // Enough letters to be the text rather than a quotation inside it.
-        return if (count >= MINIMUM_LETTERS) language else null
+        if (count < MINIMUM_LETTERS) return null
+        return if (language == "ar" && writesPersian(text)) "fa" else language
     }
+
+    /**
+     * Whether Arabic-script [text] is Persian (#55). They share the script, so only the letters each one
+     * alone uses can tell them apart: Persian adds پ چ ژ گ and writes its own ی and ک, where Arabic writes
+     * ي ك and ة. Weighed rather than spotted, like the scripts above — one loanword must not decide it.
+     */
+    private fun writesPersian(text: String): Boolean {
+        val persian = text.count { it in PERSIAN_ONLY }
+        val arabic = text.count { it in ARABIC_ONLY }
+        return persian > arabic
+    }
+
+    private const val PERSIAN_ONLY = "\u067E\u0686\u0698\u06AF\u06CC\u06A9"
+    private const val ARABIC_ONLY = "\u064A\u0643\u0629"
 
     /**
      * How many letters of a script it takes before it is taken as the language.

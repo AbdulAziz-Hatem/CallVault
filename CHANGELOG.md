@@ -3,6 +3,24 @@
 All notable changes to CallVault are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project uses semantic-ish versioning.
 
+## [Unreleased]
+
+### Added
+
+- **Persian transcription.** Persian (`fa`) can be pinned as a transcription language, and a phone set to
+  Persian pins it by default. Every language the app is translated into can now be pinned. (#55)
+  <!-- 🧪 VERIFYING — unit tests green; needs a real Persian call transcribed and summarised. -->
+
+### Fixed
+
+- **Greek and Persian summaries are written in the right language.** The summary prompt had no name for
+  Greek (it asked for "EL"), and a Persian transcript was read as Arabic, so its summary came out in
+  Arabic. (#46, #55)
+- **Greek is treated as Greek letters,** not Latin: a Greek contact name can now help transcription, and a
+  Greek call that comes back in Latin letters is decoded again, as Hebrew, Arabic, Russian and Chinese
+  already were.
+  <!-- 🧪 VERIFYING — unit tests only. -->
+
 ## [2.4.6] — 2026-10-14
 
 Everything merged into `main` since 2.4.5. Built for the maintainer's own devices first; released only

@@ -38,8 +38,9 @@ class SummaryPromptTest {
     fun `names every language the app can transcribe`() {
         // A language the transcriber offers but the prompt cannot name would silently produce an
         // English summary of a foreign call — the failure this whole feature must not have.
-        val offered = listOf("he", "en", "ar", "zh", "fr", "de", "hu", "it", "pl", "pt", "ru", "es", "vi")
-        offered.forEach { code ->
+        // Read from the transcriber's own list, never copied: a copy is how Greek (#46) shipped with no
+        // name here and summaries asked the model to "write in EL".
+        com.baba.callvault.transcription.TranscriptionLanguageChoice.SUPPORTED.forEach { code ->
             assertTrue("no name for $code", SummaryPrompt.languageName(code) != null)
         }
     }

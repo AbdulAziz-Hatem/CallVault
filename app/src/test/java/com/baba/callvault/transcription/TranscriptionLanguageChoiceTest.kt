@@ -11,6 +11,7 @@ package com.baba.callvault.transcription
 import java.util.Locale
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class TranscriptionLanguageChoiceTest {
@@ -50,6 +51,20 @@ class TranscriptionLanguageChoiceTest {
     fun a_supported_device_language_becomes_the_default_pin() {
         assertEquals("es", TranscriptionLanguageChoice.defaultLanguage(Locale.forLanguageTag("es-MX")))
         assertEquals("en", TranscriptionLanguageChoice.defaultLanguage(Locale.US))
+    }
+
+    @Test
+    fun a_persian_phone_pins_persian() {
+        // #55: Persian was not on offer, so a Persian phone fell to auto-detect, which heard Arabic.
+        assertEquals("fa", TranscriptionLanguageChoice.defaultLanguage(Locale.forLanguageTag("fa-IR")))
+    }
+
+    @Test
+    fun every_language_the_app_is_translated_into_can_be_pinned() {
+        // The second request of this kind (#46 Greek, #55 Persian) came from a user whose app was
+        // already in their language. If CallVault speaks it, transcription must be able to pin it.
+        val uiLanguages = listOf("ar", "de", "el", "en", "es", "fa", "fr", "he", "hu", "it", "pl", "pt", "ru", "vi", "zh")
+        uiLanguages.forEach { assertTrue("$it cannot be pinned", it in TranscriptionLanguageChoice.SUPPORTED) }
     }
 
     @Test

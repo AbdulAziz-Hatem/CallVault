@@ -133,6 +133,34 @@ class SummaryLanguageTest {
     }
 
     @Test
+    fun `detects greek`() {
+        assertEquals("el", SummaryLanguage.scriptOf("Γεια σου κόσμε, τι κάνεις;"))
+    }
+
+    @Test
+    fun `persian is told apart from arabic by the letters only persian uses`() {
+        // Same script, different language (#55). Persian writes پ چ ژ گ and the Persian forms of ی and ک;
+        // Arabic writes ي ك and ة. A Persian call summarised in Arabic is the reported failure.
+        assertEquals("fa", SummaryLanguage.scriptOf("سلام، حالت چطوره؟ فردا می‌بینمت، یک کار کوچک دارم"))
+        assertEquals("ar", SummaryLanguage.scriptOf("مرحبا، كيف حالك؟ سأراك غدا في المدينة"))
+    }
+
+    @Test
+    fun `a hebrew phone's legacy locale code still names hebrew`() {
+        // Java reports a Hebrew phone as "iw". Passed through, the prompt would ask for "IW".
+        assertEquals(
+            "he",
+            SummaryLanguage.resolve(
+                chosen = null,
+                transcriptionSetting = null,
+                transcriptLanguage = null,
+                transcriptText = "hello there",
+                deviceLanguage = "iw"
+            )
+        )
+    }
+
+    @Test
     fun `latin script is not a language`() {
         // Refusing to answer is right: "hello" and "hola" share a script, and guessing English here
         // is exactly the failure being fixed.
