@@ -12,7 +12,11 @@ All notable changes to CallVault are documented here. The format is based on
   <!-- ✅ VERIFIED 2026-10-19 (maintainer): WhatsApp call OP9→OP12 in Shizuku mode "recorded properly";
        dumpsys confirms the Shizuku host (pid of :recorder) registered the policy and held both records as
        com.android.shell. Open: 7 near-side mic re-takes in 14 s on the OP9. Carrier calls in Shizuku mode
-       now use direct capture instead of scrcpy — 🧪 not yet tried on a real call. -->
+       now use direct capture instead of scrcpy — ✅ VERIFIED 2026-10-19 (maintainer, "working just fine"):
+       outgoing call on the OP9, VOICE_CALL record as com.android.shell started 144 ms after the file's
+       timestamp (scrcpy needs ~2 s), 9.6 s file with speech throughout. -->
+- **Phone calls in Shizuku mode start recording faster.** They now record directly instead of through
+  scrcpy, which took about two seconds to spin up and could lose the start of a short call.
 
 ## [2.4.6] — 2026-10-14
 
