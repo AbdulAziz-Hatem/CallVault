@@ -304,4 +304,11 @@ interface IRecorderService {
      * codes it knows (see RecorderTransactionCodesTest).
      */
     int voipCallAnswered(String packageName);
+
+    /**
+     * Call-free capture self-test: arms the VoIP policy, opens the far-side sink and a MIC record,
+     * plays a short USAGE_VOICE_COMMUNICATION tone and reports states and levels as one line.
+     * Diagnostic only. Appended last for the same transaction-code reason as above.
+     */
+    String captureSelfTest();
 }

@@ -225,6 +225,10 @@ open class RecorderServiceImpl(private val apkPath: String) : IRecorderService.S
             .onFailure { AppLogger.d(TAG, "voipCallerName failed: ${it.message}") }
             .getOrNull()
 
+    override fun captureSelfTest(): String =
+        runCatching { CaptureSelfTest.run() }.getOrElse { "error=${it.javaClass.simpleName}: ${it.message}" }
+            .also { AppLogger.i(TAG, "captureSelfTest: $it") }
+
     override fun voipCallAnswered(packageName: String?): Int =
         when (packageName?.let { VoipCallerName.answerState(it) } ?: VoipCallerName.AnswerState.NO_NOTIFICATION) {
             VoipCallerName.AnswerState.ANSWERED -> VOIP_ANSWERED
