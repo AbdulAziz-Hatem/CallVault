@@ -34,6 +34,7 @@ class RecorderUserService : RecorderServiceImpl {
     @Keep
     constructor() : super(apkPathFromClasspath()) {
         AppLogger.i(TAG, "Started by Shizuku (no Context) ${identity()}")
+        ShellAttribution.detachFromApp()
     }
 
     /**
@@ -47,6 +48,7 @@ class RecorderUserService : RecorderServiceImpl {
     @Keep
     constructor(context: Context) : super(context.applicationInfo.sourceDir) {
         AppLogger.i(TAG, "Started by Shizuku (with Context) ${identity()}")
+        ShellAttribution.detachFromApp()
     }
 
     private companion object {

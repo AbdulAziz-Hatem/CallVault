@@ -226,7 +226,13 @@ open class RecorderServiceImpl(private val apkPath: String) : IRecorderService.S
             .getOrNull()
 
     override fun captureSelfTest(): String =
-        runCatching { CaptureSelfTest.run() }.getOrElse { "error=${it.javaClass.simpleName}: ${it.message}" }
+        // Off the caller's identity, as production capture is: VoipCaptureSession builds its records on
+        // the worker thread, where the calling uid is our own. On a binder thread it is the app's, and
+        // the null-Context AudioPolicy checks the sink against that.
+        runCatching {
+            val token = android.os.Binder.clearCallingIdentity()
+            try { CaptureSelfTest.run() } finally { android.os.Binder.restoreCallingIdentity(token) }
+        }.getOrElse { "error=${it.javaClass.simpleName}: ${it.message}" }
             .also { AppLogger.i(TAG, "captureSelfTest: $it") }
 
     override fun voipCallAnswered(packageName: String?): Int =
