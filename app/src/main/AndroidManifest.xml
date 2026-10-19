@@ -261,18 +261,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- SPIKE ONLY: capture self-test trigger, shell-only via DUMP -->
-        <receiver
-            android:name=".system.diagnostics.CaptureSelfTestReceiver"
-            android:exported="true"
-            android:permission="android.permission.DUMP" />
-
-        <!-- SPIKE ONLY: capture self-test trigger, shell-only via DUMP -->
-        <receiver
-            android:name=".system.diagnostics.CaptureSelfTestReceiver"
-            android:exported="true"
-            android:permission="android.permission.DUMP" />
-
         <!-- Boot receiver: re-enables Wireless debugging and reconnects ADB after reboot -->
         <receiver
             android:name=".services.boot.BootReceiver"

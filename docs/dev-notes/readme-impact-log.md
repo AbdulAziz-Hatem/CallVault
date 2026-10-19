@@ -501,3 +501,10 @@ open. Pushed to GitHub `main` as `ceaea29e` on 2026-09-19 (README only; the app 
   per-direction contact choices. Nothing to correct.
 - Worth a line once verified by users: "Record only selected contacts" (a user request), and app calls on
   vivo/iQOO. Both 🧪 as of release.
+
+## 2026-10-19 — App calls now work in Shizuku mode (`spike/shizuku-voip`)
+
+✅ VERIFIED 2026-10-19 by the maintainer on the OP9 (WhatsApp + carrier call in Shizuku mode).
+- Mode table row "App calls (opt-in)" Shizuku ❌ → ✅, with "Android 14+" added (true for both modes).
+- Still ❌ in Shizuku and left so: speaker labels, resilient recording (not tried there), offline,
+  full bug-report export. Grepped README for "Shizuku" + "app call"/"VoIP": no other claim contradicts.
