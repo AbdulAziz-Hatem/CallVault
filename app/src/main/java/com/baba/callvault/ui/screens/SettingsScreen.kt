@@ -344,55 +344,61 @@ fun SettingsScreen(
         }
     }
 
-    SettingsContent(
-        preferences = viewModel.preferences,
-        updateTrigger = updateTrigger,
-        actions = viewModel,
-        contactPickerState = contactPickerState,
-        onBack = onBack,
-        // Seed each picker with its OWN current folder so it opens there, instead of letting
-        // Android's DocumentsUI reopen at the last-browsed location (which, after setting Drive,
-        // made re-picking the local folder open at the Drive path).
-        onSelectFolder = { folderPickerLauncher.launch(viewModel.preferences.getRecordingFolderUri()) },
-        onSelectDriveFolder = { driveFolderPickerLauncher.launch(viewModel.preferences.getDriveFolderUri()) },
-        onOpenContactsIncoming = { contactPickerViewModel.openContactPicker(ContactPickerType.INCOMING) },
-        onOpenContactsOutgoing = { contactPickerViewModel.openContactPicker(ContactPickerType.OUTGOING) },
-        onConfirmContacts = { numbers ->
-            contactPickerViewModel.confirmContactPicker(numbers)
-            // Refresh the screen so the new contact list information is shown immediately after confirming and closing the dialog.
-            viewModel.refresh()
-        },
-        onDismissContacts = { contactPickerViewModel.dismissContactPicker() },
-        // Build the report off the main thread, then hand it to the system share-sheet. The Share
-        // entry point is only shown when a valid log file exists, so the null branch is a safety net.
-        onShareLogs = {
-            if (!preparingReport) scope.launch {
-                preparingReport = true
-                try {
-                    val (report, systemReport) = buildReports()
-                    if (report != null) {
-                        context.shareLogFiles(listOfNotNull(report, systemReport))
-                    } else {
-                        Toast.makeText(context, R.string.settings_bugreport_share_empty, Toast.LENGTH_LONG).show()
+    // Every greyed-out row reads the mode through this, so a mode switch re-greys the whole screen at once.
+    // Read straight from preferences inside each row, the rows kept the old mode's state until Settings
+    // was reopened (OP9, 2026-10-19) — leaving offline recording looking available in Shizuku mode.
+    val privilegedMode = remember(updateTrigger) { viewModel.preferences.getPrivilegedMode() }
+    CompositionLocalProvider(LocalPrivilegedMode provides privilegedMode) {
+        SettingsContent(
+            preferences = viewModel.preferences,
+            updateTrigger = updateTrigger,
+            actions = viewModel,
+            contactPickerState = contactPickerState,
+            onBack = onBack,
+            // Seed each picker with its OWN current folder so it opens there, instead of letting
+            // Android's DocumentsUI reopen at the last-browsed location (which, after setting Drive,
+            // made re-picking the local folder open at the Drive path).
+            onSelectFolder = { folderPickerLauncher.launch(viewModel.preferences.getRecordingFolderUri()) },
+            onSelectDriveFolder = { driveFolderPickerLauncher.launch(viewModel.preferences.getDriveFolderUri()) },
+            onOpenContactsIncoming = { contactPickerViewModel.openContactPicker(ContactPickerType.INCOMING) },
+            onOpenContactsOutgoing = { contactPickerViewModel.openContactPicker(ContactPickerType.OUTGOING) },
+            onConfirmContacts = { numbers ->
+                contactPickerViewModel.confirmContactPicker(numbers)
+                // Refresh the screen so the new contact list information is shown immediately after confirming and closing the dialog.
+                viewModel.refresh()
+            },
+            onDismissContacts = { contactPickerViewModel.dismissContactPicker() },
+            // Build the report off the main thread, then hand it to the system share-sheet. The Share
+            // entry point is only shown when a valid log file exists, so the null branch is a safety net.
+            onShareLogs = {
+                if (!preparingReport) scope.launch {
+                    preparingReport = true
+                    try {
+                        val (report, systemReport) = buildReports()
+                        if (report != null) {
+                            context.shareLogFiles(listOfNotNull(report, systemReport))
+                        } else {
+                            Toast.makeText(context, R.string.settings_bugreport_share_empty, Toast.LENGTH_LONG).show()
+                        }
+                    } finally {
+                        preparingReport = false
                     }
-                } finally {
-                    preparingReport = false
                 }
-            }
-        },
-        // The save dialog opens first, named with the date and time; the report is built once a place is chosen.
-        onSaveLogs = {
-            if (!preparingReport) {
-                val now = LocalDateTime.now()
-                saveReportLauncher.launch(
-                    ReportBundle.suggestedFileName(now.year, now.monthValue, now.dayOfMonth, now.hour, now.minute)
-                )
-            }
-        },
-        onExportSettings = { exportSettingsLauncher.launch("CallVault-settings-${java.time.LocalDate.now()}.json") },
-        onImportSettings = { importSettingsLauncher.launch(arrayOf("application/json", "text/*")) },
-        modifier = modifier
-    )
+            },
+            // The save dialog opens first, named with the date and time; the report is built once a place is chosen.
+            onSaveLogs = {
+                if (!preparingReport) {
+                    val now = LocalDateTime.now()
+                    saveReportLauncher.launch(
+                        ReportBundle.suggestedFileName(now.year, now.monthValue, now.dayOfMonth, now.hour, now.minute)
+                    )
+                }
+            },
+            onExportSettings = { exportSettingsLauncher.launch("CallVault-settings-${java.time.LocalDate.now()}.json") },
+            onImportSettings = { importSettingsLauncher.launch(arrayOf("application/json", "text/*")) },
+            modifier = modifier
+        )
+    }
 
     // Modal on purpose: it gives the tap an immediate answer, and it stops a second tap or a walk
     // back to the previous screen from cancelling work that is already under way.
@@ -544,7 +550,7 @@ fun SettingsContent(
                 // Privileges made the single most consequential setting the hardest one to find. It is
                 // also the first thing worth checking when something is not working, which is exactly
                 // when nobody wants to go hunting for it.
-                PrivilegedModeSubSection()
+                PrivilegedModeSubSection(onModeChanged = { actions.refreshSettings() })
                 // The wizard cannot be re-run, so a phone whose OEM blocks the grant needs to be able to
                 // find this out here too. Self-hiding when it does not apply.
                 OemGateNotice(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
@@ -2392,8 +2398,23 @@ private fun VoipAppPicker(prefs: AppPreferences) {
 @Composable
 internal fun capabilityAvailable(capability: ModeCapability): Boolean {
     val context = LocalContext.current
-    return capability.isAvailable(AppPreferences(context).getPrivilegedMode(), android.os.Build.VERSION.SDK_INT)
+    // Settings provides the mode so a switch reaches every row; the wizard and other screens fall back
+    // to reading it, which is right there because their mode cannot change while they are open.
+    val mode = LocalPrivilegedMode.current ?: AppPreferences(context).getPrivilegedMode()
+    return capability.isAvailable(mode, android.os.Build.VERSION.SDK_INT)
 }
+
+/** The privileged mode the current screen is drawn for; see [capabilityAvailable]. */
+internal val LocalPrivilegedMode = compositionLocalOf<com.baba.callvault.data.PrivilegedMode?> { null }
+
+/**
+ * The mode to draw a row for. Never `remember {}` the mode in a row: a mode switch happens while
+ * Settings is open, and a remembered mode kept the old mode's greyed state on screen (OP9, 2026-10-19).
+ * `ModeAwareUiTest` fails the build on that pattern.
+ */
+@Composable
+internal fun currentPrivilegedMode(): com.baba.callvault.data.PrivilegedMode =
+    LocalPrivilegedMode.current ?: AppPreferences(LocalContext.current).getPrivilegedMode()
 
 /**
  * The one-line reason a row is greyed out, or null when it is not. The phone's Android version is named
@@ -2587,7 +2608,7 @@ internal fun WirelessDebuggingEnforceToggle() {
     val prefs = remember { AppPreferences(context) }
     var enforced by remember { mutableStateOf(prefs.isWirelessDebuggingEnforced()) }
     // Shizuku mode does not touch the switches at all, so the choice means nothing there.
-    val usesEmbeddedAdb = remember { !prefs.getPrivilegedMode().needsShizuku }
+    val usesEmbeddedAdb = !currentPrivilegedMode().needsShizuku
     SettingsToggleRow(
         icon = Icons.Filled.Wifi,
         label = stringResource(R.string.settings_wd_enforce_label),
@@ -2668,7 +2689,7 @@ private fun UsbDebuggingToggle() {
     // (issue #28g). This row also recommends turning it ON, which is advice for the embedded-ADB
     // backend and means nothing to a Shizuku user. Locked, with the reason, rather than hidden: it
     // still reports the true state, and a control that quietly vanishes teaches nothing.
-    val usesEmbeddedAdb = remember { !AppPreferences(context).getPrivilegedMode().needsShizuku }
+    val usesEmbeddedAdb = !currentPrivilegedMode().needsShizuku
 
     SettingsToggleRow(
         icon = Icons.Filled.Usb,
@@ -2741,7 +2762,7 @@ private fun UsbDefaultConfigRow() {
     var mode by remember { mutableStateOf(UsbDefaultConfig.cached(context)) }
     var applying by remember { mutableStateOf(false) }
     var refusedWhileRecording by remember { mutableStateOf(false) }
-    val privilegedMode = remember { AppPreferences(context).getPrivilegedMode() }
+    val privilegedMode = currentPrivilegedMode()
 
     // The nudge is pure embedded-ADB machinery — reading it needs our shell, and applying it needs the
     // shell privilege. Greyed in Shizuku mode for the same reason the offline toggle is: it would look

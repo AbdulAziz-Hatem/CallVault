@@ -43,6 +43,12 @@ All notable changes to CallVault are documented here. The format is based on
 
 ### Fixed
 
+- **Settings updates the moment you switch modes.** After switching between built-in and Shizuku mode,
+  some options kept the old mode's greyed-out state until Settings was reopened — so recording away from
+  Wi-Fi could look available in Shizuku mode, and "Keep Wireless debugging on" stayed greyed in built-in
+  mode.
+  <!-- ✅ VERIFIED 2026-10-19 on the OP9 (Claude-run, tools/device-checks/mode-switch-check.sh): 24/24 checks
+       across built-in → Shizuku → built-in on the same screen. Before the fix the same check failed. -->
 - **Recordings named with a contact- or number-first format show their arrow, merge, and are found by
   search again.** Five of the eight file-name formats (four added in 2.4.5) have no in/out marker, and the
   list read nothing at all from them — no date, number, contact or direction. It now reads the date

@@ -1021,6 +1021,10 @@ class AppPreferences(context: Context) {
         val set: (Boolean) -> Unit,
     )
 
+    /** Each mode-gated switch's id and the capability that gates it — read by SettingDecisionsTest. */
+    internal fun gatedSwitchCapabilities(): Map<String, ModeCapability> =
+        gatedSwitches().associate { it.id to it.capability }
+
     private fun gatedSwitches(): List<GatedSwitch> = listOf(
         GatedSwitch(
             "handoff_persist", ModeCapability.RESILIENT_RECORDING,

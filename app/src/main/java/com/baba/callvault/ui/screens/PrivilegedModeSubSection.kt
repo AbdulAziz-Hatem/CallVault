@@ -43,7 +43,7 @@ import com.baba.callvault.server.ShizukuStatus
  * (it does not survive a reboot), and a cached "ready" would be a lie the moment it did.
  */
 @Composable
-fun PrivilegedModeSubSection() {
+fun PrivilegedModeSubSection(onModeChanged: () -> Unit = {}) {
     val context = LocalContext.current
     val prefs = remember { AppPreferences(context) }
 
@@ -91,6 +91,8 @@ fun PrivilegedModeSubSection() {
                 val outcome = withContext(Dispatchers.IO) { RecorderBackend.completeSwitch(context, target) }
                 switchResult = outcome
                 refresh++
+                // The rest of the screen greys and un-greys by mode; tell it the mode changed.
+                onModeChanged()
             }
         }
     )

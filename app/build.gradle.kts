@@ -285,6 +285,9 @@ android {
         unitTests {
             isIncludeAndroidResources = true
             isReturnDefaultValues = true
+            // Some tests read source files (ModeAwareUiTest scans the UI for a cached privileged mode).
+            // Declared as inputs so a source-only change re-runs them instead of being "up to date".
+            all { it.inputs.dir("src/main/java/com/baba/callvault/ui") }
         }
     }
     lint {
