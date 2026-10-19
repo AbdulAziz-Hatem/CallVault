@@ -61,9 +61,10 @@ class HandoffPolicyTest {
     }
 
     @Test
-    fun shizuku_mode_never_uses_handoff_even_when_the_user_asked_for_it() {
-        // The one that matters: opting in must not produce silent empty recordings.
-        assertFalse(
+    fun shizuku_mode_uses_handoff_now_that_its_host_can_record() {
+        // Since ShellAttribution the Shizuku host records directly; the guard against silent empty
+        // recordings moved to HandoffSource, which refuses a record that did not start.
+        assertTrue(
             HandoffPolicy.isUsable(
                 enabled = true, sourceSupported = true, mode = PrivilegedMode.SHIZUKU
             )

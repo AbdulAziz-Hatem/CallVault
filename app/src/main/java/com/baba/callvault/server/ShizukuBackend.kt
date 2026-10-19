@@ -83,6 +83,12 @@ object ShizukuBackend {
 
     @Volatile private var connection: ServiceConnection? = null
 
+    /** The recorder binder the current [connection] delivered, if it has; see [ShizukuBinding]. */
+    @Volatile private var delivered: IBinder? = null
+
+    /** When the current [connection] was asked for, on the elapsed-realtime clock. */
+    @Volatile private var boundAtMs = 0L
+
     /**
      * The package name of the Shizuku manager on this phone, or null when none can be found.
      *
@@ -151,9 +157,20 @@ object ShizukuBackend {
             AppLogger.i(TAG, "Shizuku permission has not been granted")
             return false
         }
-        if (connection != null) {
-            AppLogger.d(TAG, "Already bound")
-            return true
+        connection?.let { current ->
+            val alive = delivered?.let { runCatching { it.isBinderAlive }.getOrDefault(false) }
+            if (!ShizukuBinding.isStale(alive, android.os.SystemClock.elapsedRealtime() - boundAtMs)) {
+                AppLogger.d(TAG, "Already bound")
+                return true
+            }
+            // The recorder this binding delivered is gone (or never came). Remove the record outright so
+            // Shizuku starts a fresh process; an "unbind and keep" would hand back the same dead service.
+            AppLogger.w(TAG, "The Shizuku binding is stale (recorder ${if (alive == false) "died" else "never answered"}); binding again")
+            runCatching { Shizuku.unbindUserService(userServiceArgs, current, true) }
+                .onFailure { AppLogger.w(TAG, "unbindUserService (stale) failed: ${it.message}") }
+            connection = null
+            delivered = null
+            RecorderConnection.onBinderDied()
         }
 
         val conn = object : ServiceConnection {
@@ -178,6 +195,7 @@ object ShizukuBackend {
                         return@synchronized false
                     }
                     AppLogger.i(TAG, "Shizuku started the recorder service")
+                    delivered = binder
                     RecorderConnection.onBinderReceived(IRecorderService.Stub.asInterface(binder))
                     true
                 }
@@ -202,6 +220,8 @@ object ShizukuBackend {
         // Claimed BEFORE the bind, because the callbacks above compare against it and the answer is
         // delivered on another thread: set afterwards, a fast answer would find itself "not current".
         connection = conn
+        delivered = null
+        boundAtMs = android.os.SystemClock.elapsedRealtime()
         return runCatching {
             Shizuku.bindUserService(userServiceArgs, conn)
             true
@@ -223,6 +243,7 @@ object ShizukuBackend {
         if (connection == null) return@synchronized
         AppLogger.i(TAG, "Shizuku died; dropping the stale recorder binding")
         connection = null
+        delivered = null
         RecorderConnection.onBinderDied()
     }
 
@@ -245,6 +266,7 @@ object ShizukuBackend {
         runCatching { Shizuku.unbindUserService(userServiceArgs, conn, remove) }
             .onFailure { AppLogger.w(TAG, "unbindUserService failed: ${it.message}") }
         connection = null
+        delivered = null
         RecorderConnection.onBinderDied()
     }
 }

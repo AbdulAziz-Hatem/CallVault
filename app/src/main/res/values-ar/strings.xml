@@ -94,7 +94,7 @@
     <string name="mode_switch_problem_title">ليس جاهزًا بعد</string>
     <string name="mode_switch_done_shizuku">جاهز — يستخدم Shizuku</string>
     <string name="mode_switch_done_standalone">جاهز — يستخدم CallVault</string>
-    <string name="mode_switch_ready_shizuku">يسجل CallVault من خلال Shizuku. مكالمات VoIP والتسجيل المرن غير متوفرة في هذا الوضع.</string>
+    <string name="mode_switch_ready_shizuku">يسجّل CallVault عبر Shizuku. كل الميزات متاحة ما عدا التسجيل بعيدًا عن Wi-Fi، الذي يحتاج إلى مسجّل CallVault الخاص.</string>
     <string name="mode_switch_ready_standalone">يسجل CallVault باستخدام مسجله الخاص. كل شيء متاح، بما في ذلك مكالمات VoIP وأسماء المتحدثين.</string>
     <string name="mode_switch_ready">المسجل يعمل. سيتم تسجيل المكالمات.</string>
     <string name="mode_switch_shizuku_not_installed">لم يتم تثبيت Shizuku، لذا لا يوجد شيء للتبديل إليه.</string>

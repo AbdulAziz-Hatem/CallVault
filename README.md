@@ -115,6 +115,10 @@ Switch whenever you like; any setting a mode couldn't honour comes back when you
 | App calls (opt-in) | ✅ | ❌ |
 | Speaker labels | ✅ | ❌ |
 | Keeps recording if Android kills the background process (opt-in) | ✅ | ❌ |
+| Recording works after a reboot, with nothing to do | ✅ | ❌ |
+| App calls (opt-in, Android 14+) | ✅ | ✅ |
+| Speaker labels | ✅ | ✅ |
+| Keeps recording if Android kills the background process (opt-in) | ✅ | ✅ |
 | Recording away from Wi-Fi (opt-in) | ✅ | ❌ |
 | Full bug-report export | ✅ | ❌ |
 

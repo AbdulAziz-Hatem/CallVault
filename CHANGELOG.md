@@ -32,6 +32,31 @@ All notable changes to CallVault are documented here. The format is based on
   media apps, by adding a hidden `.nomedia` file to the recordings folder. Recordings keep their names and
   still sync; file managers still show them. Turning it off removes the file only if CallVault added it.
   <!-- 🧪 VERIFYING — unit tests; needs checking on a phone that media apps stop listing the recordings. -->
+### Fixed
+
+- **Shizuku mode: the recorder comes back after Android kills it.** CallVault kept treating a dead
+  Shizuku recorder as connected, so it never asked for a new one — calls could not be recorded (and app
+  calls were never armed) until something else reset it.
+  <!-- ✅ VERIFIED 2026-10-19 on the OP9 (maintainer-delegated): recorder killed → "binding is stale" →
+       back in ~0.3 s with VoIP re-armed. Before the fix it stayed down ("Already bound" + 10 s timeout). -->
+
+### Added
+
+- **App calls record in Shizuku mode too** (Android 14 and newer). The Shizuku-hosted recorder now
+  presents itself as the shell, as CallVault's own recorder does, so Android lets it capture both sides.
+  <!-- ✅ VERIFIED 2026-10-19 (maintainer): WhatsApp call OP9→OP12 in Shizuku mode "recorded properly";
+       dumpsys confirms the Shizuku host (pid of :recorder) registered the policy and held both records as
+       com.android.shell. Open: 7 near-side mic re-takes in 14 s on the OP9. Carrier calls in Shizuku mode
+       now use direct capture instead of scrcpy — ✅ VERIFIED 2026-10-19 (maintainer, "working just fine"):
+       outgoing call on the OP9, VOICE_CALL record as com.android.shell started 144 ms after the file's
+       timestamp (scrcpy needs ~2 s), 9.6 s file with speech throughout. -->
+- **Resilient recording and speaker names work in Shizuku mode too.** Nothing capture-related differs
+  between the modes any more; only recording away from Wi-Fi still needs CallVault's own recorder.
+  <!-- ✅ VERIFIED 2026-10-19 (OP9, maintainer-run call, Shizuku mode): the Shizuku recorder was killed 9 s
+       into a 31 s phone call and the file still runs to the end; the details .json carries speaker turns
+       for both sides across the whole call, including after the kill. -->
+- **Phone calls in Shizuku mode start recording faster.** They now record directly instead of through
+  scrcpy, which took about two seconds to spin up and could lose the start of a short call.
 
 ## [2.4.6] — 2026-10-14
 

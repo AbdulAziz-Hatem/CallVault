@@ -13,7 +13,12 @@ import com.baba.callvault.data.PrivilegedMode
 /**
  * Whether a recording may take the resilient (handoff) path.
  *
- * **Why this is not simply the user's preference.** The handoff path exists so a recording survives the
+ * **2026-10-19: Shizuku mode is no longer ruled out.** The failure below came from the Shizuku host
+ * presenting our package under uid 2000; `ShellAttribution` fixed that (measured on the OP9, where carrier
+ * and VoIP calls now record directly in the Shizuku host), and `HandoffSource` now refuses to hand over a
+ * record that did not start, so the old silent-0-byte shape falls back instead. History, kept as written:
+ *
+ * **Why this was not simply the user's preference.** The handoff path exists so a recording survives the
  * daemon dying mid-call: the *daemon* creates the privileged `AudioRecord` and hands the live capture to
  * the app, which reads the ring buffer itself. That requires the daemon's process to be able to record —
  * and a **Shizuku-hosted process cannot**. Measured on a OnePlus 9 Pro on 2026-08-24:
@@ -35,8 +40,10 @@ object HandoffPolicy {
     /**
      * @param enabled the user's "resilient recording" opt-in.
      * @param sourceSupported whether this audio source can be captured by a Java `AudioRecord` at all.
-     * @param mode where privileges come from; [PrivilegedMode.SHIZUKU] rules the path out entirely.
+     * @param mode where privileges come from. Both hosts can take this path now; kept as a parameter so
+     *   the decision stays in one place if a mode ever has to be ruled out again.
      */
+    @Suppress("UNUSED_PARAMETER")
     fun isUsable(enabled: Boolean, sourceSupported: Boolean, mode: PrivilegedMode): Boolean =
-        enabled && sourceSupported && !mode.needsShizuku
+        enabled && sourceSupported
 }

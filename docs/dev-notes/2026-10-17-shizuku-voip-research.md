@@ -1,7 +1,47 @@
 # VoIP recording in Shizuku mode — research (2026-10-17)
 
-**Status: 📐 RESEARCHED, not measured.** Nothing here has been run on a phone. Every claim below is
-from our code, AOSP/Shizuku source, or other projects' code and logs.
+**Status: cause MEASURED on the OP9 2026-10-19; fix proven by a call-free self-test; 🧪 no real call yet.**
+
+## 2026-10-19 measurement (OP9 Pro, Android 14, ColorOS, Shizuku mode, branch `spike/shizuku-voip`)
+
+A capture self-test (`CaptureSelfTest`, triggered by a DUMP-guarded receiver) arms the VoIP policy, opens
+the far-side sink + a MIC record, and plays a USAGE_VOICE_COMMUNICATION tone — a VoIP downlink without a
+call. Same test, same process type, before/after:
+
+| | before | after `ShellAttribution.detachFromApp()` |
+|---|---|---|
+| logcat | `does not correspond to the uid 2000`; AppOps `Specified package "com.baba.callvault" under uid 2000`; `startInput permission denied` | none |
+| policy arm | true | true |
+| far-side sink | null | RECORDING, −16.3 dB (the tone) |
+| MIC | init, start refused | RECORDING, −20.5 dB |
+
+- **Attribution was the cause** — exactly as read from AOSP. Clearing `mInitialApplication` in the
+  UserService constructor fixes it (FMZlinkR's fix). Option A (spawn a daemon) is not needed.
+- **Open question 1 answered:** standalone never needed `clearCallingIdentity` because `VoipCaptureSession`
+  builds its records on the `recorder-worker` thread, where the calling uid is our own. Only a capture
+  built on a binder thread (as the self-test is) sees the app's uid. Production code is already safe.
+- Still to do: lift the self-imposed gates (ModeCapability, keep-alive stand-down, VoIP detection host),
+  then a real WhatsApp call and a carrier call in Shizuku mode (direct capture now succeeds instead of
+  falling back to scrcpy — a behaviour change that needs its own two-sided call).
+
+## 2026-10-19 real call — ✅ VERIFIED (maintainer) WhatsApp in Shizuku mode, OP9 → OP12
+
+The maintainer placed a WhatsApp call from the OP9 (Shizuku mode, build `2137e7d5`) and reports it
+"recorded properly". Proof it went through the Shizuku host, from `dumpsys audio`:
+
+- `registerAudioPolicy … u/pid:2000/18762` at 11:20:24; pid 18762 = `com.baba.callvault:recorder` (the
+  Shizuku user service). No `RecorderServer` app_process existed.
+- During the call (12:12:09–12:12:26): `src:REMOTE_SUBMIX … pack:com.android.shell` (far side) and
+  `src:MIC … pack:com.android.shell` (near side), all `not silenced` — the shell identity, not ours.
+- File `20261019_121209.682+0300_voip-WhatsApp_פרוזה.ogg`, 16 s, Opus 48 kHz mono (the shipped mono
+  encode), levels continuous, no dead stretch.
+
+⚠️ Open: the near MIC record was re-taken 7 times in ~14 s (riid 239→287), i.e. `VoipCaptureSession`'s
+zero-chunk re-take fired repeatedly — WhatsApp kept winning the mic on the OP9. Each re-take can cost a
+fraction of a second of the near side. Not yet known whether the OP9 does the same in standalone mode
+(A/B needed) or whether it is Shizuku-specific.
+
+Below is the original research (📐, from source), kept as written.
 
 ## The short answer
 

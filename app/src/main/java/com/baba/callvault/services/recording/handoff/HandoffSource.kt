@@ -108,8 +108,18 @@ object HandoffSource {
             return@runCatching false
         }
         AppLogger.i(T, "deliver: handoff source=$sourceCliKey capture channels=$channelCount rate=$rate startTrack=$startTrack")
-        if (startTrack) record.startRecording()
-        else AppLogger.i(T, "deliver: handing the track over STOPPED — the app will start it (Track A)")
+        if (startTrack) {
+            record.startRecording()
+            // Never hand over a record that did not start. Android can refuse the start while having
+            // allowed the create (a Shizuku host presenting the wrong package did exactly that), and a
+            // refused record produces no frames: the app would encode nothing and write an empty file
+            // while every layer reported success. Returning false sends the engine down its fallback.
+            if (record.recordingState != AudioRecord.RECORDSTATE_RECORDING) {
+                AppLogger.w(T, "deliver: $sourceCliKey record did not start (state=${record.recordingState}); not handing it over")
+                runCatching { record.release() }
+                return@runCatching false
+            }
+        } else AppLogger.i(T, "deliver: handing the track over STOPPED — the app will start it (Track A)")
         heldRecord = record
         heldAuditId = CaptureAudit.opened("handoff held record (source=$sourceCliKey, ch=$channelCount, rate=$rate)")
 

@@ -31,11 +31,17 @@ class ModeCapabilityTest {
     }
 
     @Test
-    fun shizuku_cannot_do_anything_that_needs_a_privileged_audiorecord() {
-        // All three hand a daemon-created AudioRecord around; none can work where one cannot start.
-        assertFalse(ModeCapability.RESILIENT_RECORDING.isAvailableIn(PrivilegedMode.SHIZUKU))
-        assertFalse(ModeCapability.VOIP_RECORDING.isAvailableIn(PrivilegedMode.SHIZUKU))
-        assertFalse(ModeCapability.SPEAKER_ATTRIBUTION.isAvailableIn(PrivilegedMode.SHIZUKU))
+    fun shizuku_records_app_calls_once_the_host_presents_the_shell_identity() {
+        // ShellAttribution: measured on the OP9 2026-10-19, both VoIP records reach RECORDING in the
+        // Shizuku host once it stops presenting com.baba.callvault under uid 2000.
+        assertTrue(ModeCapability.VOIP_RECORDING.isAvailableIn(PrivilegedMode.SHIZUKU))
+    }
+
+    @Test
+    fun shizuku_does_everything_that_needs_a_privileged_audiorecord() {
+        // One host code, one shell identity: the capture-side features no longer differ by mode.
+        assertTrue(ModeCapability.RESILIENT_RECORDING.isAvailableIn(PrivilegedMode.SHIZUKU))
+        assertTrue(ModeCapability.SPEAKER_ATTRIBUTION.isAvailableIn(PrivilegedMode.SHIZUKU))
     }
 
     @Test
@@ -100,7 +106,8 @@ class ModeCapabilityTest {
     fun a_capability_needs_both_the_mode_and_the_version() {
         assertTrue(ModeCapability.VOIP_RECORDING.isAvailable(PrivilegedMode.STANDALONE, 34))
         assertFalse(ModeCapability.VOIP_RECORDING.isAvailable(PrivilegedMode.STANDALONE, 33))
-        assertFalse(ModeCapability.VOIP_RECORDING.isAvailable(PrivilegedMode.SHIZUKU, 36))
+        assertTrue(ModeCapability.VOIP_RECORDING.isAvailable(PrivilegedMode.SHIZUKU, 36))
+        assertFalse(ModeCapability.VOIP_RECORDING.isAvailable(PrivilegedMode.SHIZUKU, 33))
     }
 
     @Test

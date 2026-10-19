@@ -2426,8 +2426,9 @@ internal fun VoipRecordingToggle(onEnabledChange: (Boolean) -> Unit = {}) {
     var arming by remember { mutableStateOf(false) }
     var unavailable by remember { mutableStateOf(false) }
 
-    // VoIP capture runs two AudioRecords against a dynamic audio policy, and neither can start in a
-    // Shizuku-hosted process — so in Shizuku mode this is greyed out rather than left to fail silently.
+    // VoIP capture runs two AudioRecords against a dynamic audio policy. Both modes can since the Shizuku
+    // host presents the shell identity (ShellAttribution); below Android 14 neither can, so it is greyed
+    // out there rather than left to fail silently.
     val supported = capabilityAvailable(ModeCapability.VOIP_RECORDING)
     val unsupportedNote = unavailableReason(ModeCapability.VOIP_RECORDING)
 

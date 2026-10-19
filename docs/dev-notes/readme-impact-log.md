@@ -517,3 +517,16 @@ WLAN (Shizuku release notes, v13.6.0), not verified by us.
 - Grepped the whole README for "reboot": line 43 ("tells you if recording can't start after a reboot")
   and the debugging-switches section (line ~157, "start its recorder again after a reboot … only works on
   Wi-Fi") were already true.
+## 2026-10-19 — App calls now work in Shizuku mode (`spike/shizuku-voip`)
+
+✅ VERIFIED 2026-10-19 by the maintainer on the OP9 (WhatsApp + carrier call in Shizuku mode).
+- Mode table row "App calls (opt-in)" Shizuku ❌ → ✅, with "Android 14+" added (true for both modes).
+- Still ❌ in Shizuku and left so: speaker labels, resilient recording (not tried there), offline,
+  full bug-report export. Grepped README for "Shizuku" + "app call"/"VoIP": no other claim contradicts.
+
+## 2026-10-19 — Speaker labels and resilient recording in Shizuku mode (`feat/shizuku-voip`)
+
+✅ VERIFIED 2026-10-19 on the OP9 in Shizuku mode (recorder killed mid-call, file ran to the end; turns in
+the .json). Rows "Speaker labels" and "Keeps recording if Android kills the background process" Shizuku
+❌ → ✅. Shizuku ❌ rows left: works without another app, recording away from Wi-Fi, full bug-report
+export. "Nothing to pair" row unchanged.

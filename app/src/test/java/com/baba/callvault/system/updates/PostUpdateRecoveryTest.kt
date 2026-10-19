@@ -65,8 +65,12 @@ class PostUpdateRecoveryTest {
         assertTrue(PostUpdateRecovery.plan(PrivilegedMode.STANDALONE, grantSurvived = true).restartKeepAlive)
         assertTrue(PostUpdateRecovery.plan(PrivilegedMode.STANDALONE, grantSurvived = false).restartKeepAlive)
         assertFalse(
-            "Shizuku owns the recorder there; the service stands down itself",
-            PostUpdateRecovery.plan(PrivilegedMode.SHIZUKU, grantSurvived = true).restartKeepAlive,
+            "Without app calls there is nothing for it to do in Shizuku mode",
+            PostUpdateRecovery.plan(PrivilegedMode.SHIZUKU, grantSurvived = true, voipEnabled = false).restartKeepAlive,
+        )
+        assertTrue(
+            "In Shizuku mode it hosts app-call detection, so it must come back when that is on",
+            PostUpdateRecovery.plan(PrivilegedMode.SHIZUKU, grantSurvived = true, voipEnabled = true).restartKeepAlive,
         )
     }
 

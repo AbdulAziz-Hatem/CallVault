@@ -57,6 +57,7 @@ class RecorderTransactionCodesTest {
         assertEquals(first + 23, IRecorderService.Stub.TRANSACTION_captureDiagnostics)
         assertEquals(first + 24, IRecorderService.Stub.TRANSACTION_hostApkPath)
         assertEquals(first + 25, IRecorderService.Stub.TRANSACTION_voipCallAnswered)
+        assertEquals(first + 26, IRecorderService.Stub.TRANSACTION_captureSelfTest)
     }
 
     @Test

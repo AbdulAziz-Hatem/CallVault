@@ -14,9 +14,10 @@ package com.baba.callvault.data
  *
  * **Everything here follows from two measured facts, not from taste:**
  *
- *  1. A **Shizuku-hosted process cannot get an `AudioRecord` into RECORDING state** (measured on an
- *     emulator and on a OnePlus 9 Pro, 2026-08-24). Capture there goes through scrcpy, which spawns its
- *     own process — so anything needing a privileged `AudioRecord` *in the recorder process* is out.
+ *  1. ~~A Shizuku-hosted process cannot get an `AudioRecord` into RECORDING state~~ — true until
+ *     2026-10-19, when the cause turned out to be the host presenting our package under uid 2000.
+ *     `ShellAttribution` fixed it (OP9: carrier and VoIP calls recorded directly in the Shizuku host), so
+ *     every capture-side capability now works in both modes.
  *  2. In Shizuku mode there is **no embedded ADB connection at all**, so anything that drives adb has
  *     nothing to talk to.
  *
@@ -25,7 +26,7 @@ package com.baba.callvault.data
  */
 enum class ModeCapability {
 
-    /** Recording a carrier call at all. Direct AudioRecord in standalone, scrcpy under Shizuku. */
+    /** Recording a carrier call at all. Direct AudioRecord in both modes; scrcpy is the fallback. */
     CARRIER_RECORDING,
 
     /**
@@ -36,14 +37,15 @@ enum class ModeCapability {
 
     /**
      * Recording app (VoIP) calls. `VoipCaptureSession` runs two `AudioRecord`s against a dynamic audio
-     * policy; neither can start in a Shizuku-hosted process.
+     * policy. Android 14+ in both modes (the shell gains CAPTURE_VOICE_COMMUNICATION_OUTPUT in 14).
      */
     VOIP_RECORDING,
 
     /**
      * Attributing transcript lines to a speaker. The turns are measured from the two capture channels
-     * *during* the call by `SpeakerTurnDetector`, which lives in the direct capture session — the scrcpy
-     * path never sees raw channels, so a call recorded under Shizuku has no turns to attribute.
+     * *during* the call by `SpeakerTurnDetector`, which lives in the direct, handoff and VoIP captures.
+     * Since the Shizuku host records directly (ShellAttribution, 2026-10-19), both modes have them; a call
+     * that still falls back to scrcpy gets them afterwards from the offline labeller instead.
      */
     SPEAKER_ATTRIBUTION,
 
@@ -69,8 +71,12 @@ enum class ModeCapability {
 
     /** Whether this capability works in [mode]. */
     fun isAvailableIn(mode: PrivilegedMode): Boolean = when (this) {
-        // Needs a privileged AudioRecord inside the recorder process.
-        RESILIENT_RECORDING, VOIP_RECORDING, SPEAKER_ATTRIBUTION -> !mode.needsShizuku
+        // Works in the Shizuku host since it presents the shell identity (ShellAttribution; measured
+        // on the OP9 2026-10-19 with a call-free self-test).
+        VOIP_RECORDING -> true
+        // Same privileged AudioRecord, same host code. Speaker turns come from the live detector in the
+        // capture, which no longer differs by host; the handoff refuses a record that did not start.
+        RESILIENT_RECORDING, SPEAKER_ATTRIBUTION -> true
         // Needs our own embedded ADB.
         OFFLINE_RECORDING, WIRELESS_DEBUGGING_CONTROL, DAEMON_KEEP_ALIVE, SILENT_UPDATE_INSTALL ->
             !mode.needsShizuku
