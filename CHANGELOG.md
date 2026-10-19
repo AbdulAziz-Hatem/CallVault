@@ -28,7 +28,9 @@ All notable changes to CallVault are documented here. The format is based on
 - **Hide Recordings.** A setting that keeps your recordings out of music players, galleries and other
   media apps, by adding a hidden `.nomedia` file to the recordings folder. Recordings keep their names and
   still sync; file managers still show them. Turning it off removes the file only if CallVault added it.
-  <!-- 🧪 VERIFYING — unit tests; needs checking on a phone that media apps stop listing the recordings. -->
+  <!-- 🧪 VERIFYING — on the OP9 2026-10-19 (Claude-run): on → media index lists 0 of the folder's 11
+       recordings; off → marker removed, 11 listed again; on → 0. Needs the maintainer's own look in a
+       music/gallery app. First on-device run crashed (null Context to MediaScannerConnection) — fixed. -->
 
 ### Fixed
 

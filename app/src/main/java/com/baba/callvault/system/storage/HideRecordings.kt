@@ -54,7 +54,7 @@ object HideRecordings {
         val prefs = AppPreferences(context)
         val folderUri = prefs.getRecordingFolderUri() ?: return
         val folder = DocumentFile.fromTreeUri(context, folderUri) ?: return
-        val marker = folder.findFile(MARKER)
+        val marker = findMarker(context, folderUri, folder)
         when (decide(prefs.isHideRecordingsEnabled(), marker != null, prefs.isNomediaCreatedByUs())) {
             Action.CREATE -> {
                 val created = folder.createFile("application/octet-stream", MARKER)
@@ -66,13 +66,13 @@ object HideRecordings {
                 }
                 prefs.setNomediaCreatedByUs(true)
                 AppLogger.i(TAG, "Recordings hidden from media apps")
-                rescan(folderUri, created.uri)
+                rescan(context, folderUri)
             }
             Action.DELETE -> {
                 if (marker?.delete() == true) {
                     prefs.setNomediaCreatedByUs(false)
                     AppLogger.i(TAG, "Recordings visible to media apps again")
-                    rescan(folderUri, null)
+                    rescan(context, folderUri)
                 }
             }
             Action.NONE -> Unit
@@ -84,11 +84,30 @@ object HideRecordings {
      * reappear) now rather than at its next full scan. Only possible for primary shared storage, where the
      * tree maps to a real path; elsewhere the index catches up on its own.
      */
-    private fun rescan(folderUri: Uri, @Suppress("UNUSED_PARAMETER") markerUri: Uri?) {
+    private fun rescan(context: Context, folderUri: Uri) {
         val path = primaryPathOf(folderUri) ?: return
+        // A real Context, never null: on Android 14 the scan callback dereferences it on a background
+        // thread, and a null one crashed the app outside any try (OP9, 2026-10-19).
         runCatching {
-            MediaScannerConnection.scanFile(null, arrayOf(File(path, MARKER).path, path), null, null)
+            MediaScannerConnection.scanFile(context.applicationContext, arrayOf(File(path, MARKER).path, path), null, null)
         }.onFailure { AppLogger.d(TAG, "Rescan request failed: ${it.message}") }
+    }
+
+    /**
+     * The marker, looked up by its document id rather than by listing the folder: the external-storage
+     * provider leaves dot-files out of listings, so `findFile` never sees `.nomedia` (measured on the OP9 —
+     * every start tried to create it again, and turning the setting off could not remove it). Listing is
+     * kept as the fallback for providers whose ids are not paths.
+     */
+    private fun findMarker(context: Context, treeUri: Uri, folder: DocumentFile): DocumentFile? {
+        val direct = runCatching {
+            val folderId = DocumentsContract.getDocumentId(folder.uri)
+            val doc = DocumentFile.fromSingleUri(
+                context, DocumentsContract.buildDocumentUriUsingTree(treeUri, "$folderId/$MARKER"),
+            )
+            doc?.takeIf { it.exists() }
+        }.getOrNull()
+        return direct ?: folder.findFile(MARKER)
     }
 
     private fun primaryPathOf(treeUri: Uri): String? = runCatching {

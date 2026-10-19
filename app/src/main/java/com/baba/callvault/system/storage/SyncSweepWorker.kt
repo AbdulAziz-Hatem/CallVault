@@ -75,6 +75,11 @@ class SyncSweepWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(
         for (file in sourceDir.listFiles()) {
             val name = file.name ?: continue
             if (!file.isFile) continue
+            // A dot-file is never a recording. The one CallVault itself puts here is Hide Recordings'
+            // .nomedia, which the media index fills with the folder path — so it is not empty, and in
+            // Drive-only mode this sweep would upload it and delete it from the phone, un-hiding the
+            // recordings it was put there to hide.
+            if (name.startsWith(".")) continue
             // A staging document from an interrupted copy is not a recording.
             if (CloudCopyPolicy.isStagingName(name)) continue
             // Nor is a file the user imported: their own audio, which in DRIVE-only mode this sweep
