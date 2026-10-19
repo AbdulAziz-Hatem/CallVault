@@ -508,3 +508,10 @@ open. Pushed to GitHub `main` as `ceaea29e` on 2026-09-19 (README only; the app 
 - Mode table row "App calls (opt-in)" Shizuku ❌ → ✅, with "Android 14+" added (true for both modes).
 - Still ❌ in Shizuku and left so: speaker labels, resilient recording (not tried there), offline,
   full bug-report export. Grepped README for "Shizuku" + "app call"/"VoIP": no other claim contradicts.
+
+## 2026-10-19 — Speaker labels and resilient recording in Shizuku mode (`feat/shizuku-voip`)
+
+✅ VERIFIED 2026-10-19 on the OP9 in Shizuku mode (recorder killed mid-call, file ran to the end; turns in
+the .json). Rows "Speaker labels" and "Keeps recording if Android kills the background process" Shizuku
+❌ → ✅. Shizuku ❌ rows left: works without another app, recording away from Wi-Fi, full bug-report
+export. "Nothing to pair" row unchanged.
