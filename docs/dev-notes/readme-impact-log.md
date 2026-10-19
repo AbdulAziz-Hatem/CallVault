@@ -501,3 +501,19 @@ open. Pushed to GitHub `main` as `ceaea29e` on 2026-09-19 (README only; the app 
   per-direction contact choices. Nothing to correct.
 - Worth a line once verified by users: "Record only selected contacts" (a user request), and app calls on
   vivo/iQOO. Both 🧪 as of release.
+
+## 2026-10-19 — README misled about reboots (user report)
+
+❌ **The README was wrong.** The mode table said built-in mode had "Recording works after a reboot, with
+nothing to do ✅" and Shizuku ❌. A user with every Experimental option on found the phone still needed
+Wi-Fi after each reboot, and could not find the promised behaviour. The truth: after a reboot BOTH modes
+need Wi-Fi once — Wireless debugging only runs on Wi-Fi, and the off-Wi-Fi loopback is cleared by the
+reboot. Built-in mode then restarts by itself; Shizuku 13.6+ can auto-start on Android 13+ on a trusted
+WLAN (Shizuku release notes, v13.6.0), not verified by us.
+
+- Row reworded: "After a reboot, recording starts again by itself once the phone is on Wi-Fi".
+- New IMPORTANT note under the table: Wi-Fi once after every reboot, any network/hotspot, no internet,
+  no one-time setup avoids it without root.
+- Grepped the whole README for "reboot": line 43 ("tells you if recording can't start after a reboot")
+  and the debugging-switches section (line ~157, "start its recorder again after a reboot … only works on
+  Wi-Fi") were already true.
