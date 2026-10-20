@@ -321,4 +321,92 @@ class LogRedactionTest {
     fun `a bare number with no unit is still redacted`() {
         assertEquals("Number: [PHONE_REDACTED]", redact("Number: 0544557278"))
     }
+
+    // -------- Names that come BEFORE the date (the contact-first presets added in 2.4.5)
+    //
+    // "{contact_name}_{phone_number}_{date}" and its siblings put the person first. The rule used to
+    // anchor on the date and look only to its right, so these names went into the report verbatim.
+
+    private val stamp = "20260611_143052.000+0300"
+
+    @Test
+    fun `a quoted contact-number-date name hides the contact and the number`() {
+        assertEquals(
+            "Wrote details file '${token("John Doe")}_[PHONE_REDACTED]_$stamp.ogg'.",
+            redact("Wrote details file 'John Doe_+15551234_$stamp.ogg'.")
+        )
+    }
+
+    @Test
+    fun `a number-contact-date name inside a SAF uri keeps the path and hides both fields`() {
+        val uri = "content://com.android.externalstorage.documents/document/primary%3ARecordings%2F" +
+            "%2B15551234_John%20Doe_20260611_143052.000%2B0300.m4a"
+
+        val redacted = redact("Failed to start playback for $uri: boom")
+
+        assertFalse(redacted, redacted.contains("John"))
+        assertFalse(redacted, redacted.contains("15551234"))
+        assertEquals(
+            "Failed to start playback for content://com.android.externalstorage.documents/document/" +
+                "primary%3ARecordings%2F[PHONE_REDACTED]_${token("John Doe")}_20260611_143052.000%2B0300.m4a: boom",
+            redacted
+        )
+    }
+
+    @Test
+    fun `a contact-date name with no quotes around it never leaks, even at the cost of the words before it`() {
+        val redacted = redact("Transcribed John Doe_$stamp.ogg (3 segment(s))")
+
+        assertFalse(redacted, redacted.contains("John"))
+        assertFalse(redacted, redacted.contains("Doe"))
+        assertTrue(redacted, redacted.endsWith("_$stamp.ogg (3 segment(s))"))
+    }
+
+    @Test
+    fun `a hebrew contact-first name is replaced`() {
+        assertEquals(
+            "'${token("יצחק לוי")}_$stamp.ogg'",
+            redact("'יצחק לוי_$stamp.ogg'")
+        )
+    }
+
+    @Test
+    fun `a number-first name with no contact is still a number`() {
+        assertEquals("'[PHONE_REDACTED]_$stamp.ogg'", redact("'+15551234_$stamp.ogg'"))
+    }
+
+    @Test
+    fun `an empty contact slot before the number stays empty`() {
+        assertEquals("'_[PHONE_REDACTED]_$stamp.ogg'", redact("'_+15551234_$stamp.ogg'"))
+    }
+
+    @Test
+    fun `the same person gets the same token whether the name comes first or last`() {
+        val first = redact("'John Doe_$stamp.ogg'")
+        val last = redact("'${stamp}_in_John Doe.ogg'")
+
+        assertTrue(first, first.contains(token("John Doe")))
+        assertTrue(last, last.contains(token("John Doe")))
+    }
+
+    @Test
+    fun `contact-first names are redacted idempotently`() {
+        listOf(
+            "Wrote details file 'John Doe_+15551234_$stamp.ogg'.",
+            "Transcribed John Doe_$stamp.ogg (3 segment(s))",
+            "uri primary%3ARecordings%2F%2B15551234_John%20Doe_20260611_143052.000%2B0300.m4a",
+            "'_+15551234_$stamp.ogg'",
+        ).forEach { line ->
+            val once = redact(line)
+            assertEquals(line, once, redact(once))
+        }
+    }
+
+    @Test
+    fun `a date-first name is not touched by the contact-first rule`() {
+        assertEquals(
+            "queue_size=1 '${stamp}_in_${token("John Doe")}.ogg'",
+            redact("queue_size=1 '${stamp}_in_John Doe.ogg'")
+        )
+    }
 }
