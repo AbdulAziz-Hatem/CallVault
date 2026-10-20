@@ -82,14 +82,20 @@ class RecordingCopyWorker(ctx: Context, params: WorkerParameters) : CoroutineWor
         src: Uri,
         isSidecar: Boolean
     ): Result {
-        if (deleteLocal) {
-            SafHelper.deleteDocument(DocumentFile.fromSingleUri(applicationContext, src), "the device copy of '$name'")
-        }
+        // SAF providers can refuse deletion. Do not remove the local catalog
+        // reference unless deletion actually completed; otherwise the UI loses
+        // track of a recording that still exists on the phone.
+        val localDocument = if (deleteLocal) {
+            DocumentFile.fromSingleUri(applicationContext, src)
+        } else null
+        val deletedLocally = deleteLocal && localDocument != null &&
+            SafHelper.deleteDocument(localDocument, "the device copy of '$name'")
         // A sidecar (.json/.md) has no catalog row of its own — it belongs to its recording, which was
         // stamped when the audio uploaded — so there is nothing to mark. Only the audio copy updates the
         // catalog, so the Home list reflects where the file now lives without re-scanning the Drive folder.
         if (!isSidecar) {
-            RecordingCatalog.markDrive(applicationContext, name, driveUri, sizeBytes.takeIf { it > 0L }, deleteLocal)
+            RecordingCatalog.markDrive(applicationContext, name, driveUri, sizeBytes.takeIf { it > 0L },
+                deleteLocalAfter = CloudCopyPolicy.shouldClearLocalReference(deleteLocal, deletedLocally))
         }
         return Result.success()
     }

@@ -61,6 +61,20 @@ class CloudCopyPolicyTest {
         assertTrue(CloudCopyPolicy.isLastAttempt(runAttemptCount = CloudCopyPolicy.MAX_ATTEMPTS + 50))
     }
 
+    // ---- retaining the local catalog link after a denied SAF deletion
+
+    @Test
+    fun `failed local deletion must keep its catalog reference`() {
+        assertFalse(CloudCopyPolicy.shouldClearLocalReference(
+            deleteRequested = true, deletionSucceeded = false))
+        assertFalse(CloudCopyPolicy.shouldClearLocalReference(
+            deleteRequested = false, deletionSucceeded = true))
+        assertFalse(CloudCopyPolicy.shouldClearLocalReference(
+            deleteRequested = false, deletionSucceeded = false))
+        assertTrue(CloudCopyPolicy.shouldClearLocalReference(
+            deleteRequested = true, deletionSucceeded = true))
+    }
+
     // ---- staging name
 
     @Test
