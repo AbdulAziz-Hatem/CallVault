@@ -81,7 +81,7 @@ object RecordingFileNameFormatter {
         }
 
         val phoneStr = if (isHonorDialer) {
-            (metadata.rawPhoneNumber ?: metadata.getBestNumber()).orEmpty().filterIndexed { i, c -> c.isDigit() || (i == 0 && c == '+') }
+            dialledNumber(metadata.rawPhoneNumber) ?: dialledNumber(metadata.getBestNumber()).orEmpty()
         } else {
             metadata.getBestNumber() ?: ""
         }
@@ -114,6 +114,20 @@ object RecordingFileNameFormatter {
         val fileName = "$baseName${codec.containerExtension}"
         AppLogger.v(TAG, "Formatted filename: '$fileName' with template '$template'")
         return fileName
+    }
+
+    /** Fewer digits than this is a placeholder ("-1", "Unknown 5"), not a number. Short codes like 087011 pass. */
+    private const val MIN_DIALLED_DIGITS = 3
+
+    /**
+     * [number] as the call log shows it, for the Honor preset: digits only, keeping a leading '+'. Null for a
+     * missing number or a placeholder, so a junk value is never written as the caller.
+     */
+    internal fun dialledNumber(number: String?): String? {
+        val trimmed = number?.trim()?.trimStart('\u200E', '\u200F', '\u202A', '\u202B', '\u202C')?.trim() ?: return null
+        val digits = trimmed.filter { it.isDigit() }
+        if (digits.length < MIN_DIALLED_DIGITS) return null
+        return if (trimmed.startsWith('+')) "+$digits" else digits
     }
 
     private fun getContactName(context: Context, phoneNumber: String): String? {

@@ -31,7 +31,8 @@ import com.baba.callvault.utils.HonorDialerSetup.Missing
  * names the CallVault settings that put it there (by their on-screen titles, so it cannot drift from them),
  * and lists which of those are still wrong.
  *
- * @param refreshKey Bump to re-read the settings, e.g. the wizard's update trigger after a folder pick.
+ * @param refreshKey Re-reads the settings when it changes. Pass whatever changes when the folder, codec or
+ *   storage target does (the wizard's update trigger, for one).
  */
 @Composable
 fun HonorDialerHint(refreshKey: Any? = null, modifier: Modifier = Modifier) {

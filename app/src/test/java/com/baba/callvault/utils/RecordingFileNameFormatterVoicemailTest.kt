@@ -126,4 +126,13 @@ class RecordingFileNameFormatterVoicemailTest {
 
         assertTrue(fileName, fileName.startsWith("20261020_103708.000"))
     }
+
+    @Test
+    fun dialled_number_keeps_a_plus_behind_spaces_or_direction_marks_and_drops_placeholders() {
+        assertEquals("+972501234567", RecordingFileNameFormatter.dialledNumber(" \u200E+972 50-123 4567"))
+        assertEquals("087011", RecordingFileNameFormatter.dialledNumber("087011"))
+        assertEquals(null, RecordingFileNameFormatter.dialledNumber("-1"))
+        assertEquals(null, RecordingFileNameFormatter.dialledNumber("Unknown 5"))
+        assertEquals(null, RecordingFileNameFormatter.dialledNumber(null))
+    }
 }

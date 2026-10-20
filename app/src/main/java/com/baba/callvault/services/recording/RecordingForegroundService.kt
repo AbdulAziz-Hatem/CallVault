@@ -543,6 +543,8 @@ class RecordingForegroundService : Service() {
         val originalMetadata = activeSession.initializationMetadata
         // Capture mimeType before release (currentCodecEnum is not cleared by release()).
         val mimeType = activeSession.currentCodecEnum.mimeType
+        // And the start time, for the same reason: the rename below runs later, on another thread.
+        val startedAt = activeSession.currentStartedAt
 
         // Release all resources held by the recording session, stopping the ADB transport and finalizing the recording file.
         activeSession.release()
@@ -580,7 +582,7 @@ class RecordingForegroundService : Service() {
                     val updatedMeta = originalMetadata.copy(rawPhoneNumber = finalNumber)
                     val newName = RecordingFileNameFormatter.formatFileName(
                         applicationContext, updatedMeta, activeSession.currentCodecEnum,
-                        startedAt = activeSession.currentStartedAt ?: Date()
+                        startedAt = startedAt ?: Date()
                     )
                     // Use DocumentsContract.renameDocument (NOT DocumentFile.renameTo): the latter is a
                     // SingleDocumentFile here and throws UnsupportedOperationException, while
