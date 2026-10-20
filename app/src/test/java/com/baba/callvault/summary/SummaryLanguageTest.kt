@@ -146,6 +146,15 @@ class SummaryLanguageTest {
     }
 
     @Test
+    fun `ukrainian is told apart from russian by the letters only ukrainian uses`() {
+        // Same script, different language. Ukrainian writes і ї є ґ; Russian writes ы э ъ ё.
+        assertEquals("uk", SummaryLanguage.scriptOf("Привіт, як справи? Завтра їдемо до тебе, є одна справа"))
+        assertEquals("ru", SummaryLanguage.scriptOf("Привет, как дела? Завтра поедем, это всё быстро"))
+        // No letter of either: Russian stays the answer, as before.
+        assertEquals("ru", SummaryLanguage.scriptOf("привет мир"))
+    }
+
+    @Test
     fun `a hebrew phone's legacy locale code still names hebrew`() {
         // Java reports a Hebrew phone as "iw". Passed through, the prompt would ask for "IW".
         assertEquals(

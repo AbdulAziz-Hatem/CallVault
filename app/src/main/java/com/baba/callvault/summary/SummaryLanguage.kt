@@ -88,7 +88,22 @@ object SummaryLanguage {
         val (language, count) = counts.maxByOrNull { it.value } ?: return null
         // Enough letters to be the text rather than a quotation inside it.
         if (count < MINIMUM_LETTERS) return null
-        return if (language == "ar" && writesPersian(text)) "fa" else language
+        return when {
+            language == "ar" && writesPersian(text) -> "fa"
+            language == "ru" && writesUkrainian(text) -> "uk"
+            else -> language
+        }
+    }
+
+    /**
+     * Whether Cyrillic [text] is Ukrainian rather than Russian. Like Persian and Arabic, they share the
+     * script, so only the letters each one alone uses can tell them apart: Ukrainian writes і ї є ґ,
+     * Russian writes ы э ъ ё. Weighed, not spotted.
+     */
+    private fun writesUkrainian(text: String): Boolean {
+        val ukrainian = text.count { it in UKRAINIAN_ONLY }
+        val russian = text.count { it in RUSSIAN_ONLY }
+        return ukrainian > russian
     }
 
     /**
@@ -104,6 +119,8 @@ object SummaryLanguage {
 
     private const val PERSIAN_ONLY = "\u067E\u0686\u0698\u06AF\u06CC\u06A9"
     private const val ARABIC_ONLY = "\u064A\u0643\u0629"
+    private const val UKRAINIAN_ONLY = "іїєґІЇЄҐ"
+    private const val RUSSIAN_ONLY = "ыэъёЫЭЪЁ"
 
     /**
      * How many letters of a script it takes before it is taken as the language.

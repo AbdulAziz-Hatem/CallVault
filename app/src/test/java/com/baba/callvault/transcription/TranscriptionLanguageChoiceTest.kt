@@ -63,8 +63,14 @@ class TranscriptionLanguageChoiceTest {
     fun every_language_the_app_is_translated_into_can_be_pinned() {
         // The second request of this kind (#46 Greek, #55 Persian) came from a user whose app was
         // already in their language. If CallVault speaks it, transcription must be able to pin it.
-        val uiLanguages = listOf("ar", "de", "el", "en", "es", "fa", "fr", "he", "hu", "it", "pl", "pt", "ru", "vi", "zh")
+        val uiLanguages = listOf("ar", "de", "el", "en", "es", "fa", "fr", "he", "hu", "it", "pl", "pt", "ru", "uk", "vi", "zh")
         uiLanguages.forEach { assertTrue("$it cannot be pinned", it in TranscriptionLanguageChoice.SUPPORTED) }
+    }
+
+    @Test
+    fun ukrainian_is_supported_as_a_device_default_and_explicit_choice() {
+        assertEquals("uk", TranscriptionLanguageChoice.defaultLanguage(Locale.forLanguageTag("uk-UA")))
+        assertEquals("uk", TranscriptionLanguageChoice.resolve(chosen = "uk", setting = "en"))
     }
 
     @Test
