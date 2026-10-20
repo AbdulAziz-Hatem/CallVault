@@ -6,6 +6,7 @@ in `CHANGELOG.md` → Unreleased. Re-check every line against the shipped string
 - **App calls in Shizuku mode** — app calls such as WhatsApp now record in Shizuku mode too (Android 14+).
 - **Shizuku mode catches up** — resilient recording and speaker names work there too, and phone calls start recording faster.
 - **Persian transcription** — Persian can be pinned as a transcription language.
+- **Ukrainian** — the app and transcription now speak Ukrainian (translation by @kabasik007).
 - **Hide Recordings** — keeps your recordings out of music players and galleries.
 - **Also skip ignored contacts** — your ignored-contacts list can apply to app calls too.
 - **Honor / Huawei phone app** — a new file-name format so Honor's phone app can play recordings from the call history.
@@ -15,6 +16,7 @@ in `CHANGELOG.md` → Unreleased. Re-check every line against the shipped string
 - **Fixed** — Greek and Persian summaries are written in the right language.
 - **Fixed** — a recording whose number arrived late kept the call's end time instead of its start.
 - **Fixed** — contact names no longer appear in shared debug reports.
+- **Fixed** — with Drive-only storage, a phone copy that could not be deleted no longer vanishes from the list (thanks @kabasik007).
 - **Security** — other apps can no longer take over the recorder (thanks @kabasik007).
 
 ## To do at release
