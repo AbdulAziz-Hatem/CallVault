@@ -15,6 +15,7 @@ in `CHANGELOG.md` → Unreleased. Re-check every line against the shipped string
 - **Fixed** — Greek and Persian summaries are written in the right language.
 - **Fixed** — a recording whose number arrived late kept the call's end time instead of its start.
 - **Fixed** — contact names no longer appear in shared debug reports.
+- **Security** — other apps can no longer take over the recorder (thanks @kabasik007).
 
 ## To do at release
 

@@ -53,6 +53,10 @@ All notable changes to CallVault are documented here. The format is based on
 
 ### Fixed
 
+- **Other apps can no longer take over the recorder.** The channel our recorder uses to reach the app
+  accepted a recorder from any app, which could then receive new recordings. Now only CallVault's own
+  recorder is accepted. Thanks to Vas Vakhulenko (@kabasik007), whose fork found it.
+  <!-- 🧪 VERIFYING — unit test; the OP9 daemon still connects after install (2026-10-20). -->
 - **A recording whose number arrived late kept the wrong time.** When the number only reached
   CallVault after the call, the file was renamed with the time the call ended instead of when it began.
   <!-- 🧪 VERIFYING — unit-reasoned; needs a call where the number arrives late. -->

@@ -20,6 +20,8 @@ are our own old branches.
 
 ## Worth acting on, by priority
 
+Update 2026-10-20: #1 fixed (`3907971e`, 🧪). #2 checked and **not needed**: see the backlog row. Android's own `AudioRecord` restores itself, and the resilient path already re-acquires.
+
 1. **Security (medium): any app can replace our recorder.** `RecorderBinderProvider` is exported, and
    `call("sendBinder")` has no caller-uid check, unlike `sendHandoff` and the Track A probes next to it
    (`app/src/main/java/com/baba/callvault/server/RecorderBinderProvider.kt`, `handleSendBinder`). A rogue
