@@ -87,7 +87,7 @@
     <string name="import_failed_not_audio">Непідтримуваний формат. Спробуйте .opus, .ogg, .m4a, .mp3 або .wav.</string>
     <string name="import_failed_empty">Файл порожній — немає звуку для розпізнавання.</string>
     <string name="import_failed_no_folder">Папку записів не вибрано. Налаштуйте її та повторіть.</string>
-    <string name="import_failed_copy">Не вдалося записати файл у папку. Перевірте вільне місце й доступ.</string>
+    <string name="import_failed_copy">Не вдалося записати файл у папку із записами. Перевірте, чи є на телефоні вільне місце і чи папка досі доступна.</string>
     <string name="home_row_imported">Імпортовано</string>
     <string name="home_row_text_only">Лише текст</string>
     <string name="share_import_label">Імпорт аудіо</string>
@@ -103,7 +103,7 @@
     <string name="import_choice_keep">Імпортувати й розпізнати</string>
     <string name="import_choice_keep_hint">Зберігає аудіо та створює транскрипцію.</string>
     <string name="import_choice_transcribe_only">Лише розпізнати</string>
-    <string name="import_choice_transcribe_only_hint">Після створення транскрипції видаляє аудіофайл.</string>
+    <string name="import_choice_transcribe_only_hint">Створює транскрипцію, а потім видаляє аудіо. Файл ніколи не зʼявиться серед ваших записів — лише текст, у розділі «Транскрипції».</string>
     <string name="share_import_queued_keep_title">Додано до черги</string>
     <string name="share_import_queued_only_title">Очікує на розпізнавання</string>
     <string name="share_import_kept_title">Збережено без транскрипції</string>
