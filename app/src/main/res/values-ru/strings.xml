@@ -212,6 +212,10 @@
     <string name="settings_file_name_preset_number_contact_date">Номер · Контакт · Дата</string>
     <string name="settings_file_name_preset_contact_date">Контакт · Дата</string>
     <string name="settings_file_name_preset_number_date">Номер · Дата</string>
+    <string name="settings_file_name_preset_honor_dialer">Приложение «Телефон» Honor / Huawei</string>
+    <string name="honor_dialer_hint">Приложение «Телефон» может воспроизвести запись из журнала звонков, только если она сохранена в %1$s в формате .m4a. В CallVault укажите в %2$s эту папку, а в %3$s — AAC.</string>
+    <string name="honor_dialer_ready">✓ Готово: папка и формат настроены.</string>
+    <string name="honor_dialer_missing">Осталось изменить: %1$s</string>
     <string name="settings_file_name_preset_date_direction_number">Дата · Направление · Номер</string>
     <string name="settings_file_name_preset_date_number">Дата · Номер</string>
     <string name="settings_file_name_template">Шаблон имени файла</string>

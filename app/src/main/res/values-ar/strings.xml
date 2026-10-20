@@ -200,6 +200,10 @@
     <string name="settings_file_name_preset_number_contact_date">الرقم · جهة الاتصال · التاريخ</string>
     <string name="settings_file_name_preset_contact_date">جهة الاتصال · التاريخ</string>
     <string name="settings_file_name_preset_number_date">الرقم · التاريخ</string>
+    <string name="settings_file_name_preset_honor_dialer">تطبيق الهاتف في Honor / Huawei</string>
+    <string name="honor_dialer_hint">يمكن لتطبيق الهاتف تشغيل التسجيل من سجل المكالمات فقط إذا حُفظ في %1$s بصيغة .m4a. في CallVault، اضبط %2$s على هذا المجلد و%3$s على AAC.</string>
+    <string name="honor_dialer_ready">✓ جاهز: تم ضبط المجلد والصيغة.</string>
+    <string name="honor_dialer_missing">ما زال يجب تغيير: %1$s</string>
     <string name="settings_file_name_preset_custom">مخصص</string>
     <string name="settings_file_name_template_placeholders">العناصر النائبة:</string>
     <string name="settings_file_name_template_placeholders_preview">معاينة: %1$s</string>

@@ -260,6 +260,10 @@
     <string name="settings_file_name_preset_number_contact_date">Number · Contact · Date</string>
     <string name="settings_file_name_preset_contact_date">Contact · Date</string>
     <string name="settings_file_name_preset_number_date">Number · Date</string>
+    <string name="settings_file_name_preset_honor_dialer">Honor / Huawei phone app</string>
+    <string name="honor_dialer_hint">Your phone app can play a recording from the call history only if it is saved in %1$s as .m4a. In CallVault, set %2$s to that folder and %3$s to AAC.</string>
+    <string name="honor_dialer_ready">✓ Ready: the folder and the format are set.</string>
+    <string name="honor_dialer_missing">Still to change: %1$s</string>
     <string name="settings_file_name_preset_custom">Custom</string>
     <string name="settings_file_name_template_placeholders">Placeholders:</string>
     <string name="settings_file_name_template_placeholders_preview">Preview: %1$s</string>

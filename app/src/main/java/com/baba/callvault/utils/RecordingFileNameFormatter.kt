@@ -24,6 +24,12 @@ import java.util.Locale
 
 object RecordingFileNameFormatter {
     const val TAG = "CV:RecordingFileNameFormatter"
+
+    /**
+     * `yyyyMMddHHmmss`, local time. Not offered as a placeholder of its own: it exists for
+     * [HONOR_DIALER_TEMPLATE], whose phone app wants exactly this, and the library can read it back only there.
+     */
+    const val DATE_COMPACT_TAG = "{date_compact}"
     /**
      * Represents the supported placeholders that can be used in the file name template.
      * Binds the literal tag used in formatting to a localized description for the UI.
@@ -51,24 +57,34 @@ object RecordingFileNameFormatter {
      * @param metadata Defines the main properties (direction, phone number, cross country).
      * @param codec The selected ScrcpyAudioCodec used to determine the file extension.
      * @param customFormat An optional custom format string to use instead of the one from preferences. Useful for testing or one-off formatting without changing user settings.
+     * @param startedAt When the recording started. A rename after the call must pass the original start,
+     *   or the name would carry the time the call ended.
      * @return A filesystem-safe filename string.
      */
     fun formatFileName(
         context: Context,
         metadata: RecordingMetadata,
         codec: ScrcpyAudioCodec,
-        customFormat: String? = null
+        customFormat: String? = null,
+        startedAt: Date = Date()
     ): String {
         val template = customFormat ?: AppPreferences(context).getFileNameTemplate()
+        // Honor's phone app matches the number as its call log holds it, not the E.164 form.
+        val isHonorDialer = template == HONOR_DIALER_TEMPLATE
 
-        val dateStr = SimpleDateFormat("yyyyMMdd_HHmmss.SSSZ", Locale.CANADA).format(Date())
+        val dateStr = SimpleDateFormat("yyyyMMdd_HHmmss.SSSZ", Locale.CANADA).format(startedAt)
+        val compactDateStr = SimpleDateFormat("yyyyMMddHHmmss", Locale.US).format(startedAt)
 
         val directionStr = when (metadata.direction) {
             RecordingDirection.INCOMING -> "in"
             RecordingDirection.OUTGOING -> "out"
         }
 
-        val phoneStr = metadata.getBestNumber() ?: ""
+        val phoneStr = if (isHonorDialer) {
+            dialledNumber(metadata.rawPhoneNumber) ?: dialledNumber(metadata.getBestNumber()).orEmpty()
+        } else {
+            metadata.getBestNumber() ?: ""
+        }
         var contactStr = ""
 
         if (template.contains(FileNamePlaceholder.CONTACT_NAME.tag) && phoneStr.isNotEmpty()) {
@@ -78,13 +94,14 @@ object RecordingFileNameFormatter {
             // via {phone_number}, in which case duplicating it would just add noise.
             contactStr = getContactName(context, phoneStr)
                 ?: VoicemailLabel.labelOrNull(context, phoneStr)
-                ?: phoneStr.takeUnless { template.contains(FileNamePlaceholder.PHONE_NUMBER.tag) }
+                ?: phoneStr.takeUnless { template.contains(FileNamePlaceholder.PHONE_NUMBER.tag) && !isHonorDialer }
                 ?: ""
         }
 
         val crossCountryStr = metadata.isCrossCountry.toString()
 
         val baseName = template
+            .replace(DATE_COMPACT_TAG, compactDateStr)
             .replace(FileNamePlaceholder.DATE.tag, dateStr)
             .replace(FileNamePlaceholder.DIRECTION.tag, directionStr)
             .replace(FileNamePlaceholder.PHONE_NUMBER.tag, phoneStr)
@@ -97,6 +114,20 @@ object RecordingFileNameFormatter {
         val fileName = "$baseName${codec.containerExtension}"
         AppLogger.v(TAG, "Formatted filename: '$fileName' with template '$template'")
         return fileName
+    }
+
+    /** Fewer digits than this is a placeholder ("-1", "Unknown 5"), not a number. Short codes like 087011 pass. */
+    private const val MIN_DIALLED_DIGITS = 3
+
+    /**
+     * [number] as the call log shows it, for the Honor preset: digits only, keeping a leading '+'. Null for a
+     * missing number or a placeholder, so a junk value is never written as the caller.
+     */
+    internal fun dialledNumber(number: String?): String? {
+        val trimmed = number?.trim()?.trimStart('\u200E', '\u200F', '\u202A', '\u202B', '\u202C')?.trim() ?: return null
+        val digits = trimmed.filter { it.isDigit() }
+        if (digits.length < MIN_DIALLED_DIGITS) return null
+        return if (trimmed.startsWith('+')) "+$digits" else digits
     }
 
     private fun getContactName(context: Context, phoneNumber: String): String? {

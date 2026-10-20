@@ -212,6 +212,10 @@
     <string name="settings_file_name_preset_number_contact_date">Szám · Névjegy · Dátum</string>
     <string name="settings_file_name_preset_contact_date">Névjegy · Dátum</string>
     <string name="settings_file_name_preset_number_date">Szám · Dátum</string>
+    <string name="settings_file_name_preset_honor_dialer">Honor / Huawei telefonalkalmazás</string>
+    <string name="honor_dialer_hint">A telefonalkalmazás csak akkor tud lejátszani egy felvételt a híváselőzményekből, ha az .m4a formátumban, a(z) %1$s mappában van mentve. A CallVaultban állítsd a(z) %2$s beállítást erre a mappára, a(z) %3$s beállítást pedig AAC-re.</string>
+    <string name="honor_dialer_ready">✓ Kész: a mappa és a formátum be van állítva.</string>
+    <string name="honor_dialer_missing">Még módosítandó: %1$s</string>
     <string name="settings_file_name_preset_date_direction_number">Dátum · Irány · Szám</string>
     <string name="settings_file_name_preset_date_number">Dátum · Szám</string>
     <string name="settings_file_name_template">Fájlnév minta</string>

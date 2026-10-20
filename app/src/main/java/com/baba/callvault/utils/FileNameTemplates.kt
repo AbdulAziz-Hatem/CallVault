@@ -23,6 +23,17 @@ data class FileNameTemplatePreset(
 )
 
 /**
+ * `{name}@{number}_{yyyyMMddHHmmss}`: the shape Honor's own recorder writes, which its phone app links to the
+ * call in its history. Only from `/storage/emulated/0/Sounds/CallRecord` (#56, confirmed by the reporter on
+ * an Honor REA-NX9 by renaming a file by hand). The formatter writes the number as dialled and repeats it as
+ * the name when there is no contact, and the date is local time to the second.
+ */
+const val HONOR_DIALER_TEMPLATE = "{contact_name}@{phone_number}_{date_compact}"
+
+/** The folder Honor's and Huawei's phone app reads recordings from, as a user sees it in a file manager. */
+const val HONOR_DIALER_FOLDER = "/storage/emulated/0/Sounds/CallRecord"
+
+/**
  * The single source of truth for the selectable file-name template presets.
  * Shared by the Settings dialog and the setup wizard so both stay in sync.
  */
@@ -35,7 +46,9 @@ val FILE_NAME_TEMPLATE_PRESETS = listOf(
     FileNameTemplatePreset(R.string.settings_file_name_preset_contact_number_date, "{contact_name}_{phone_number}_{date}"),
     FileNameTemplatePreset(R.string.settings_file_name_preset_number_contact_date, "{phone_number}_{contact_name}_{date}"),
     FileNameTemplatePreset(R.string.settings_file_name_preset_contact_date, "{contact_name}_{date}"),
-    FileNameTemplatePreset(R.string.settings_file_name_preset_number_date, "{phone_number}_{date}")
+    FileNameTemplatePreset(R.string.settings_file_name_preset_number_date, "{phone_number}_{date}"),
+    // Lets Honor's and Huawei's own phone app play the recording from the call history (#56).
+    FileNameTemplatePreset(R.string.settings_file_name_preset_honor_dialer, HONOR_DIALER_TEMPLATE)
 )
 
 /**
@@ -53,6 +66,7 @@ fun presetForTemplateOrFirst(template: String): FileNameTemplatePreset =
  * No raw "{token}" should ever leak into the result.
  */
 fun fileNameTemplateExample(template: String): String = template
+    .replace(RecordingFileNameFormatter.DATE_COMPACT_TAG, "20260611143052")
     .replace(RecordingFileNameFormatter.FileNamePlaceholder.DATE.tag, "20260611_143052")
     .replace(RecordingFileNameFormatter.FileNamePlaceholder.DIRECTION.tag, "in")
     .replace(RecordingFileNameFormatter.FileNamePlaceholder.PHONE_NUMBER.tag, "+15551234")

@@ -152,18 +152,45 @@ object LogRedaction {
 
         val out = StringBuilder(message.length + 16)
         var cursor = 0
-        for (match in RECORDING_NAME_REGEX.findAll(message)) {
-            val prefixStart = personPrefixStart(message, match, cursor)
+        // The two shapes never overlap (their dates differ), but an earlier match always wins.
+        val matches = (RECORDING_NAME_REGEX.findAll(message).map { it to false } +
+            HONOR_NAME_REGEX.findAll(message).map { it to true })
+            .sortedBy { (match, _) -> match.range.first }
+        for ((match, isHonor) in matches) {
+            if (match.range.first < cursor) continue
+            val prefixStart = if (isHonor) nameStart(message, match.range.first, cursor)
+                else personPrefixStart(message, match, cursor)
             out.append(PHONE_REGEX.replace(message.substring(cursor, prefixStart), PHONE_PLACEHOLDER))
-            if (prefixStart < match.range.first) {
-                // The '_' that joins the prefix to the date is kept; only the fields before it change.
-                out.append(safePersonPrefix(message.substring(prefixStart, match.range.first - 1), salt)).append('_')
+            if (isHonor) {
+                out.append(safeHonorName(message.substring(prefixStart, match.range.first), match, salt))
+            } else {
+                if (prefixStart < match.range.first) {
+                    // The '_' that joins the prefix to the date is kept; only the fields before it change.
+                    out.append(safePersonPrefix(message.substring(prefixStart, match.range.first - 1), salt)).append('_')
+                }
+                out.append(safeRecordingName(match, salt))
             }
-            out.append(safeRecordingName(match, salt))
             cursor = match.range.last + 1
         }
         out.append(PHONE_REGEX.replace(message.substring(cursor), PHONE_PLACEHOLDER))
         return out.toString()
+    }
+
+    /**
+     * Rebuilds an Honor-preset name (#56): the contact becomes a token (or [PHONE_PLACEHOLDER] for an unsaved
+     * caller, whose number stands in for the name), the number becomes [PHONE_PLACEHOLDER], and the `@` — plain
+     * or `%40` — the time and the extension are kept.
+     */
+    private fun safeHonorName(name: String, match: MatchResult, salt: String): String {
+        val (at, number, stamp, extension) = match.destructured
+        val decodedName = percentDecode(name).trim()
+        val safeName = when {
+            name.isEmpty() || CONTACT_TOKEN_REGEX.matches(name) || name == PHONE_PLACEHOLDER -> name
+            PHONE_REGEX.matches(decodedName) -> PHONE_PLACEHOLDER
+            else -> contactToken(name, salt)
+        }
+        val safeNumber = if (number.isEmpty()) "" else PHONE_PLACEHOLDER
+        return safeName + at + safeNumber + "_" + stamp + extension
     }
 
     /**
@@ -187,8 +214,18 @@ object LogRedaction {
         if (marker.isNotEmpty() || who.isNotEmpty()) return dateStart
         if (dateStart - 1 <= cursor || message[dateStart - 1] != '_') return dateStart
 
-        val floor = maxOf(cursor, dateStart - 1 - MAX_NAME_RUN)
-        var i = dateStart - 1   // the joining '_'; the prefix is [result, i)
+        val start = nameStart(message, dateStart - 1, cursor)
+        return if (start < dateStart - 1) start else dateStart
+    }
+
+    /**
+     * Walks back from [joinIndex] (the `_` or `@` that ties a name to the rest of a filename) to where the name
+     * begins: the nearest [NAME_BOUNDARY_CHARS], encoded URI separator, [cursor] or [MAX_NAME_RUN] characters
+     * back. Returns [joinIndex] itself when there is no name. Redaction tokens are stepped over whole.
+     */
+    private fun nameStart(message: String, joinIndex: Int, cursor: Int): Int {
+        val floor = maxOf(cursor, joinIndex - MAX_NAME_RUN)
+        var i = joinIndex
         while (i > floor) {
             val c = message[i - 1]
             if (c == ']') {
@@ -201,7 +238,7 @@ object LogRedaction {
             if (c in NAME_BOUNDARY_CHARS || endsWithEncodedSeparator(message, i)) break
             i--
         }
-        return if (i < dateStart - 1) i else dateStart
+        return i
     }
 
     /** True when `%2F` or `%3A` (a SAF URI's `/` and `:`) ends just before [end]. */
@@ -232,6 +269,18 @@ object LogRedaction {
 
     /** A redaction token ending the text, so the backward walk can step over it in one move. */
     private val REDACTED_TOKEN_SUFFIX = Regex("(?:\\[C:[0-9a-f]+]|\\[PHONE_REDACTED])$")
+
+    /**
+     * The tail of an Honor-preset name (#56), from its `@` on: `@{number}_{yyyyMMddHHmmss}.{ext}`. The `@` and
+     * the number's `+` may arrive percent-encoded inside a SAF URI, and the number may already be redacted.
+     * The name in front is found by [nameStart], since nothing in it marks where it begins.
+     */
+    private val HONOR_NAME_REGEX = Regex(
+        "(@|%40)" +                                          // 1: the separator, raw or URI-encoded
+            "((?:(?:\\+|%2[Bb])?\\d+)|\\[PHONE_REDACTED])?" +   // 2: the number, if any
+            "_(\\d{14})" +                                     // 3: yyyyMMddHHmmss
+            "(\\.(?:ogg|m4a))"                                 // 4: container extension
+    )
 
     /** One field of a contact-first prefix: an existing token, a `_`, or a run of anything else. */
     private val PREFIX_FIELD_REGEX = Regex("\\[C:[0-9a-f]+]|\\[PHONE_REDACTED]|_|[^_\\[]+|\\[")
