@@ -52,6 +52,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
+import java.util.Date
 
 /**
  * RecordingForegroundService is the long-running foreground service that
@@ -577,7 +578,10 @@ class RecordingForegroundService : Service() {
                 val finalUri: Uri
                 if (finalNumber.isNotBlank()) {
                     val updatedMeta = originalMetadata.copy(rawPhoneNumber = finalNumber)
-                    val newName = RecordingFileNameFormatter.formatFileName(applicationContext, updatedMeta, activeSession.currentCodecEnum)
+                    val newName = RecordingFileNameFormatter.formatFileName(
+                        applicationContext, updatedMeta, activeSession.currentCodecEnum,
+                        startedAt = activeSession.currentStartedAt ?: Date()
+                    )
                     // Use DocumentsContract.renameDocument (NOT DocumentFile.renameTo): the latter is a
                     // SingleDocumentFile here and throws UnsupportedOperationException, while
                     // renameDocument is supported by ExternalStorageProvider and returns the new URI.

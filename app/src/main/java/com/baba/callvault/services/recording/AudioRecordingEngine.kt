@@ -43,6 +43,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import java.io.File
+import java.util.Date
 
 /**
  * Manages the audio recording pipeline, including the connection to the ADB transport, reading from the audio pipe,
@@ -153,6 +154,13 @@ class AudioRecordingEngine {
      * Defaults to [ScrcpyAudioCodec.OPUS] as a safe initial value before the stream header is read.
      */
     var currentCodecEnum: ScrcpyAudioCodec = ScrcpyAudioCodec.OPUS
+
+    /**
+     * When this recording's file was named. A later rename (the call-log number fallback) must reuse it:
+     * naming it again with "now" would stamp the call with the time it ENDED, and Honor's phone app (#56)
+     * matches a recording to its call by that time.
+     */
+    var currentStartedAt: Date? = null
 
     /**
      * Coroutine scope for reading from the audio pipe data returned by the ADB transport.
@@ -311,7 +319,9 @@ class AudioRecordingEngine {
 
         AppLogger.i(TAG, "Starting recording pipeline: source=${audioSourceEnum.cliKey} codec=${codecEnum.cliKey} bitrate=$bitRate")
 
-        val fileName = RecordingFileNameFormatter.formatFileName(context, metadata, codecEnum)
+        val startedAt = Date()
+        currentStartedAt = startedAt
+        val fileName = RecordingFileNameFormatter.formatFileName(context, metadata, codecEnum, startedAt = startedAt)
 
         val safResult = SafHelper.createAudioFile(context, folderUri, fileName, codecEnum.mimeType)
             ?: throw PipelineInitializationException(
