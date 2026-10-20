@@ -56,14 +56,14 @@ object FavouriteRepository {
     /** Stars [displayName]. Creating the database for this is correct — the user asked to keep it. */
     suspend fun add(context: Context, displayName: String) {
         runCatching { dao(context).add(displayName) }
-            .onFailure { AppLogger.w(TAG, "Failed to star $displayName: ${it.message}") }
+            .onFailure { AppLogger.w(TAG, "Failed to star '$displayName': ${it.message}") }
     }
 
     /** Unstars [displayName]. */
     suspend fun remove(context: Context, displayName: String) {
         if (!TranscriptDatabase.exists(context)) return
         runCatching { dao(context).deleteFor(displayName) }
-            .onFailure { AppLogger.w(TAG, "Failed to unstar $displayName: ${it.message}") }
+            .onFailure { AppLogger.w(TAG, "Failed to unstar '$displayName': ${it.message}") }
     }
 
     /** Flips the star and returns the new state, for the button's single tap. */

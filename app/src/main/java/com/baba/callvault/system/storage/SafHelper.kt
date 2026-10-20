@@ -173,11 +173,11 @@ object SafHelper {
         srcFile: File,
     ): Uri? {
         val directory = DocumentFile.fromTreeUri(context, folderUri) ?: run {
-            AppLogger.e(TAG, "Cannot resolve $folderUri to publish $fileName")
+            AppLogger.e(TAG, "Cannot resolve $folderUri to publish '$fileName'")
             return null
         }
         val newFile = directory.createFile(mimeType, fileName) ?: run {
-            AppLogger.e(TAG, "Could not create $fileName in $folderUri")
+            AppLogger.e(TAG, "Could not create '$fileName' in $folderUri")
             return null
         }
         if (!writeStagedFileToUri(context, srcFile, newFile.uri)) {

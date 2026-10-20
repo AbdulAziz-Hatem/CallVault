@@ -230,7 +230,7 @@ class TranscriptionRunner(
             // NonCancellable: by now the coroutine is usually cancelled, and a plain suspend call
             // would abandon the very cleanup this exists to do.
             withContext(NonCancellable) { dao.deleteFor(displayName) }
-            AppLogger.i(TAG, "Transcription of $displayName was stopped; left for a later run")
+            AppLogger.i(TAG, "Transcription of '$displayName' was stopped; left for a later run")
             if (error is CancellationException) throw error
             return false
         }
@@ -290,7 +290,7 @@ class TranscriptionRunner(
                 // inherited from whatever hardware the published figure came from.
                 recordSpeed(modelId, audioMs, SystemClock.elapsedRealtime() - startedAt)
                 // Count, never content: a transcript is the substance of a private call.
-                AppLogger.i(TAG, "Transcribed $displayName (${segments.size} segment(s))")
+                AppLogger.i(TAG, "Transcribed '$displayName' (${segments.size} segment(s))")
                 // After the words, the DONE row and the audio decision are all settled, so the
                 // notification can never be the first thing to claim a transcript exists. Inside
                 // NonCancellable and guarded: a shade that cannot be written to is not a reason to
@@ -305,7 +305,7 @@ class TranscriptionRunner(
                 true
             },
             onFailure = { failure ->
-                AppLogger.w(TAG, "Failed to transcribe $displayName: ${failure.message}")
+                AppLogger.w(TAG, "Failed to transcribe '$displayName': ${failure.message}")
                 mark(displayName, TranscriptState.FAILED, modelId, language, failure.message)
                 // A failure was as silent as a success until now: the row gained a red icon on a
                 // page the user had been given no reason to open. Only a real failure reaches here
@@ -331,7 +331,7 @@ class TranscriptionRunner(
                 // a suspend call, so a stop arriving mid-report surfaces as a CancellationException,
                 // and catching it would leave the coroutine running after it had been cancelled.
                 if (it is CancellationException) throw it
-                AppLogger.w(TAG, "Could not report $displayName as $outcome: ${it.message}")
+                AppLogger.w(TAG, "Could not report '$displayName' as $outcome: ${it.message}")
             }
     }
 

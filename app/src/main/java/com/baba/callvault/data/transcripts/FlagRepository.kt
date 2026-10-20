@@ -39,8 +39,8 @@ object FlagRepository {
         if (offsetsMs.isEmpty()) return
         runCatching {
             dao(context).upsertAll(offsetsMs.distinct().sorted().map { RecordingFlagEntry(displayName, it) })
-            AppLogger.i(TAG, "Saved ${offsetsMs.size} mark(s) for $displayName.")
-        }.onFailure { AppLogger.w(TAG, "Could not save marks for $displayName: ${it.message}") }
+            AppLogger.i(TAG, "Saved ${offsetsMs.size} mark(s) for '$displayName'.")
+        }.onFailure { AppLogger.w(TAG, "Could not save marks for '$displayName': ${it.message}") }
     }
 
     /** Removes one mark, for the playback screen's long-press. */

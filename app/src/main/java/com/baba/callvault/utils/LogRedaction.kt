@@ -153,13 +153,88 @@ object LogRedaction {
         val out = StringBuilder(message.length + 16)
         var cursor = 0
         for (match in RECORDING_NAME_REGEX.findAll(message)) {
-            out.append(PHONE_REGEX.replace(message.substring(cursor, match.range.first), PHONE_PLACEHOLDER))
+            val prefixStart = personPrefixStart(message, match, cursor)
+            out.append(PHONE_REGEX.replace(message.substring(cursor, prefixStart), PHONE_PLACEHOLDER))
+            if (prefixStart < match.range.first) {
+                // The '_' that joins the prefix to the date is kept; only the fields before it change.
+                out.append(safePersonPrefix(message.substring(prefixStart, match.range.first - 1), salt)).append('_')
+            }
             out.append(safeRecordingName(match, salt))
             cursor = match.range.last + 1
         }
         out.append(PHONE_REGEX.replace(message.substring(cursor), PHONE_PLACEHOLDER))
         return out.toString()
     }
+
+    /**
+     * Where the person fields of a contact-first filename start, or the date's own index when there are none.
+     *
+     * The presets added in 2.4.5 (`{contact_name}_{phone_number}_{date}`, `{number}_{contact}_{date}`,
+     * `{contact}_{date}`, `{number}_{date}`) put the person BEFORE the date and nothing after it, so
+     * [RECORDING_NAME_REGEX] matches only the bare `{date}.ext` tail. That shape, joined by a `_` to
+     * what precedes it, is the signal; a date-first name always has a marker or a contact after its date.
+     *
+     * A name may hold spaces, so nothing inside the line says where it begins. We walk back to the
+     * nearest character a log line puts around a name — a quote, a path or URI separator, `:` `=` `(`
+     * — or to the start of the line. A bare `Transcribed John Doe_…` therefore takes "Transcribed"
+     * with it: losing a word of our own prose is the price; printing a name is not an option.
+     * Tokens this class already wrote (`[C:…]`, `[PHONE_REDACTED]`) are stepped over whole, so a
+     * second pass finds the same span and leaves it alone.
+     */
+    private fun personPrefixStart(message: String, match: MatchResult, cursor: Int): Int {
+        val dateStart = match.range.first
+        val (_, marker, who, _) = match.destructured
+        if (marker.isNotEmpty() || who.isNotEmpty()) return dateStart
+        if (dateStart - 1 <= cursor || message[dateStart - 1] != '_') return dateStart
+
+        val floor = maxOf(cursor, dateStart - 1 - MAX_NAME_RUN)
+        var i = dateStart - 1   // the joining '_'; the prefix is [result, i)
+        while (i > floor) {
+            val c = message[i - 1]
+            if (c == ']') {
+                val tokenStart = REDACTED_TOKEN_SUFFIX.find(message.substring(floor, i))?.range?.first
+                if (tokenStart != null) {
+                    i = floor + tokenStart
+                    continue
+                }
+            }
+            if (c in NAME_BOUNDARY_CHARS || endsWithEncodedSeparator(message, i)) break
+            i--
+        }
+        return if (i < dateStart - 1) i else dateStart
+    }
+
+    /** True when `%2F` or `%3A` (a SAF URI's `/` and `:`) ends just before [end]. */
+    private fun endsWithEncodedSeparator(message: String, end: Int): Boolean =
+        end >= 3 && message.regionMatches(end - 3, "%2F", 0, 3, ignoreCase = true) ||
+            end >= 3 && message.regionMatches(end - 3, "%3A", 0, 3, ignoreCase = true)
+
+    /**
+     * Rewrites the `_`-joined fields before a contact-first name's date: a number becomes
+     * [PHONE_PLACEHOLDER], anything else a contact token, and an empty field (no contact for that call)
+     * stays empty so the shape of the name survives.
+     */
+    private fun safePersonPrefix(prefix: String, salt: String): String =
+        PREFIX_FIELD_REGEX.findAll(prefix).joinToString("") { field ->
+            val value = field.value
+            val decoded = percentDecode(value).trim()
+            when {
+                value == "_" -> value
+                CONTACT_TOKEN_REGEX.matches(value) || value == PHONE_PLACEHOLDER -> value
+                decoded.isEmpty() -> value
+                PHONE_REGEX.matches(decoded) -> PHONE_PLACEHOLDER
+                else -> contactToken(value, salt)
+            }
+        }
+
+    /** Characters a log line puts around a filename or URI; a contact-first name never runs past one. */
+    private val NAME_BOUNDARY_CHARS = setOf('\'', '"', '`', '/', '\\', '\n', '\r', '\t', ':', '=', '(', '<', '>', ',', ';')
+
+    /** A redaction token ending the text, so the backward walk can step over it in one move. */
+    private val REDACTED_TOKEN_SUFFIX = Regex("(?:\\[C:[0-9a-f]+]|\\[PHONE_REDACTED])$")
+
+    /** One field of a contact-first prefix: an existing token, a `_`, or a run of anything else. */
+    private val PREFIX_FIELD_REGEX = Regex("\\[C:[0-9a-f]+]|\\[PHONE_REDACTED]|_|[^_\\[]+|\\[")
 
     /** Rebuilds one filename match with only its person-identifying field replaced. */
     private fun safeRecordingName(match: MatchResult, salt: String): String {
