@@ -82,7 +82,7 @@ object RecordingExtrasRepository {
                 // the streamed path below is meant to keep this from ever firing, but if a device is
                 // genuinely out of memory the drawing degrades to a resting line rather than crashing
                 // playback. Named plainly so a future log reads as a cause, not a mystery.
-                AppLogger.w(TAG, "Could not draw $displayName: ${it::class.simpleName}: ${it.message}")
+                AppLogger.w(TAG, "Could not draw '$displayName': ${it::class.simpleName}: ${it.message}")
                 return@withContext FloatArray(0)
             }
 
@@ -94,7 +94,7 @@ object RecordingExtrasRepository {
                         updatedAt = System.currentTimeMillis()
                     )
                 )
-            }.onFailure { AppLogger.w(TAG, "Could not cache the shape of $displayName: ${it.message}") }
+            }.onFailure { AppLogger.w(TAG, "Could not cache the shape of '$displayName': ${it.message}") }
 
             peaks
         }
@@ -142,8 +142,8 @@ object RecordingExtrasRepository {
         runCatching {
             if (dao(context).waveform(displayName) != null) return
             waveform(context, displayName, uri)
-            AppLogger.i(TAG, "Drew $displayName ahead of time")
-        }.onFailure { AppLogger.w(TAG, "Could not pre-draw $displayName: ${it.message}") }
+            AppLogger.i(TAG, "Drew '$displayName' ahead of time")
+        }.onFailure { AppLogger.w(TAG, "Could not pre-draw '$displayName': ${it.message}") }
     }
 
     /**
@@ -158,6 +158,6 @@ object RecordingExtrasRepository {
         runCatching {
             dao.deleteNote(displayName)
             dao.deleteWaveform(displayName)
-        }.onFailure { AppLogger.w(TAG, "Could not clear extras for $displayName: ${it.message}") }
+        }.onFailure { AppLogger.w(TAG, "Could not clear extras for '$displayName': ${it.message}") }
     }
 }

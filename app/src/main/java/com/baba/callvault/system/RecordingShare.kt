@@ -55,7 +55,7 @@ fun Context.shareRecording(uri: Uri, displayName: String) {
     // it: the user tapped Share on a list of their recordings, and losing the list would be worse
     // than the share not happening.
     runCatching { startActivity(chooser) }
-        .onFailure { AppLogger.w(TAG, "Could not open the share sheet for $displayName: ${it.message}") }
+        .onFailure { AppLogger.w(TAG, "Could not open the share sheet for '$displayName': ${it.message}") }
 }
 
 /**
