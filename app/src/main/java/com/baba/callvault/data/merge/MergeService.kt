@@ -348,7 +348,7 @@ object MergeService {
      * makes it its own part. That self-reference bites twice: the manifest would say a recording is
      * contained in itself, and un-merging would delete the very metadata rows it needs to restore.
      * A distinct name costs nothing visible, because the template still parses and the date shown is
-     * identical to the second, and it keeps both of those cases from ever arising.
+     * identical to the minute (see [MergeNaming]), and it keeps both of those cases from ever arising.
      */
     private suspend fun freeName(context: Context, primaryName: String): String {
         val dao = RecordingDatabase.get(context).recordingDao()
@@ -356,17 +356,10 @@ object MergeService {
         val stem = if (dot > 0) primaryName.substring(0, dot) else primaryName
         val ext = if (dot > 0) primaryName.substring(dot) else ""
         (1..999).forEach { bump ->
-            val candidate = bumpMillis(stem, bump) + ext
+            val candidate = MergeNaming.bumpedStem(stem, bump) + ext
             if (dao.findByName(candidate) == null) return candidate
         }
         return primaryName
-    }
-
-    /** Adds [by] to the millisecond field of a `yyyyMMdd_HHmmss.SSSZ` stem, leaving the rest alone. */
-    private fun bumpMillis(stem: String, by: Int): String {
-        val match = Regex("""^(\d{8}_\d{6})\.(\d{3})(.*)$""").find(stem) ?: return stem + "_" + by
-        val (head, millis, tail) = match.destructured
-        return "$head.${"%03d".format((millis.toInt() + by) % 1000)}$tail"
     }
 
     private fun mimeFor(extension: String) =
