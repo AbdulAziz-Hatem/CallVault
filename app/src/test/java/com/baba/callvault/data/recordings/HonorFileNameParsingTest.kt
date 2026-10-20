@@ -39,7 +39,7 @@ class HonorFileNameParsingTest {
 
     @Test
     fun `an unsaved number repeated as the name is not shown as a name`() {
-        val p = parse("+972541234567@+972541234567_$compact.m4a")
+        val p = parse("972541234567@+972541234567_$compact.m4a")
         assertEquals("+972541234567", p.number)
         assertNull(p.contactName)
         assertEquals(startedAt, p.startedAtMillis)

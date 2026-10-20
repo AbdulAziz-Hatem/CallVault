@@ -98,6 +98,13 @@ object RecordingFileNameFormatter {
                 ?: ""
         }
 
+        if (isHonorDialer) {
+            // An unsaved caller's number stands in for the name, minus its '+': HnContacts compiles "name@" as a
+            // regex, and a leading '+' would throw there and lose the match. The '+' stays on the number itself.
+            val numberAsName = phoneStr.removePrefix("+")
+            contactStr = if (contactStr == phoneStr) numberAsName else honorSafeName(contactStr).ifBlank { numberAsName }
+        }
+
         val crossCountryStr = metadata.isCrossCountry.toString()
 
         val baseName = template
@@ -115,6 +122,16 @@ object RecordingFileNameFormatter {
         AppLogger.v(TAG, "Formatted filename: '$fileName' with template '$template'")
         return fileName
     }
+
+    /** Characters Honor's phone app cannot take in the name: it strips '_' and then uses the name as a regex. */
+    private val HONOR_UNSAFE_NAME_CHARS = Regex("""[\\^$.|?*+()\[\]{}]""")
+
+    /**
+     * [name] made safe for the Honor preset: '_' becomes a space (HnContacts deletes '_' before the '@' and splits
+     * on the rest), regex characters are dropped, spaces are collapsed. Blank when nothing usable is left.
+     */
+    internal fun honorSafeName(name: String): String =
+        name.replace('_', ' ').replace(HONOR_UNSAFE_NAME_CHARS, "").replace(Regex("""\s+"""), " ").trim()
 
     /** Fewer digits than this is a placeholder ("-1", "Unknown 5"), not a number. Short codes like 087011 pass. */
     private const val MIN_DIALLED_DIGITS = 3
