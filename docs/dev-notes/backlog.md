@@ -81,6 +81,15 @@ fix, vivo far-side toggle (hint + SUPPORT doc), Samsung Wi-Fi-calling doc (#45).
 
 ---
 
+## 🔵 Settings per page — PLANNED 2026-10-20, not started, no date
+
+Plan: `2026-10-20-settings-per-page-plan.md`. Confirmed by the maintainer: Settings opened from a page shows
+that page's settings (the main screen shows everything); the Experimental section goes and its switches move,
+**with their defaults unchanged**; the Telegram pill shows only on the main screen, and Support stays as it is.
+The first step is a design canvas, not code.
+
+---
+
 ## 🔵 From the forks review — added 2026-10-20, not started
 
 Source: `2026-10-20-forks-review.md` and the per-fork files beside it. 📐 code read only, nothing built.
