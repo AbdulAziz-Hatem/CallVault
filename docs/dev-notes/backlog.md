@@ -81,6 +81,26 @@ fix, vivo far-side toggle (hint + SUPPORT doc), Samsung Wi-Fi-calling doc (#45).
 
 ---
 
+## 🔵 From the forks review — added 2026-10-20, not started
+
+Source: `2026-10-20-forks-review.md` and the per-fork files beside it. 📐 code read only, nothing built.
+**Credit the authors.** When we adopt a fork's code, keep them as the commit author, or add a `Co-authored-by:`
+trailer when we rewrite their idea. Name them in CHANGELOG and the release note, e.g. "thanks to @kabasik007".
+Their code is GPLv3 like ours, so taking it is allowed.
+
+| # | Item | Credit | Notes |
+|---|---|---|---|
+| 1 | **Security: `sendBinder` caller check.** Any app can hand us a fake recorder and get new recordings' output fd. Add the shell/system/own-uid check `sendHandoff` already has (`RecorderBinderProvider.handleSendBinder`). | Vas Vakhulenko (@kabasik007), `7211c263` | Highest priority. Fix before the forks dev-notes are pushed, since they describe the gap. |
+| 2 | **Direct capture: recover from a dead AudioRecord.** `readLoop` spins silently on `read <= 0`, so the rest of the call is lost. Log, reopen, pad with silence, stop cleanly if reopening fails. | Found while reviewing Luis (@lgarvia), `2f988633` | Our own gap; his fix itself is skipped. Test: speaker/earpiece/BT switches mid-call, plus a debug flag that forces read errors. |
+| 3 | **SAF delete that fails keeps the catalog entry.** | Vas Vakhulenko (@kabasik007), `6b341fc1` | `RecordingCopyWorker.kt:85-92`, `SyncSweepWorker.kt:130-133`. |
+| 4 | **Decode time limit.** Give up after 120 s with no decoder output and save a clear error. | @slman890, `8534f237` | No user report; a guard. |
+| 5 | **Import a model from a file**, next to Download. | @sanju0070, `0cfcd092` | Take the per-model writer lock, ask before deleting a partial download, check free space, run in a worker, translate the strings. |
+| 6 | **Ukrainian** UI and transcription. | Vas Vakhulenko (@kabasik007), `02e0e691`…`c34d2176` | Fill the 30 trimmed and 11 missing strings and finish the five language tables ([[adding-a-transcription-language]]). About half a day. |
+| 7 | **SIM label per call** (dual SIM). | @slman890, `8534f237` | Idea, no user request. Add the account columns to our call-log lookup, not their DB change. |
+| 8 | **Phone app / default dialer: an option again.** Dialer mode was dropped in 2026-07; the maintainer now considers it an option (2026-10-20). | @slman890, `4051f48c` (about 1,100 lines, emulator-tested only) | Decide first: whether to do it, and whether the dialpad may be the opening screen (theirs makes it). Use their branch as a reference, and see [[dialer-mode-status]]. |
+
+---
+
 ## 🔼 Higher-priority feature requests — agreed 2026-10-01, not started
 
 Maintainer-prioritised above the older backlog. Each needs a design pass before code (and, where it adds a
