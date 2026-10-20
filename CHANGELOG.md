@@ -51,8 +51,18 @@ All notable changes to CallVault are documented here. The format is based on
        On the OP9 2026-10-20 (Claude over adb): the stamp equals the call-log time (ring start 16:26:38,
        answered 16:27:02). Needs the reporter to see the play button on a release build, with AAC. -->
 
+- **Ukrainian.** The app is translated into Ukrainian, and Ukrainian can be pinned as a transcription
+  language; a Ukrainian summary is no longer mistaken for Russian. Translation by Vas Vakhulenko
+  (@kabasik007).
+  <!-- 🧪 VERIFYING — checkTranslations + unit tests; seen on the OP9 2026-10-20. Needs a native speaker
+       and a real Ukrainian call transcribed and summarised. -->
+
 ### Fixed
 
+- **A recording whose phone copy could not be deleted stays in the list.** With Drive-only storage, if
+  the phone refused to delete its copy after the upload, CallVault forgot the copy that was still there.
+  Thanks to Vas Vakhulenko (@kabasik007).
+  <!-- 🧪 VERIFYING — unit test only. -->
 - **Other apps can no longer take over the recorder.** The channel our recorder uses to reach the app
   accepted a recorder from any app, which could then receive new recordings. Now only CallVault's own
   recorder is accepted. Thanks to Vas Vakhulenko (@kabasik007), whose fork found it.
