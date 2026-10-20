@@ -24,6 +24,12 @@ import java.util.Locale
 
 object RecordingFileNameFormatter {
     const val TAG = "CV:RecordingFileNameFormatter"
+
+    /**
+     * `yyyyMMddHHmmss`, local time. Not offered as a placeholder of its own: it exists for
+     * [HONOR_DIALER_TEMPLATE], whose phone app wants exactly this, and the library can read it back only there.
+     */
+    const val DATE_COMPACT_TAG = "{date_compact}"
     /**
      * Represents the supported placeholders that can be used in the file name template.
      * Binds the literal tag used in formatting to a localized description for the UI.
@@ -51,24 +57,34 @@ object RecordingFileNameFormatter {
      * @param metadata Defines the main properties (direction, phone number, cross country).
      * @param codec The selected ScrcpyAudioCodec used to determine the file extension.
      * @param customFormat An optional custom format string to use instead of the one from preferences. Useful for testing or one-off formatting without changing user settings.
+     * @param startedAt When the recording started. A rename after the call must pass the original start,
+     *   or the name would carry the time the call ended.
      * @return A filesystem-safe filename string.
      */
     fun formatFileName(
         context: Context,
         metadata: RecordingMetadata,
         codec: ScrcpyAudioCodec,
-        customFormat: String? = null
+        customFormat: String? = null,
+        startedAt: Date = Date()
     ): String {
         val template = customFormat ?: AppPreferences(context).getFileNameTemplate()
+        // Honor's phone app matches the number as its call log holds it, not the E.164 form.
+        val isHonorDialer = template == HONOR_DIALER_TEMPLATE
 
-        val dateStr = SimpleDateFormat("yyyyMMdd_HHmmss.SSSZ", Locale.CANADA).format(Date())
+        val dateStr = SimpleDateFormat("yyyyMMdd_HHmmss.SSSZ", Locale.CANADA).format(startedAt)
+        val compactDateStr = SimpleDateFormat("yyyyMMddHHmmss", Locale.US).format(startedAt)
 
         val directionStr = when (metadata.direction) {
             RecordingDirection.INCOMING -> "in"
             RecordingDirection.OUTGOING -> "out"
         }
 
-        val phoneStr = metadata.getBestNumber() ?: ""
+        val phoneStr = if (isHonorDialer) {
+            (metadata.rawPhoneNumber ?: metadata.getBestNumber()).orEmpty().filterIndexed { i, c -> c.isDigit() || (i == 0 && c == '+') }
+        } else {
+            metadata.getBestNumber() ?: ""
+        }
         var contactStr = ""
 
         if (template.contains(FileNamePlaceholder.CONTACT_NAME.tag) && phoneStr.isNotEmpty()) {
@@ -78,13 +94,14 @@ object RecordingFileNameFormatter {
             // via {phone_number}, in which case duplicating it would just add noise.
             contactStr = getContactName(context, phoneStr)
                 ?: VoicemailLabel.labelOrNull(context, phoneStr)
-                ?: phoneStr.takeUnless { template.contains(FileNamePlaceholder.PHONE_NUMBER.tag) }
+                ?: phoneStr.takeUnless { template.contains(FileNamePlaceholder.PHONE_NUMBER.tag) && !isHonorDialer }
                 ?: ""
         }
 
         val crossCountryStr = metadata.isCrossCountry.toString()
 
         val baseName = template
+            .replace(DATE_COMPACT_TAG, compactDateStr)
             .replace(FileNamePlaceholder.DATE.tag, dateStr)
             .replace(FileNamePlaceholder.DIRECTION.tag, directionStr)
             .replace(FileNamePlaceholder.PHONE_NUMBER.tag, phoneStr)

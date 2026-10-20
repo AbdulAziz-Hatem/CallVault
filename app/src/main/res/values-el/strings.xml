@@ -228,6 +228,10 @@
     <string name="settings_file_name_preset_number_contact_date">Αριθμός · Επαφή · Ημερομηνία</string>
     <string name="settings_file_name_preset_contact_date">Επαφή · Ημερομηνία</string>
     <string name="settings_file_name_preset_number_date">Αριθμός · Ημερομηνία</string>
+    <string name="settings_file_name_preset_honor_dialer">Εφαρμογή τηλεφώνου Honor / Huawei</string>
+    <string name="honor_dialer_hint">Η εφαρμογή τηλεφώνου μπορεί να αναπαράγει μια ηχογράφηση από το ιστορικό κλήσεων μόνο αν είναι αποθηκευμένη στο %1$s ως .m4a. Στο CallVault, ορίστε το %2$s σε αυτόν τον φάκελο και το %3$s σε AAC.</string>
+    <string name="honor_dialer_ready">✓ Έτοιμο: ο φάκελος και η μορφή έχουν οριστεί.</string>
+    <string name="honor_dialer_missing">Απομένει να αλλάξετε: %1$s</string>
     <string name="settings_file_name_preset_custom">Προσαρμοσμένο</string>
     <string name="settings_file_name_template_placeholders">Σύμβολα κράτησης θέσης:</string>
     <string name="settings_file_name_template_placeholders_preview">Προεπισκόπηση: %1$s</string>

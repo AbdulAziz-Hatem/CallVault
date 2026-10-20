@@ -215,6 +215,10 @@
     <string name="settings_file_name_preset_number_contact_date">Número · Contato · Data</string>
     <string name="settings_file_name_preset_contact_date">Contato · Data</string>
     <string name="settings_file_name_preset_number_date">Número · Data</string>
+    <string name="settings_file_name_preset_honor_dialer">App de telefone Honor / Huawei</string>
+    <string name="honor_dialer_hint">O app de telefone só consegue tocar uma gravação pelo histórico de chamadas se ela estiver salva em %1$s como .m4a. No CallVault, defina %2$s para essa pasta e %3$s como AAC.</string>
+    <string name="honor_dialer_ready">✓ Pronto: a pasta e o formato estão definidos.</string>
+    <string name="honor_dialer_missing">Ainda falta mudar: %1$s</string>
     <string name="settings_file_name_preset_date_direction_number">Data · Sentido · Número</string>
     <string name="settings_file_name_preset_date_number">Data · Número</string>
     <string name="settings_file_name_template">Modelo de nome de arquivo</string>

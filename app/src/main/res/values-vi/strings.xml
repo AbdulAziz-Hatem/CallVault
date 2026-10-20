@@ -212,6 +212,10 @@
     <string name="settings_file_name_preset_number_contact_date">Số · Liên hệ · Ngày</string>
     <string name="settings_file_name_preset_contact_date">Liên hệ · Ngày</string>
     <string name="settings_file_name_preset_number_date">Số · Ngày</string>
+    <string name="settings_file_name_preset_honor_dialer">Ứng dụng Điện thoại Honor / Huawei</string>
+    <string name="honor_dialer_hint">Ứng dụng Điện thoại chỉ phát được bản ghi từ lịch sử cuộc gọi nếu bản ghi được lưu trong %1$s dưới dạng .m4a. Trong CallVault, đặt %2$s thành thư mục đó và %3$s thành AAC.</string>
+    <string name="honor_dialer_ready">✓ Sẵn sàng: đã đặt thư mục và định dạng.</string>
+    <string name="honor_dialer_missing">Còn cần đổi: %1$s</string>
     <string name="settings_file_name_preset_date_direction_number">Ngày · Hướng · Số</string>
     <string name="settings_file_name_preset_date_number">Ngày · Số</string>
     <string name="settings_file_name_template">Mẫu tên tệp</string>

@@ -93,6 +93,8 @@ import com.baba.callvault.ui.common.OptionItem
 import com.baba.callvault.ui.viewmodels.WizardViewModel
 import com.baba.callvault.utils.FILE_NAME_TEMPLATE_PRESETS
 import com.baba.callvault.utils.fileNameTemplateExample
+import com.baba.callvault.utils.HONOR_DIALER_TEMPLATE
+import com.baba.callvault.ui.common.HonorDialerHint
 import com.baba.callvault.utils.presetForTemplateOrFirst
 
 /** The audio bit-rate options offered in the wizard (bps), shared with Settings. */
@@ -989,6 +991,9 @@ private fun FileNameStep(
                 fileNameTemplateExample(selectedTemplate)
             )
         )
+        if (selectedTemplate == HONOR_DIALER_TEMPLATE) {
+            CvCard { HonorDialerHint(refreshKey = template) }
+        }
     }
 }
 

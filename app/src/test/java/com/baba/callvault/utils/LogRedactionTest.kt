@@ -409,4 +409,52 @@ class LogRedactionTest {
             redact("queue_size=1 '${stamp}_in_John Doe.ogg'")
         )
     }
+
+    // -------- The Honor / Huawei phone-app shape (#56): {name}@{number}_{yyyyMMddHHmmss}
+
+    @Test
+    fun `an honor name hides the contact and the number and keeps the time`() {
+        assertEquals(
+            "Wrote '${token("Баланс")}@[PHONE_REDACTED]_20261020103708.m4a'.",
+            redact("Wrote 'Баланс@087011_20261020103708.m4a'.")
+        )
+    }
+
+    @Test
+    fun `an honor name for an unsaved number hides both copies of it`() {
+        assertEquals(
+            "'[PHONE_REDACTED]@[PHONE_REDACTED]_20261020103708.m4a'",
+            redact("'+972541234567@+972541234567_20261020103708.m4a'")
+        )
+    }
+
+    @Test
+    fun `an honor name inside a SAF uri, with the at sign encoded, is redacted`() {
+        val redacted = redact(
+            "Failed for content://x/document/primary%3ASounds%2FCallRecord%2FDana%20Levi%400541234567_20261020103708.m4a: boom"
+        )
+        assertFalse(redacted, redacted.contains("Dana"))
+        assertFalse(redacted, redacted.contains("0541234567"))
+        assertTrue(redacted, redacted.contains("%2FCallRecord%2F${token("Dana Levi")}%40[PHONE_REDACTED]_20261020103708.m4a: boom"))
+    }
+
+    @Test
+    fun `a bare honor name never leaks`() {
+        val redacted = redact("Transcribed Dana Levi@0541234567_20261020103708.m4a (3 segment(s))")
+        assertFalse(redacted, redacted.contains("Dana"))
+        assertFalse(redacted, redacted.contains("0541234567"))
+        assertTrue(redacted, redacted.endsWith("_20261020103708.m4a (3 segment(s))"))
+    }
+
+    @Test
+    fun `honor names are redacted idempotently`() {
+        listOf(
+            "Wrote 'Баланс@087011_20261020103708.m4a'.",
+            "'+972541234567@+972541234567_20261020103708.m4a'",
+            "x primary%3ASounds%2FCallRecord%2FDana%20Levi%400541234567_20261020103708.m4a",
+        ).forEach { line ->
+            val once = redact(line)
+            assertEquals(line, once, redact(once))
+        }
+    }
 }

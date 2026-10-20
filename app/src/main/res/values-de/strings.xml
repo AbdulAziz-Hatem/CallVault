@@ -212,6 +212,10 @@
     <string name="settings_file_name_preset_number_contact_date">Nummer · Kontakt · Datum</string>
     <string name="settings_file_name_preset_contact_date">Kontakt · Datum</string>
     <string name="settings_file_name_preset_number_date">Nummer · Datum</string>
+    <string name="settings_file_name_preset_honor_dialer">Honor-/Huawei-Telefon-App</string>
+    <string name="honor_dialer_hint">Deine Telefon-App kann eine Aufnahme nur dann aus der Anrufliste abspielen, wenn sie in %1$s als .m4a gespeichert ist. Stelle in CallVault %2$s auf diesen Ordner und %3$s auf AAC.</string>
+    <string name="honor_dialer_ready">✓ Bereit: Ordner und Format sind eingestellt.</string>
+    <string name="honor_dialer_missing">Noch zu ändern: %1$s</string>
     <string name="settings_file_name_preset_date_direction_number">Datum · Richtung · Nummer</string>
     <string name="settings_file_name_preset_date_number">Datum · Nummer</string>
     <string name="settings_file_name_template">Dateinamenvorlage</string>

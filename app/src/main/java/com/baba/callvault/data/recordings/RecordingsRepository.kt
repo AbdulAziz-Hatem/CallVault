@@ -646,6 +646,20 @@ object RecordingsRepository {
             )
         }
 
+        // The "Honor / Huawei phone app" preset (#56): "{name}@{number}_{yyyyMMddHHmmss}". Matched whole and
+        // first, because neither its date nor its separators look like any other preset's.
+        HONOR_NAME.matchEntire(base)?.let { m ->
+            val (name, number, rawDate) = m.destructured
+            return ParsedName(
+                direction = null,
+                displayDate = formatDate(rawDate),
+                startedAtMillis = parseStartedAt(rawDate),
+                number = number.ifBlank { null },
+                // An unsaved caller's number is repeated as the name; showing it twice says nothing.
+                contactName = name.ifBlank { null }?.takeUnless { it == number },
+            )
+        }
+
         // VoIP recordings use "{date}_voip[_{caller}]": there is no call-log entry behind them, so
         // there is no number and no reliable direction — but there IS often a name from the call
         // notification. Without this branch the whole raw filename is shown, which is far too long to
@@ -738,6 +752,11 @@ object RecordingsRepository {
         )
     }
 
+    /** "{name}@{number}_{yyyyMMddHHmmss}" — greedy name, so a name holding an '@' splits on the last one. */
+    private val COMPACT_DATE = Regex("""\d{14}""")
+
+    private val HONOR_NAME = Regex("""(.*)@(\+?\d*)_(\d{14})""")
+
     /** "yyyyMMdd_HHmmss[.SSS][±hhmm]", as RecordingFileNameFormatter writes it — never starting or ending inside a longer run of digits, so a phone number beside it cannot donate its tail. */
     private val DATE_TOKEN = Regex("""(?<!\d)\d{8}_\d{6}(?:\.\d{3})?(?:[+-]\d{4})?(?!\d)""")
 
@@ -755,7 +774,7 @@ object RecordingsRepository {
      */
     private fun parseStartedAt(rawDate: String): Long? {
         val token = rawDate.trim().ifBlank { return null }
-        for (pattern in arrayOf("yyyyMMdd_HHmmss.SSSZ", "yyyyMMdd_HHmmss.SSS", "yyyyMMdd_HHmmss")) {
+        for (pattern in arrayOf("yyyyMMdd_HHmmss.SSSZ", "yyyyMMdd_HHmmss.SSS", "yyyyMMdd_HHmmss", "yyyyMMddHHmmss")) {
             val parsed = runCatching {
                 SimpleDateFormat(pattern, Locale.US).apply { isLenient = false }.parse(token)
             }.getOrNull()
@@ -766,7 +785,8 @@ object RecordingsRepository {
 
     private fun formatDate(rawDate: String): String? {
         // Expected shape: yyyyMMdd_HHmmss(.SSSZ)?  take the yyyyMMdd and HHmmss segments.
-        val segments = rawDate.split('_')
+        // The Honor preset's yyyyMMddHHmmss is the same two segments without the '_'.
+        val segments = if (COMPACT_DATE.matches(rawDate)) listOf(rawDate.take(8), rawDate.drop(8)) else rawDate.split('_')
         if (segments.size < 2) return rawDate.ifBlank { null }
         val day = segments[0]
         val time = segments[1].substringBefore('.')

@@ -32,6 +32,7 @@ import com.baba.callvault.R
 import com.baba.callvault.data.AppPreferences
 import com.baba.callvault.ui.theme.CallVaultTheme
 import com.baba.callvault.utils.FILE_NAME_TEMPLATE_PRESETS
+import com.baba.callvault.utils.HONOR_DIALER_TEMPLATE
 import com.baba.callvault.utils.fileNameTemplateExample
 import com.baba.callvault.utils.presetForTemplateOrFirst
 
@@ -85,6 +86,8 @@ fun FileNameFormatDialog(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
+
+                if (selectedTemplate == HONOR_DIALER_TEMPLATE) HonorDialerHint()
             }
         },
         onDismissRequest = onDismiss,

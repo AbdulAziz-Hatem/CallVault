@@ -212,6 +212,10 @@
     <string name="settings_file_name_preset_number_contact_date">Numero · Contatto · Data</string>
     <string name="settings_file_name_preset_contact_date">Contatto · Data</string>
     <string name="settings_file_name_preset_number_date">Numero · Data</string>
+    <string name="settings_file_name_preset_honor_dialer">App Telefono Honor / Huawei</string>
+    <string name="honor_dialer_hint">L’app Telefono può riprodurre una registrazione dalla cronologia chiamate solo se è salvata in %1$s come .m4a. In CallVault, imposta %2$s su quella cartella e %3$s su AAC.</string>
+    <string name="honor_dialer_ready">✓ Pronto: cartella e formato sono impostati.</string>
+    <string name="honor_dialer_missing">Da modificare ancora: %1$s</string>
     <string name="settings_file_name_preset_date_direction_number">Data · Direzione · Numero</string>
     <string name="settings_file_name_preset_date_number">Data · Numero</string>
     <string name="settings_file_name_template">Modello nome file</string>

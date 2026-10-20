@@ -44,4 +44,11 @@ class FileNameTemplatesTest {
         assertTrue(templates.contains("{contact_name}_{phone_number}_{date}"))
         assertTrue(templates.contains("{phone_number}_{contact_name}_{date}"))
     }
+
+    @Test
+    fun `the honor and huawei phone-app shape is offered`() {
+        val templates = FILE_NAME_TEMPLATE_PRESETS.map { it.template }
+        assertTrue(templates.contains(HONOR_DIALER_TEMPLATE))
+        assertTrue(fileNameTemplateExample(HONOR_DIALER_TEMPLATE).matches(Regex("""[^_]+@\+?\d+_\d{14}""")))
+    }
 }

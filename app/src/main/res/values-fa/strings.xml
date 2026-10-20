@@ -228,6 +228,10 @@
     <string name="settings_file_name_preset_number_contact_date">شماره · مخاطب · تاریخ</string>
     <string name="settings_file_name_preset_contact_date">مخاطب · تاریخ</string>
     <string name="settings_file_name_preset_number_date">شماره · تاریخ</string>
+    <string name="settings_file_name_preset_honor_dialer">برنامه تلفن Honor / Huawei</string>
+    <string name="honor_dialer_hint">برنامه تلفن فقط وقتی می‌تواند ضبط را از تاریخچه تماس‌ها پخش کند که در %1$s با قالب .m4a ذخیره شده باشد. در CallVault، %2$s را روی همین پوشه و %3$s را روی AAC تنظیم کنید.</string>
+    <string name="honor_dialer_ready">✓ آماده: پوشه و قالب تنظیم شده‌اند.</string>
+    <string name="honor_dialer_missing">هنوز باید تغییر کند: %1$s</string>
     <string name="settings_file_name_preset_custom">سفارشی</string>
     <string name="settings_file_name_template_placeholders">جانگهدارها:</string>
     <string name="settings_file_name_template_placeholders_preview">پیش‌نمایش: %1$s</string>
