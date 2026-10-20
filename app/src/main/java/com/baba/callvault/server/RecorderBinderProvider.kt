@@ -61,7 +61,7 @@ class RecorderBinderProvider : ContentProvider() {
             // the whole point — the question is what the APP's uid is allowed to do.
             METHOD_TRACK_A_PROBE, METHOD_TRACK_A_ARM, METHOD_TRACK_A_MEASURE -> {
                 val uid = Binder.getCallingUid()
-                if (uid != Process.SHELL_UID && uid != Process.SYSTEM_UID && uid != Process.myUid()) {
+                if (!RecorderCallerPolicy.isTrusted(uid)) {
                     AppLogger.w(TAG, "trackAProbe rejected: untrusted caller uid=$uid")
                     return Bundle()
                 }
@@ -83,7 +83,7 @@ class RecorderBinderProvider : ContentProvider() {
         // cblk fd + geometry into native mmap/drain code, so an untrusted 3rd-party app must never reach
         // it. A rejected caller simply means no handoff arrives → the engine falls back to daemon mode.
         val callingUid = Binder.getCallingUid()
-        if (callingUid != Process.SHELL_UID && callingUid != Process.SYSTEM_UID && callingUid != Process.myUid()) {
+        if (!RecorderCallerPolicy.isTrusted(callingUid)) {
             AppLogger.w(TAG, "sendHandoff rejected: untrusted caller uid=$callingUid")
             return
         }
@@ -101,6 +101,13 @@ class RecorderBinderProvider : ContentProvider() {
 
     /** Mirrors `ShizukuProvider.handleSendBinder`: read the container, store + link-to-death the binder. */
     private fun handleSendBinder(extras: Bundle) {
+        // Only our own recorder hosts may hand us a recorder. Any other app could otherwise swap in its
+        // own and receive the output file of every new recording (see [RecorderCallerPolicy]).
+        val callingUid = Binder.getCallingUid()
+        if (!RecorderCallerPolicy.isTrusted(callingUid)) {
+            AppLogger.w(TAG, "sendBinder rejected: untrusted caller uid=$callingUid")
+            return
+        }
         // CRITICAL (Shizuku gotcha): set the classloader so BinderContainer deserialises to OUR class.
         extras.classLoader = BinderContainer::class.java.classLoader
 
