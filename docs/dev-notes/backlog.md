@@ -81,6 +81,24 @@ fix, vivo far-side toggle (hint + SUPPORT doc), Samsung Wi-Fi-calling doc (#45).
 
 ---
 
+## 🔵 Android 17 — researched 2026-10-20, not started
+
+Research: `2026-10-20-android-17-call-recording-research.md` (📐 desk research; no Android 17 phone).
+Call audio is unchanged; the transport around it is what changed.
+
+| # | Item | Size | Notes |
+|---|---|---|---|
+| 1 | **Wireless debugging read-back is wrong on 17**: "on" no longer means reachable, so an untrusted network waits the full mDNS timeout again (#39) | S-M | `AdbShell.kt:332-340`, `WirelessDebuggingOffCause`, debugging-switches model. Needs a 17 phone, or a reporter's log. |
+| 2 | **vivo fallback `BypassedAudioRecord` breaks on 17** (fields and `native_setup` changed) | M | Use `mChannelMasks` and the new signature at API ≥ 37. Needs a vivo on 17 to test. |
+| 3 | Pairing fallback to the resolved host when the loopback probe finds nothing | S | Hedge for one fork's QPR1 report. |
+| 4 | Shizuku help text: name a fork that works on 17 | S | Official Shizuku's app list is empty on 17. |
+| 5 | targetSdk 37 prep: `ACCESS_LOCAL_NETWORK` + `FLAG_NO_PICKER` on every discovery, `USE_LOOPBACK_INTERFACE`, background playback | M | Merges with "Targeting Android 17" below. |
+| 6 | **Developer verification (global 2027)**: register as an open-source developer, or accept the advanced install flow | decision | The maintainer's call. Check whether our shell `pm install` updater counts as exempt. |
+| 7 | Watch: adbd loopback restriction proposal (tracker 526109803, 541312863) | watch | Would break on-device ADB for everyone. |
+| 8 | Conscrypt 2.5.2 → 2.7.0 (16 KB pages) | S | |
+
+---
+
 ## 🔵 Settings per page — PLANNED 2026-10-20, not started, no date
 
 Plan: `2026-10-20-settings-per-page-plan.md`. Confirmed by the maintainer: Settings opened from a page shows
