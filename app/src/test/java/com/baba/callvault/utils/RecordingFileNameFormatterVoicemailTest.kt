@@ -113,7 +113,7 @@ class RecordingFileNameFormatterVoicemailTest {
             context, metadata, ScrcpyAudioCodec.AAC, customFormat = HONOR_DIALER_TEMPLATE, startedAt = callStart
         )
 
-        assertEquals("+380501234567@+380501234567_20261020103708.m4a", fileName)
+        assertEquals("380501234567@+380501234567_20261020103708.m4a", fileName)
     }
 
     @Test
@@ -134,5 +134,14 @@ class RecordingFileNameFormatterVoicemailTest {
         assertEquals(null, RecordingFileNameFormatter.dialledNumber("-1"))
         assertEquals(null, RecordingFileNameFormatter.dialledNumber("Unknown 5"))
         assertEquals(null, RecordingFileNameFormatter.dialledNumber(null))
+    }
+
+    @Test
+    fun honor_contact_name_drops_underscores_and_regex_characters() {
+        // HnContacts strips '_' before the '@' and then uses the name as a regex.
+        assertEquals("Dana Levi Work", RecordingFileNameFormatter.honorSafeName("Dana_Levi (Work)"))
+        assertEquals("Mum", RecordingFileNameFormatter.honorSafeName("[Mum]*"))
+        assertEquals("Баланс", RecordingFileNameFormatter.honorSafeName("Баланс"))
+        assertEquals("", RecordingFileNameFormatter.honorSafeName("+?"))
     }
 }

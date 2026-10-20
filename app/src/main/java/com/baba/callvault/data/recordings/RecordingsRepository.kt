@@ -655,8 +655,8 @@ object RecordingsRepository {
                 displayDate = formatDate(rawDate),
                 startedAtMillis = parseStartedAt(rawDate),
                 number = number.ifBlank { null },
-                // An unsaved caller's number is repeated as the name; showing it twice says nothing.
-                contactName = name.ifBlank { null }?.takeUnless { it == number },
+                // An unsaved caller's number is repeated as the name (without its '+'); showing it twice says nothing.
+                contactName = name.ifBlank { null }?.takeUnless { it == number || it == number.removePrefix("+") },
             )
         }
 

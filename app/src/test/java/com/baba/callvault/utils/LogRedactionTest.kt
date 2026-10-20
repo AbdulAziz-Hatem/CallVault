@@ -424,7 +424,7 @@ class LogRedactionTest {
     fun `an honor name for an unsaved number hides both copies of it`() {
         assertEquals(
             "'[PHONE_REDACTED]@[PHONE_REDACTED]_20261020103708.m4a'",
-            redact("'+972541234567@+972541234567_20261020103708.m4a'")
+            redact("'972541234567@+972541234567_20261020103708.m4a'")
         )
     }
 
@@ -450,7 +450,7 @@ class LogRedactionTest {
     fun `honor names are redacted idempotently`() {
         listOf(
             "Wrote 'Баланс@087011_20261020103708.m4a'.",
-            "'+972541234567@+972541234567_20261020103708.m4a'",
+            "'972541234567@+972541234567_20261020103708.m4a'",
             "x primary%3ASounds%2FCallRecord%2FDana%20Levi%400541234567_20261020103708.m4a",
         ).forEach { line ->
             val once = redact(line)
