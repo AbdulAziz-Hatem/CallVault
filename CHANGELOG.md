@@ -41,8 +41,25 @@ All notable changes to CallVault are documented here. The format is based on
        name resolved 0.27 s in → "caller is on the ignore list" → nothing recorded (dumpsys: only WhatsApp's
        own mic). The late-name stop-and-discard path is unit-reasoned only — not exercised on a phone. -->
 
+- **Honor / Huawei phone app file names.** A new file-name format, "Honor / Huawei phone app", names
+  recordings the way Honor's own recorder does (`name@number_yyyyMMddHHmmss`), so the phone app on Honor
+  (and probably Huawei) can show a play button on the call in its history. Picking it shows the folder to
+  use (`Sounds/CallRecord`), that the format must be AAC, and which of those are still to change. The time
+  in the name is the call-log time of the call, and contact names are cleaned of characters that phone app
+  cannot match. (#56)
+  <!-- 🧪 VERIFYING — reporter's hand-renamed file played from Honor's call log (REA-NX9, 2026-10-20).
+       On the OP9 2026-10-20 (Claude over adb): the stamp equals the call-log time (ring start 16:26:38,
+       answered 16:27:02). Needs the reporter to see the play button on a release build, with AAC. -->
+
 ### Fixed
 
+- **A recording whose number arrived late kept the wrong time.** When the number only reached
+  CallVault after the call, the file was renamed with the time the call ended instead of when it began.
+  <!-- 🧪 VERIFYING — unit-reasoned; needs a call where the number arrives late. -->
+- **Contact names stay out of debug reports.** With a contact-first file-name format, the contact's name
+  was left in shared debug logs; it is now replaced by a code like `[C:1a2b]`.
+  <!-- 🧪 VERIFYING — unit tests; the OP9 log of 2026-10-20 shows `[C:8e83]@[PHONE_REDACTED]_…` for the
+       Honor format. Needs a debug report shared with "Contact · Number · Date". -->
 - **Settings updates the moment you switch modes.** After switching between built-in and Shizuku mode,
   some options kept the old mode's greyed-out state until Settings was reopened — so recording away from
   Wi-Fi could look available in Shizuku mode, and "Keep Wireless debugging on" stayed greyed in built-in
