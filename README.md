@@ -27,7 +27,7 @@ Recording call audio needs shell-level privilege. CallVault gets it one of two w
 ## What it does
 
 - 🎙️ **Phone calls, both sides** — automatically, or ask-me-each-time.
-- 💬 **App calls** — WhatsApp, Signal, Telegram and others, and you pick which apps get recorded. Opt-in, experimental.
+- 💬 **App calls** — WhatsApp, Signal, Telegram and others, and you pick which apps get recorded. Opt-in.
 - 🎛️ **Controls while you talk** — pause, resume, stop, or mark a moment to find again later. On phone calls and app calls alike.
 - 🔗 **Merge calls that were one conversation** — a call drops and you ring back; join them into one recording, in the order you choose. Lossless, and un-mergeable afterwards.
 - 📝 **Transcripts** — 13 languages, written on the phone.

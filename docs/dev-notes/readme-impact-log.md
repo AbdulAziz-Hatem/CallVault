@@ -560,3 +560,5 @@ To settle it: open the README on the branch and check the two-row table reads we
 - **Retaken the same day:** `02b` now opens at the top (header, player with waveform, start of the
   summary; the note is below the fold, since no scroll fits player + whole summary + note), and `03` shows
   the real duration "0:00 / 2:41" (play tapped and paused at the start, so the first line is highlighted).
+- **Line 30:** "Opt-in, experimental." → "Opt-in." The app no longer calls app-call recording experimental
+  (strings changed 2026-10-21, 15 locales).
