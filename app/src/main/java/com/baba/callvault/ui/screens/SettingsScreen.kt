@@ -369,7 +369,7 @@ private const val SYSTEM_REPORT_BUDGET_MS = 45_000L
  * file of your device-independent preferences; Import reads one back (after a confirm).
  */
 @Composable
-private fun ExportImportRow(onExport: () -> Unit, onImport: () -> Unit) {
+internal fun ExportImportRow(onExport: () -> Unit, onImport: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
             text = stringResource(R.string.settings_backup_title),
@@ -492,35 +492,7 @@ fun SettingsContent(
                     preferences, updateTrigger, actions,
                     expanded = openSection == SECTION_TRANSCRIPTION,
                     onToggle = { onToggleSection(SECTION_TRANSCRIPTION) },
-                    summaryRows = {
-                        SummaryRows(
-                            updateTrigger = updateTrigger,
-                            onDownload = { actions.downloadSummaryModel(it) },
-                            onCancel = { actions.cancelSummaryModelDownload(it) },
-                            onDelete = { actions.deleteSummaryModel(it) }
-                        ) {
-                            // Settings-only, and passed in rather than living in SummaryRows because
-                            // the wizard renders those same rows and has no business offering a
-                            // preference about a dialog it is showing for the first time.
-                            //
-                            // Its home is here so the dialog's "don't show this again" can be undone
-                            // — a dialog that can permanently remove itself with no way back would be
-                            // a trap. Same reasoning as the transcription confirmation switch above.
-                            val askFirst = remember(updateTrigger) {
-                                preferences.getSummaryConfirmRequirements()
-                            }
-                            SettingsToggleRow(
-                                icon = Icons.Filled.Info,
-                                label = stringResource(R.string.summary_requirements_heading),
-                                description = stringResource(R.string.summary_requirements_toggle_description),
-                                checked = askFirst,
-                                onCheckedChange = {
-                                    preferences.setSummaryConfirmRequirements(it)
-                                    actions.refreshSettings()
-                                }
-                            )
-                        }
-                    }
+                    summaryRows = { SummarySettingsRows(preferences, updateTrigger, actions) }
                 )
             }
             item {
@@ -559,43 +531,94 @@ fun SettingsContent(
     }
 
     if (showLicensesDialog) {
-        Dialog(
-            onDismissRequest = { showLicensesDialog = false },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                shape = MaterialTheme.shapes.large,
-                color = MaterialTheme.colorScheme.surface
-            ) {
-                Column {
-                    Text(
-                        text = stringResource(R.string.general_licenses),
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(16.dp)
-                    )
+        LicensesDialog(onDismiss = { showLicensesDialog = false })
+    }
 
-                    val libraries by produceLibraries(R.raw.aboutlibraries)
-                    LibrariesContainer(libraries,Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                        showAuthor = true, showLicenseBadges = true, showFundingBadges = false, showVersion = true, showDescription = true)
-                    TextButton(
-                        onClick = { showLicensesDialog = false },
-                        modifier = Modifier
-                            .align(Alignment.End)
-                            .padding(8.dp)
-                    ) {
-                        Text(stringResource(R.string.general_close))
-                    }
+    // The contact-picker dialog sits on top of the settings content.
+    SettingsContactPicker(contactPickerState, onConfirmContacts, onDismissContacts)
+}
+
+/**
+ * The summariser's rows with the Settings-only "ask me first" switch. Shared by the classic screen's
+ * Transcription & summaries section and the new screen's Summaries group.
+ */
+@Composable
+internal fun SummarySettingsRows(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
+    SummaryRows(
+        updateTrigger = updateTrigger,
+        onDownload = { actions.downloadSummaryModel(it) },
+        onCancel = { actions.cancelSummaryModelDownload(it) },
+        onDelete = { actions.deleteSummaryModel(it) }
+    ) {
+        // Settings-only, and passed in rather than living in SummaryRows because
+        // the wizard renders those same rows and has no business offering a
+        // preference about a dialog it is showing for the first time.
+        //
+        // Its home is here so the dialog's "don't show this again" can be undone
+        // — a dialog that can permanently remove itself with no way back would be
+        // a trap. Same reasoning as the transcription confirmation switch above.
+        val askFirst = remember(updateTrigger) {
+            preferences.getSummaryConfirmRequirements()
+        }
+        SettingsToggleRow(
+            icon = Icons.Filled.Info,
+            label = stringResource(R.string.summary_requirements_heading),
+            description = stringResource(R.string.summary_requirements_toggle_description),
+            checked = askFirst,
+            onCheckedChange = {
+                preferences.setSummaryConfirmRequirements(it)
+                actions.refreshSettings()
+            }
+        )
+    }
+}
+
+/** The open-source licences, full screen. Shared by both Settings screens. */
+@Composable
+internal fun LicensesDialog(onDismiss: () -> Unit) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            shape = MaterialTheme.shapes.large,
+            color = MaterialTheme.colorScheme.surface
+        ) {
+            Column {
+                Text(
+                    text = stringResource(R.string.general_licenses),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(16.dp)
+                )
+
+                val libraries by produceLibraries(R.raw.aboutlibraries)
+                LibrariesContainer(libraries,Modifier
+                    .fillMaxSize()
+                    .weight(1f),
+                    showAuthor = true, showLicenseBadges = true, showFundingBadges = false, showVersion = true, showDescription = true)
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(8.dp)
+                ) {
+                    Text(stringResource(R.string.general_close))
                 }
             }
         }
     }
+}
 
-    // The contact-picker dialog sits on top of the settings content.
+/** The contact-picker dialog that sits on top of either Settings screen while it is open. */
+@Composable
+internal fun SettingsContactPicker(
+    contactPickerState: ContactPickerState?,
+    onConfirmContacts: (Set<String>) -> Unit,
+    onDismissContacts: () -> Unit,
+) {
     contactPickerState?.let { picker ->
         ContactSelectionDialog(
             title = when (picker.type) {
