@@ -114,13 +114,8 @@ internal fun SummaryRows(
     }
 
     Column {
-        Note(
-            stringResource(
-                R.string.summary_requirements_body,
-                model.sizeBytes.toGigabytes(),
-                model.peakMemoryBytes.toGigabytes()
-            )
-        )
+        // In ⓘ mode both notes are behind the Summaries card's ⓘ (see summaryModelExplanation).
+        ExplanationParagraph(summaryRequirementsText(model))
 
         when (val current = state) {
             ModelDownloadState.Installed -> NavigationRow(
@@ -203,19 +198,22 @@ internal fun SummaryRows(
         // Named where it can be read before the download starts. CallVault never ships the weights,
         // so its own licensing is unaffected — but the person accepting Google's terms is entitled
         // to know that is what they are doing.
-        Note(stringResource(R.string.summary_model_licence))
+        ExplanationParagraph(stringResource(R.string.summary_model_licence))
     }
 }
 
+/** The summariser's download size and memory need, stated before the download. */
 @Composable
-private fun ColumnScope.Note(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-    )
-}
+internal fun summaryRequirementsText(model: SummaryModel = SummaryModel.DEFAULT): String = stringResource(
+    R.string.summary_requirements_body,
+    model.sizeBytes.toGigabytes(),
+    model.peakMemoryBytes.toGigabytes()
+)
+
+/** The costs, a blank line, then the licence: the Summaries card's ⓘ on the new Settings screen. */
+@Composable
+internal fun summaryModelExplanation(): String =
+    joinExplanations(summaryRequirementsText(), stringResource(R.string.summary_model_licence)).orEmpty()
 
 /** Bytes as gigabytes, for copy that talks in the units a person would. */
 private fun Long.toGigabytes(): Float = this / 1_000_000_000f

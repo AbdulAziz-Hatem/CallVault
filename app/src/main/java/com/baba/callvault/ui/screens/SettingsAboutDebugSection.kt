@@ -122,13 +122,16 @@ internal fun BugReportSection(
             // old gate asked for a log file first, so the maintainer had to switch logging on and off
             // again just to reach Share — for a report whose useful half needed neither.
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                Text(
-                    text = stringResource(R.string.settings_bugreport_share_hint),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                // In ⓘ mode this is behind the "Help and about" card's ⓘ (see groupExplanationText).
+                if (!LocalSettingsDescriptionsAsInfo.current) {
+                    Text(
+                        text = stringResource(R.string.settings_bugreport_share_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
 
                 // Side by side: Share hands the report to another app, Save writes it to a file on the phone.
                 Row(

@@ -760,7 +760,7 @@
     <string name="settings_summary_off">Выкл.</string>
     <string name="settings_summary_unavailable">Здесь недоступно</string>
     <string name="settings_summary_count_on">Включено: %1$d из %2$d</string>
-    <string name="settings_summary_recording_both">входящие и исходящие</string>
+    <string name="settings_summary_recording_both">оба направления</string>
     <string name="settings_summary_recording_incoming">только входящие</string>
     <string name="settings_summary_recording_outgoing">только исходящие</string>
     <string name="settings_summary_recording_manual">только вручную</string>
@@ -774,7 +774,7 @@
     <string name="settings_group_calls_to_record">Какие звонки записывать</string>
     <string name="settings_group_calls_to_skip">Какие звонки пропускать</string>
     <string name="settings_group_sound_and_names">Звук и имена файлов</string>
-    <string name="settings_group_where_recordings_go">Куда сохраняются записи</string>
+    <string name="settings_group_save_and_sync">Сохранение и синхронизация</string>
     <string name="settings_group_cleaning_up">Очистка</string>
     <string name="settings_group_connection">Подключение</string>
     <string name="settings_group_model_and_language">Модель и язык</string>

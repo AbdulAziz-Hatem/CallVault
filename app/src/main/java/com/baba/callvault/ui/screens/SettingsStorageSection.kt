@@ -148,9 +148,10 @@ internal fun MetadataFileRow(preferences: AppPreferences, updateTrigger: Int, ac
         label = stringResource(R.string.settings_metadata_file_label),
         description = stringResource(R.string.settings_metadata_file_desc),
         checked = remember(updateTrigger) { preferences.isWriteMetadataFileEnabled() },
-        onCheckedChange = { actions.setWriteMetadataFileEnabled(it) }
+        onCheckedChange = { actions.setWriteMetadataFileEnabled(it) },
+        infoExtra = stringResource(R.string.settings_metadata_file_hint),
     )
-    SettingsHint(stringResource(R.string.settings_metadata_file_hint))
+    SettingsExplanation(stringResource(R.string.settings_metadata_file_hint))
 }
 
 /** A text copy of the transcript and notes beside each recording, for PC backup. */
@@ -160,9 +161,10 @@ internal fun TranscriptSidecarRow(preferences: AppPreferences, updateTrigger: In
         label = stringResource(R.string.settings_transcript_sidecar_label),
         description = stringResource(R.string.settings_transcript_sidecar_desc),
         checked = remember(updateTrigger) { preferences.isWriteTranscriptSidecarEnabled() },
-        onCheckedChange = { actions.setWriteTranscriptSidecarEnabled(it) }
+        onCheckedChange = { actions.setWriteTranscriptSidecarEnabled(it) },
+        infoExtra = stringResource(R.string.settings_transcript_sidecar_hint),
     )
-    SettingsHint(stringResource(R.string.settings_transcript_sidecar_hint))
+    SettingsExplanation(stringResource(R.string.settings_transcript_sidecar_hint))
 }
 
 /** What other apps get to see of the recordings folder. */
@@ -172,9 +174,10 @@ internal fun HideRecordingsRow(preferences: AppPreferences, updateTrigger: Int, 
         label = stringResource(R.string.settings_hide_recordings_label),
         description = stringResource(R.string.settings_hide_recordings_desc),
         checked = remember(updateTrigger) { preferences.isHideRecordingsEnabled() },
-        onCheckedChange = { actions.setHideRecordingsEnabled(it) }
+        onCheckedChange = { actions.setHideRecordingsEnabled(it) },
+        infoExtra = stringResource(R.string.settings_hide_recordings_hint),
     )
-    SettingsHint(stringResource(R.string.settings_hide_recordings_hint))
+    SettingsExplanation(stringResource(R.string.settings_hide_recordings_hint))
 }
 
 @Composable
@@ -250,13 +253,16 @@ internal fun UploadScheduleSubSection(
         OptionItem(it.key, stringResource(SyncScheduleLabels.titleOf(it)))
     }
 
-    DropdownRow {
-        M3DropdownField(
-            label = stringResource(R.string.wizard_schedule_mode_label),
-            selected = modeOptions.find { it.key == mode.key } ?: modeOptions.first(),
-            options = modeOptions,
-            onOptionSelected = { actions.setSyncScheduleMode(SyncScheduleMode.fromKey(it.key)) }
-        )
+    val scheduleNote = stringResource(uploadScheduleNoteRes(mode))
+    WithInfo(stringResource(R.string.wizard_schedule_mode_label), scheduleNote) {
+        DropdownRow {
+            M3DropdownField(
+                label = stringResource(R.string.wizard_schedule_mode_label),
+                selected = modeOptions.find { it.key == mode.key } ?: modeOptions.first(),
+                options = modeOptions,
+                onOptionSelected = { actions.setSyncScheduleMode(SyncScheduleMode.fromKey(it.key)) }
+            )
+        }
     }
 
     if (mode == SyncScheduleMode.WEEKLY) {
@@ -296,16 +302,14 @@ internal fun UploadScheduleSubSection(
         }
     }
 
-    Text(
-        text = stringResource(
-            if (mode == SyncScheduleMode.IMMEDIATE) R.string.wizard_schedule_immediate_note
-            else R.string.wizard_schedule_subtitle
-        ),
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-    )
+    ExplanationParagraph(scheduleNote)
 }
+
+/** The sentence under the upload schedule: what "immediately" means, or what the schedule is for. */
+@StringRes
+internal fun uploadScheduleNoteRes(mode: SyncScheduleMode): Int =
+    if (mode == SyncScheduleMode.IMMEDIATE) R.string.wizard_schedule_immediate_note
+    else R.string.wizard_schedule_subtitle
 
 /**
  * A destructive settings change waiting on the user's confirmation, with the sentence that explains
@@ -361,16 +365,18 @@ internal fun MinDurationRow(preferences: AppPreferences, updateTrigger: Int, act
             }
         )
     }
-    DropdownRow {
-        M3DropdownField(
-            label = stringResource(R.string.min_duration_label),
-            selected = minDurationOptions.find { it.key == minDurationSeconds.toString() }
-                ?: minDurationOptions.first(),
-            options = minDurationOptions,
-            onOptionSelected = { actions.setMinDurationSeconds(it.key.toIntOrNull() ?: 0) }
-        )
+    WithInfo(stringResource(R.string.min_duration_label), stringResource(R.string.min_duration_caption)) {
+        DropdownRow {
+            M3DropdownField(
+                label = stringResource(R.string.min_duration_label),
+                selected = minDurationOptions.find { it.key == minDurationSeconds.toString() }
+                    ?: minDurationOptions.first(),
+                options = minDurationOptions,
+                onOptionSelected = { actions.setMinDurationSeconds(it.key.toIntOrNull() ?: 0) }
+            )
+        }
     }
-    SettingsHint(stringResource(R.string.min_duration_caption))
+    SettingsExplanation(stringResource(R.string.min_duration_caption))
 }
 
 /**
@@ -464,6 +470,7 @@ internal fun RetentionPolicyRows(preferences: AppPreferences, updateTrigger: Int
     // Device only. A Drive copy costs nothing on this phone and has its own quota, so deleting
     // one to free space here would be indefensible — and because only the device copy goes, a
     // recording that is also in Drive keeps its transcript and its place in the list.
+    WithInfo(stringResource(R.string.storage_cap_label), stringResource(R.string.storage_cap_caption)) {
     DropdownRow {
         M3DropdownField(
             label = stringResource(R.string.storage_cap_label),
@@ -481,7 +488,8 @@ internal fun RetentionPolicyRows(preferences: AppPreferences, updateTrigger: Int
             }
         )
     }
-    SettingsHint(stringResource(R.string.storage_cap_caption))
+    }
+    SettingsExplanation(stringResource(R.string.storage_cap_caption))
 
     // Sweep time — only relevant once retention is enabled. Two dropdowns (Hour/Minute) in the
     // device's LOCAL time zone, mirroring the sync-schedule picker. The cap counts: it runs in
@@ -516,12 +524,8 @@ internal fun RetentionPolicyRows(preferences: AppPreferences, updateTrigger: Int
         }
     }
 
-    Text(
-        text = stringResource(R.string.retention_description),
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-    )
+    // In ⓘ mode this is behind the "Cleaning up" card's ⓘ (see groupExplanationText).
+    ExplanationParagraph(stringResource(R.string.retention_description))
 
     pendingConfirm?.let { confirm ->
         AlertDialog(

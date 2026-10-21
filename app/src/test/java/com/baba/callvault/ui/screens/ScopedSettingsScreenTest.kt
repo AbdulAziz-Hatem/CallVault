@@ -163,4 +163,91 @@ class ScopedSettingsScreenTest {
             assertTrue("$it is not placed", it in placed)
         }
     }
+
+    // ── Round 3: no long text inline on the new screen ─────────────────────────────────────────────
+
+    /** Live status or a warning the user must see before acting: stays inline on both screens. */
+    private val inlineHints = setOf(
+        "voip_recording_arming", "voip_recording_unavailable",
+        "settings_usb_debugging_shizuku_hint", "settings_usb_debugging_failed",
+        "settings_usb_debugging_on_hint", "settings_usb_debugging_recommended",
+        "settings_usb_default_busy", "transcription_language_auto_hint",
+    )
+
+    /** Explanations: inline on the classic screen, behind an ⓘ on the new one. */
+    private val explanatoryHints = setOf(
+        "settings_metadata_file_hint", "settings_transcript_sidecar_hint", "settings_hide_recordings_hint",
+        "min_duration_caption", "storage_cap_caption", "retention_description",
+        "voip_recording_names_hint", "settings_voip_ignore_contacts_hint", "settings_voip_apps_hint",
+        "settings_offline_recording_reboot_note", "settings_usb_default_hint",
+        "settings_audio_bitrate_recommendation", "settings_bugreport_share_hint",
+        "summary_model_licence", "summary_requirements_body",
+        "wizard_schedule_immediate_note", "wizard_schedule_subtitle",
+        "transcription_note_manual", "transcription_note_after_each_call", "transcription_note_automatic",
+    )
+
+    private val settingsSources: Map<String, String>
+        get() = (screensDir.listFiles { f -> f.name.startsWith("Settings") && f.extension == "kt" }!!.toList() +
+            File(screensDir, "SummarySection.kt")).associate { it.name to it.readText() }
+
+    @Test
+    fun `the explanation helpers draw nothing in the new screen's info mode`() {
+        val components = source("SettingsComponents.kt")
+        listOf("SettingsExplanation", "HintExplanation", "ExplanationParagraph", "WithInfo").forEach {
+            assertTrue("$it must check the info mode", bodyOf(it, components).contains("LocalSettingsDescriptionsAsInfo.current"))
+        }
+        // The group cards are what turn the mode on.
+        assertTrue(source("SettingsGroupCard.kt").contains("LocalSettingsDescriptionsAsInfo provides true"))
+    }
+
+    @Test
+    fun `every plain inline hint is a live status or a warning`() {
+        val plain = Regex("""\b(SettingsHint|HintText)\(([^\n]*)""")
+        settingsSources.filterKeys { it != "SettingsComponents.kt" }.forEach { (file, text) ->
+            plain.findAll(text).forEach { m ->
+                val arg = m.groupValues[2]
+                val key = Regex("""R\.string\.(\w+)""").find(arg)?.groupValues?.get(1)
+                val ok = if (key != null) key in inlineHints else arg.startsWith("warning")
+                assertTrue("$file draws an explanation inline: ${m.value.trim()}", ok)
+            }
+        }
+    }
+
+    @Test
+    fun `no explanatory text is drawn ungated`() {
+        settingsSources.forEach { (file, text) ->
+            val lines = text.lines()
+            lines.forEachIndexed { i, line ->
+                explanatoryHints.filter { line.contains("R.string.$it)") || line.contains("R.string.$it,") }.forEach { key ->
+                    assertFalse("$file:${i + 1} draws $key as a plain hint", line.contains("SettingsHint(") || line.contains("HintText("))
+                    if (line.trim().startsWith("text = stringResource(R.string.$key")) {
+                        val before = lines.subList(maxOf(0, i - 3), i).joinToString("\n")
+                        assertTrue("$file:${i + 1} draws $key without checking the info mode",
+                            before.contains("LocalSettingsDescriptionsAsInfo.current"))
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `every hidden row explanation reaches that row's info button`() {
+        val explanation = Regex("""\b(SettingsExplanation|HintExplanation)\(stringResource\(R\.string\.(\w+)\)""")
+        settingsSources.forEach { (file, text) ->
+            explanation.findAll(text).forEach { m ->
+                val key = m.groupValues[2]
+                val routed = Regex("""(infoExtra = [^\n]*R\.string\.$key\b|WithInfo\([^\n]*R\.string\.$key\b)""")
+                    .containsMatchIn(text)
+                assertTrue("$file hides $key but no ⓘ carries it", routed)
+            }
+        }
+    }
+
+    @Test
+    fun `group-wide explanations sit behind the group card's info button`() {
+        val text = bodyOf("groupExplanationText", source("SettingsGroupSummaryText.kt"))
+        listOf("retention_description", "transcriptionModeNoteRes", "summaryModelExplanation", "settings_bugreport_share_hint")
+            .forEach { assertTrue("groupExplanationText lacks $it", text.contains(it)) }
+        assertTrue(source("ScopedSettingsContent.kt").contains("explanation = groupExplanationText("))
+    }
 }

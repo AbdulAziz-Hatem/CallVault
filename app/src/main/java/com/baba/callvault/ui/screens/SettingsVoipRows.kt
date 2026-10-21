@@ -121,6 +121,7 @@ internal fun VoipRecordingSwitch(enabled: Boolean, onEnabledChange: (Boolean) ->
             if (turnOn) showWarning = true  // confirm before enabling; never before turning OFF
             else applyPreference(false)
         },
+        infoExtra = if (enabled && !arming && !unavailable) stringResource(R.string.voip_recording_names_hint) else null,
     )
     if (arming) {
         SettingsHint(stringResource(R.string.voip_recording_arming))
@@ -130,7 +131,7 @@ internal fun VoipRecordingSwitch(enabled: Boolean, onEnabledChange: (Boolean) ->
         // A calling app's ongoing-call notification is the only place the system holds the contact's
         // name, so an app denied notification permission produces correct but nameless recordings.
         // Worth saying out loud: it looks like a bug in CallVault and is not one.
-        SettingsHint(stringResource(R.string.voip_recording_names_hint))
+        SettingsExplanation(stringResource(R.string.voip_recording_names_hint))
     }
 
     if (showWarning) {
@@ -183,7 +184,8 @@ internal fun VoipIgnoreContactsRow() {
         onCheckedChange = { on ->
             applyIgnored = on
             prefs.setVoipApplyIgnoredContactsEnabled(on)
-        }
+        },
+        infoExtra = stringResource(R.string.settings_voip_ignore_contacts_hint),
     )
-    SettingsHint(stringResource(R.string.settings_voip_ignore_contacts_hint))
+    SettingsExplanation(stringResource(R.string.settings_voip_ignore_contacts_hint))
 }

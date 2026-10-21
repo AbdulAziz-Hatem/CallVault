@@ -757,7 +757,7 @@
     <string name="settings_summary_off">Tắt</string>
     <string name="settings_summary_unavailable">Không khả dụng ở đây</string>
     <string name="settings_summary_count_on">Bật %1$d/%2$d</string>
-    <string name="settings_summary_recording_both">cuộc gọi đến và đi</string>
+    <string name="settings_summary_recording_both">cả hai chiều</string>
     <string name="settings_summary_recording_incoming">chỉ cuộc gọi đến</string>
     <string name="settings_summary_recording_outgoing">chỉ cuộc gọi đi</string>
     <string name="settings_summary_recording_manual">chỉ thủ công</string>
@@ -771,7 +771,7 @@
     <string name="settings_group_calls_to_record">Cuộc gọi cần ghi</string>
     <string name="settings_group_calls_to_skip">Cuộc gọi bỏ qua</string>
     <string name="settings_group_sound_and_names">Âm thanh và tên tệp</string>
-    <string name="settings_group_where_recordings_go">Nơi lưu bản ghi âm</string>
+    <string name="settings_group_save_and_sync">Lưu và đồng bộ</string>
     <string name="settings_group_cleaning_up">Dọn dẹp</string>
     <string name="settings_group_connection">Kết nối</string>
     <string name="settings_group_model_and_language">Mô hình và ngôn ngữ</string>

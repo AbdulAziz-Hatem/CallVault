@@ -46,6 +46,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
+/** The summary under a group's title wraps to at most this many lines. */
+private const val SUMMARY_MAX_LINES = 2
+
 /** Corner radius of a group card on the new Settings screen (design option C). */
 private val GROUP_CARD_RADIUS = 20.dp
 
@@ -62,6 +65,9 @@ internal fun SettingsGroupCard(
     summary: String,
     expanded: Boolean,
     onToggle: () -> Unit,
+    // Text about the whole group (retention, the transcription mode, the summariser's costs), behind an ⓘ
+    // on the header. Null for none.
+    explanation: String? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val chevronRotation by animateFloatAsState(
@@ -94,10 +100,14 @@ internal fun SettingsGroupCard(
                             text = summary,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 1,
+                            // Two lines: a 1440-px phone cut "Phone and app calls · incoming a…" at one.
+                            maxLines = SUMMARY_MAX_LINES,
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
+                }
+                if (explanation != null) {
+                    SettingsInfoButton(label = title, explanation = explanation)
                 }
                 Icon(
                     imageVector = Icons.Filled.ExpandMore,

@@ -166,6 +166,7 @@ fun ScopedSettingsContent(
                     icon = iconOf(group),
                     title = stringResource(titleOf(group)),
                     summary = groupSummaryText(group, preferences, updateTrigger, expanded, actions),
+                    explanation = groupExplanationText(group, preferences, updateTrigger),
                     expanded = expanded,
                     onToggle = { setOpenGroup(scope, if (expanded) null else group) },
                 ) {
@@ -206,7 +207,7 @@ private fun titleOf(group: SettingsGroup): Int = when (group) {
     SettingsGroup.CALLS_TO_RECORD -> R.string.settings_group_calls_to_record
     SettingsGroup.CALLS_TO_SKIP -> R.string.settings_group_calls_to_skip
     SettingsGroup.SOUND_AND_NAMES -> R.string.settings_group_sound_and_names
-    SettingsGroup.WHERE_RECORDINGS_GO -> R.string.settings_group_where_recordings_go
+    SettingsGroup.SAVE_AND_SYNC -> R.string.settings_group_save_and_sync
     SettingsGroup.CLEANING_UP -> R.string.settings_group_cleaning_up
     SettingsGroup.CONNECTION -> R.string.settings_group_connection
     SettingsGroup.MODEL_AND_LANGUAGE -> R.string.settings_group_model_and_language
@@ -220,7 +221,7 @@ private fun iconOf(group: SettingsGroup): ImageVector = when (group) {
     SettingsGroup.CALLS_TO_RECORD -> Icons.Filled.Call
     SettingsGroup.CALLS_TO_SKIP -> Icons.Filled.PhoneDisabled
     SettingsGroup.SOUND_AND_NAMES -> Icons.Filled.GraphicEq
-    SettingsGroup.WHERE_RECORDINGS_GO -> Icons.Filled.Folder
+    SettingsGroup.SAVE_AND_SYNC -> Icons.Filled.Folder
     SettingsGroup.CLEANING_UP -> Icons.Filled.CleaningServices
     SettingsGroup.CONNECTION -> Icons.Filled.Cable
     SettingsGroup.MODEL_AND_LANGUAGE -> Icons.Filled.Translate

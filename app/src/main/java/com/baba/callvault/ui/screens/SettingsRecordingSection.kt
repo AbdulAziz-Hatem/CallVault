@@ -212,6 +212,7 @@ internal fun AudioSection(preferences: AppPreferences, updateTrigger: Int, actio
         val selectedAudio = audioSourceOptions.find { it.key == audioSource }
             ?: audioSourceOptions.first()
 
+        WithInfo(stringResource(R.string.settings_audio_source), selectedAudio.description) {
         DropdownRow {
             M3DropdownField(
                 label    = stringResource(R.string.settings_audio_source),
@@ -221,12 +222,17 @@ internal fun AudioSection(preferences: AppPreferences, updateTrigger: Int, actio
             )
             // Show the description of the currently selected audio source below the dropdown.
             selectedAudio.description?.let { desc ->
-                HintText(desc)
+                HintExplanation(desc)
             }
+        }
         }
 
         val codecOptions = ScrcpyAudioCodec.entries
             .map { OptionItem(it.cliKey, stringResource(it.titleResId)) }
+
+        val showsAacAdvice = !LocalInspectionMode.current && audioCodec != ScrcpyAudioCodec.AAC.cliKey
+        val aacAdvice = stringResource(R.string.settings_audio_bitrate_recommendation)
+        WithInfo(stringResource(R.string.settings_audio_codec), aacAdvice.takeIf { showsAacAdvice }) {
 
         DropdownRow {
             M3DropdownField(
@@ -238,9 +244,10 @@ internal fun AudioSection(preferences: AppPreferences, updateTrigger: Int, actio
             )
             // Show the AAC recommendation if the user has issues.
             // LocalInspectionMode.current is true in Android Preview, it prevents a preview compilation error.
-            if (!LocalInspectionMode.current && audioCodec != ScrcpyAudioCodec.AAC.cliKey) {
-                HintText(stringResource(R.string.settings_audio_bitrate_recommendation))
+            if (showsAacAdvice) {
+                HintExplanation(aacAdvice)
             }
+        }
         }
 
         val recommendedLabel = stringResource(R.string.general_recommended)
@@ -381,6 +388,7 @@ internal fun VoipAppPicker(prefs: AppPreferences) {
         onCheckedChange = { expanded = it },
         // Which apps are recorded: a value, not an explanation.
         keepDescriptionInline = true,
+        infoExtra = stringResource(R.string.settings_voip_apps_hint),
     )
 
     AnimatedVisibility(
@@ -389,7 +397,7 @@ internal fun VoipAppPicker(prefs: AppPreferences) {
         exit = fadeOut() + shrinkVertically()
     ) {
         NestedGroup {
-            SettingsHint(stringResource(R.string.settings_voip_apps_hint))
+            SettingsExplanation(stringResource(R.string.settings_voip_apps_hint))
             loaded?.forEach { app ->
                 SettingsToggleRow(
                     label = app.label,

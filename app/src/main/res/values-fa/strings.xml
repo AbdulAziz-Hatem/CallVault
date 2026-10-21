@@ -851,7 +851,7 @@
     <string name="settings_summary_off">خاموش</string>
     <string name="settings_summary_unavailable">اینجا در دسترس نیست</string>
     <string name="settings_summary_count_on">%1$d از %2$d روشن</string>
-    <string name="settings_summary_recording_both">ورودی و خروجی</string>
+    <string name="settings_summary_recording_both">هر دو جهت</string>
     <string name="settings_summary_recording_incoming">فقط ورودی</string>
     <string name="settings_summary_recording_outgoing">فقط خروجی</string>
     <string name="settings_summary_recording_manual">فقط دستی</string>
@@ -865,7 +865,7 @@
     <string name="settings_group_calls_to_record">تماس‌هایی که ضبط شوند</string>
     <string name="settings_group_calls_to_skip">تماس‌هایی که رد شوند</string>
     <string name="settings_group_sound_and_names">صدا و نام فایل‌ها</string>
-    <string name="settings_group_where_recordings_go">محل ذخیرهٔ فایل‌های ضبط‌شده</string>
+    <string name="settings_group_save_and_sync">ذخیره و همگام‌سازی</string>
     <string name="settings_group_cleaning_up">پاک‌سازی</string>
     <string name="settings_group_connection">اتصال</string>
     <string name="settings_group_model_and_language">مدل و زبان</string>

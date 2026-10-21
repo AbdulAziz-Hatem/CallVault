@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.baba.callvault.R
 import com.baba.callvault.data.AppPreferences
-import com.baba.callvault.data.StorageTarget
 import com.baba.callvault.ui.viewmodels.SettingsActions
 
 /**
@@ -65,7 +64,7 @@ internal fun GroupBody(
         SettingsGroup.CALLS_TO_RECORD -> CallsToRecordBody(preferences, updateTrigger, actions)
         SettingsGroup.CALLS_TO_SKIP -> CallsToSkipBody(preferences, updateTrigger, actions, callbacks)
         SettingsGroup.SOUND_AND_NAMES -> SoundAndNamesBody(preferences, updateTrigger, actions)
-        SettingsGroup.WHERE_RECORDINGS_GO -> WhereRecordingsGoBody(preferences, updateTrigger, actions, callbacks)
+        SettingsGroup.SAVE_AND_SYNC -> SaveAndSyncBody(preferences, updateTrigger, actions, callbacks)
         SettingsGroup.CLEANING_UP -> CleaningUpBody(preferences, updateTrigger, actions)
         SettingsGroup.CONNECTION -> ConnectionBody()
         SettingsGroup.MODEL_AND_LANGUAGE -> ModelAndLanguageBody(preferences, updateTrigger, actions)
@@ -136,25 +135,30 @@ private fun SoundAndNamesBody(preferences: AppPreferences, updateTrigger: Int, a
 }
 
 @Composable
-private fun WhereRecordingsGoBody(
+private fun SaveAndSyncBody(
     preferences: AppPreferences,
     updateTrigger: Int,
     actions: SettingsActions,
     callbacks: GroupBodyCallbacks,
 ) {
     val storageTarget = remember(updateTrigger) { preferences.getStorageTarget() }
-    StorageTargetRow(preferences, updateTrigger, actions)
-    RecordingFolderRow(preferences, updateTrigger, callbacks.onSelectFolder)
-    DriveFolderRow(preferences, updateTrigger, callbacks.onSelectDriveFolder)
-    // Only meaningful when something is actually uploaded — with LOCAL there is no upload to schedule.
-    if (storageTarget != StorageTarget.LOCAL) {
-        SettingsSubHeader(stringResource(R.string.wizard_schedule_title))
-        UploadScheduleSubSection(preferences, updateTrigger, actions)
+    SaveAndSyncRows.visibleRows(storageTarget).forEach { row ->
+        when (row) {
+            SaveAndSyncRow.STORAGE_TARGET -> StorageTargetRow(preferences, updateTrigger, actions)
+            SaveAndSyncRow.RECORDING_FOLDER -> RecordingFolderRow(preferences, updateTrigger, callbacks.onSelectFolder)
+            SaveAndSyncRow.DRIVE_FOLDER -> DriveFolderRow(preferences, updateTrigger, callbacks.onSelectDriveFolder)
+            SaveAndSyncRow.UPLOAD_SCHEDULE -> {
+                SettingsSubHeader(stringResource(R.string.wizard_schedule_title))
+                UploadScheduleSubSection(preferences, updateTrigger, actions)
+            }
+            SaveAndSyncRow.HIDE_RECORDINGS -> {
+                SettingsDivider()
+                HideRecordingsRow(preferences, updateTrigger, actions)
+            }
+            SaveAndSyncRow.METADATA_FILE -> MetadataFileRow(preferences, updateTrigger, actions)
+            SaveAndSyncRow.TRANSCRIPT_SIDECAR -> TranscriptSidecarRow(preferences, updateTrigger, actions)
+        }
     }
-    SettingsDivider()
-    HideRecordingsRow(preferences, updateTrigger, actions)
-    MetadataFileRow(preferences, updateTrigger, actions)
-    TranscriptSidecarRow(preferences, updateTrigger, actions)
 }
 
 @Composable
