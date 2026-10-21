@@ -769,7 +769,7 @@
     <string name="settings_info_got_it">Entendido</string>
 
     <!-- New Settings screen, round 2: groups by what you want to do. -->
-    <string name="settings_group_calls_to_record">Llamadas que grabar</string>
+    <string name="settings_group_calls_to_record">Grabación</string>
     <string name="settings_group_calls_to_skip">Llamadas que omitir</string>
     <string name="settings_group_sound_and_names">Sonido y nombres de archivo</string>
     <string name="settings_group_save_and_sync">Guardar y sincronizar</string>
@@ -779,11 +779,14 @@
     <string name="settings_group_when_to_transcribe">Cuándo transcribir</string>
     <string name="settings_group_app">App</string>
     <string name="settings_group_help_and_about">Ayuda e información</string>
-    <string name="settings_subheader_which_calls">Qué llamadas</string>
-    <string name="settings_subheader_when_to_start">Cuándo empezar</string>
     <string name="settings_summary_calls_phone_and_app">Llamadas telefónicas y de apps</string>
     <string name="settings_summary_calls_phone_only">Solo llamadas telefónicas</string>
     <string name="settings_summary_calls_app_only">Solo llamadas de apps</string>
     <string name="settings_summary_nothing_skipped">No se omite nada</string>
     <string name="settings_summary_skip_rules_on">Reglas de omisión activas: %1$d</string>
+
+    <!-- New Settings screen, round 4: the Recording group's sub-headers. -->
+    <string name="settings_subheader_app_calls">Llamadas de apps</string>
+    <string name="settings_subheader_all_calls">Todas las llamadas</string>
+    <string name="settings_voip_auto_start_record_label">Grabar automáticamente las llamadas de apps</string>
 </resources>

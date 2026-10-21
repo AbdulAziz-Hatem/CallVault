@@ -768,7 +768,7 @@
     <string name="settings_info_got_it">Đã hiểu</string>
 
     <!-- New Settings screen, round 2: groups by what you want to do. -->
-    <string name="settings_group_calls_to_record">Cuộc gọi cần ghi</string>
+    <string name="settings_group_calls_to_record">Ghi âm</string>
     <string name="settings_group_calls_to_skip">Cuộc gọi bỏ qua</string>
     <string name="settings_group_sound_and_names">Âm thanh và tên tệp</string>
     <string name="settings_group_save_and_sync">Lưu và đồng bộ</string>
@@ -778,11 +778,14 @@
     <string name="settings_group_when_to_transcribe">Khi nào chép lời</string>
     <string name="settings_group_app">Ứng dụng</string>
     <string name="settings_group_help_and_about">Trợ giúp và giới thiệu</string>
-    <string name="settings_subheader_which_calls">Cuộc gọi nào</string>
-    <string name="settings_subheader_when_to_start">Khi nào bắt đầu</string>
     <string name="settings_summary_calls_phone_and_app">Cuộc gọi điện thoại và qua ứng dụng</string>
     <string name="settings_summary_calls_phone_only">Chỉ cuộc gọi điện thoại</string>
     <string name="settings_summary_calls_app_only">Chỉ cuộc gọi qua ứng dụng</string>
     <string name="settings_summary_nothing_skipped">Không bỏ qua gì</string>
     <string name="settings_summary_skip_rules_on">Quy tắc bỏ qua đang bật: %1$d</string>
+
+    <!-- New Settings screen, round 4: the Recording group's sub-headers. -->
+    <string name="settings_subheader_app_calls">Cuộc gọi qua ứng dụng</string>
+    <string name="settings_subheader_all_calls">Tất cả cuộc gọi</string>
+    <string name="settings_voip_auto_start_record_label">Tự động ghi âm cuộc gọi qua ứng dụng</string>
 </resources>

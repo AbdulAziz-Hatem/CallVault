@@ -973,7 +973,7 @@
     <string name="settings_info_got_it">Got it</string>
 
     <!-- New Settings screen, round 2: groups by what you want to do. -->
-    <string name="settings_group_calls_to_record">Calls to record</string>
+    <string name="settings_group_calls_to_record">Recording</string>
     <string name="settings_group_calls_to_skip">Calls to skip</string>
     <string name="settings_group_sound_and_names">Sound and file names</string>
     <string name="settings_group_save_and_sync">Save and sync</string>
@@ -983,11 +983,14 @@
     <string name="settings_group_when_to_transcribe">When to transcribe</string>
     <string name="settings_group_app">App</string>
     <string name="settings_group_help_and_about">Help and about</string>
-    <string name="settings_subheader_which_calls">Which calls</string>
-    <string name="settings_subheader_when_to_start">When to start</string>
     <string name="settings_summary_calls_phone_and_app">Phone and app calls</string>
     <string name="settings_summary_calls_phone_only">Phone calls only</string>
     <string name="settings_summary_calls_app_only">App calls only</string>
     <string name="settings_summary_nothing_skipped">Nothing skipped</string>
     <string name="settings_summary_skip_rules_on">Skip rules on: %1$d</string>
+
+    <!-- New Settings screen, round 4: the Recording group's sub-headers. -->
+    <string name="settings_subheader_app_calls">App calls</string>
+    <string name="settings_subheader_all_calls">All calls</string>
+    <string name="settings_voip_auto_start_record_label">Record app calls automatically</string>
 </resources>

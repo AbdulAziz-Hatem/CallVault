@@ -769,7 +769,7 @@
     <string name="settings_info_got_it">Compris</string>
 
     <!-- New Settings screen, round 2: groups by what you want to do. -->
-    <string name="settings_group_calls_to_record">Appels à enregistrer</string>
+    <string name="settings_group_calls_to_record">Enregistrement</string>
     <string name="settings_group_calls_to_skip">Appels à ignorer</string>
     <string name="settings_group_sound_and_names">Son et noms de fichiers</string>
     <string name="settings_group_save_and_sync">Sauvegarde et synchronisation</string>
@@ -779,11 +779,14 @@
     <string name="settings_group_when_to_transcribe">Quand transcrire</string>
     <string name="settings_group_app">Application</string>
     <string name="settings_group_help_and_about">Aide et à propos</string>
-    <string name="settings_subheader_which_calls">Quels appels</string>
-    <string name="settings_subheader_when_to_start">Quand démarrer</string>
     <string name="settings_summary_calls_phone_and_app">Appels téléphoniques et d\'applis</string>
     <string name="settings_summary_calls_phone_only">Appels téléphoniques uniquement</string>
     <string name="settings_summary_calls_app_only">Appels d\'applis uniquement</string>
     <string name="settings_summary_nothing_skipped">Rien n\'est ignoré</string>
     <string name="settings_summary_skip_rules_on">Règles actives : %1$d</string>
+
+    <!-- New Settings screen, round 4: the Recording group's sub-headers. -->
+    <string name="settings_subheader_app_calls">Appels d\'applis</string>
+    <string name="settings_subheader_all_calls">Tous les appels</string>
+    <string name="settings_voip_auto_start_record_label">Enregistrement automatique des appels d\'applis</string>
 </resources>

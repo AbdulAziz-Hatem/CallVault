@@ -154,14 +154,19 @@ internal fun VoipRecordingSwitch(enabled: Boolean, onEnabledChange: (Boolean) ->
     }
 }
 
-/** App calls: start recording by themselves, or ask first. */
+/**
+ * App calls: start recording by themselves, or ask first.
+ *
+ * @param label The row's name. The new Settings screen says "Record app calls automatically" so it cannot be
+ *   mistaken for the phone calls' switches; the classic screen and the wizard keep "Start automatically".
+ */
 @Composable
-internal fun VoipAutoStartRow() {
+internal fun VoipAutoStartRow(label: String = stringResource(R.string.settings_voip_auto_start_label)) {
     val context = LocalContext.current
     val prefs = remember { AppPreferences(context) }
     var autoStart by remember { mutableStateOf(prefs.isVoipAutoStartEnabled()) }
     SettingsToggleRow(
-        label = stringResource(R.string.settings_voip_auto_start_label),
+        label = label,
         description = stringResource(R.string.settings_voip_auto_start_description),
         checked = autoStart,
         onCheckedChange = { on ->

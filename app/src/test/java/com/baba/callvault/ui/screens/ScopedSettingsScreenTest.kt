@@ -250,4 +250,27 @@ class ScopedSettingsScreenTest {
             .forEach { assertTrue("groupExplanationText lacks $it", text.contains(it)) }
         assertTrue(source("ScopedSettingsContent.kt").contains("explanation = groupExplanationText("))
     }
+
+    // ── Round 4: Recording split into phone, app and all-call blocks ──────────────────────────────
+
+    @Test
+    fun `recording shows phone calls, then app calls, then all calls, each with its own rows`() {
+        val body = bodyOf("CallsToRecordBody", source("ScopedSettingsGroupBodies.kt"))
+        val headers = listOf("settings_subsection_phone_calls", "settings_subheader_app_calls", "settings_subheader_all_calls")
+        val at = headers.map { body.indexOf("R.string.$it") }
+        assertTrue("missing sub-header: $at", at.all { it >= 0 })
+        assertEquals(at, at.sorted())
+        fun blockOf(row: String): Int = at.count { it < body.indexOf("$row(") }
+        listOf("CarrierRecordingRow", "AutoRecordIncomingRow", "AutoRecordOutgoingRow").forEach { assertEquals(it, 1, blockOf(it)) }
+        listOf("VoipRecordingSwitch", "VoipAppPicker", "VoipAutoStartRow").forEach { assertEquals(it, 2, blockOf(it)) }
+        listOf("RecordFromAnswerRow", "VibrationRow").forEach { assertEquals(it, 3, blockOf(it)) }
+    }
+
+    @Test
+    fun `only the new screen calls the app-call automatic switch by its longer name`() {
+        assertTrue(source("ScopedSettingsGroupBodies.kt").contains("VoipAutoStartRow(label = stringResource(R.string.settings_voip_auto_start_record_label))"))
+        // The classic screen and the wizard use the default label.
+        assertTrue(bodyOf("VoipRecordingToggle", source("SettingsVoipRows.kt")).contains("VoipAutoStartRow()"))
+        assertTrue(source("SettingsVoipRows.kt").contains("label: String = stringResource(R.string.settings_voip_auto_start_label)"))
+    }
 }

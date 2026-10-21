@@ -58,6 +58,10 @@ the NEW screen; the classic screen keeps its old layout.
   "When to upload to Drive" only when the target is not device-only (`SaveAndSyncRows`); every explanatory hint
   moved behind a row ⓘ or a card ⓘ, only live status/warnings inline; summaries wrap to 2 lines. 2068 tests.
   Classic screen identical on the OP9 (log size + scroll offset only). Seen by Claude on the OP9.
+- 🧪 Round 4 (maintainer 2026-10-21): group renamed "Recording"; body split into Phone calls / App calls / All
+  calls; the VoIP auto-start switch reads "Record app calls automatically" on the new screen only.
+  `feat/settings-round4` (d2f2a2b1), merged. 2070 tests; classic identical on the OP9. Maintainer: "besides that
+  i think its all good" (design accepted; still 🧪 until used day to day).
 
 ## Rollback (maintainer requirement, 2026-10-21: "a big UI change … make sure we have a simple rollback")
 

@@ -779,7 +779,7 @@
     <string name="settings_info_got_it">Зрозуміло</string>
 
     <!-- New Settings screen, round 2: groups by what you want to do. -->
-    <string name="settings_group_calls_to_record">Які дзвінки записувати</string>
+    <string name="settings_group_calls_to_record">Запис</string>
     <string name="settings_group_calls_to_skip">Які дзвінки пропускати</string>
     <string name="settings_group_sound_and_names">Звук і назви файлів</string>
     <string name="settings_group_save_and_sync">Збереження й синхронізація</string>
@@ -789,11 +789,14 @@
     <string name="settings_group_when_to_transcribe">Коли транскрибувати</string>
     <string name="settings_group_app">Застосунок</string>
     <string name="settings_group_help_and_about">Довідка й про застосунок</string>
-    <string name="settings_subheader_which_calls">Які дзвінки</string>
-    <string name="settings_subheader_when_to_start">Коли починати</string>
     <string name="settings_summary_calls_phone_and_app">Звичайні дзвінки й дзвінки в застосунках</string>
     <string name="settings_summary_calls_phone_only">Лише звичайні дзвінки</string>
     <string name="settings_summary_calls_app_only">Лише дзвінки в застосунках</string>
     <string name="settings_summary_nothing_skipped">Нічого не пропускається</string>
     <string name="settings_summary_skip_rules_on">Активних правил: %1$d</string>
+
+    <!-- New Settings screen, round 4: the Recording group's sub-headers. -->
+    <string name="settings_subheader_app_calls">Дзвінки в застосунках</string>
+    <string name="settings_subheader_all_calls">Усі дзвінки</string>
+    <string name="settings_voip_auto_start_record_label">Автоматично записувати дзвінки в застосунках</string>
 </resources>

@@ -28,7 +28,7 @@ enum class SettingsScope { RECORDINGS, TRANSCRIPTS, SUMMARIES, ALL }
  * screen's section keys, so neither screen can disturb the other's state.
  */
 enum class SettingsGroup(val key: String) {
-    /** Which calls are recorded (phone, app, which apps) and when recording starts. */
+    /** "Recording": phone calls, app calls, then what applies to all calls (round 4). */
     CALLS_TO_RECORD("group_calls_to_record"),
 
     /** Contact lists, anonymous and other-country calls, the app-call skip switch, short calls. */

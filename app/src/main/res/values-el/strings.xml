@@ -923,7 +923,7 @@
     <string name="settings_info_got_it">Κατάλαβα</string>
 
     <!-- New Settings screen, round 2: groups by what you want to do. -->
-    <string name="settings_group_calls_to_record">Κλήσεις για εγγραφή</string>
+    <string name="settings_group_calls_to_record">Εγγραφή</string>
     <string name="settings_group_calls_to_skip">Κλήσεις για παράλειψη</string>
     <string name="settings_group_sound_and_names">Ήχος και ονόματα αρχείων</string>
     <string name="settings_group_save_and_sync">Αποθήκευση και συγχρονισμός</string>
@@ -933,11 +933,14 @@
     <string name="settings_group_when_to_transcribe">Πότε γίνεται απομαγνητοφώνηση</string>
     <string name="settings_group_app">Εφαρμογή</string>
     <string name="settings_group_help_and_about">Βοήθεια και πληροφορίες</string>
-    <string name="settings_subheader_which_calls">Ποιες κλήσεις</string>
-    <string name="settings_subheader_when_to_start">Πότε ξεκινά</string>
     <string name="settings_summary_calls_phone_and_app">Τηλεφωνικές κλήσεις και κλήσεις εφαρμογών</string>
     <string name="settings_summary_calls_phone_only">Μόνο τηλεφωνικές κλήσεις</string>
     <string name="settings_summary_calls_app_only">Μόνο κλήσεις εφαρμογών</string>
     <string name="settings_summary_nothing_skipped">Δεν παραλείπεται τίποτα</string>
     <string name="settings_summary_skip_rules_on">Ενεργοί κανόνες παράλειψης: %1$d</string>
+
+    <!-- New Settings screen, round 4: the Recording group's sub-headers. -->
+    <string name="settings_subheader_app_calls">Κλήσεις εφαρμογών</string>
+    <string name="settings_subheader_all_calls">Όλες οι κλήσεις</string>
+    <string name="settings_voip_auto_start_record_label">Αυτόματη εγγραφή κλήσεων εφαρμογών</string>
 </resources>
