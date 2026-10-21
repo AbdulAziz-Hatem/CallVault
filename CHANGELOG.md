@@ -7,9 +7,21 @@ All notable changes to CallVault are documented here. The format is based on
 
 ### Added
 
+- **A new Settings layout, opt-in.** A card at the top of Settings, "Try the new Settings layout", switches
+  to it, and the same card switches back. Each page's settings icon then opens only that page's settings,
+  in groups named for what you want to do: Recording (phone calls, app calls and settings for both), Calls to
+  skip, Sound and file names, Save and sync, Cleaning up and Connection on Recordings; Model and language and
+  When to transcribe on Transcripts; Summaries on Summaries; and everything, plus App and Help and about, from
+  the main screen. Each group shows a one-line summary of its state, and explanations sit behind an ⓘ
+  instead of filling the screen. The Experimental section is gone from it: its switches moved to where they
+  belong. The classic layout is unchanged and stays the default; no setting moved or was reset.
+  <!-- ✅ VERIFIED 2026-10-21 (maintainer, on the OP9: "it looks good", after rounds 2-4). Still default OFF;
+       flip after the maintainer uses it day to day. Classic screen pixel-checked unchanged on the OP9 at every
+       round except the new switch card. docs/dev-notes/2026-10-20-settings-per-page-plan.md -->
 - **Approve new Wi-Fi networks automatically** (opt-in, built-in mode). When the phone joins a Wi-Fi network,
   CallVault answers Android's "Allow wireless debugging on this network?" itself, through its recorder, so
-  recording does not wait for a tap. Off by default; Settings ▸ General ▸ Experimental. Requested by a user.
+  recording does not wait for a tap. Off by default; Settings ▸ General ▸ Experimental (new layout:
+  Recordings ▸ Connection). Requested by a user.
   <!-- ✅ VERIFIED 2026-10-21 (maintainer): OP9 moved to an untrusted hotspot, no prompt, recorder approved it.
        Still 🧪: a recorder restart on the new network; Android 17. docs/dev-notes/2026-10-21-auto-approve-new-wifi-network.md -->
 - **Changing Wi-Fi networks no longer reads as you switching Wireless debugging off.** Moving straight from
@@ -68,6 +80,14 @@ All notable changes to CallVault are documented here. The format is based on
 
 ### Fixed
 
+- **The Telegram pill no longer pushes the settings icon off screen.** Once the Telegram card was tucked away,
+  its pill showed on every page and, beside a long page title, left no room for the settings icon. It now
+  shows on the main screen only, and a title that does not fit is shortened instead.
+  <!-- 🧪 seen on the OP9 by Claude 2026-10-21 (Recordings page: icon visible; main screen: both pills + icon). -->
+- **Messages no longer send you to "Settings ▸ Experimental".** Notifications and errors about USB and
+  Wireless debugging now say "in CallVault's settings", and app-call recording, resilient recording and the
+  background helper are no longer described as experimental.
+  <!-- 🧪 strings only, 15 locales; not seen in a live notification. -->
 - **A recording whose phone copy could not be deleted stays in the list.** With Drive-only storage, if
   the phone refused to delete its copy after the upload, CallVault forgot the copy that was still there.
   Thanks to Vas Vakhulenko (@kabasik007).

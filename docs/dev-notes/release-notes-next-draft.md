@@ -1,6 +1,6 @@
 # Release notes draft: next version (after 2.4.6)
 
-🧪 VERIFYING — draft, 2026-10-20. Scope: `v2.4.6..integration/next` (e9644840). Full detail and status per line
+🧪 VERIFYING — draft, 2026-10-20. Scope: `v2.4.6..integration/next` (now through fcb9552e, 2026-10-21). Full detail and status per line
 in `CHANGELOG.md` → Unreleased. Re-check every line against the shipped strings before the release.
 
 - **App calls in Shizuku mode** — app calls such as WhatsApp now record in Shizuku mode too (Android 14+).
@@ -10,8 +10,11 @@ in `CHANGELOG.md` → Unreleased. Re-check every line against the shipped string
 - **Hide Recordings** — keeps your recordings out of music players and galleries.
 - **Also skip ignored contacts** — your ignored-contacts list can apply to app calls too.
 - **Honor / Huawei phone app** — a new file-name format so Honor's phone app can play recordings from the call history.
+- **New Settings layout (try it)** — a card at the top of Settings switches to a layout where each page shows only its own settings, grouped by what you want to do, with explanations behind ⓘ. One tap switches back.
 - **Approve new Wi-Fi networks automatically** — opt-in: CallVault answers Android's "Allow wireless debugging on this network?" for you, so recording doesn't wait for a tap.
 - **Fixed** — Settings updates straight away when you switch modes.
+- **Fixed** — the Telegram pill no longer pushes the settings icon off screen.
+- **Fixed** — messages no longer point to "Settings ▸ Experimental".
 - **Fixed** — moving between Wi-Fi networks no longer counts as you switching Wireless debugging off.
 - **Fixed** — contact- and number-first file names show their arrow, merge, and are found by search again.
 - **Fixed** — Shizuku mode: the recorder comes back after Android kills it.
