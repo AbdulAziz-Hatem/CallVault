@@ -378,7 +378,9 @@ internal fun VoipAppPicker(prefs: AppPreferences) {
         },
         checked = expanded,
         enabled = loaded != null,
-        onCheckedChange = { expanded = it }
+        onCheckedChange = { expanded = it },
+        // Which apps are recorded: a value, not an explanation.
+        keepDescriptionInline = true,
     )
 
     AnimatedVisibility(

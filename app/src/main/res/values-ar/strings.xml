@@ -805,4 +805,8 @@
     <string name="settings_summary_recording_outgoing">الصادرة فقط</string>
     <string name="settings_summary_recording_manual">يدويًا فقط</string>
     <string name="settings_summary_not_downloaded">لم يُنزَّل</string>
+
+    <!-- New Settings screen: the ⓘ button that explains a row. -->
+    <string name="settings_info_about">حول %1$s</string>
+    <string name="settings_info_got_it">فهمت</string>
 </resources>

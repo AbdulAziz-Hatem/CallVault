@@ -969,4 +969,8 @@
     <string name="settings_summary_recording_outgoing">outgoing only</string>
     <string name="settings_summary_recording_manual">manual only</string>
     <string name="settings_summary_not_downloaded">Not downloaded</string>
+
+    <!-- New Settings screen: the ⓘ button that explains a row. -->
+    <string name="settings_info_about">About %1$s</string>
+    <string name="settings_info_got_it">Got it</string>
 </resources>

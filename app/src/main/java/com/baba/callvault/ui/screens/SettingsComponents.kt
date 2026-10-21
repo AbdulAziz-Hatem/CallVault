@@ -37,6 +37,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.ui.res.stringResource
+import com.baba.callvault.R
 
 /** One-line status under a settings row (arming progress, or why something is unavailable). */
 @Composable
@@ -74,6 +77,40 @@ internal fun SettingsSubHeader(text: String, nested: Boolean = false, modifier: 
  * False by default, which is the classic screen: it never provides this, so it renders exactly as before.
  */
 internal val LocalSettingsSectionInGroupCard = staticCompositionLocalOf { false }
+
+/**
+ * True inside the new Settings screen's group cards: rows then show their name and value only, and an ⓘ
+ * button opens the explanation. False by default, which is the classic screen and the wizard, so they render
+ * exactly as before. A disabled row keeps its description inline, since it is then the reason it is disabled.
+ */
+internal val LocalSettingsDescriptionsAsInfo = staticCompositionLocalOf { false }
+
+/** Size of the ⓘ touch target: big enough to hit beside a switch. */
+private val INFO_BUTTON_SIZE = 44.dp
+
+/** The ⓘ button that replaces a row's description in the new Settings screen; tapping it explains the row. */
+@Composable
+internal fun SettingsInfoButton(label: String, explanation: String) {
+    var showing by remember { mutableStateOf(false) }
+    IconButton(onClick = { showing = true }, modifier = Modifier.size(INFO_BUTTON_SIZE)) {
+        Icon(
+            imageVector = Icons.Outlined.Info,
+            contentDescription = stringResource(R.string.settings_info_about, label),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(20.dp),
+        )
+    }
+    if (showing) {
+        AlertDialog(
+            onDismissRequest = { showing = false },
+            title = { Text(label) },
+            text = { Text(explanation) },
+            confirmButton = {
+                TextButton(onClick = { showing = false }) { Text(stringResource(R.string.settings_info_got_it)) }
+            },
+        )
+    }
+}
 
 @Composable
 internal fun SettingsSection(
@@ -256,8 +293,12 @@ internal fun NavigationRow(
     value: String,
     onClick: (() -> Unit)? = null,
     supporting: String? = null,
-    showChevron: Boolean = true
+    showChevron: Boolean = true,
+    // True when [supporting] is a value or a warning rather than an explanation, so the new screen's
+    // ⓘ mode ([LocalSettingsDescriptionsAsInfo]) must still show it on the row.
+    keepSupportingInline: Boolean = false,
 ) {
+    val supportingAsInfo = LocalSettingsDescriptionsAsInfo.current && supporting != null && !keepSupportingInline
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -281,13 +322,16 @@ internal fun NavigationRow(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            if (supporting != null) {
+            if (supporting != null && !supportingAsInfo) {
                 Text(
                     text = supporting,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+        }
+        if (supportingAsInfo && supporting != null) {
+            SettingsInfoButton(label = label, explanation = supporting)
         }
         if (showChevron) {
             Spacer(Modifier.width(8.dp))
@@ -315,12 +359,19 @@ internal fun SettingsToggleRow(
     description: String? = null,
     enabled: Boolean = true,
     descriptionBelow: Boolean = false,
+    // True when [description] is a value or a status rather than an explanation, so the new screen's
+    // ⓘ mode ([LocalSettingsDescriptionsAsInfo]) must still show it on the row.
+    keepDescriptionInline: Boolean = false,
 ) {
     val contentAlpha = if (enabled) 1f else 0.38f
+    // A disabled row's description is the reason it is disabled (e.g. not available in this mode): a
+    // warning, so it stays on the row even in ⓘ mode.
+    val descriptionAsInfo = LocalSettingsDescriptionsAsInfo.current && description != null &&
+        enabled && !keepDescriptionInline
 
     @Composable
     fun descriptionText(modifier: Modifier = Modifier) {
-        if (description == null) return
+        if (description == null || descriptionAsInfo) return
         Text(
             text = description,
             style = MaterialTheme.typography.bodySmall,
@@ -352,9 +403,12 @@ internal fun SettingsToggleRow(
                 }
             }
             Spacer(Modifier.width(12.dp))
+            if (descriptionAsInfo && description != null) {
+                SettingsInfoButton(label = label, explanation = description)
+            }
             Switch(checked = checked, onCheckedChange = onCheckedChange, enabled = enabled)
         }
-        if (descriptionBelow && description != null) {
+        if (descriptionBelow && description != null && !descriptionAsInfo) {
             // Full width, under the switch rather than in the narrow column beside it.
             //
             // Sharing the column with the label means wrapping against roughly two thirds of the

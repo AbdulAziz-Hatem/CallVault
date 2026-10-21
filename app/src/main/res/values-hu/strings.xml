@@ -765,4 +765,8 @@
     <string name="settings_summary_recording_outgoing">csak kimenő</string>
     <string name="settings_summary_recording_manual">csak kézi</string>
     <string name="settings_summary_not_downloaded">Nincs letöltve</string>
+
+    <!-- New Settings screen: the ⓘ button that explains a row. -->
+    <string name="settings_info_about">Erről: %1$s</string>
+    <string name="settings_info_got_it">Értem</string>
 </resources>

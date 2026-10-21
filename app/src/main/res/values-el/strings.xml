@@ -919,4 +919,8 @@
     <string name="settings_summary_recording_outgoing">μόνο εξερχόμενες</string>
     <string name="settings_summary_recording_manual">μόνο χειροκίνητα</string>
     <string name="settings_summary_not_downloaded">Δεν έχει ληφθεί</string>
+
+    <!-- New Settings screen: the ⓘ button that explains a row. -->
+    <string name="settings_info_about">Σχετικά με %1$s</string>
+    <string name="settings_info_got_it">Κατάλαβα</string>
 </resources>

@@ -765,4 +765,8 @@
     <string name="settings_summary_recording_outgoing">nur ausgehend</string>
     <string name="settings_summary_recording_manual">nur manuell</string>
     <string name="settings_summary_not_downloaded">Nicht heruntergeladen</string>
+
+    <!-- New Settings screen: the ⓘ button that explains a row. -->
+    <string name="settings_info_about">Über %1$s</string>
+    <string name="settings_info_got_it">Verstanden</string>
 </resources>

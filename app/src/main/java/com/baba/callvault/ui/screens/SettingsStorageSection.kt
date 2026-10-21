@@ -189,7 +189,9 @@ internal fun RecordingFolderRow(preferences: AppPreferences, updateTrigger: Int,
         // Surface a cloud folder (e.g. Google Drive) that was set before we started rejecting them —
         // otherwise it's indistinguishable from a local folder by name alone.
         supporting = if (recordingFolderIsCloud) stringResource(R.string.folder_cloud_warning) else null,
-        onClick = onSelectFolder
+        onClick = onSelectFolder,
+        // A warning, which stays on the row.
+        keepSupportingInline = true,
     )
 }
 

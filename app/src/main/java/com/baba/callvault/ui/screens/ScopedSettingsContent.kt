@@ -243,6 +243,7 @@ private fun GroupBody(
                 value = sharedLanguageLabel(preferences, updateTrigger),
                 supporting = stringResource(R.string.settings_language_change_in_transcripts),
                 onClick = onChangeLanguage,
+                keepSupportingInline = true,
             )
             SettingsDivider()
             SummarySettingsRows(preferences, updateTrigger, actions)

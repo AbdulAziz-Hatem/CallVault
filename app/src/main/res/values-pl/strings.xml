@@ -767,4 +767,8 @@
     <string name="settings_summary_recording_outgoing">tylko wychodzące</string>
     <string name="settings_summary_recording_manual">tylko ręcznie</string>
     <string name="settings_summary_not_downloaded">Nie pobrano</string>
+
+    <!-- New Settings screen: the ⓘ button that explains a row. -->
+    <string name="settings_info_about">Informacje: %1$s</string>
+    <string name="settings_info_got_it">Rozumiem</string>
 </resources>

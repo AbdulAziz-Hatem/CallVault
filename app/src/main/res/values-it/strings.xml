@@ -765,4 +765,8 @@
     <string name="settings_summary_recording_outgoing">solo in uscita</string>
     <string name="settings_summary_recording_manual">solo manuale</string>
     <string name="settings_summary_not_downloaded">Non scaricato</string>
+
+    <!-- New Settings screen: the ⓘ button that explains a row. -->
+    <string name="settings_info_about">Informazioni su %1$s</string>
+    <string name="settings_info_got_it">Ho capito</string>
 </resources>

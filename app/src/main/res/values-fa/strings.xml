@@ -858,4 +858,8 @@
     <string name="settings_summary_recording_outgoing">فقط خروجی</string>
     <string name="settings_summary_recording_manual">فقط دستی</string>
     <string name="settings_summary_not_downloaded">دانلود نشده</string>
+
+    <!-- New Settings screen: the ⓘ button that explains a row. -->
+    <string name="settings_info_about">درباره %1$s</string>
+    <string name="settings_info_got_it">متوجه شدم</string>
 </resources>

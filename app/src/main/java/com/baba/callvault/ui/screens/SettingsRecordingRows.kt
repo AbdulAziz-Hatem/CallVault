@@ -173,7 +173,9 @@ internal fun FileNameTemplateRow(preferences: AppPreferences, updateTrigger: Int
             R.string.settings_file_name_template_example,
             fileNameTemplateExample(fileNameFormat)
         ),
-        onClick = { showFileNameFormatDialog = true }
+        onClick = { showFileNameFormatDialog = true },
+        // An example of the chosen name: a value, not an explanation.
+        keepSupportingInline = true,
     )
     if (showFileNameFormatDialog) {
         FileNameFormatDialog(
