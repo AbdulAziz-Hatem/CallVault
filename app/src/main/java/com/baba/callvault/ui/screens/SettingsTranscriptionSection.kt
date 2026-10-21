@@ -54,148 +54,193 @@ internal fun TranscriptionSection(
     /** The summariser's rows, rendered last — see the call site for why they live in here. */
     summaryRows: @Composable () -> Unit = {}
 ) {
-    val mode = remember(updateTrigger) { preferences.getTranscriptionMode() }
-    val hour = remember(updateTrigger) { preferences.getTranscriptionHour() }
-    val minute = remember(updateTrigger) { preferences.getTranscriptionMinute() }
-    val requiresCharging = remember(updateTrigger) { preferences.getTranscriptionRequiresCharging() }
-    val batchLimit = remember(updateTrigger) { preferences.getTranscriptionBatchLimit() }
-    val confirmBeforeRun = remember(updateTrigger) { preferences.getTranscriptionConfirmBeforeRun() }
-    val modelId = remember(updateTrigger) { preferences.getTranscriptionModelId() }
-    val language = remember(updateTrigger) { preferences.getTranscriptionLanguage() }
-    val askLanguage = remember(updateTrigger) { preferences.getTranscriptionAskLanguage() }
-
-    val selectedModel = TranscriptionModel.fromId(modelId) ?: TranscriptionModel.DEFAULT
-
+    // The rows are below, one composable each, shared with the new Settings screen's
+    // "Model and language" and "When to transcribe" groups.
     SettingsSection(
         title = stringResource(R.string.settings_section_transcription_and_summaries),
         expanded = expanded,
         onToggle = onToggle
     ) {
-        var showTimePicker by remember { mutableStateOf(false) }
+        TranscriptionScheduleRows(preferences, updateTrigger, actions)
 
-        TranscriptionModeField(mode = mode, onModeChange = { actions.setTranscriptionMode(it) })
+        TranscriptionModelChoiceRow(preferences, updateTrigger, actions)
 
-        // Only the scheduled sweep has a run time and a backlog size to choose. Per-call has neither:
-        // it runs when a call ends, and only ever on that one call.
-        if (mode == TranscriptionMode.AUTOMATIC) {
-            NavigationRow(
-                icon = Icons.Filled.Schedule,
-                label = stringResource(R.string.transcription_time_label),
-                value = formatRunTime(hour, minute),
-                onClick = { showTimePicker = true }
-            )
+        TranscriptionLanguageRows(preferences, updateTrigger, actions)
 
-            if (showTimePicker) {
-                TranscriptionTimeDialog(
-                    hour = hour,
-                    minute = minute,
-                    onDismiss = { showTimePicker = false },
-                    onConfirm = { h, m ->
-                        actions.setTranscriptionHour(h)
-                        actions.setTranscriptionMinute(m)
-                        showTimePicker = false
-                    }
-                )
-            }
+        TranscriptionConfirmRow(preferences, updateTrigger, actions)
 
-            val batchOptions = TranscriptionLabels.BATCH_LIMIT_OPTIONS.map { limit ->
-                OptionItem(
-                    limit.toString(),
-                    if (limit == TranscriptionQueue.NO_LIMIT) {
-                        stringResource(R.string.transcription_batch_no_limit)
-                    } else {
-                        limit.toString()
-                    }
-                )
-            }
-            DropdownRow {
-                M3DropdownField(
-                    label = stringResource(R.string.transcription_batch_label),
-                    selected = batchOptions.find { it.key == batchLimit.toString() } ?: batchOptions.first(),
-                    options = batchOptions,
-                    onOptionSelected = { actions.setTranscriptionBatchLimit(it.key.toIntOrNull() ?: 25) }
-                )
-            }
-        }
+        TranscriptionModelDownloadRows(preferences, updateTrigger, actions)
 
-        // Shown for both automatic modes. It matters most for per-call, where a call can end anywhere:
-        // the run then waits for a charger rather than being skipped.
-        if (mode != TranscriptionMode.MANUAL) {
-            SettingsToggleRow(
-                icon = Icons.Filled.BatteryChargingFull,
-                label = stringResource(R.string.transcription_charging_title),
-                description = stringResource(R.string.transcription_charging_subtitle),
-                checked = requiresCharging,
-                onCheckedChange = { actions.setTranscriptionRequiresCharging(it) }
-            )
-        }
-
-        TranscriptionModelField(
-            modelId = modelId,
-            onModelChange = { actions.setTranscriptionModelId(it) }
-        )
-
-        TranscriptionLanguageField(
-            language = language,
-            onLanguageChange = { chosen ->
-                // Clears the summary's own override as well as setting the transcription language.
-                // The override used to be a second, separate setting; anyone who set it before this
-                // merge would otherwise keep summarising in that old language for ever, with nothing
-                // on screen to say so.
-                preferences.setSummaryLanguage(null)
-                actions.setTranscriptionLanguage(chosen)
-            }
-        )
-
-        // Directly under the language it overrides, because it only makes sense as an answer to
-        // "but this call was in another language".
-        SettingsToggleRow(
-            icon = Icons.Filled.Translate,
-            label = stringResource(R.string.transcription_ask_language_title),
-            description = stringResource(R.string.transcription_ask_language_subtitle),
-            checked = askLanguage,
-            onCheckedChange = { actions.setTranscriptionAskLanguage(it) }
-        )
-
-        // Its home is here so the "don't ask again" checkbox in the dialog can be undone — a dialog
-        // that can permanently remove itself with no way back would be a trap.
-        SettingsToggleRow(
-            icon = Icons.Filled.Schedule,
-            label = stringResource(R.string.transcription_confirm_title),
-            description = stringResource(R.string.transcription_confirm_subtitle),
-            checked = confirmBeforeRun,
-            onCheckedChange = { actions.setTranscriptionConfirmBeforeRun(it) }
-        )
-
-        // Shared with the wizard, which now offers the same download. These rows also replaced a
-        // pair that read `installedModels` once per updateTrigger: a download that ran while this
-        // section was open showed nothing at all, and only reached "Downloaded and ready" if some
-        // unrelated setting happened to bump the trigger.
-        TranscriptionModelRows(
-            model = selectedModel,
-            updateTrigger = updateTrigger,
-            onDownload = { actions.downloadTranscriptionModel(it) },
-            onCancel = { actions.cancelTranscriptionModelDownload(it) },
-            onDelete = { actions.deleteTranscriptionModel(it) }
-        )
-
-        Text(
-            text = stringResource(
-                when (mode) {
-                    TranscriptionMode.MANUAL -> R.string.transcription_note_manual
-                    TranscriptionMode.AFTER_EACH_CALL -> R.string.transcription_note_after_each_call
-                    TranscriptionMode.AUTOMATIC -> R.string.transcription_note_automatic
-                }
-            ),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-        )
+        TranscriptionModeNote(preferences, updateTrigger)
 
         // Last, after everything transcription needs: a summary is read from a transcript, so the
         // order on screen is the order of the dependency.
         summaryRows()
     }
+}
+
+/**
+ * When transcription runs: the mode, then the run time and batch size (automatic only), then "only while
+ * charging" (any automatic mode).
+ */
+@Composable
+internal fun TranscriptionScheduleRows(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
+    val mode = remember(updateTrigger) { preferences.getTranscriptionMode() }
+    val hour = remember(updateTrigger) { preferences.getTranscriptionHour() }
+    val minute = remember(updateTrigger) { preferences.getTranscriptionMinute() }
+    val requiresCharging = remember(updateTrigger) { preferences.getTranscriptionRequiresCharging() }
+    val batchLimit = remember(updateTrigger) { preferences.getTranscriptionBatchLimit() }
+    var showTimePicker by remember { mutableStateOf(false) }
+
+    TranscriptionModeField(mode = mode, onModeChange = { actions.setTranscriptionMode(it) })
+
+    // Only the scheduled sweep has a run time and a backlog size to choose. Per-call has neither:
+    // it runs when a call ends, and only ever on that one call.
+    if (mode == TranscriptionMode.AUTOMATIC) {
+        NavigationRow(
+            icon = Icons.Filled.Schedule,
+            label = stringResource(R.string.transcription_time_label),
+            value = formatRunTime(hour, minute),
+            onClick = { showTimePicker = true }
+        )
+
+        if (showTimePicker) {
+            TranscriptionTimeDialog(
+                hour = hour,
+                minute = minute,
+                onDismiss = { showTimePicker = false },
+                onConfirm = { h, m ->
+                    actions.setTranscriptionHour(h)
+                    actions.setTranscriptionMinute(m)
+                    showTimePicker = false
+                }
+            )
+        }
+
+        val batchOptions = TranscriptionLabels.BATCH_LIMIT_OPTIONS.map { limit ->
+            OptionItem(
+                limit.toString(),
+                if (limit == TranscriptionQueue.NO_LIMIT) {
+                    stringResource(R.string.transcription_batch_no_limit)
+                } else {
+                    limit.toString()
+                }
+            )
+        }
+        DropdownRow {
+            M3DropdownField(
+                label = stringResource(R.string.transcription_batch_label),
+                selected = batchOptions.find { it.key == batchLimit.toString() } ?: batchOptions.first(),
+                options = batchOptions,
+                onOptionSelected = { actions.setTranscriptionBatchLimit(it.key.toIntOrNull() ?: 25) }
+            )
+        }
+    }
+
+    // Shown for both automatic modes. It matters most for per-call, where a call can end anywhere:
+    // the run then waits for a charger rather than being skipped.
+    if (mode != TranscriptionMode.MANUAL) {
+        SettingsToggleRow(
+            icon = Icons.Filled.BatteryChargingFull,
+            label = stringResource(R.string.transcription_charging_title),
+            description = stringResource(R.string.transcription_charging_subtitle),
+            checked = requiresCharging,
+            onCheckedChange = { actions.setTranscriptionRequiresCharging(it) }
+        )
+    }
+}
+
+/** The speech-model dropdown, reading and writing the stored model id. */
+@Composable
+internal fun TranscriptionModelChoiceRow(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
+    val modelId = remember(updateTrigger) { preferences.getTranscriptionModelId() }
+    TranscriptionModelField(
+        modelId = modelId,
+        onModelChange = { actions.setTranscriptionModelId(it) }
+    )
+}
+
+/**
+ * The one language transcripts and summaries share, and "ask me each time" directly under the language it
+ * overrides, because it only makes sense as an answer to "but this call was in another language".
+ */
+@Composable
+internal fun TranscriptionLanguageRows(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
+    val language = remember(updateTrigger) { preferences.getTranscriptionLanguage() }
+    val askLanguage = remember(updateTrigger) { preferences.getTranscriptionAskLanguage() }
+
+    TranscriptionLanguageField(
+        language = language,
+        onLanguageChange = { chosen ->
+            // Clears the summary's own override as well as setting the transcription language.
+            // The override used to be a second, separate setting; anyone who set it before this
+            // merge would otherwise keep summarising in that old language for ever, with nothing
+            // on screen to say so.
+            preferences.setSummaryLanguage(null)
+            actions.setTranscriptionLanguage(chosen)
+        }
+    )
+
+    SettingsToggleRow(
+        icon = Icons.Filled.Translate,
+        label = stringResource(R.string.transcription_ask_language_title),
+        description = stringResource(R.string.transcription_ask_language_subtitle),
+        checked = askLanguage,
+        onCheckedChange = { actions.setTranscriptionAskLanguage(it) }
+    )
+}
+
+/**
+ * Ask before transcribing. Its home is here so the "don't ask again" checkbox in the dialog can be undone
+ * — a dialog that can permanently remove itself with no way back would be a trap.
+ */
+@Composable
+internal fun TranscriptionConfirmRow(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
+    val confirmBeforeRun = remember(updateTrigger) { preferences.getTranscriptionConfirmBeforeRun() }
+    SettingsToggleRow(
+        icon = Icons.Filled.Schedule,
+        label = stringResource(R.string.transcription_confirm_title),
+        description = stringResource(R.string.transcription_confirm_subtitle),
+        checked = confirmBeforeRun,
+        onCheckedChange = { actions.setTranscriptionConfirmBeforeRun(it) }
+    )
+}
+
+/**
+ * Download, cancel or delete the chosen speech model. Shared with the wizard, which offers the same
+ * download. These rows also replaced a pair that read `installedModels` once per updateTrigger: a download
+ * that ran while this section was open showed nothing at all, and only reached "Downloaded and ready" if
+ * some unrelated setting happened to bump the trigger.
+ */
+@Composable
+internal fun TranscriptionModelDownloadRows(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
+    val modelId = remember(updateTrigger) { preferences.getTranscriptionModelId() }
+    val selectedModel = TranscriptionModel.fromId(modelId) ?: TranscriptionModel.DEFAULT
+    TranscriptionModelRows(
+        model = selectedModel,
+        updateTrigger = updateTrigger,
+        onDownload = { actions.downloadTranscriptionModel(it) },
+        onCancel = { actions.cancelTranscriptionModelDownload(it) },
+        onDelete = { actions.deleteTranscriptionModel(it) }
+    )
+}
+
+/** The paragraph saying what the chosen mode means in practice. */
+@Composable
+internal fun TranscriptionModeNote(preferences: AppPreferences, updateTrigger: Int) {
+    val mode = remember(updateTrigger) { preferences.getTranscriptionMode() }
+    Text(
+        text = stringResource(
+            when (mode) {
+                TranscriptionMode.MANUAL -> R.string.transcription_note_manual
+                TranscriptionMode.AFTER_EACH_CALL -> R.string.transcription_note_after_each_call
+                TranscriptionMode.AUTOMATIC -> R.string.transcription_note_automatic
+            }
+        ),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+    )
 }
 
 /** Bytes in a megabyte, for stating a model's download size. Shared with the wizard's own cost note. */
