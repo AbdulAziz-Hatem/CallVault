@@ -10,7 +10,9 @@ in `CHANGELOG.md` → Unreleased. Re-check every line against the shipped string
 - **Hide Recordings** — keeps your recordings out of music players and galleries.
 - **Also skip ignored contacts** — your ignored-contacts list can apply to app calls too.
 - **Honor / Huawei phone app** — a new file-name format so Honor's phone app can play recordings from the call history.
+- **Approve new Wi-Fi networks automatically** — opt-in: CallVault answers Android's "Allow wireless debugging on this network?" for you, so recording doesn't wait for a tap.
 - **Fixed** — Settings updates straight away when you switch modes.
+- **Fixed** — moving between Wi-Fi networks no longer counts as you switching Wireless debugging off.
 - **Fixed** — contact- and number-first file names show their arrow, merge, and are found by search again.
 - **Fixed** — Shizuku mode: the recorder comes back after Android kills it.
 - **Fixed** — Greek and Persian summaries are written in the right language.
@@ -20,6 +22,10 @@ in `CHANGELOG.md` → Unreleased. Re-check every line against the shipped string
 - **Security** — other apps can no longer take over the recorder (thanks @kabasik007).
 
 ## To do at release
+
+- Tell the user who asked for automatic approval of the "Allow wireless debugging on this network?" prompt
+  that it is in this release: Settings ▸ General ▸ Experimental ▸ "Approve new Wi-Fi networks automatically",
+  built-in mode, needs USB debugging on so the recorder survives the Wi-Fi change.
 
 - Tell the #56 reporter to try the release: pick "Honor / Huawei phone app" under the file-name format, set the
   recording folder to `Sounds/CallRecord` and the audio codec to AAC, then check the play button on a saved
