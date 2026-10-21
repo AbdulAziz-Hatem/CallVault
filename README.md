@@ -27,7 +27,7 @@ Recording call audio needs shell-level privilege. CallVault gets it one of two w
 ## What it does
 
 - 🎙️ **Phone calls, both sides** — automatically, or ask-me-each-time.
-- 💬 **App calls** — WhatsApp, Signal, Telegram and others, and you pick which apps get recorded. Opt-in, experimental.
+- 💬 **App calls** — WhatsApp, Signal, Telegram and others, and you pick which apps get recorded. Opt-in.
 - 🎛️ **Controls while you talk** — pause, resume, stop, or mark a moment to find again later. On phone calls and app calls alike.
 - 🔗 **Merge calls that were one conversation** — a call drops and you ring back; join them into one recording, in the order you choose. Lossless, and un-mergeable afterwards.
 - 📝 **Transcripts** — 13 languages, written on the phone.
@@ -50,13 +50,13 @@ Recordings are Opus in an `.ogg` file at 24 kbps by default (AAC/`.m4a` also ava
 
 <div align="center">
 
-| Recordings | Playback & summary | Transcript |
-|:---:|:---:|:---:|
-| <img src="docs/screenshots/01-home.png" width="230"/> | <img src="docs/screenshots/02b-playback-summary-note.png" width="230"/> | <img src="docs/screenshots/03-transcript.png" width="230"/> |
+| Main screen | Recordings | Playback & summary | Transcript |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/00-main.png" width="190"/> | <img src="docs/screenshots/01-home.png" width="190"/> | <img src="docs/screenshots/02b-playback-summary-note.png" width="190"/> | <img src="docs/screenshots/03-transcript.png" width="190"/> |
 
-| Search | Transcription settings | Settings |
+| Search | Transcripts settings | Recordings settings |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/05-transcript-search.png" width="230"/> | <img src="docs/screenshots/04-transcription-settings.png" width="230"/> | <img src="docs/screenshots/06-settings.png" width="230"/> |
+| <img src="docs/screenshots/05-transcript-search.png" width="190"/> | <img src="docs/screenshots/04-transcription-settings.png" width="190"/> | <img src="docs/screenshots/06-settings.png" width="190"/> |
 
 </div>
 
@@ -174,7 +174,7 @@ Both live in *Developer options*, and they do different jobs. You don't need bot
 > [!WARNING]
 > **Turning USB debugging off stops the recorder**, even with Wireless debugging on — Android restarts its debugging service when the USB setting changes. On Wi-Fi, CallVault starts it again within a few seconds. Away from Wi-Fi it can't, and the notification says so.
 
-**If you switch Wireless debugging off yourself**, CallVault leaves it off. The notification says recording is paused and has a button to turn it back on. If you'd rather CallVault switch it back on for you, turn on *Keep Wireless debugging on for recording* in *Settings ▸ Experimental* (you're also asked during setup).
+**If you switch Wireless debugging off yourself**, CallVault leaves it off. The notification says recording is paused and has a button to turn it back on. If you'd rather CallVault switch it back on for you, turn on *Keep Wireless debugging on for recording* in the Recordings page's settings, under **Connection** (classic layout: *Settings ▸ General ▸ Experimental*; you're also asked during setup).
 
 **In Shizuku mode**, Shizuku runs inside the same debugging service, so anything that restarts it stops Shizuku: turning USB debugging off, or arming recording away from Wi-Fi in built-in mode. Start Shizuku again from its app — CallVault tells you when that's needed and reconnects on its own once Shizuku is back. Shizuku started *after* USB debugging is already off keeps running.
 

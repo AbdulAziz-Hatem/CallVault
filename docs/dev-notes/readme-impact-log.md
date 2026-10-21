@@ -530,3 +530,35 @@ WLAN (Shizuku release notes, v13.6.0), not verified by us.
 the .json). Rows "Speaker labels" and "Keeps recording if Android kills the background process" Shizuku
 ❌ → ✅. Shizuku ❌ rows left: works without another app, recording away from Wi-Fi, full bug-report
 export. "Nothing to pair" row unchanged.
+
+## 2026-10-21 — README screenshots re-shot for the new Settings layout (`docs/screenshots-new-ui`)
+
+🧪 VERIFYING — the images are committed; the maintainer has not looked at them on the rendered README yet.
+To settle it: open the README on the branch and check the two-row table reads well.
+
+- **Why:** the new Settings layout became the default on 2026-10-21 (`classic_settings_screen` defaults to
+  false). The old `04`/`06` showed the classic long list, and nothing showed the main screen.
+- **Re-shot, all seven, on the emulator** (AVD `mymemory-test`, 1080×2400, dark theme), with invented
+  English demo data only — never on the phones:
+  `00-main` (new: the main screen, "Ready to record" plus the library tiles), `01-home` (Recordings),
+  `02b-playback-summary-note`, `03-transcript` (You / Sarah Klein), `05-transcript-search` ("Thursday"),
+  `04-transcription-settings` ("Transcripts settings", *Model and language* open), `06-settings`
+  ("Recordings settings" from the Recordings page: Shizuku row, the classic-view card, *Recording* open).
+- **Staging:** the demo audio files were still in the AVD's folder. Test recordings from September were
+  moved out to `/sdcard/Download/cv-junk/` and their rows deleted. Sarah Klein's transcript was rebuilt from
+  whisper.cpp (large-v3-turbo) run on the demo audio itself, so line times are real; speakers were assigned
+  per line and the names chosen in the app's own "Which one is you?" bar. Summary and note written by SQL.
+  Waveform peaks computed by the app. The emulator clock was set to 2026-08-25 so dates read
+  "Today/Yesterday"; status bar in demo mode.
+- **README table** is now 4 + 3 at width 190: Main screen / Recordings / Playback & summary / Transcript,
+  then Search / Transcripts settings / Recordings settings.
+- **Deleted** the unreferenced `home.png`, `settings.png`, `wizard.png`, `02-playback.png`.
+- **README line ~177** said *Keep Wireless debugging on for recording* is in *Settings ▸ Experimental*.
+  Now: "in the Recordings page's settings, under **Connection** (classic layout: *Settings ▸ General ▸
+  Experimental*; …)". Checked on the emulator that the toggle sits in that Connection group. Grepped the
+  README for other "Experimental" paths: none (line 30's "experimental" describes app calls, not a path).
+- **Retaken the same day:** `02b` now opens at the top (header, player with waveform, start of the
+  summary; the note is below the fold, since no scroll fits player + whole summary + note), and `03` shows
+  the real duration "0:00 / 2:41" (play tapped and paused at the start, so the first line is highlighted).
+- **Line 30:** "Opt-in, experimental." → "Opt-in." The app no longer calls app-call recording experimental
+  (strings changed 2026-10-21, 15 locales).

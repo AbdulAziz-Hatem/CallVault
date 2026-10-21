@@ -10,7 +10,7 @@ in `CHANGELOG.md` → Unreleased. Re-check every line against the shipped string
 - **Hide Recordings** — keeps your recordings out of music players and galleries.
 - **Also skip ignored contacts** — your ignored-contacts list can apply to app calls too.
 - **Honor / Huawei phone app** — a new file-name format so Honor's phone app can play recordings from the call history.
-- **New Settings layout (try it)** — a card at the top of Settings switches to a layout where each page shows only its own settings, grouped by what you want to do, with explanations behind ⓘ. One tap switches back.
+- **New Settings layout** — each page shows only its own settings, grouped by what you want to do, with explanations behind ⓘ. A card at the top switches back to the classic view.
 - **Approve new Wi-Fi networks automatically** — opt-in: CallVault answers Android's "Allow wireless debugging on this network?" for you, so recording doesn't wait for a tap.
 - **Fixed** — Settings updates straight away when you switch modes.
 - **Fixed** — the Telegram pill no longer pushes the settings icon off screen.
