@@ -729,17 +729,7 @@ object AdbShell {
         // user's preference below is deliberately left standing, so the next boot borrows again rather
         // than deciding the switch is now ours. See [LoopbackBorrowPolicy].
         val borrowing = mayBorrowWirelessDebugging(context)
-        when (
-            WirelessDebuggingEnableGate.decide(
-                alreadyOn = isWirelessDebuggingEnabled(context),
-                hasGrant = hasWriteSecureSettings(context),
-                wifi = WifiState.of(context),
-                userTurnedOff = prefs.wasWirelessDebuggingTurnedOffByUser(),
-                enforced = prefs.isWirelessDebuggingEnforced(),
-                userRequested = userRequest.get() == true,
-                borrowingForLoopback = borrowing,
-            )
-        ) {
+        when (enableGate(context, prefs, borrowing)) {
             // Already on means it is the user's, not ours — recorded so nothing later mistakes it for a
             // switch we are entitled to undo (#30).
             WirelessDebuggingEnable.ALREADY_ON -> return true
@@ -762,17 +752,81 @@ object AdbShell {
             AppLogger.i(TAG, "Borrowing Wireless debugging to re-arm the off-Wi-Fi listener; it goes back off straight after")
         }
         markOwnWirelessDebuggingWrite(1)
-        val enabled = runCatching {
+        // Approved through the recorder, Android switches it on without asking about the network. Otherwise
+        // the plain write, which on an untrusted network shows Android's prompt.
+        val enabled = approveNetworkViaRecorder(context, prefs, WirelessDebuggingEnable.WRITE) || runCatching {
             android.provider.Settings.Global.putInt(context.contentResolver, "adb_wifi_enabled", 1)
         }.onFailure { AppLogger.e(TAG, "Failed to enable Wireless debugging", it) }.isSuccess
-        if (enabled) {
-            prefs.setWirelessDebuggingEnabledByUs(true)
-            // Only a write that is ours to keep clears the user's choice. Clearing it on a borrow would
-            // quietly convert "the user turned this off" into "CallVault owns this switch" after one
-            // reboot, which is the opposite of what borrowing is for.
-            if (!borrowing) prefs.setWirelessDebuggingTurnedOffByUser(false)
-        }
+        if (enabled) recordOurEnable(prefs, borrowing)
         return enabled
+    }
+
+    private fun enableGate(context: Context, prefs: AppPreferences, borrowing: Boolean): WirelessDebuggingEnable =
+        WirelessDebuggingEnableGate.decide(
+            alreadyOn = isWirelessDebuggingEnabled(context),
+            hasGrant = hasWriteSecureSettings(context),
+            wifi = WifiState.of(context),
+            userTurnedOff = prefs.wasWirelessDebuggingTurnedOffByUser(),
+            enforced = prefs.isWirelessDebuggingEnforced(),
+            userRequested = userRequest.get() == true,
+            borrowingForLoopback = borrowing,
+        )
+
+    private fun recordOurEnable(prefs: AppPreferences, borrowing: Boolean) {
+        prefs.setWirelessDebuggingEnabledByUs(true)
+        // Only a write that is ours to keep clears the user's choice. Clearing it on a borrow would
+        // quietly convert "the user turned this off" into "CallVault owns this switch" after one
+        // reboot, which is the opposite of what borrowing is for.
+        if (!borrowing) prefs.setWirelessDebuggingTurnedOffByUser(false)
+    }
+
+    /**
+     * Approves the Wi-Fi the phone has just joined, while the recorder is still alive to do it (opt-in).
+     *
+     * Android switches Wireless debugging off when Wi-Fi changes. Today it comes back on only when the
+     * recorder next has to be restarted, and by then there is no shell-uid process left to approve the
+     * network, so Android asks. Approving now, with the recorder running, means the restart finds Wireless
+     * debugging already on. Never falls back to the plain write: that would only bring the prompt forward.
+     * Blocking; call off the main thread.
+     */
+    fun approveCurrentNetworkIfWanted(context: Context): Boolean {
+        val prefs = AppPreferences(context)
+        if (!prefs.isWifiNetworkAutoApproveEnabled()) return false
+        val borrowing = mayBorrowWirelessDebugging(context)
+        val gate = enableGate(context, prefs, borrowing)
+        if (gate != WirelessDebuggingEnable.WRITE) {
+            AppLogger.d(TAG, "New Wi-Fi: not approving it ($gate)")
+            return false
+        }
+        markOwnWirelessDebuggingWrite(1)
+        if (!approveNetworkViaRecorder(context, prefs, gate)) return false
+        recordOurEnable(prefs, borrowing)
+        return true
+    }
+
+    /** Asks the recorder to approve the current Wi-Fi. False when not allowed, or when it did not work. */
+    private fun approveNetworkViaRecorder(
+        context: Context,
+        prefs: AppPreferences,
+        gate: WirelessDebuggingEnable,
+    ): Boolean {
+        val recorder = com.baba.callvault.server.RecorderConnection.service
+        val mode = prefs.getPrivilegedMode()
+        if (!NetworkApprovalPolicy.mayApprove(
+                settingOn = prefs.isWifiNetworkAutoApproveEnabled(),
+                builtInMode = com.baba.callvault.data.ModeCapability.WIRELESS_DEBUGGING_CONTROL
+                    .isAvailable(mode, android.os.Build.VERSION.SDK_INT),
+                recorderAlive = recorder?.asBinder()?.isBinderAlive == true,
+                gate = gate,
+            )
+        ) return false
+        val alwaysAllow = NetworkApprovalPolicy.alwaysAllow(prefs.isWdDisableWhenIdle())
+        val answer = runCatching { recorder?.approveWirelessDebuggingNetwork(alwaysAllow) }
+            .onFailure { AppLogger.w(TAG, "Recorder could not approve the Wi-Fi: ${it.javaClass.simpleName}: ${it.message}") }
+            .getOrNull()
+        val approved = NetworkApprovalPolicy.approved(answer)
+        AppLogger.i(TAG, "Approving this Wi-Fi for Wireless debugging (alwaysAllow=$alwaysAllow): $answer")
+        return approved
     }
 
     /**

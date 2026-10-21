@@ -770,6 +770,8 @@
     <string name="usb_debugging_off_keep">روشن نگهش دار</string>
     <string name="settings_wd_enforce_label">اشکال‌زدایی بی‌سیم را برای ضبط روشن نگه دار</string>
     <string name="settings_wd_enforce_description">اگر اشکال‌زدایی بی‌سیم را خاموش کنید در حالی که هیچ چیز دیگری به CallVault اجازه دسترسی نمی‌دهد، آن را دوباره روشن می‌کند تا تماس‌ها ضبط بمانند. وقتی این خاموش باشد، کلید شما خاموش می‌ماند و اعلان می‌گوید ضبط متوقف شده است.</string>
+    <string name="settings_wd_auto_approve_label">تأیید خودکار شبکه‌های Wi-Fi جدید</string>
+    <string name="settings_wd_auto_approve_description">وقتی گوشی به یک شبکهٔ Wi-Fi وصل می‌شود، CallVault خودش به پرسش Android «اجازهٔ اشکال‌زدایی بی‌سیم در این شبکه داده شود؟» پاسخ می‌دهد تا ضبط منتظر لمس شما نماند. تا وقتی ضبط‌کننده در حال اجراست کار می‌کند. فقط دستگاه‌هایی که از قبل با این گوشی جفت شده‌اند می‌توانند وصل شوند.</string>
     <string name="oem_gate_title">گوشی شما این مرحله را مسدود می‌کند</string>
     <string name="oem_gate_body_oppo">گوشی‌های OnePlus، OPPO و realme تا زمانی که \"Disable system optimization\" را در گزینه‌های توسعه‌دهنده روشن نکنید به برنامه‌ها این مجوز را نمی‌دهند — نزدیک پایین، زیر Apps. نسخه‌های قدیمی‌تر آن را \"Disable permission monitoring\" می‌نامند. آن را روشن کنید و دوباره تلاش کنید. اگر نمی‌توانید پیدایش کنید، گوشی را به انگلیسی تغییر دهید، روشنش کنید، سپس برگردید.</string>
     <string name="oem_gate_body_xiaomi">گوشی‌های Xiaomi، Redmi و POCO تا زمانی که \"USB debugging (Security settings)\" را در گزینه‌های توسعه‌دهنده روشن نکنید به برنامه‌ها این مجوز را نمی‌دهند. این از اشکال‌زدایی USB جداست و لازم است به یک حساب Mi وارد شده باشید. آن را روشن کنید و دوباره تلاش کنید.</string>

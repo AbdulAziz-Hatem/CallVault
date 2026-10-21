@@ -646,6 +646,8 @@
     <string name="usb_debugging_off_keep">Залишити ввімкненим</string>
     <string name="settings_wd_enforce_label">Підтримувати бездротове налагодження для запису</string>
     <string name="settings_wd_enforce_description">Якщо бездротове налагодження вимкнено, а іншого способу запустити рекордер немає, CallVault спробує ввімкнути його знову.</string>
+    <string name="settings_wd_auto_approve_label">Автоматично схвалювати нові мережі Wi-Fi</string>
+    <string name="settings_wd_auto_approve_description">Коли телефон підключається до мережі Wi-Fi, CallVault сам відповідає на запитання Android «Дозволити бездротове налагодження в цій мережі?», щоб запис не чекав вашого натискання. Працює, поки запущено рекордер. Підключитися можуть лише пристрої, уже з’єднані з цим телефоном.</string>
     <string name="oem_gate_title">Телефон блокує цей крок</string>
     <string name="oem_gate_body_xiaomi">Телефони Xiaomi, Redmi та POCO не дають застосункам цей дозвіл, доки ви не ввімкнете «Налагодження USB (налаштування безпеки)» в параметрах розробника. Це окремий параметр від налагодження USB, і для нього потрібно ввійти в обліковий запис Mi. Увімкніть його та спробуйте ще раз.</string>
     <string name="oem_gate_open_dev_options">Відкрити параметри розробника</string>

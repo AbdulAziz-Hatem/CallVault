@@ -412,6 +412,7 @@ class AppPreferences(context: Context) {
         WD_ENABLED_BY_US("wd_enabled_by_us"),
         WD_TURNED_OFF_BY_USER("wd_turned_off_by_user"),
         WD_ENFORCED("wd_enforced"),
+        WD_AUTO_APPROVE_NETWORK("wd_auto_approve_network"),
         LOG_PSEUDONYM_SALT("log_pseudonym_salt"),
         LOGCAT_RING_PREVIOUS_KIB("logcat_ring_previous_kib"),
         DEBUG_ENABLED("debug_enabled"),
@@ -1050,6 +1051,10 @@ class AppPreferences(context: Context) {
             "wd_disable_when_idle", ModeCapability.WIRELESS_DEBUGGING_CONTROL,
             ::isWdDisableWhenIdle, ::setWdDisableWhenIdle,
         ),
+        GatedSwitch(
+            "wd_auto_approve_network", ModeCapability.WIRELESS_DEBUGGING_CONTROL,
+            ::isWifiNetworkAutoApproveEnabled, ::setWifiNetworkAutoApproveEnabled,
+        ),
     )
 
     /**
@@ -1381,6 +1386,15 @@ class AppPreferences(context: Context) {
     fun isWirelessDebuggingEnforced() = getBoolean(Key.WD_ENFORCED, false)
 
     fun setWirelessDebuggingEnforced(enforced: Boolean) = setBoolean(Key.WD_ENFORCED, enforced)
+
+    /**
+     * The opt-in "approve new Wi-Fi networks for Wireless debugging" setting. Off by default (2026-10-21): the
+     * prompt is Android's guard against opening the debugging port on a network the owner did not choose.
+     * See [com.baba.callvault.integrations.adb.NetworkApprovalPolicy].
+     */
+    fun isWifiNetworkAutoApproveEnabled() = getBoolean(Key.WD_AUTO_APPROVE_NETWORK, false)
+
+    fun setWifiNetworkAutoApproveEnabled(enabled: Boolean) = setBoolean(Key.WD_AUTO_APPROVE_NETWORK, enabled)
 
     /** Sets whether logging features are enabled. */
     fun setLoggingEnabled(enabled: Boolean) = setBoolean(Key.LOGGING_ENABLED, enabled)

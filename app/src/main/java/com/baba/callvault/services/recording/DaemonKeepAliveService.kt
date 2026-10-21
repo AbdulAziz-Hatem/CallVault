@@ -17,6 +17,8 @@ import android.content.Intent
 import android.database.ContentObserver
 import android.content.pm.ServiceInfo
 import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import android.net.NetworkCapabilities
 import android.os.Handler
 import android.os.IBinder
@@ -309,6 +311,33 @@ class DaemonKeepAliveService : Service() {
     }
 
     /**
+     * Approves each Wi-Fi the phone joins, while the recorder is alive to do it (opt-in, built-in mode).
+     *
+     * Android switches Wireless debugging off when Wi-Fi changes, and on a network it does not trust it asks
+     * "Allow wireless debugging on this network?" the next time it is switched on. That next time is usually a
+     * restart of the recorder, when no shell-uid process is left to approve it. See
+     * [AdbShell.approveCurrentNetworkIfWanted].
+     */
+    private val wifiJoinCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            // Let Android finish its own "Wi-Fi changed" handling of the switch first.
+            watchdogHandler.removeCallbacks(approveJoinedWifi)
+            watchdogHandler.postDelayed(approveJoinedWifi, WIFI_JOIN_SETTLE_MS)
+        }
+    }
+
+    private val approveJoinedWifi = Runnable {
+        if (!AppPreferences(applicationContext).isWifiNetworkAutoApproveEnabled()) return@Runnable
+        Thread {
+            runCatching {
+                if (AdbShell.approveCurrentNetworkIfWanted(applicationContext)) {
+                    AppLogger.i(TAG, "Joined a Wi-Fi: approved it for Wireless debugging")
+                }
+            }.onFailure { AppLogger.w(TAG, "Could not approve the joined Wi-Fi: ${it.message}") }
+        }.apply { isDaemon = true; name = "cv-wifi-approve" }.start()
+    }
+
+    /**
      * Watches the Developer options master toggle for the same reason as [usbDebuggingObserver]: with
      * it off, Wireless debugging cannot function and the daemon cannot run — a user-caused unrecordable
      * window that must be recorded the instant it opens, not discovered the next time the user happens
@@ -344,6 +373,12 @@ class DaemonKeepAliveService : Service() {
                 Settings.Global.getUriFor("development_settings_enabled"), false, developerOptionsObserver,
             )
         }.onFailure { AppLogger.w(TAG, "Could not watch the debugging switches: ${it.message}") }
+        if (usesAdb()) runCatching {
+            getSystemService(ConnectivityManager::class.java)?.registerNetworkCallback(
+                NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_WIFI).build(),
+                wifiJoinCallback,
+            )
+        }.onFailure { AppLogger.w(TAG, "Could not watch for Wi-Fi joins: ${it.message}") }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -688,6 +723,8 @@ class DaemonKeepAliveService : Service() {
         runCatching { contentResolver.unregisterContentObserver(usbDebuggingObserver) }
         runCatching { contentResolver.unregisterContentObserver(wirelessDebuggingObserver) }
         runCatching { contentResolver.unregisterContentObserver(developerOptionsObserver) }
+        runCatching { getSystemService(ConnectivityManager::class.java)?.unregisterNetworkCallback(wifiJoinCallback) }
+        watchdogHandler.removeCallbacks(approveJoinedWifi)
         runCatching { voipDetector.stop() }
         watchdogHandler.removeCallbacks(watchdog)
         watchdogHandler.removeCallbacks(healSharedNoticeRunnable)
@@ -760,6 +797,9 @@ class DaemonKeepAliveService : Service() {
 
         /** How long after a "switched off by hand" Wi-Fi is looked at again, in case its loss was the real cause. */
         private const val WD_OFF_RECHECK_MS = 3_000L
+
+        /** After joining a Wi-Fi, before approving it: Android writes its own "Wi-Fi changed" off first. */
+        private const val WIFI_JOIN_SETTLE_MS = 4_000L
 
         /** Frames of a stuck relaunch's stack written to the log — enough to name the lock it waits on. */
         private const val STACK_FRAMES_LOGGED = 14

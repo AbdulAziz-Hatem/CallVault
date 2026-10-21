@@ -2282,6 +2282,8 @@ private fun ExperimentalSubSection() {
         SettingsDivider()
         WirelessDebuggingEnforceToggle()
         SettingsDivider()
+        WifiNetworkAutoApproveToggle()
+        SettingsDivider()
         UsbDefaultConfigRow()
         PairAgainRow()
 
@@ -2618,6 +2620,33 @@ internal fun WirelessDebuggingEnforceToggle() {
         onCheckedChange = { on ->
             prefs.setWirelessDebuggingEnforced(on)
             enforced = on
+        },
+    )
+}
+
+/**
+ * Whether CallVault answers Android's "Allow wireless debugging on this network?" itself, through its recorder.
+ *
+ * Off by default (2026-10-21): the prompt is Android's guard against opening the debugging port on a network the
+ * owner did not choose. Built-in mode only; Shizuku mode does not manage the debugging switches. See
+ * [com.baba.callvault.integrations.adb.NetworkApprovalPolicy].
+ */
+@Composable
+internal fun WifiNetworkAutoApproveToggle() {
+    val context = LocalContext.current
+    val prefs = remember { AppPreferences(context) }
+    var on by remember { mutableStateOf(prefs.isWifiNetworkAutoApproveEnabled()) }
+    val supported = capabilityAvailable(ModeCapability.WIRELESS_DEBUGGING_CONTROL)
+    SettingsToggleRow(
+        icon = Icons.Filled.Wifi,
+        label = stringResource(R.string.settings_wd_auto_approve_label),
+        description = unavailableReason(ModeCapability.WIRELESS_DEBUGGING_CONTROL)
+            ?: stringResource(R.string.settings_wd_auto_approve_description),
+        checked = on && supported,
+        enabled = supported,
+        onCheckedChange = { turnOn ->
+            prefs.setWifiNetworkAutoApproveEnabled(turnOn)
+            on = turnOn
         },
     )
 }
