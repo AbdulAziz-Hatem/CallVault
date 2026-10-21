@@ -5,8 +5,8 @@
     <string name="notif_readiness_starting_title">ضبط‌کنندهٔ تماس در حال راه‌اندازی است…</string>
     <string name="notif_readiness_ready_text">ضبط‌کننده متصل است.</string>
     <string name="notif_readiness_starting_text">در حال اتصال ضبط‌کننده — تا پایان این مرحله، تماس‌ها ضبط نمی‌شوند.</string>
-    <string name="notif_usb_lock_warning">قفل کردن صفحه در حین تماس ممکن است ضبط را متوقف کند. در تنظیمات ▸ آزمایشی، گزینهٔ «USB هنگام باز شدن قفل صفحه» را روی «فقط شارژ» بگذارید.</string>
-    <string name="notif_usb_check_unavailable">اگر این مرحله تمام نشد، در تنظیمات ▸ آزمایشی، گزینهٔ «USB هنگام باز شدن قفل صفحه» را روی «فقط شارژ» بگذارید — در برخی گوشی‌ها حالت انتقال دادهٔ USB مانع اتصال ضبط‌کننده می‌شود.</string>
+    <string name="notif_usb_lock_warning">قفل کردن صفحه در حین تماس ممکن است ضبط را متوقف کند. در تنظیمات CallVault، گزینهٔ «USB هنگام باز شدن قفل صفحه» را روی «فقط شارژ» بگذارید.</string>
+    <string name="notif_usb_check_unavailable">اگر این مرحله تمام نشد، در تنظیمات CallVault، گزینهٔ «USB هنگام باز شدن قفل صفحه» را روی «فقط شارژ» بگذارید — در برخی گوشی‌ها حالت انتقال دادهٔ USB مانع اتصال ضبط‌کننده می‌شود.</string>
 
     <string name="notif_pairing_channel">مرتبط‌سازی ADB</string>
     <string name="notif_pairing_searching_title">در جستجوی سرویس مرتبط‌سازی…</string>

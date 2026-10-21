@@ -238,7 +238,7 @@
     <string name="merge_progress_cleaning_up">در حال پاک‌سازی</string>
     <string name="offline_failed_no_wifi">فعال نشد — به Wi-Fi متصل نیستید. یک بار به هر شبکه Wi-Fi متصل شوید، سپس دوباره تلاش کنید.</string>
     <string name="offline_failed_wd_refused">فعال نشد — Android اجازه اشکال‌زدایی بی‌سیم را روی این شبکه نداد. یک بار آن را در گزینه‌های توسعه‌دهنده روشن کنید، درخواست را بپذیرید، سپس دوباره تلاش کنید.</string>
-    <string name="offline_failed_needs_usb">ابتدا اشکال‌زدایی USB را روشن کنید — ضبط بدون Wi-Fi بدون آن کار نمی‌کند. تنظیمات ▸ آزمایشی ▸ اشکال‌زدایی USB.</string>
+    <string name="offline_failed_needs_usb">ابتدا اشکال‌زدایی USB را در تنظیمات CallVault روشن کنید — ضبط بدون Wi-Fi بدون آن کار نمی‌کند.</string>
 
     <!-- Home: the hub of cards, and the two sections its cards open -->
     <string name="home_hub_library_title">کتابخانه</string>
