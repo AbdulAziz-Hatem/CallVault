@@ -47,6 +47,12 @@ the NEW screen; the classic screen keeps its old layout.
 - **ⓘ instead of descriptions** on the new screen: a row shows its name and value; ⓘ opens a sheet with the
   explanation. Warnings stay on the row (unavailable-in-this-mode, debug logging on).
 - No "Reliability" group and no "App calls" group any more. Every setting keeps its preference key and value.
+- 🧪 Built 2026-10-21 on `feat/settings-regroup` (110e5df9, 929ea64b, c0582834), merged into integration/next.
+  2058 tests. Classic screen re-screenshotted on the OP9: identical to the step-2 build (only the log size and a
+  6 px scroll offset differ). New screen seen by Claude on the OP9: Calls to record and the ⓘ dialog work.
+  Open: the card summary line is cut off ("Phone and app calls · incoming a…"); free-standing hint paragraphs
+  (VoIP names, audio source, retention explanation, …) are still inline; Calls to skip shows phone rules even
+  when auto-record is off. Not yet tried by the maintainer.
 
 ## Rollback (maintainer requirement, 2026-10-21: "a big UI change … make sure we have a simple rollback")
 
