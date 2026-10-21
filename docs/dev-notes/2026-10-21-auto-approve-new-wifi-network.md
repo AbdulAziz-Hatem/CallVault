@@ -1,7 +1,8 @@
 # Auto-approving "Allow wireless debugging on this network?" (2026-10-21)
 
-📐 CALCULATED — read from AOSP source (`android-16.0.0_r4` and `android-17.0.0_r1`) and the six repos a user
-suggested. Nothing built or tried on a phone.
+🧪 VERIFYING — built 2026-10-21 on `feat/auto-approve-wifi-network` (opt-in switch "Approve new Wi-Fi networks
+automatically", Settings ▸ General ▸ Experimental). Research read from AOSP (`android-16.0.0_r4`, `android-17.0.0_r1`)
+and the six repos a user suggested. **Not yet tried on a network Android does not trust** (see "Tested" below).
 
 Feature request (2026-10-21, user with screenshot): when Wireless debugging is switched on while the phone is on a Wi-Fi
 network Android does not yet trust, Android shows "Allow wireless debugging on this network?" (SSID, BSSID,
@@ -70,3 +71,27 @@ shell call above needs none of that, so it is the better route.
 3. Switch off: prompt appears as before.
 4. User turned Wireless debugging off themselves: stays off.
 5. Android 17 phone (none yet): the three-argument call.
+
+## Built (2026-10-21)
+
+- Recorder side: `server/WirelessDebuggingApproval.kt` reads `cmd wifi status`, calls `allowWirelessDebugging`
+  by reflection (2 or 3 arguments). New AIDL method `approveWirelessDebuggingNetwork(alwaysAllow)`, appended (id 28).
+- App side: `NetworkApprovalPolicy` (setting on, built-in mode, recorder alive, gate says WRITE).
+  `AdbShell.enableWirelessDebugging` tries the approval before the plain write. `DaemonKeepAliveService` approves
+  4 s after the phone joins a Wi-Fi (`approveCurrentNetworkIfWanted`, never falls back to the plain write).
+- **Design change from the research:** approving only when CallVault switches Wireless debugging on was not
+  enough. That happens when the recorder has to be restarted, and then there is no shell process left. So the
+  approval is made when the phone joins a Wi-Fi, while the recorder still runs.
+- Approve once by default. "Always" only when "Wireless debugging off when idle" is on, because a once-only
+  approval would be gone before the next restart.
+- Mode-gated switch (`wd_auto_approve_network`, WIRELESS_DEBUGGING_CONTROL); Settings-only (decision row in
+  `SettingDecisionsTest`). Strings in 15 languages.
+
+## Tested (OP9, OxygenOS 14 / Android 14, built-in mode, 2026-10-21) — 🧪
+
+- Wi-Fi off and on, home network (already trusted), Wireless debugging off before: back on 4 s after joining.
+  Log: `CV:WdApproval: Approved Wi-Fi "Baba-5G" … (alwaysAllow=false)` from the recorder (shell pid), then
+  `adbd: adbwifi started`. So OxygenOS lets the shell make the call. Before this build it stayed off.
+- Switched off by hand (simulated with `settings put`), then Wi-Fi off and on: stayed off, `RESPECT_USER`.
+- **Still to do:** a network Android does not trust (a phone hotspot): no prompt should appear. Shizuku mode
+  (switch greyed out). A real recorder restart on the new network.

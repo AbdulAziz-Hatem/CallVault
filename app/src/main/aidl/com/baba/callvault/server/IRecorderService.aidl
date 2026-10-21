@@ -311,4 +311,10 @@ interface IRecorderService {
      * Diagnostic only. Appended last for the same transaction-code reason as above.
      */
     String captureSelfTest();
+
+    /**
+     * Approves the current Wi-Fi network for Wireless debugging, as the "Allow on this network?" prompt's
+     * Allow button does. Returns a [NetworkApproval] name. Appended: ids are positional.
+     */
+    String approveWirelessDebuggingNetwork(boolean alwaysAllow);
 }

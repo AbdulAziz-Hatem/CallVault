@@ -339,6 +339,9 @@ open class RecorderServiceImpl(private val apkPath: String) : IRecorderService.S
         return PrivilegedGrants.grantRole(roleName, packageName, userId)
     }
 
+    override fun approveWirelessDebuggingNetwork(alwaysAllow: Boolean): String =
+        WirelessDebuggingApproval.approveCurrentNetwork(alwaysAllow).name
+
     override fun hostUid(): Int = android.os.Process.myUid()
 
     override fun hostApkPath(): String = apkPath

@@ -99,7 +99,7 @@ Call audio is unchanged; the transport around it is what changed.
 
 ---
 
-## 🔵 Auto-approve "Allow wireless debugging on this network?" — feature request 2026-10-21, researched, not started
+## 🧪 Auto-approve "Allow wireless debugging on this network?" — feature request 2026-10-21, BUILT on `feat/auto-approve-wifi-network`, verifying
 
 Dev-note: `2026-10-21-auto-approve-new-wifi-network.md` (📐 read from AOSP 16 + 17; nothing built). The shell uid
 holds `MANAGE_DEBUGGING`, so our daemon (or Shizuku's server) can call `IAdbManager.allowWirelessDebugging` for

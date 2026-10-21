@@ -109,6 +109,10 @@ class SettingDecisionsTest {
         "offline_recording" to Decision(Wizard(WizardStep.RELIABILITY), ModeCapability.OFFLINE_RECORDING),
         "persistent_server" to Decision(SettingsOnly("legacy keep-alive switch"), ModeCapability.DAEMON_KEEP_ALIVE),
         "wd_disable_when_idle" to Decision(SettingsOnly("transport detail"), ModeCapability.WIRELESS_DEBUGGING_CONTROL),
+        "wd_auto_approve_network" to Decision(
+            SettingsOnly("off by default; only matters to people who move between Wi-Fi networks, found next to Keep Wireless debugging on"),
+            ModeCapability.WIRELESS_DEBUGGING_CONTROL,
+        ),
     )
 
     private val prefs = AppPreferences(ApplicationProvider.getApplicationContext())
