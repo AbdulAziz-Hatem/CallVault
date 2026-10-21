@@ -105,8 +105,9 @@ fun ScopedSettingsContent(
     val groups = SettingsGroups.forScope(scope)
     val showsModeRow = scope == SettingsScope.RECORDINGS || scope == SettingsScope.ALL
     val listState = rememberLazyListState()
-    LaunchedEffect(scrollRequest) {
-        if (scrollRequest == 0) return@LaunchedEffect
+    // Also on a scope change: the panel stays composed between openings, so without this a page's settings
+    // could open scrolled to wherever the previous page's were left.
+    LaunchedEffect(scope, scrollRequest) {
         val groupIndex = openGroup?.let { groups.indexOf(it) }?.takeIf { it >= 0 }
         val index = if (groupIndex == null) 0 else groupIndex + if (showsModeRow) 1 else 0
         listState.animateScrollToItem(index)
