@@ -86,12 +86,15 @@ fun ScopedSettingsContent(
     // The open group, remembered per scope (scope name -> group key), so Recordings does not reopen on
     // whatever was open under Transcripts. New keys: the classic screen's section state is left alone.
     // A HashMap so it saves into the Bundle as it is.
+    // A page with a single group (Transcripts, Summaries) opens it straight away: a lone folded card is
+    // one tap of nothing. Closing it is remembered as "" so it stays closed.
     var openGroups by rememberSaveable { mutableStateOf(HashMap<String, String>()) }
-    val openGroup = SettingsGroup.fromKey(openGroups[scope.name])
+    val groups = SettingsGroups.forScope(scope)
+    val openGroup = openGroups[scope.name]
+        ?.let { SettingsGroup.fromKey(it) }
+        ?: if (openGroups[scope.name] == null) groups.singleOrNull() else null
     fun setOpenGroup(target: SettingsScope, group: SettingsGroup?) {
-        openGroups = HashMap(openGroups).apply {
-            if (group == null) remove(target.name) else put(target.name, group.key)
-        }
+        openGroups = HashMap(openGroups).apply { put(target.name, group?.key ?: "") }
     }
 
     // Bumped by the links, so the list scrolls to what they opened once the new scope has been composed.
@@ -102,7 +105,6 @@ fun ScopedSettingsContent(
         scrollRequest++
     }
 
-    val groups = SettingsGroups.forScope(scope)
     val showsModeRow = scope == SettingsScope.RECORDINGS || scope == SettingsScope.ALL
     val listState = rememberLazyListState()
     // Also on a scope change: the panel stays composed between openings, so without this a page's settings
