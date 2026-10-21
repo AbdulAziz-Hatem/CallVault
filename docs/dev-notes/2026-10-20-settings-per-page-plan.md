@@ -29,6 +29,25 @@ one-line summary of its state ("Reliability · 2 of 5 on"); tapping it opens its
 and "All settings" are links at the bottom. Transcripts and Summaries get the same treatment (the canvas draws them
 in A's sheet style; build them as C).
 
+## Round 2 regrouping (agreed with the maintainer, 2026-10-21: "looks good")
+
+Canvas row 3 ("Round 2: grouped by what you want to do"). Supersedes the "What each page shows" table below for
+the NEW screen; the classic screen keeps its old layout.
+
+- **Recordings** (Shizuku mode row on top): Calls to record (phone + app calls merged: which calls, which apps,
+  incoming/outgoing auto-record, start when they answer, app calls without asking, vibrate on start/stop) · Calls to
+  skip (contact lists in/out, anonymous, other countries, apply skip list to app calls, skip calls shorter than) ·
+  Sound and file names (source, codec, bit rate, file name) · Where recordings go (save to, folders, Drive, upload
+  schedule, hide from other apps, details .json, transcript .md) · Cleaning up (retention, space limit, keep
+  originals after merge) · Connection (USB debugging, record away from Wi-Fi, keep recording if the helper stops,
+  keep Wireless debugging on, approve new Wi-Fi networks, USB when screen unlocks, pair again).
+- **Transcripts:** Model and language · When to transcribe. **Summaries:** unchanged (language read-only, shared).
+- **Main screen:** all of the above + App (language, theme, dynamic colour, toasts, unlock, screenshots, updates,
+  backup) + Help and about (debug, classic switch, version, licences, §7 attribution, support).
+- **ⓘ instead of descriptions** on the new screen: a row shows its name and value; ⓘ opens a sheet with the
+  explanation. Warnings stay on the row (unavailable-in-this-mode, debug logging on).
+- No "Reliability" group and no "App calls" group any more. Every setting keeps its preference key and value.
+
 ## Rollback (maintainer requirement, 2026-10-21: "a big UI change … make sure we have a simple rollback")
 
 Three layers, so a problem can be undone at whatever level it shows up:
