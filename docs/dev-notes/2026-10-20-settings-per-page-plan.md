@@ -62,6 +62,14 @@ the NEW screen; the classic screen keeps its old layout.
   calls; the VoIP auto-start switch reads "Record app calls automatically" on the new screen only.
   `feat/settings-round4` (d2f2a2b1), merged. 2070 tests; classic identical on the OP9. Maintainer: "besides that
   i think its all good" (design accepted; still 🧪 until used day to day).
+- 🧪 2026-10-21 `fix/title-row-telegram-pill` (9218be60, 7da85b87, ac9bf7c6, dcd2aa5c, 39b1211a), merged:
+  - Telegram pill on the main screen only; the title row lets the title ellipsise so the settings icon is never
+    pushed off screen (maintainer report). Seen on the OP9.
+  - "Experimental" wording and one-screen Settings paths removed from 10 live strings (15 locales): notifications
+    and errors now say "CallVault's settings".
+  - The classic/new switch left Debug / Help and about. It is now ONE card under the Shizuku row on both screens
+    (maintainer's pick, canvas row 4 "E"): "Try the new Settings layout" on classic, "Switch to the classic view"
+    on the new one. Seen on the OP9 both ways. Classic layout changes by design here (card + Debug row gone).
 
 ## Rollback (maintainer requirement, 2026-10-21: "a big UI change … make sure we have a simple rollback")
 
