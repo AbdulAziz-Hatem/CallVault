@@ -862,7 +862,7 @@
     <string name="settings_info_got_it">متوجه شدم</string>
 
     <!-- New Settings screen, round 2: groups by what you want to do. -->
-    <string name="settings_group_calls_to_record">تماس‌هایی که ضبط شوند</string>
+    <string name="settings_group_calls_to_record">ضبط</string>
     <string name="settings_group_calls_to_skip">تماس‌هایی که رد شوند</string>
     <string name="settings_group_sound_and_names">صدا و نام فایل‌ها</string>
     <string name="settings_group_save_and_sync">ذخیره و همگام‌سازی</string>
@@ -872,11 +872,14 @@
     <string name="settings_group_when_to_transcribe">زمان رونویسی</string>
     <string name="settings_group_app">برنامه</string>
     <string name="settings_group_help_and_about">راهنما و درباره</string>
-    <string name="settings_subheader_which_calls">کدام تماس‌ها</string>
-    <string name="settings_subheader_when_to_start">زمان شروع</string>
     <string name="settings_summary_calls_phone_and_app">تماس‌های تلفنی و تماس‌های برنامه‌ها</string>
     <string name="settings_summary_calls_phone_only">فقط تماس‌های تلفنی</string>
     <string name="settings_summary_calls_app_only">فقط تماس‌های برنامه‌ها</string>
     <string name="settings_summary_nothing_skipped">چیزی رد نمی‌شود</string>
     <string name="settings_summary_skip_rules_on">قوانین فعال رد کردن: %1$d</string>
+
+    <!-- New Settings screen, round 4: the Recording group's sub-headers. -->
+    <string name="settings_subheader_app_calls">تماس‌های برنامه‌ها</string>
+    <string name="settings_subheader_all_calls">همه تماس‌ها</string>
+    <string name="settings_voip_auto_start_record_label">ضبط خودکار تماس‌های برنامه‌ها</string>
 </resources>

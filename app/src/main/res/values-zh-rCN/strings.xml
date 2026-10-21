@@ -768,7 +768,7 @@
     <string name="settings_info_got_it">知道了</string>
 
     <!-- New Settings screen, round 2: groups by what you want to do. -->
-    <string name="settings_group_calls_to_record">要录音的通话</string>
+    <string name="settings_group_calls_to_record">录音</string>
     <string name="settings_group_calls_to_skip">要跳过的通话</string>
     <string name="settings_group_sound_and_names">声音和文件名</string>
     <string name="settings_group_save_and_sync">保存和同步</string>
@@ -778,11 +778,14 @@
     <string name="settings_group_when_to_transcribe">何时转写</string>
     <string name="settings_group_app">应用</string>
     <string name="settings_group_help_and_about">帮助和关于</string>
-    <string name="settings_subheader_which_calls">哪些通话</string>
-    <string name="settings_subheader_when_to_start">何时开始</string>
     <string name="settings_summary_calls_phone_and_app">电话和应用通话</string>
     <string name="settings_summary_calls_phone_only">仅电话</string>
     <string name="settings_summary_calls_app_only">仅应用通话</string>
     <string name="settings_summary_nothing_skipped">不跳过任何通话</string>
     <string name="settings_summary_skip_rules_on">已启用的跳过规则：%1$d</string>
+
+    <!-- New Settings screen, round 4: the Recording group's sub-headers. -->
+    <string name="settings_subheader_app_calls">应用通话</string>
+    <string name="settings_subheader_all_calls">所有通话</string>
+    <string name="settings_voip_auto_start_record_label">应用通话自动录音</string>
 </resources>

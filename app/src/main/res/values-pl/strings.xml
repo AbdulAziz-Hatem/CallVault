@@ -771,7 +771,7 @@
     <string name="settings_info_got_it">Rozumiem</string>
 
     <!-- New Settings screen, round 2: groups by what you want to do. -->
-    <string name="settings_group_calls_to_record">Które połączenia nagrywać</string>
+    <string name="settings_group_calls_to_record">Nagrywanie</string>
     <string name="settings_group_calls_to_skip">Które połączenia pomijać</string>
     <string name="settings_group_sound_and_names">Dźwięk i nazwy plików</string>
     <string name="settings_group_save_and_sync">Zapis i synchronizacja</string>
@@ -781,11 +781,14 @@
     <string name="settings_group_when_to_transcribe">Kiedy transkrybować</string>
     <string name="settings_group_app">Aplikacja</string>
     <string name="settings_group_help_and_about">Pomoc i informacje</string>
-    <string name="settings_subheader_which_calls">Które połączenia</string>
-    <string name="settings_subheader_when_to_start">Kiedy zaczynać</string>
     <string name="settings_summary_calls_phone_and_app">Połączenia telefoniczne i w aplikacjach</string>
     <string name="settings_summary_calls_phone_only">Tylko połączenia telefoniczne</string>
     <string name="settings_summary_calls_app_only">Tylko połączenia w aplikacjach</string>
     <string name="settings_summary_nothing_skipped">Nic nie jest pomijane</string>
     <string name="settings_summary_skip_rules_on">Aktywne reguły pomijania: %1$d</string>
+
+    <!-- New Settings screen, round 4: the Recording group's sub-headers. -->
+    <string name="settings_subheader_app_calls">Połączenia w aplikacjach</string>
+    <string name="settings_subheader_all_calls">Wszystkie połączenia</string>
+    <string name="settings_voip_auto_start_record_label">Automatycznie nagrywaj połączenia w aplikacjach</string>
 </resources>

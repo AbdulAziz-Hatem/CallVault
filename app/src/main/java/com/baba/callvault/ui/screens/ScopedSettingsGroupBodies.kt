@@ -76,31 +76,40 @@ internal fun GroupBody(
 }
 
 /**
- * Phone and app calls together: which calls, then when recording starts. Phone-only rows follow the phone
- * switch and app-only rows follow the app switch, as they do on the classic screen.
+ * "Recording": phone-call settings, app-call settings, then the ones that apply to both, each under its own
+ * sub-header so the app calls' automatic switch cannot be read as the phone calls' (round 4, 2026-10-21).
+ * Phone-only rows follow the phone switch and app-only rows the app switch, as on the classic screen.
  */
 @Composable
 private fun CallsToRecordBody(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
     val context = LocalContext.current
     val prefs = remember { AppPreferences(context) }
     val isPhoneOn = remember(updateTrigger) { preferences.isCarrierRecordingEnabled() }
-    // Held here so the app picker and "start automatically" follow the switch at once.
+    // Held here so the app picker and the automatic switch follow the app-call switch at once.
     var isAppOn by remember { mutableStateOf(prefs.isVoipRecordingEnabled()) }
 
-    SettingsSubHeader(stringResource(R.string.settings_subheader_which_calls))
+    SettingsSubHeader(stringResource(R.string.settings_subsection_phone_calls))
     CarrierRecordingRow(preferences, updateTrigger, actions)
-    VoipRecordingSwitch(enabled = isAppOn, onEnabledChange = { isAppOn = it })
-    ShownWhen(isAppOn) { VoipAppPicker(prefs) }
-
-    SettingsSubHeader(stringResource(R.string.settings_subheader_when_to_start))
     ShownWhen(isPhoneOn) {
         Column {
             AutoRecordIncomingRow(preferences, updateTrigger, actions)
             AutoRecordOutgoingRow(preferences, updateTrigger, actions)
-            RecordFromAnswerRow(preferences, updateTrigger, actions)
         }
     }
-    ShownWhen(isAppOn) { VoipAutoStartRow() }
+
+    SettingsSubHeader(stringResource(R.string.settings_subheader_app_calls))
+    VoipRecordingSwitch(enabled = isAppOn, onEnabledChange = { isAppOn = it })
+    ShownWhen(isAppOn) {
+        Column {
+            VoipAppPicker(prefs)
+            VoipAutoStartRow(label = stringResource(R.string.settings_voip_auto_start_record_label))
+        }
+    }
+
+    SettingsSubHeader(stringResource(R.string.settings_subheader_all_calls))
+    // Covers app calls too (when the app shows a call timer), so under "All calls" it shows while either
+    // kind of call is recorded, not only phone calls as it did under "When to start".
+    ShownWhen(isPhoneOn || isAppOn) { RecordFromAnswerRow(preferences, updateTrigger, actions) }
     VibrationRow(preferences, updateTrigger, actions)
 }
 
