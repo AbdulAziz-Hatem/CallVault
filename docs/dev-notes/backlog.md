@@ -116,7 +116,7 @@ suggested, only project-SIMPLE handles this prompt, by clicking it with an acces
 Plan: `2026-10-20-settings-per-page-plan.md`. Confirmed by the maintainer: Settings opened from a page shows
 that page's settings (the main screen shows everything); the Experimental section goes and its switches move,
 **with their defaults unchanged**; the Telegram pill shows only on the main screen, and Support stays as it is.
-The first step is a design canvas, not code.
+Design picked 2026-10-21: option C (folded groups) with B's Shizuku switch row; the new screen ships beside the classic one with a one-tap way back (rollback section of the plan).
 
 ---
 

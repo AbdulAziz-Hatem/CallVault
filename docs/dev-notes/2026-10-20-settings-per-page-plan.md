@@ -21,6 +21,33 @@ before starting. They were read on integration/next at 19e722a0.
 3. **The Telegram pill shows only on the main screen,** so each page's title row has room for its settings
    icon. **The ♥ Support pill stays as it is**, on every page.
 
+## Chosen design (maintainer, 2026-10-21)
+
+**Option C, folded groups**, with **option B's "Shizuku mode" switch row** at the top (the same row as today),
+on the canvas https://claude.ai/artifact/Bt8twpoGHXX7hW85UFFsxH (artboard "C"). Each group is a card with a
+one-line summary of its state ("Reliability · 2 of 5 on"); tapping it opens its switches. "Share a debug report"
+and "All settings" are links at the bottom. Transcripts and Summaries get the same treatment (the canvas draws them
+in A's sheet style; build them as C).
+
+## Rollback (maintainer requirement, 2026-10-21: "a big UI change … make sure we have a simple rollback")
+
+Three layers, so a problem can be undone at whatever level it shows up:
+
+1. **In the app, without an update.** The new screen is added **beside** today's, not in place of it. One setting
+   chooses which opens: Debug ▸ "Use the classic Settings screen" (shown in both screens, so it is always
+   reachable). A user hit by a bug switches back in one tap; support can tell them to. Default: the new screen
+   only once it is verified on both phones; until then the classic one stays the default.
+2. **No data changes.** Both screens read and write the **same preference keys**; nothing is renamed or migrated,
+   and the Experimental switches keep their keys. Switching screens, or downgrading the app, loses nothing. The
+   new screen's "which group was open" memory uses new keys and leaves the old ones alone.
+3. **In git.** Every step is its own branch, merged with `--no-ff`, so one `git revert -m 1 <merge>` takes out
+   one step. The file split (step 1) has no behaviour change and is checked by before/after screenshots, so
+   it can stay even if the new screen is reverted.
+
+The classic screen is deleted only in a **later release**, after the new one has shipped and drawn no reports.
+Text that points users to a place in Settings (the notifications that say "Settings ▸ Experimental") must name a
+path that exists in **both** screens: rename the classic screen's Experimental section to "Reliability" as well.
+
 ## What each page shows
 
 Today's sections: the mode switch (at the top, outside every section), then Recording, Storage (with Retention
@@ -105,12 +132,13 @@ looking in the wrong place.
 
 ## Order of work
 
-0. **Design canvas** — made 2026-10-21: https://claude.ai/artifact/Bt8twpoGHXX7hW85UFFsxH (A sheet, B page tabs, C folded groups; Transcripts, Summaries, title row). Waiting on the maintainer's pick. Two or three looks for a page's settings view: a header naming the page, the
+0. ✅ **Design canvas** — picked 2026-10-21: option C with B's Shizuku row. Made 2026-10-21: https://claude.ai/artifact/Bt8twpoGHXX7hW85UFFsxH (A sheet, B page tabs, C folded groups; Transcripts, Summaries, title row). Waiting on the maintainer's pick. Two or three looks for a page's settings view: a header naming the page, the
    "All settings" footer, the Reliability and App-calls subsections, and the cleaner title row. The maintainer
    picks before any code ([[offer-design-options]]).
 1. Split `SettingsScreen.kt` into files, with no change in behaviour. Run all tests, and compare before/after
    screenshots on the OP9.
-2. Add the scope, the per-page entry points and the "All settings" footer.
+2. Add the new screen beside the classic one, behind Debug ▸ "Use the classic Settings screen" (classic is the
+   default until verified), with the scope, the per-page entry points and the "All settings" link.
 3. Remove Experimental: move the rows, change the strings in 15 languages, change the wizard text, update the
    tests and mode-switch-check.
 4. Make the Telegram pill Hub-only.
