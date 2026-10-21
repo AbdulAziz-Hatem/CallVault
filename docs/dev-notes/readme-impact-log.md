@@ -553,5 +553,10 @@ To settle it: open the README on the branch and check the two-row table reads we
 - **README table** is now 4 + 3 at width 190: Main screen / Recordings / Playback & summary / Transcript,
   then Search / Transcripts settings / Recordings settings.
 - **Deleted** the unreferenced `home.png`, `settings.png`, `wizard.png`, `02-playback.png`.
-- **Stale, not fixed here:** README line ~177 says *Keep Wireless debugging on for recording* is in
-  *Settings ▸ Experimental*; in the new layout it is under *Recordings settings ▸ Connection*.
+- **README line ~177** said *Keep Wireless debugging on for recording* is in *Settings ▸ Experimental*.
+  Now: "in the Recordings page's settings, under **Connection** (classic layout: *Settings ▸ General ▸
+  Experimental*; …)". Checked on the emulator that the toggle sits in that Connection group. Grepped the
+  README for other "Experimental" paths: none (line 30's "experimental" describes app calls, not a path).
+- **Retaken the same day:** `02b` now opens at the top (header, player with waveform, start of the
+  summary; the note is below the fold, since no scroll fits player + whole summary + note), and `03` shows
+  the real duration "0:00 / 2:41" (play tapped and paused at the start, so the first line is highlighted).
