@@ -142,14 +142,14 @@
     <string name="settings_subsection_resilience">تاب‌آوری</string>
     <string name="settings_subsection_voip">تماس‌های VoIP</string>
     <string name="settings_voip_recording_label">ضبط تماس‌های VoIP</string>
-    <string name="settings_voip_recording_description">تماس‌های انجام‌شده در برنامه‌هایی مانند WhatsApp، Signal و Telegram را نیز ضبط می‌کند. آزمایشی — برخی برنامه‌ها ضبط را مسدود می‌کنند و این تا زمانی که تماس در جریان باشد قابل تشخیص نیست.</string>
+    <string name="settings_voip_recording_description">تماس‌های انجام‌شده در برنامه‌هایی مانند WhatsApp، Signal و Telegram را نیز ضبط می‌کند. برخی برنامه‌ها ضبط را مسدود می‌کنند و این تا زمانی که تماس در جریان باشد قابل تشخیص نیست.</string>
     <string name="settings_voip_auto_start_label">شروع خودکار</string>
     <string name="settings_voip_auto_start_description">خاموش یعنی CallVault ابتدا می‌پرسد: هنگام شروع یک تماس درون‌برنامه‌ای، اعلانی با دکمه ضبط ظاهر می‌شود.</string>
     <string name="voip_prompt_title">تماس درون‌برنامه‌ای در جریان است</string>
     <string name="voip_prompt_text">برای ضبط این تماس، روی ضبط بزنید.</string>
     <string name="voip_prompt_text_named">تماس %1$s. برای ضبط آن، روی ضبط بزنید.</string>
     <string name="voip_recording_warning_title">تماس‌های VoIP ضبط شوند؟</string>
-    <string name="voip_recording_warning_message">ضبط تماس‌های درون‌برنامه‌ای سخت‌گیرانه‌تر از ضبط تماس‌های تلفنی تنظیم شده است و در بسیاری از جاها همه شرکت‌کنندگان باید ابتدا موافقت کنند. لطفاً مطمئن شوید که مجاز به این کار هستید.\n\nاین قابلیت آزمایشی است: با برخی برنامه‌ها کار می‌کند و با برخی نه، و یک برنامه می‌تواند در هر به‌روزرسانی‌ای ضبط را مسدود کند.</string>
+    <string name="voip_recording_warning_message">ضبط تماس‌های درون‌برنامه‌ای سخت‌گیرانه‌تر از ضبط تماس‌های تلفنی تنظیم شده است و در بسیاری از جاها همه شرکت‌کنندگان باید ابتدا موافقت کنند. لطفاً مطمئن شوید که مجاز به این کار هستید.\n\nبا برخی برنامه‌ها کار می‌کند و با برخی نه، و یک برنامه می‌تواند در هر به‌روزرسانی‌ای ضبط را مسدود کند.</string>
     <string name="voip_recording_warning_continue">متوجه شدم، روشنش کن</string>
     <string name="voip_recording_arming">در حال آماده‌سازی ضبط VoIP…</string>
     <string name="notif_voip_recording_title">در حال ضبط تماس VoIP</string>
@@ -168,14 +168,14 @@
     <string name="settings_usb_debugging_shizuku_hint">هنگام استفاده از Shizuku، اشکال‌زدایی USB را روشن بگذارید. سرویس Shizuku از طریق سرویس اشکال‌زدایی Android اجرا می‌شود و با آن متوقف می‌شود — CallVault در حالت Shizuku به این کلید نیازی ندارد.</string>
     <string name="settings_usb_debugging_failed">نشد تغییرش داد — CallVault به مجوزی که هنگام راه‌اندازی می‌گیرد نیاز دارد.</string>
     <string name="notif_info_channel">اطلاعیه‌های CallVault</string>
-    <string name="notif_wd_required">چون اشکال‌زدایی USB خاموش است، اشکال‌زدایی بی‌سیم باید روشن بماند. اشکال‌زدایی USB را در تنظیمات ▸ آزمایشی روشن کنید تا CallVault دوباره اشکال‌زدایی بی‌سیم را خاموش کند.</string>
+    <string name="notif_wd_required">چون اشکال‌زدایی USB خاموش است، اشکال‌زدایی بی‌سیم باید روشن بماند. اشکال‌زدایی USB را در تنظیمات CallVault روشن کنید تا CallVault دوباره اشکال‌زدایی بی‌سیم را خاموش کند.</string>
     <string name="settings_section_debug">اشکال‌زدایی</string>
     <string name="settings_section_security">امنیت</string>
     <string name="settings_section_recorder_server">سرویس ضبط‌کننده</string>
 
     <!-- Settings Screen: Recorder Service Section -->
     <string name="settings_persistent_server">سرور ضبط‌کننده پایدار</string>
-    <string name="settings_persistent_server_description">تماس‌ها را از طریق یک سرویس ممتاز پس‌زمینه ضبط می‌کند تا اشکال‌زدایی بی‌سیم بتواند بین تماس‌ها خاموش بماند. آزمایشی.</string>
+    <string name="settings_persistent_server_description">تماس‌ها را از طریق یک سرویس ممتاز پس‌زمینه ضبط می‌کند تا اشکال‌زدایی بی‌سیم بتواند بین تماس‌ها خاموش بماند.</string>
     <string name="settings_wd_disable_when_idle">خاموش کردن اشکال‌زدایی بی‌سیم در زمان بی‌کاری</string>
     <string name="settings_wd_disable_when_idle_description">پس از اتصال سرویس ضبط‌کننده، اشکال‌زدایی بی‌سیم را غیرفعال می‌کند؛ فقط در صورت نیاز به‌طور کوتاه دوباره فعال می‌شود.</string>
 
@@ -201,7 +201,7 @@
     <string name="settings_offline_recording_label">ضبط آفلاین (بدون Wi-Fi)</string>
     <string name="settings_offline_recording_desc">تماس‌ها را حتی وقتی هیچ شبکه Wi-Fi وجود ندارد ضبط می‌کند. به روشن بودن اشکال‌زدایی USB نیاز دارد.</string>
     <string name="settings_handoff_persist_label">ضبط تاب‌آور</string>
-    <string name="settings_handoff_persist_description">ضبط را حتی اگر دستیار پس‌زمینه در میانه تماس از کار بیفتد (مثلاً وقتی صفحه را قفل می‌کنید) ادامه می‌دهد. آزمایشی.</string>
+    <string name="settings_handoff_persist_description">ضبط را حتی اگر دستیار پس‌زمینه در میانه تماس از کار بیفتد (مثلاً وقتی صفحه را قفل می‌کنید) ادامه می‌دهد.</string>
     <string name="settings_usb_default_label">USB هنگام باز شدن قفل صفحه</string>
     <string name="settings_usb_default_hint">\"فقط شارژ\" ضبط را در صورت قفل کردن صفحه در حین تماس زنده نگه می‌دارد. حالت‌های دیگر اجازه انتقال داده از USB را می‌دهند اما می‌توانند هنگام قفل کردن گوشی، ضبط را قطع کنند.</string>
     <string name="settings_usb_default_applying">در حال اعمال…</string>
@@ -399,7 +399,7 @@
     <string name="wizard_auto_record_nothing_warning">با خاموش بودن هر دوی تماس‌های تلفنی و درون‌برنامه‌ای، CallVault چیزی ضبط نمی‌کند. مگر اینکه همین را بخواهید، دست‌کم یکی را روشن کنید.</string>
     <!-- Wizard: Audio step -->
     <string name="wizard_experimental_title">افزودنی‌های اختیاری</string>
-    <string name="wizard_experimental_subtitle">قابلیتی که هنوز در حال اثبات است. به‌طور پیش‌فرض خاموش است — می‌توانید بعداً آن را در تنظیمات روشن کنید.</string>
+    <string name="wizard_experimental_subtitle">به‌طور پیش‌فرض خاموش است — می‌توانید بعداً آن را در تنظیمات روشن کنید.</string>
     <string name="wizard_updates_title">به‌روز ماندن</string>
     <string name="wizard_updates_subtitle">CallVault در فروشگاه برنامه نیست، بنابراین خودش GitHub را برای نسخه‌های جدید بررسی می‌کند.</string>
     <string name="wizard_reliability_title">ضبط قابل اعتماد</string>
@@ -418,7 +418,7 @@
     <string name="list_separator">"، "</string>
     <string name="wizard_transcription_summary_heading">خلاصه‌ها</string>
     <string name="wizard_transcription_summary_body">پس از اینکه یک تماس رونوشت داشته باشد، CallVault می‌تواند یک خلاصه کوتاه از آن هم بنویسد — روی گوشی، مثل هر چیز دیگری اینجا.</string>
-    <string name="wizard_transcription_background_note">هر دو دانلود فقط روی Wi-Fi اجرا می‌شوند و در پس‌زمینه ادامه می‌یابند. می‌توانید همین حالا ادامه دهید و راه‌اندازی را تمام کنید — تنظیمات ▸ رونویسی و خلاصه‌ها بعداً همان پیشرفت را نشان می‌دهد.</string>
+    <string name="wizard_transcription_background_note">هر دو دانلود فقط روی Wi-Fi اجرا می‌شوند و در پس‌زمینه ادامه می‌یابند. می‌توانید همین حالا ادامه دهید و راه‌اندازی را تمام کنید — تنظیمات CallVault بعداً همان پیشرفت را نشان می‌دهد.</string>
 
     <string name="wizard_audio_title">کیفیت صدا</string>
     <string name="wizard_audio_subtitle">قالب ضبط و نرخ بیت را انتخاب کنید. Opus با ۱۶ kbps برای صدای شفاف با اندازه فایل کوچک توصیه می‌شود.</string>

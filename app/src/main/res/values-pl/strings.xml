@@ -100,7 +100,7 @@
     <string name="notif_info_channel">Powiadomienia CallVault</string>
     <string name="notif_voip_recording_text">CallVault nagrywa rozmowę w aplikacji.</string>
     <string name="notif_voip_recording_title">Nagrywanie połączenia VoIP</string>
-    <string name="notif_wd_required">Debugowanie bezprzewodowe musi pozostać włączone, bo debugowanie USB jest wyłączone. Włącz debugowanie USB w Ustawieniach ▸ Eksperymentalne, a CallVault ponownie wyłączy debugowanie bezprzewodowe.</string>
+    <string name="notif_wd_required">Debugowanie bezprzewodowe musi pozostać włączone, bo debugowanie USB jest wyłączone. Włącz debugowanie USB w ustawieniach CallVault, a CallVault ponownie wyłączy debugowanie bezprzewodowe.</string>
     <string name="offline_recording_warning_continue">Kontynuuj mimo to</string>
     <string name="offline_recording_warning_message">Spowoduje to otwarcie lokalnego portu debugowania w telefonie, aby połączenia mogły być nagrywane bez Wi-Fi. Jest on chroniony kluczem urządzenia, ale stanowi niewielki kompromis w zakresie bezpieczeństwa. Włącz tę opcję tylko wtedy, gdy musisz nagrywać połączenia bez Wi-Fi.</string>
     <string name="offline_recording_warning_shizuku">Shizuku jest uruchomione. Włączenie tej opcji ponownie uruchomi usługę debugowania Androida, co zatrzyma Shizuku — CallVault uruchomi je zaraz potem i powiadomi Cię, jeśli mu się nie uda.</string>
@@ -223,7 +223,7 @@
     <string name="settings_file_name_template_placeholders">Symbole zastępcze:</string>
     <string name="settings_file_name_template_placeholders_preview">Podgląd: %1$s</string>
     <string name="settings_file_name_template_preset">Ustawienie wstępne</string>
-    <string name="settings_handoff_persist_description">Kontynuuje nagrywanie nawet wtedy, gdy pomocniczy proces w tle zostanie zamknięty w trakcie połączenia (np. po zablokowaniu ekranu). Eksperymentalne.</string>
+    <string name="settings_handoff_persist_description">Kontynuuje nagrywanie nawet wtedy, gdy pomocniczy proces w tle zostanie zamknięty w trakcie połączenia (np. po zablokowaniu ekranu).</string>
     <string name="settings_handoff_persist_label">Odporne nagrywanie</string>
     <string name="settings_ignore_anonymous_incoming">Ignoruj anonimowe połączenia przychodzące</string>
     <string name="settings_ignore_contacts_all">Ignoruj wszystkie kontakty</string>
@@ -238,7 +238,7 @@
     <string name="settings_offline_recording_desc">Nagrywaj połączenia nawet bez sieci Wi-Fi. Wymaga włączonego debugowania USB.</string>
     <string name="settings_offline_recording_label">Nagrywanie offline (bez Wi-Fi)</string>
     <string name="settings_persistent_server">Trwały serwer nagrywania</string>
-    <string name="settings_persistent_server_description">Nagrywaj rozmowy przez uprzywilejowaną usługę działającą w tle, dzięki czemu Debugowanie bezprzewodowe może pozostać wyłączone między rozmowami. Eksperymentalne.</string>
+    <string name="settings_persistent_server_description">Nagrywaj rozmowy przez uprzywilejowaną usługę działającą w tle, dzięki czemu Debugowanie bezprzewodowe może pozostać wyłączone między rozmowami.</string>
     <string name="settings_recording_folder_label">Folder nagrań</string>
     <string name="settings_section_about">O nas</string>
     <string name="settings_section_audio">Ustawienia dźwięku</string>
@@ -336,7 +336,7 @@
     <string name="settings_view_licenses">Wyświetl licencje</string>
     <string name="settings_voip_auto_start_description">Wyłączone oznacza, że CallVault najpierw zapyta: na początku połączenia w aplikacji pojawi się powiadomienie z przyciskiem Nagrywaj.</string>
     <string name="settings_voip_auto_start_label">Uruchamiaj automatycznie</string>
-    <string name="settings_voip_recording_description">Nagrywa także rozmowy prowadzone w aplikacjach takich jak WhatsApp, Signal i Telegram. Eksperymentalne — niektóre aplikacje blokują nagrywanie, a dowiesz się o tym dopiero w trakcie rozmowy.</string>
+    <string name="settings_voip_recording_description">Nagrywa także rozmowy prowadzone w aplikacjach takich jak WhatsApp, Signal i Telegram. Niektóre aplikacje blokują nagrywanie, a dowiesz się o tym dopiero w trakcie rozmowy.</string>
     <string name="settings_voip_recording_label">Nagrywaj połączenia VoIP</string>
     <string name="settings_wd_disable_when_idle">Wyłączaj Debugowanie bezprzewodowe w stanie bezczynności</string>
     <string name="settings_wd_disable_when_idle_description">Wyłączaj Debugowanie bezprzewodowe po połączeniu usługi nagrywania; włączane na krótko tylko w razie potrzeby.</string>
@@ -524,7 +524,7 @@
     <string name="voip_recording_names_hint">Nazwy kontaktów pochodzą z własnego powiadomienia o połączeniu danej aplikacji. Jeśli powiadomienia tej aplikacji są wyłączone, jej nagrania są zapisywane bez nazwy.</string>
     <string name="voip_recording_unavailable">Nie udało się włączyć na tym urządzeniu — nagrywanie VoIP nie jest tu dostępne.</string>
     <string name="voip_recording_warning_continue">Rozumiem, włącz</string>
-    <string name="voip_recording_warning_message">Nagrywanie rozmów w aplikacjach jest regulowane surowiej niż nagrywanie połączeń telefonicznych, a w wielu miejscach wszyscy uczestnicy muszą wcześniej wyrazić zgodę. Upewnij się, że masz do tego prawo.\n\nTa funkcja jest eksperymentalna: z niektórymi aplikacjami działa, z innymi nie, a aktualizacja aplikacji może w każdej chwili zablokować nagrywanie.</string>
+    <string name="voip_recording_warning_message">Nagrywanie rozmów w aplikacjach jest regulowane surowiej niż nagrywanie połączeń telefonicznych, a w wielu miejscach wszyscy uczestnicy muszą wcześniej wyrazić zgodę. Upewnij się, że masz do tego prawo.\n\nZ niektórymi aplikacjami działa, z innymi nie, a aktualizacja aplikacji może w każdej chwili zablokować nagrywanie.</string>
     <string name="voip_recording_warning_title">Nagrywać połączenia VoIP?</string>
     <string name="wizard_audio_subtitle">Wybierz format nagrywania i przepływność. Opus przy 16 kb/s jest zalecany dla wyraźnego głosu przy małym rozmiarze plików.</string>
     <string name="wizard_audio_title">Jakość dźwięku</string>
@@ -540,7 +540,7 @@
     <string name="wizard_day_thursday">Czwartek</string>
     <string name="wizard_day_tuesday">Wtorek</string>
     <string name="wizard_day_wednesday">Środa</string>
-    <string name="wizard_experimental_subtitle">Jedna funkcja wciąż sprawdzana w praktyce. Jest domyślnie wyłączona — możesz ją włączyć później w Ustawieniach.</string>
+    <string name="wizard_experimental_subtitle">Jest domyślnie wyłączona — możesz ją włączyć później w Ustawieniach.</string>
     <string name="wizard_experimental_title">Dodatki opcjonalne</string>
     <string name="wizard_filename_subtitle">Wybierz, jak nazywane są zapisane nagrania.</string>
     <string name="wizard_filename_title">Format nazwy pliku</string>
@@ -567,7 +567,7 @@
     <string name="wizard_storage_subtitle">Wybierz, gdzie przechowywane są Twoje nagrania. Możesz to zmienić później w Ustawieniach.</string>
     <string name="wizard_storage_title">Gdzie zapisywać nagrania</string>
     <string name="wizard_title">Skonfiguruj CallVault</string>
-    <string name="wizard_transcription_background_note">Oba pobierania działają tylko przez Wi-Fi i trwają dalej w tle. Możesz teraz iść dalej i dokończyć konfigurację — ten sam postęp znajdziesz później w Ustawieniach ▸ Transkrypcja i podsumowania.</string>
+    <string name="wizard_transcription_background_note">Oba pobierania działają tylko przez Wi-Fi i trwają dalej w tle. Możesz teraz iść dalej i dokończyć konfigurację — ten sam postęp znajdziesz później w ustawieniach CallVault.</string>
     <string name="wizard_transcription_language_note">Ustawiony jest język, na który ustawiony jest ten telefon. Wskazanie go jest znacznie pewniejsze niż zdanie się na zgadywanie aplikacji, a później i tak możesz wybrać inny dla pojedynczej rozmowy.</string>
     <string name="wizard_transcription_model_note">Transkrypcja wymaga najpierw modelu mowy na telefonie: %1$s ma %2$d MB, %3$s ma %4$d MB. Przepisanie rozmowy trwa potem mniej więcej tyle, co sama rozmowa, i mocno obciąża procesor.</string>
     <string name="wizard_transcription_model_size">%1$s ma %2$d MB</string>

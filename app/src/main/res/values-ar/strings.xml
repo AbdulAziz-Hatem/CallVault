@@ -123,7 +123,7 @@
     <string name="settings_subsection_resilience">المرونة</string>
     <string name="settings_subsection_voip">مكالمات VoIP</string>
     <string name="settings_voip_recording_label">تسجيل مكالمات VoIP</string>
-    <string name="settings_voip_recording_description">أيضًا تسجيل المكالمات التي تتم في تطبيقات مثل WhatsApp وSignal وTelegram — كلا الجانبين من المحادثة، وليس صوتك فقط. تظهر التسجيلات التطبيق الذي تم إجراء المكالمة فيه، واسم جهة الاتصال عندما يوفره التطبيق. تجريبي — بعض التطبيقات تمنع التسجيل، ولا يمكن معرفة ذلك إلا بعد بدء المكالمة.</string>
+    <string name="settings_voip_recording_description">أيضًا تسجيل المكالمات التي تتم في تطبيقات مثل WhatsApp وSignal وTelegram — كلا الجانبين من المحادثة، وليس صوتك فقط. تظهر التسجيلات التطبيق الذي تم إجراء المكالمة فيه، واسم جهة الاتصال عندما يوفره التطبيق. بعض التطبيقات تمنع التسجيل، ولا يمكن معرفة ذلك إلا بعد بدء المكالمة.</string>
     <string name="settings_voip_auto_start_label">البدء تلقائيًا</string>
     <string name="settings_voip_auto_start_description">يعني "إيقاف" أن CallVault يسأل أولاً: يظهر إشعار بزر "تسجيل" عند بدء مكالمة تطبيق.</string>
     <string name="voip_prompt_title">مكالمة تطبيق جارية</string>
@@ -132,7 +132,7 @@
     <string name="voip_recording_warning_title">تسجيل مكالمات VoIP؟</string>
     <string name="voip_recording_warning_message">يخضع تسجيل مكالمات التطبيق لتنظيم أكثر صرامة من تسجيل المكالمات الهاتفية، وفي العديد من الأماكن يجب أن يوافق جميع المشاركين أولاً. يرجى التأكد من أنك مسموح لك بذلك.
 
-هذا تجريبي: يعمل مع بعض التطبيقات وليس غيرها، ويمكن للتطبيق منع التسجيل في أي وقت في تحديث.</string>
+يعمل مع بعض التطبيقات وليس غيرها، ويمكن للتطبيق منع التسجيل في أي وقت في تحديث.</string>
     <string name="voip_recording_warning_continue">أفهم، قم بتشغيله</string>
     <string name="voip_recording_arming">جارٍ إعداد تسجيل VoIP…</string>
     <string name="notif_voip_recording_title">تسجيل مكالمة VoIP</string>
@@ -151,12 +151,12 @@
     <string name="settings_usb_debugging_shizuku_hint">اترك تصحيح أخطاء USB قيد التشغيل أثناء استخدام Shizuku. يتم بدء خدمة Shizuku عبر خدمة تصحيح أخطاء Android وتتوقف عندما تتوقف — لا يحتاج CallVault إلى هذا المفتاح في وضع Shizuku.</string>
     <string name="settings_usb_debugging_failed">تعذر التغيير — يحتاج CallVault إلى الإذن الذي يحصل عليه أثناء الإعداد.</string>
     <string name="notif_info_channel">إشعارات CallVault</string>
-    <string name="notif_wd_required">يجب أن يظل تصحيح أخطاء اللاسلكي قيد التشغيل لأن تصحيح أخطاء USB متوقف. قم بتشغيل تصحيح أخطاء USB في الإعدادات ▸ التجريبي وسيقوم CallVault بإيقاف تشغيل تصحيح أخطاء اللاسلكي مرة أخرى.</string>
+    <string name="notif_wd_required">يجب أن يظل تصحيح أخطاء اللاسلكي قيد التشغيل لأن تصحيح أخطاء USB متوقف. قم بتشغيل تصحيح أخطاء USB في إعدادات CallVault وسيقوم CallVault بإيقاف تشغيل تصحيح أخطاء اللاسلكي مرة أخرى.</string>
     <string name="settings_section_debug">تصحيح الأخطاء</string>
     <string name="settings_section_security">الأمان</string>
     <string name="settings_section_recorder_server">خدمة المسجل</string>
     <string name="settings_persistent_server">خادم تسجيل دائم</string>
-    <string name="settings_persistent_server_description">تسجيل المكالمات عبر خدمة مميزة في الخلفية بحيث يمكن أن يظل تصحيح أخطاء اللاسلكي متوقفًا بين المكالمات. تجريبي.</string>
+    <string name="settings_persistent_server_description">تسجيل المكالمات عبر خدمة مميزة في الخلفية بحيث يمكن أن يظل تصحيح أخطاء اللاسلكي متوقفًا بين المكالمات.</string>
     <string name="settings_wd_disable_when_idle">إيقاف تصحيح أخطاء اللاسلكي عند عدم النشاط</string>
     <string name="settings_wd_disable_when_idle_description">تعطيل تصحيح أخطاء اللاسلكي بمجرد توصيل خدمة المسجل؛ يتم إعادة تمكينه لفترة وجيزة فقط عند الحاجة.</string>
     <string name="settings_storage_section">التخزين</string>
@@ -174,7 +174,7 @@
     <string name="settings_offline_recording_label">التسجيل بدون اتصال بالإنترنت (بدون Wi-Fi)</string>
     <string name="settings_offline_recording_desc">تسجيل المكالمات حتى عندما لا توجد شبكة Wi-Fi. يحتاج إلى تصحيح أخطاء USB.</string>
     <string name="settings_handoff_persist_label">تسجيل مرن</string>
-    <string name="settings_handoff_persist_description">استمر في التسجيل حتى لو تم قتل المساعد في الخلفية أثناء المكالمة (على سبيل المثال، عند قفل الشاشة). تجريبي.</string>
+    <string name="settings_handoff_persist_description">استمر في التسجيل حتى لو تم قتل المساعد في الخلفية أثناء المكالمة (على سبيل المثال، عند قفل الشاشة).</string>
     <string name="settings_usb_default_label">USB عند إلغاء قفل الشاشة</string>
     <string name="settings_usb_default_hint">يؤدي الشحن فقط إلى إبقاء التسجيل حيًا إذا قمت بقفل الشاشة أثناء المكالمة. تسمح الأوضاع الأخرى لـ USB بنقل البيانات ولكن يمكنها مقاطعة التسجيل عند قفل الهاتف.</string>
     <string name="settings_usb_default_applying">جارٍ التطبيق…</string>
@@ -332,7 +332,7 @@
     <string name="wizard_auto_record_subtitle">اختر المكالمات التي يتم تسجيلها تلقائيًا. يمكنك ضبط هذا لاحقًا في الإعدادات.</string>
     <string name="wizard_auto_record_nothing_warning">مع إيقاف تشغيل كل من المكالمات الهاتفية ومكالمات التطبيق، لن يسجل CallVault أي شيء. قم بتشغيل واحد على الأقل ما لم يكن هذا هو ما تريده.</string>
     <string name="wizard_experimental_title">إضافات اختيارية</string>
-    <string name="wizard_experimental_subtitle">ميزة لا تزال قيد التجريب. هي متوقفة افتراضيًا — يمكنك تشغيلها لاحقًا في الإعدادات.</string>
+    <string name="wizard_experimental_subtitle">هي متوقفة افتراضيًا — يمكنك تشغيلها لاحقًا في الإعدادات.</string>
     <string name="wizard_updates_title">البقاء على اطلاع</string>
     <string name="wizard_updates_subtitle">لا يتوفر CallVault في متجر تطبيقات، لذا فإنه يتحقق من GitHub بحثًا عن إصدارات جديدة بنفسه.</string>
     <string name="wizard_reliability_title">تسجيل موثوق</string>
@@ -350,7 +350,7 @@
     <string name="list_separator">، </string>
     <string name="wizard_transcription_summary_heading">الملخصات</string>
     <string name="wizard_transcription_summary_body">بمجرد أن تحتوي المكالمة على نص، يمكن لـ CallVault أيضًا كتابة ملخص قصير لها — على الهاتف، مثل أي شيء آخر هنا.</string>
-    <string name="wizard_transcription_background_note">يتم تشغيل كلا التنزيلين عبر Wi-Fi فقط، ويستمران في الخلفية. يمكنك المتابعة وإنهاء الإعداد الآن — تُظهر الإعدادات ▸ التحويل إلى نص والملخصات نفس التقدم بعد ذلك.</string>
+    <string name="wizard_transcription_background_note">يتم تشغيل كلا التنزيلين عبر Wi-Fi فقط، ويستمران في الخلفية. يمكنك المتابعة وإنهاء الإعداد الآن — تُظهر إعدادات CallVault نفس التقدم بعد ذلك.</string>
     <string name="wizard_audio_title">جودة الصوت</string>
     <string name="wizard_audio_subtitle">اختر تنسيق التسجيل ومعدل البت. يوصى بـ Opus بسرعة 16 كيلوبت/ثانية للحصول على صوت واضح بحجم ملف صغير.</string>
     <string name="wizard_filename_title">تنسيق اسم الملف</string>

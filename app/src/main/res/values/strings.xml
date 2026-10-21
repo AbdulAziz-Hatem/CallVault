@@ -174,14 +174,14 @@
     <string name="settings_subsection_resilience">Resilience</string>
     <string name="settings_subsection_voip">VoIP calls</string>
     <string name="settings_voip_recording_label">Record VoIP calls</string>
-    <string name="settings_voip_recording_description">Also record calls made in apps like WhatsApp, Signal and Telegram. Experimental — some apps block recording, and this cannot be known until a call is under way.</string>
+    <string name="settings_voip_recording_description">Also record calls made in apps like WhatsApp, Signal and Telegram. Some apps block recording, and this cannot be known until a call is under way.</string>
     <string name="settings_voip_auto_start_label">Start automatically</string>
     <string name="settings_voip_auto_start_description">Off means CallVault asks first: a notification with a Record button appears when an app call starts.</string>
     <string name="voip_prompt_title">App call in progress</string>
     <string name="voip_prompt_text">Tap Record to record this call.</string>
     <string name="voip_prompt_text_named">%1$s call. Tap Record to record it.</string>
     <string name="voip_recording_warning_title">Record VoIP calls?</string>
-    <string name="voip_recording_warning_message">Recording app calls is more tightly regulated than recording phone calls, and in many places every participant must agree first. Please make sure you are allowed to.\n\nThis is experimental: it works with some apps and not others, and an app can block recording at any time in an update.</string>
+    <string name="voip_recording_warning_message">Recording app calls is more tightly regulated than recording phone calls, and in many places every participant must agree first. Please make sure you are allowed to.\n\nIt works with some apps and not others, and an app can block recording at any time in an update.</string>
     <string name="voip_recording_warning_continue">I understand, turn it on</string>
     <string name="voip_recording_arming">Preparing VoIP recording…</string>
     <string name="notif_voip_recording_title">Recording VoIP call</string>
@@ -200,14 +200,14 @@
     <string name="settings_usb_debugging_shizuku_hint">Leave USB debugging on while you use Shizuku. Shizuku\'s service is started over Android\'s debugging service and stops when it does — CallVault does not need this switch in Shizuku mode.</string>
     <string name="settings_usb_debugging_failed">Couldn\'t change it — CallVault needs the permission it gets during setup.</string>
     <string name="notif_info_channel">CallVault notices</string>
-    <string name="notif_wd_required">Wireless debugging has to stay on because USB debugging is off. Turn on USB debugging in Settings ▸ Experimental and CallVault will switch Wireless debugging off again.</string>
+    <string name="notif_wd_required">Wireless debugging has to stay on because USB debugging is off. Turn on USB debugging in CallVault\'s settings and CallVault will switch Wireless debugging off again.</string>
     <string name="settings_section_debug">Debug</string>
     <string name="settings_section_security">Security</string>
     <string name="settings_section_recorder_server">Recorder service</string>
 
     <!-- Settings Screen: Recorder Service Section -->
     <string name="settings_persistent_server">Persistent recorder server</string>
-    <string name="settings_persistent_server_description">Record calls via a background privileged service so Wireless debugging can stay off between calls. Experimental.</string>
+    <string name="settings_persistent_server_description">Record calls via a background privileged service so Wireless debugging can stay off between calls.</string>
     <string name="settings_wd_disable_when_idle">Turn off Wireless debugging when idle</string>
     <string name="settings_wd_disable_when_idle_description">Disable Wireless debugging once the recorder service is connected; re-enabled briefly only when needed.</string>
 
@@ -233,7 +233,7 @@
     <string name="settings_offline_recording_label">Offline recording (no Wi-Fi)</string>
     <string name="settings_offline_recording_desc">Record calls even when there is no Wi-Fi network. Needs USB debugging on.</string>
     <string name="settings_handoff_persist_label">Resilient recording</string>
-    <string name="settings_handoff_persist_description">Keep a recording going even if the background helper is killed mid-call (e.g. when you lock the screen). Experimental.</string>
+    <string name="settings_handoff_persist_description">Keep a recording going even if the background helper is killed mid-call (e.g. when you lock the screen).</string>
     <string name="settings_usb_default_label">USB when screen unlocks</string>
     <string name="settings_usb_default_hint">"Charging only" keeps recording alive if you lock the screen during a call. Other modes let USB transfer data but can interrupt a recording when you lock the phone.</string>
     <string name="settings_usb_default_applying">Applying…</string>
@@ -448,7 +448,7 @@
     <string name="wizard_auto_record_nothing_warning">With both phone calls and app calls off, CallVault will not record anything. Turn at least one on unless that is what you want.</string>
     <!-- Wizard: Audio step -->
     <string name="wizard_experimental_title">Optional extras</string>
-    <string name="wizard_experimental_subtitle">A feature still being proven. It is off by default — you can turn it on later in Settings.</string>
+    <string name="wizard_experimental_subtitle">It is off by default — you can turn it on later in Settings.</string>
     <string name="wizard_updates_title">Staying up to date</string>
     <string name="wizard_updates_subtitle">CallVault is not on an app store, so it checks GitHub for new versions itself.</string>
     <string name="wizard_reliability_title">Reliable recording</string>
@@ -496,7 +496,7 @@
     <string name="list_separator">", "</string>
     <string name="wizard_transcription_summary_heading">Summaries</string>
     <string name="wizard_transcription_summary_body">Once a call has a transcript, CallVault can also write a short summary of it — on the phone, like everything else here.</string>
-    <string name="wizard_transcription_background_note">Both downloads only run over Wi-Fi, and they keep going in the background. You can carry on and finish setup now — Settings ▸ Transcription &amp; summaries shows the same progress afterwards.</string>
+    <string name="wizard_transcription_background_note">Both downloads only run over Wi-Fi, and they keep going in the background. You can carry on and finish setup now — CallVault\'s settings show the same progress afterwards.</string>
 
     <string name="wizard_audio_title">Audio quality</string>
     <string name="wizard_audio_subtitle">Pick the recording format and bit rate. Opus at 16 kbps is recommended for clear voice at small file sizes.</string>

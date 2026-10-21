@@ -100,7 +100,7 @@
     <string name="notif_info_channel">CallVault-Hinweise</string>
     <string name="notif_voip_recording_text">CallVault nimmt gerade einen App-Anruf auf.</string>
     <string name="notif_voip_recording_title">Aufnahme eines App-Anrufs</string>
-    <string name="notif_wd_required">WLAN-Debugging muss eingeschaltet bleiben, weil USB-Debugging aus ist. Schalte USB-Debugging unter Einstellungen ▸ Experimentell ein, dann schaltet CallVault WLAN-Debugging wieder aus.</string>
+    <string name="notif_wd_required">WLAN-Debugging muss eingeschaltet bleiben, weil USB-Debugging aus ist. Schalte USB-Debugging in den Einstellungen von CallVault ein, dann schaltet CallVault WLAN-Debugging wieder aus.</string>
     <string name="offline_recording_warning_continue">Trotzdem fortfahren</string>
     <string name="offline_recording_warning_message">Dadurch wird ein lokaler Debugging-Port auf Ihrem Telefon geöffnet, damit Anrufe ohne Wi-Fi aufgenommen werden können. Er ist durch den Schlüssel Ihres Geräts geschützt, stellt aber einen kleinen Sicherheitskompromiss dar. Aktivieren Sie ihn nur, wenn Sie Anrufe ohne Wi-Fi aufnehmen müssen.</string>
     <string name="offline_recording_warning_shizuku">Shizuku läuft gerade. Wenn du dies aktivierst, wird der Debugging-Dienst von Android neu gestartet und Shizuku dadurch beendet – CallVault startet es gleich danach wieder und sagt dir Bescheid, falls das nicht klappt.</string>
@@ -223,7 +223,7 @@
     <string name="settings_file_name_template_placeholders">Platzhalter:</string>
     <string name="settings_file_name_template_placeholders_preview">Vorschau: %1$s</string>
     <string name="settings_file_name_template_preset">Voreinstellung</string>
-    <string name="settings_handoff_persist_description">Aufnahme fortsetzen, selbst wenn der Hintergrunddienst während des Anrufs beendet wird (z. B. beim Sperren des Bildschirms). Experimentell.</string>
+    <string name="settings_handoff_persist_description">Aufnahme fortsetzen, selbst wenn der Hintergrunddienst während des Anrufs beendet wird (z. B. beim Sperren des Bildschirms).</string>
     <string name="settings_handoff_persist_label">Robuste Aufnahme</string>
     <string name="settings_ignore_anonymous_incoming">Anonyme eingehende Anrufe ignorieren</string>
     <string name="settings_ignore_contacts_all">Alle Kontakte ignorieren</string>
@@ -238,7 +238,7 @@
     <string name="settings_offline_recording_desc">Anrufe auch ohne WLAN-Netz aufnehmen. Benötigt eingeschaltetes USB-Debugging.</string>
     <string name="settings_offline_recording_label">Offline-Aufnahme (ohne Wi-Fi)</string>
     <string name="settings_persistent_server">Persistenter Aufnahmeserver</string>
-    <string name="settings_persistent_server_description">Anrufe über einen privilegierten Hintergrunddienst aufzeichnen, damit das drahtlose Debugging zwischen Anrufen ausgeschaltet bleiben kann. Experimentell.</string>
+    <string name="settings_persistent_server_description">Anrufe über einen privilegierten Hintergrunddienst aufzeichnen, damit das drahtlose Debugging zwischen Anrufen ausgeschaltet bleiben kann.</string>
     <string name="settings_recording_folder_label">Aufnahmeordner</string>
     <string name="settings_section_about">Über</string>
     <string name="settings_section_audio">Tonkonfiguration</string>
@@ -336,7 +336,7 @@
     <string name="settings_view_licenses">Lizenzen ansehen</string>
     <string name="settings_voip_auto_start_description">Aus bedeutet, dass CallVault zuerst fragt: Bei einem App-Anruf erscheint eine Benachrichtigung mit einer Schaltfläche „Aufnehmen“.</string>
     <string name="settings_voip_auto_start_label">Automatisch starten</string>
-    <string name="settings_voip_recording_description">Nimmt auch Anrufe in Apps wie WhatsApp, Signal und Telegram auf. Experimentell — manche Apps blockieren die Aufnahme, und das lässt sich erst während eines Anrufs feststellen.</string>
+    <string name="settings_voip_recording_description">Nimmt auch Anrufe in Apps wie WhatsApp, Signal und Telegram auf. Manche Apps blockieren die Aufnahme, und das lässt sich erst während eines Anrufs feststellen.</string>
     <string name="settings_voip_recording_label">VoIP-Anrufe aufnehmen</string>
     <string name="settings_wd_disable_when_idle">Drahtloses Debugging im Leerlauf ausschalten</string>
     <string name="settings_wd_disable_when_idle_description">Drahtloses Debugging deaktivieren, sobald der Aufnahmedienst verbunden ist; nur bei Bedarf kurz wieder aktiviert.</string>
@@ -524,7 +524,7 @@
     <string name="voip_recording_names_hint">Kontaktnamen stammen aus der Anrufbenachrichtigung der jeweiligen App. Wenn die Benachrichtigungen für diese App deaktiviert sind, werden ihre Aufnahmen ohne Namen gespeichert.</string>
     <string name="voip_recording_unavailable">Aktivierung auf diesem Gerät nicht möglich — VoIP-Aufnahme ist hier nicht verfügbar.</string>
     <string name="voip_recording_warning_continue">Verstanden, aktivieren</string>
-    <string name="voip_recording_warning_message">Das Aufnehmen von App-Anrufen ist strenger geregelt als das Aufnehmen von Telefonaten, und vielerorts müssen alle Beteiligten vorher zustimmen. Bitte stelle sicher, dass du das darfst.\n\nDies ist experimentell: Es funktioniert mit manchen Apps und mit anderen nicht, und eine App kann die Aufnahme mit einem Update jederzeit blockieren.</string>
+    <string name="voip_recording_warning_message">Das Aufnehmen von App-Anrufen ist strenger geregelt als das Aufnehmen von Telefonaten, und vielerorts müssen alle Beteiligten vorher zustimmen. Bitte stelle sicher, dass du das darfst.\n\nEs funktioniert mit manchen Apps und mit anderen nicht, und eine App kann die Aufnahme mit einem Update jederzeit blockieren.</string>
     <string name="voip_recording_warning_title">VoIP-Anrufe aufnehmen?</string>
     <string name="wizard_audio_subtitle">Wählen Sie das Aufnahmeformat und die Bitrate. Opus mit 16 kbps wird für klare Sprache bei geringer Dateigröße empfohlen.</string>
     <string name="wizard_audio_title">Audioqualität</string>
@@ -540,7 +540,7 @@
     <string name="wizard_day_thursday">Donnerstag</string>
     <string name="wizard_day_tuesday">Dienstag</string>
     <string name="wizard_day_wednesday">Mittwoch</string>
-    <string name="wizard_experimental_subtitle">Eine Funktion, die noch erprobt wird. Sie ist standardmäßig aus — Sie können sie später in den Einstellungen aktivieren.</string>
+    <string name="wizard_experimental_subtitle">Sie ist standardmäßig aus — Sie können sie später in den Einstellungen aktivieren.</string>
     <string name="wizard_experimental_title">Optionale Extras</string>
     <string name="wizard_filename_subtitle">Wählen Sie, wie gespeicherte Aufnahmen benannt werden.</string>
     <string name="wizard_filename_title">Dateinamenformat</string>
@@ -567,7 +567,7 @@
     <string name="wizard_storage_subtitle">Wählen Sie, wo Ihre Aufnahmen gespeichert werden. Sie können dies später in den Einstellungen ändern.</string>
     <string name="wizard_storage_title">Speicherort für Aufnahmen</string>
     <string name="wizard_title">CallVault einrichten</string>
-    <string name="wizard_transcription_background_note">Beide Downloads laufen nur über WLAN und werden im Hintergrund fortgesetzt. Sie können jetzt weitermachen und die Einrichtung abschließen — unter Einstellungen ▸ Transkription &amp; Zusammenfassungen wird derselbe Fortschritt danach weiter angezeigt.</string>
+    <string name="wizard_transcription_background_note">Beide Downloads laufen nur über WLAN und werden im Hintergrund fortgesetzt. Sie können jetzt weitermachen und die Einrichtung abschließen — die Einstellungen von CallVault zeigen danach denselben Fortschritt.</string>
     <string name="wizard_transcription_language_note">Eingestellt ist die Sprache, auf die dieses Telefon eingestellt ist. Sie zu benennen ist weit zuverlässiger, als die App raten zu lassen, und Sie können später pro Anruf eine andere wählen.</string>
     <string name="wizard_transcription_model_note">Zum Transkribieren braucht das Telefon zuerst ein Sprachmodell: %1$s hat %2$d MB, %3$s hat %4$d MB. Ein Anruf braucht dann etwa seine eigene Länge und belastet den Prozessor stark.</string>
     <string name="wizard_transcription_model_size">%1$s hat %2$d MB</string>

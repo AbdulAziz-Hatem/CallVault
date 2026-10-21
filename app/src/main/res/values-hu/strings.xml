@@ -100,7 +100,7 @@
     <string name="notif_info_channel">CallVault értesítések</string>
     <string name="notif_voip_recording_text">A CallVault éppen egy alkalmazáshívást rögzít.</string>
     <string name="notif_voip_recording_title">VoIP-hívás rögzítése</string>
-    <string name="notif_wd_required">A vezeték nélküli hibakeresésnek bekapcsolva kell maradnia, mert az USB-hibakeresés ki van kapcsolva. Kapcsold be az USB-hibakeresést a Beállítások ▸ Kísérleti menüben, és a CallVault újra kikapcsolja a vezeték nélküli hibakeresést.</string>
+    <string name="notif_wd_required">A vezeték nélküli hibakeresésnek bekapcsolva kell maradnia, mert az USB-hibakeresés ki van kapcsolva. Kapcsold be az USB-hibakeresést a CallVault beállításaiban, és a CallVault újra kikapcsolja a vezeték nélküli hibakeresést.</string>
     <string name="offline_recording_warning_continue">Folytatás mindenképp</string>
     <string name="offline_recording_warning_message">Ez megnyit egy helyi hibakeresési portot a telefonján, hogy a hívások Wi-Fi nélkül is rögzíthetők legyenek. Az eszköz kulcsa védi, de kis biztonsági kompromisszumot jelent. Csak akkor engedélyezze, ha Wi-Fi nélkül kell hívásokat rögzítenie.</string>
     <string name="offline_recording_warning_shizuku">A Shizuku éppen fut. Ennek bekapcsolása újraindítja az Android hibakeresési szolgáltatását, ami leállítja a Shizukut – a CallVault közvetlenül utána újraindítja, és szól, ha ez nem sikerül.</string>
@@ -223,7 +223,7 @@
     <string name="settings_file_name_template_placeholders">Kitöltők:</string>
     <string name="settings_file_name_template_placeholders_preview">Előnézet: %1$s</string>
     <string name="settings_file_name_template_preset">Sablon</string>
-    <string name="settings_handoff_persist_description">A rögzítés akkor is folytatódik, ha a háttérsegéd hívás közben leáll (pl. amikor lezárja a képernyőt). Kísérleti.</string>
+    <string name="settings_handoff_persist_description">A rögzítés akkor is folytatódik, ha a háttérsegéd hívás közben leáll (pl. amikor lezárja a képernyőt).</string>
     <string name="settings_handoff_persist_label">Ellenálló rögzítés</string>
     <string name="settings_ignore_anonymous_incoming">Privát / rejtett számos hívások figyelmen kívül hagyása</string>
     <string name="settings_ignore_contacts_all">Az összes ismert névjegytől érkező hívás figyelmen kívül hagyása</string>
@@ -238,7 +238,7 @@
     <string name="settings_offline_recording_desc">Hívások rögzítése Wi-Fi-hálózat nélkül is. Bekapcsolt USB-hibakeresés kell hozzá.</string>
     <string name="settings_offline_recording_label">Offline rögzítés (Wi-Fi nélkül)</string>
     <string name="settings_persistent_server">Állandó rögzítőszerver</string>
-    <string name="settings_persistent_server_description">Hívások rögzítése egy háttérben futó, kiemelt jogosultságú szolgáltatáson keresztül, így a vezeték nélküli hibakeresés a hívások között kikapcsolva maradhat. Kísérleti.</string>
+    <string name="settings_persistent_server_description">Hívások rögzítése egy háttérben futó, kiemelt jogosultságú szolgáltatáson keresztül, így a vezeték nélküli hibakeresés a hívások között kikapcsolva maradhat.</string>
     <string name="settings_recording_folder_label">Felvételek mappája</string>
     <string name="settings_section_about">Névjegy</string>
     <string name="settings_section_audio">Hangbeállítások</string>
@@ -336,7 +336,7 @@
     <string name="settings_view_licenses">Licenszek megtekintése</string>
     <string name="settings_voip_auto_start_description">Kikapcsolva a CallVault először rákérdez: alkalmazáshívás kezdetekor értesítés jelenik meg egy Rögzítés gombbal.</string>
     <string name="settings_voip_auto_start_label">Automatikus indítás</string>
-    <string name="settings_voip_recording_description">A WhatsApp, Signal, Telegram és hasonló alkalmazásokban indított hívásokat is rögzíti. Kísérleti — egyes alkalmazások letiltják a rögzítést, és ez csak hívás közben derül ki.</string>
+    <string name="settings_voip_recording_description">A WhatsApp, Signal, Telegram és hasonló alkalmazásokban indított hívásokat is rögzíti. Egyes alkalmazások letiltják a rögzítést, és ez csak hívás közben derül ki.</string>
     <string name="settings_voip_recording_label">VoIP-hívások rögzítése</string>
     <string name="settings_wd_disable_when_idle">Vezeték nélküli hibakeresés kikapcsolása tétlenkor</string>
     <string name="settings_wd_disable_when_idle_description">A vezeték nélküli hibakeresés letiltása, amint a rögzítőszolgáltatás csatlakozott; csak szükség esetén kapcsol be röviden.</string>
@@ -524,7 +524,7 @@
     <string name="voip_recording_names_hint">A névjegyek nevei a hívó alkalmazás saját hívásértesítéséből származnak. Ha az adott alkalmazás értesítései ki vannak kapcsolva, a felvételei név nélkül mentődnek.</string>
     <string name="voip_recording_unavailable">Nem sikerült bekapcsolni ezen az eszközön — a VoIP-rögzítés itt nem érhető el.</string>
     <string name="voip_recording_warning_continue">Értem, bekapcsolom</string>
-    <string name="voip_recording_warning_message">Az alkalmazásokban zajló hívások rögzítését szigorúbb szabályok kötik, mint a telefonhívásokét, és sok helyen minden résztvevő előzetes hozzájárulása szükséges. Győződj meg róla, hogy jogosult vagy rá.\n\nEz kísérleti funkció: egyes alkalmazásokkal működik, másokkal nem, és egy frissítés bármikor letilthatja a rögzítést.</string>
+    <string name="voip_recording_warning_message">Az alkalmazásokban zajló hívások rögzítését szigorúbb szabályok kötik, mint a telefonhívásokét, és sok helyen minden résztvevő előzetes hozzájárulása szükséges. Győződj meg róla, hogy jogosult vagy rá.\n\nEgyes alkalmazásokkal működik, másokkal nem, és egy frissítés bármikor letilthatja a rögzítést.</string>
     <string name="voip_recording_warning_title">Rögzíted a VoIP-hívásokat?</string>
     <string name="wizard_audio_subtitle">Válassza ki a rögzítési formátumot és a bitrátát. A tiszta hang és a kis fájlméret érdekében az Opus 16 kbps ajánlott.</string>
     <string name="wizard_audio_title">Hangminőség</string>
@@ -540,7 +540,7 @@
     <string name="wizard_day_thursday">Csütörtök</string>
     <string name="wizard_day_tuesday">Kedd</string>
     <string name="wizard_day_wednesday">Szerda</string>
-    <string name="wizard_experimental_subtitle">Egy funkció, amely még bizonyít. Alapból ki van kapcsolva — később a Beállításokban bekapcsolhatja.</string>
+    <string name="wizard_experimental_subtitle">Alapból ki van kapcsolva — később a Beállításokban bekapcsolhatja.</string>
     <string name="wizard_experimental_title">Választható extrák</string>
     <string name="wizard_filename_subtitle">Válassza ki, hogyan legyenek elnevezve a mentett felvételek.</string>
     <string name="wizard_filename_title">Fájlnévformátum</string>
@@ -567,7 +567,7 @@
     <string name="wizard_storage_subtitle">Válassza ki, hová mentse a felvételeit. Ezt később a Beállításokban módosíthatja.</string>
     <string name="wizard_storage_title">Hová mentse a felvételeket</string>
     <string name="wizard_title">CallVault beállítása</string>
-    <string name="wizard_transcription_background_note">Mindkét letöltés csak Wi-Fi-n fut, és a háttérben folytatódik. Most nyugodtan továbbléphet, és befejezheti a beállítást — ugyanez az állapot később a Beállítások ▸ Átirat és összefoglalók alatt is látszik.</string>
+    <string name="wizard_transcription_background_note">Mindkét letöltés csak Wi-Fi-n fut, és a háttérben folytatódik. Most nyugodtan továbbléphet, és befejezheti a beállítást — ugyanez az állapot később a CallVault beállításaiban is látszik.</string>
     <string name="wizard_transcription_language_note">A telefon nyelvére van állítva. Ha megnevezi a nyelvet, az sokkal megbízhatóbb, mintha az alkalmazás találgatna, és később hívásonként is választhat másikat.</string>
     <string name="wizard_transcription_model_note">Az átíráshoz előbb egy beszédmodell kell a telefonra: %1$s: %2$d MB, %3$s: %4$d MB. Egy hívás átírása utána nagyjából annyi ideig tart, mint maga a hívás, és erősen igénybe veszi a processzort.</string>
     <string name="wizard_transcription_model_size">%1$s – %2$d MB</string>

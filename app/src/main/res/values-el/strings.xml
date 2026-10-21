@@ -142,14 +142,14 @@
     <string name="settings_subsection_resilience">Ανθεκτικότητα</string>
     <string name="settings_subsection_voip">Κλήσεις VoIP</string>
     <string name="settings_voip_recording_label">Εγγραφή κλήσεων VoIP</string>
-    <string name="settings_voip_recording_description">Εγγραφή και κλήσεων που γίνονται σε εφαρμογές όπως WhatsApp, Signal και Telegram. Πειραματικό — ορισμένες εφαρμογές εμποδίζουν την εγγραφή, και αυτό δεν μπορεί να γίνει γνωστό μέχρι να είναι σε εξέλιξη μια κλήση.</string>
+    <string name="settings_voip_recording_description">Εγγραφή και κλήσεων που γίνονται σε εφαρμογές όπως WhatsApp, Signal και Telegram. Ορισμένες εφαρμογές εμποδίζουν την εγγραφή, και αυτό δεν μπορεί να γίνει γνωστό μέχρι να είναι σε εξέλιξη μια κλήση.</string>
     <string name="settings_voip_auto_start_label">Αυτόματη έναρξη</string>
     <string name="settings_voip_auto_start_description">Όταν είναι ανενεργό, το CallVault ρωτά πρώτα: εμφανίζεται μια ειδοποίηση με κουμπί Εγγραφής όταν ξεκινά μια κλήση εφαρμογής.</string>
     <string name="voip_prompt_title">Κλήση εφαρμογής σε εξέλιξη</string>
     <string name="voip_prompt_text">Πατήστε Εγγραφή για να καταγράψετε αυτή την κλήση.</string>
     <string name="voip_prompt_text_named">Κλήση %1$s. Πατήστε Εγγραφή για να την καταγράψετε.</string>
     <string name="voip_recording_warning_title">Εγγραφή κλήσεων VoIP;</string>
-    <string name="voip_recording_warning_message">Η εγγραφή κλήσεων εφαρμογών ρυθμίζεται αυστηρότερα από την εγγραφή τηλεφωνικών κλήσεων, και σε πολλά μέρη κάθε συμμετέχων πρέπει να συμφωνήσει πρώτα. Βεβαιωθείτε ότι επιτρέπεται να το κάνετε.\n\nΑυτό είναι πειραματικό: λειτουργεί με ορισμένες εφαρμογές και με άλλες όχι, και μια εφαρμογή μπορεί να εμποδίσει την εγγραφή ανά πάσα στιγμή σε μια ενημέρωση.</string>
+    <string name="voip_recording_warning_message">Η εγγραφή κλήσεων εφαρμογών ρυθμίζεται αυστηρότερα από την εγγραφή τηλεφωνικών κλήσεων, και σε πολλά μέρη κάθε συμμετέχων πρέπει να συμφωνήσει πρώτα. Βεβαιωθείτε ότι επιτρέπεται να το κάνετε.\n\nΛειτουργεί με ορισμένες εφαρμογές και με άλλες όχι, και μια εφαρμογή μπορεί να εμποδίσει την εγγραφή ανά πάσα στιγμή σε μια ενημέρωση.</string>
     <string name="voip_recording_warning_continue">Κατανοώ, ενεργοποίησέ το</string>
     <string name="voip_recording_arming">Προετοιμασία εγγραφής VoIP…</string>
     <string name="notif_voip_recording_title">Εγγραφή κλήσης VoIP</string>
@@ -168,14 +168,14 @@
     <string name="settings_usb_debugging_shizuku_hint">Αφήστε τον εντοπισμό σφαλμάτων USB ενεργό όσο χρησιμοποιείτε το Shizuku. Η υπηρεσία του Shizuku ξεκινά μέσω της υπηρεσίας εντοπισμού σφαλμάτων του Android και σταματά μαζί της — το CallVault δεν χρειάζεται αυτόν τον διακόπτη στη λειτουργία Shizuku.</string>
     <string name="settings_usb_debugging_failed">Δεν ήταν δυνατή η αλλαγή — το CallVault χρειάζεται το δικαίωμα που αποκτά κατά τη ρύθμιση.</string>
     <string name="notif_info_channel">Ειδοποιήσεις CallVault</string>
-    <string name="notif_wd_required">Ο ασύρματος εντοπισμός σφαλμάτων πρέπει να παραμείνει ενεργός επειδή ο εντοπισμός σφαλμάτων USB είναι ανενεργός. Ενεργοποιήστε τον εντοπισμό σφαλμάτων USB στις Ρυθμίσεις ▸ Πειραματικά και το CallVault θα απενεργοποιήσει ξανά τον ασύρματο εντοπισμό σφαλμάτων.</string>
+    <string name="notif_wd_required">Ο ασύρματος εντοπισμός σφαλμάτων πρέπει να παραμείνει ενεργός επειδή ο εντοπισμός σφαλμάτων USB είναι ανενεργός. Ενεργοποιήστε τον εντοπισμό σφαλμάτων USB στις ρυθμίσεις του CallVault και το CallVault θα απενεργοποιήσει ξανά τον ασύρματο εντοπισμό σφαλμάτων.</string>
     <string name="settings_section_debug">Εντοπισμός σφαλμάτων</string>
     <string name="settings_section_security">Ασφάλεια</string>
     <string name="settings_section_recorder_server">Υπηρεσία εγγραφής</string>
 
     <!-- Settings Screen: Recorder Service Section -->
     <string name="settings_persistent_server">Μόνιμος διακομιστής εγγραφής</string>
-    <string name="settings_persistent_server_description">Εγγραφή κλήσεων μέσω μιας προνομιακής υπηρεσίας παρασκηνίου ώστε ο ασύρματος εντοπισμός σφαλμάτων να μπορεί να παραμένει ανενεργός μεταξύ κλήσεων. Πειραματικό.</string>
+    <string name="settings_persistent_server_description">Εγγραφή κλήσεων μέσω μιας προνομιακής υπηρεσίας παρασκηνίου ώστε ο ασύρματος εντοπισμός σφαλμάτων να μπορεί να παραμένει ανενεργός μεταξύ κλήσεων.</string>
     <string name="settings_wd_disable_when_idle">Απενεργοποίηση ασύρματου εντοπισμού σφαλμάτων σε αδράνεια</string>
     <string name="settings_wd_disable_when_idle_description">Απενεργοποίηση του ασύρματου εντοπισμού σφαλμάτων μόλις συνδεθεί η υπηρεσία εγγραφής· ενεργοποιείται ξανά για λίγο μόνο όταν χρειάζεται.</string>
 
@@ -201,7 +201,7 @@
     <string name="settings_offline_recording_label">Εγγραφή εκτός σύνδεσης (χωρίς Wi-Fi)</string>
     <string name="settings_offline_recording_desc">Εγγραφή κλήσεων ακόμα και όταν δεν υπάρχει δίκτυο Wi-Fi. Χρειάζεται ενεργό εντοπισμό σφαλμάτων USB.</string>
     <string name="settings_handoff_persist_label">Ανθεκτική εγγραφή</string>
-    <string name="settings_handoff_persist_description">Διατήρηση μιας εγγραφής σε εξέλιξη ακόμα κι αν ο βοηθός παρασκηνίου τερματιστεί στη μέση της κλήσης (π.χ. όταν κλειδώνετε την οθόνη). Πειραματικό.</string>
+    <string name="settings_handoff_persist_description">Διατήρηση μιας εγγραφής σε εξέλιξη ακόμα κι αν ο βοηθός παρασκηνίου τερματιστεί στη μέση της κλήσης (π.χ. όταν κλειδώνετε την οθόνη).</string>
     <string name="settings_usb_default_label">USB όταν ξεκλειδώνει η οθόνη</string>
     <string name="settings_usb_default_hint">Η «Μόνο φόρτιση» διατηρεί την εγγραφή ζωντανή αν κλειδώσετε την οθόνη κατά τη διάρκεια μιας κλήσης. Άλλες λειτουργίες επιτρέπουν στο USB να μεταφέρει δεδομένα αλλά μπορεί να διακόψουν μια εγγραφή όταν κλειδώνετε το τηλέφωνο.</string>
     <string name="settings_usb_default_applying">Εφαρμογή…</string>
@@ -399,7 +399,7 @@
     <string name="wizard_auto_record_nothing_warning">Με τις τηλεφωνικές κλήσεις και τις κλήσεις εφαρμογών απενεργοποιημένες, το CallVault δεν θα καταγράφει τίποτα. Ενεργοποιήστε τουλάχιστον μία, εκτός αν αυτό θέλετε.</string>
     <!-- Wizard: Audio step -->
     <string name="wizard_experimental_title">Προαιρετικά πρόσθετα</string>
-    <string name="wizard_experimental_subtitle">Μια λειτουργία που δοκιμάζεται ακόμα. Είναι ανενεργή από προεπιλογή — μπορείτε να την ενεργοποιήσετε αργότερα στις Ρυθμίσεις.</string>
+    <string name="wizard_experimental_subtitle">Είναι ανενεργή από προεπιλογή — μπορείτε να την ενεργοποιήσετε αργότερα στις Ρυθμίσεις.</string>
     <string name="wizard_updates_title">Παραμένοντας ενημερωμένοι</string>
     <string name="wizard_updates_subtitle">Το CallVault δεν βρίσκεται σε κατάστημα εφαρμογών, οπότε ελέγχει μόνο του το GitHub για νέες εκδόσεις.</string>
     <string name="wizard_reliability_title">Αξιόπιστη εγγραφή</string>
@@ -447,7 +447,7 @@
     <string name="list_separator">", "</string>
     <string name="wizard_transcription_summary_heading">Περιλήψεις</string>
     <string name="wizard_transcription_summary_body">Μόλις μια κλήση έχει απομαγνητοφώνηση, το CallVault μπορεί επίσης να γράψει μια σύντομη περίληψή της — στο τηλέφωνο, όπως όλα τα υπόλοιπα εδώ.</string>
-    <string name="wizard_transcription_background_note">Και οι δύο λήψεις γίνονται μόνο μέσω Wi-Fi, και συνεχίζονται στο παρασκήνιο. Μπορείτε να συνεχίσετε και να ολοκληρώσετε τη ρύθμιση τώρα — οι Ρυθμίσεις ▸ Απομαγνητοφώνηση &amp; περιλήψεις δείχνουν την ίδια πρόοδο αργότερα.</string>
+    <string name="wizard_transcription_background_note">Και οι δύο λήψεις γίνονται μόνο μέσω Wi-Fi, και συνεχίζονται στο παρασκήνιο. Μπορείτε να συνεχίσετε και να ολοκληρώσετε τη ρύθμιση τώρα — οι ρυθμίσεις του CallVault δείχνουν την ίδια πρόοδο αργότερα.</string>
 
     <string name="wizard_audio_title">Ποιότητα ήχου</string>
     <string name="wizard_audio_subtitle">Επιλέξτε τη μορφή εγγραφής και τον ρυθμό bit. Το Opus στα 16 kbps συνιστάται για καθαρή φωνή με μικρά μεγέθη αρχείων.</string>
