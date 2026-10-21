@@ -90,11 +90,31 @@ class ScopedSettingsScreenTest {
     }
 
     @Test
-    fun `the switch back to the classic screen lives in Debug, which both screens show`() {
+    fun `the switch between the screens is one card at the top of both, and Debug no longer has it`() {
         val debug = source("SettingsAboutDebugSection.kt")
-        assertTrue(debug.contains("ClassicSettingsScreenToggle(preferences, updateTrigger, actions)"))
-        assertTrue("BugReportSection" in SettingsGroups.rowsOf(SettingsGroup.HELP_AND_ABOUT))
+        assertFalse(debug.contains("ClassicSettingsScreenToggle"))
+        assertFalse(debug.contains("setClassicSettingsScreen"))
         assertEquals(1, Regex("""BugReportSection\(""").findAll(newScreen).count())
+
+        // Classic: right under the Shizuku mode row, above Recording.
+        val classic = bodyOf("SettingsContent", source("SettingsScreen.kt"))
+        val classicCard = classic.indexOf("SettingsLayoutSwitchCard(preferences, actions)")
+        assertTrue(classicCard > classic.indexOf("OemGateNotice("))
+        assertTrue(classicCard < classic.indexOf("RecordingSection("))
+
+        // New: under the mode row where there is one, otherwise first; always above the groups.
+        val scoped = source("ScopedSettingsContent.kt")
+        val scopedCard = scoped.indexOf("SettingsLayoutSwitchCard(preferences, actions)")
+        assertTrue(scopedCard > scoped.indexOf("OemGateNotice("))
+        assertTrue(scopedCard < scoped.indexOf("items(groups"))
+        // At the list's own level (same indent as the mode row's `if`), so Transcripts and Summaries show it too.
+        assertTrue(scoped.contains("\n            if (showsModeRow) {"))
+        assertTrue(scoped.contains("\n            item(key = \"layout_switch\") { SettingsLayoutSwitchCard(preferences, actions) }"))
+        // The card flips the stored choice and refreshes, so the other screen shows at once.
+        val card = bodyOf("SettingsLayoutSwitchCard", source("SettingsLayoutSwitchCard.kt"))
+        assertTrue(card.contains("preferences.setClassicSettingsScreen(!isClassic)"))
+        assertTrue(card.contains("actions.refreshSettings()"))
+        assertTrue(card.contains("role = Role.Button"))
     }
 
     @Test
@@ -145,7 +165,7 @@ class ScopedSettingsScreenTest {
             // Composites: the classic screen's bundles of rows that the new screen places one by one.
             "ResilienceRows", "VoipRecordingToggle",
             // Parts of a listed row: drawn inside BugReportSection, SummarySettingsRows, the download rows.
-            "ClassicSettingsScreenToggle", "SummaryRows", "TranscriptionModelRows",
+            "SummaryRows", "TranscriptionModelRows",
             // A dialog over either screen, not a row.
             "SettingsContactPicker",
         )

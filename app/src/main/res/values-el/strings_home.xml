@@ -238,7 +238,7 @@
     <string name="merge_progress_cleaning_up">Εκκαθάριση</string>
     <string name="offline_failed_no_wifi">Δεν ήταν δυνατή η ενεργοποίηση — δεν είστε σε Wi-Fi. Συνδεθείτε σε οποιοδήποτε δίκτυο Wi-Fi μία φορά, και δοκιμάστε ξανά.</string>
     <string name="offline_failed_wd_refused">Δεν ήταν δυνατή η ενεργοποίηση — το Android δεν επέτρεψε τον Ασύρματο εντοπισμό σφαλμάτων σε αυτό το δίκτυο. Ενεργοποιήστε τον μία φορά στις Επιλογές προγραμματιστή, αποδεχτείτε το μήνυμα, και δοκιμάστε ξανά.</string>
-    <string name="offline_failed_needs_usb">Ενεργοποιήστε πρώτα τον εντοπισμό σφαλμάτων USB — η εγγραφή εκτός Wi-Fi δεν μπορεί να λειτουργήσει χωρίς αυτόν. Ρυθμίσεις ▸ Πειραματικά ▸ Εντοπισμός σφαλμάτων USB.</string>
+    <string name="offline_failed_needs_usb">Ενεργοποιήστε πρώτα τον εντοπισμό σφαλμάτων USB στις ρυθμίσεις του CallVault — η εγγραφή εκτός Wi-Fi δεν μπορεί να λειτουργήσει χωρίς αυτόν.</string>
 
     <!-- Home: the hub of cards, and the two sections its cards open -->
     <string name="home_hub_library_title">Βιβλιοθήκη</string>

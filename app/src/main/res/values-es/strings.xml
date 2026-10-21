@@ -100,7 +100,7 @@
     <string name="notif_info_channel">Avisos de CallVault</string>
     <string name="notif_voip_recording_text">CallVault está grabando una llamada de una app.</string>
     <string name="notif_voip_recording_title">Grabando llamada VoIP</string>
-    <string name="notif_wd_required">La depuración inalámbrica debe seguir activada porque la depuración USB está desactivada. Activa la depuración USB en Ajustes ▸ Experimental y CallVault volverá a desactivar la depuración inalámbrica.</string>
+    <string name="notif_wd_required">La depuración inalámbrica debe seguir activada porque la depuración USB está desactivada. Activa la depuración USB en los ajustes de CallVault y CallVault volverá a desactivar la depuración inalámbrica.</string>
     <string name="offline_recording_warning_continue">Continuar de todos modos</string>
     <string name="offline_recording_warning_message">Esto abre un puerto de depuración local en tu teléfono para que las llamadas puedan grabarse sin Wi-Fi. Está protegido por la clave de tu dispositivo, pero supone una pequeña concesión de seguridad. Actívalo solo si necesitas grabar llamadas sin Wi-Fi.</string>
     <string name="offline_recording_warning_shizuku">Shizuku está en ejecución. Al activar esto se reinicia el servicio de depuración de Android, lo que detiene Shizuku: CallVault volverá a iniciarlo justo después y te avisará si no puede.</string>
@@ -223,7 +223,7 @@
     <string name="settings_file_name_template_placeholders">Marcadores de posición:</string>
     <string name="settings_file_name_template_placeholders_preview">Vista previa: %1$s</string>
     <string name="settings_file_name_template_preset">Predefinido</string>
-    <string name="settings_handoff_persist_description">Mantiene la grabación en curso aunque el proceso auxiliar en segundo plano se cierre durante la llamada (p. ej. al bloquear la pantalla). Experimental.</string>
+    <string name="settings_handoff_persist_description">Mantiene la grabación en curso aunque el proceso auxiliar en segundo plano se cierre durante la llamada (p. ej. al bloquear la pantalla).</string>
     <string name="settings_handoff_persist_label">Grabación resistente</string>
     <string name="settings_ignore_anonymous_incoming">Ignorar las llamadas entrantes anónimas</string>
     <string name="settings_ignore_contacts_all">Ignorar todos los contactos</string>
@@ -238,7 +238,7 @@
     <string name="settings_offline_recording_desc">Graba llamadas incluso sin red Wi-Fi. Requiere la depuración USB activada.</string>
     <string name="settings_offline_recording_label">Grabación sin conexión (sin Wi-Fi)</string>
     <string name="settings_persistent_server">Servidor de grabación persistente</string>
-    <string name="settings_persistent_server_description">Graba las llamadas mediante un servicio privilegiado en segundo plano para que la Depuración inalámbrica pueda permanecer desactivada entre llamadas. Experimental.</string>
+    <string name="settings_persistent_server_description">Graba las llamadas mediante un servicio privilegiado en segundo plano para que la Depuración inalámbrica pueda permanecer desactivada entre llamadas.</string>
     <string name="settings_recording_folder_label">Carpeta de grabaciones</string>
     <string name="settings_section_about">Acerca de</string>
     <string name="settings_section_audio">Configuración de audio</string>
@@ -336,7 +336,7 @@
     <string name="settings_view_licenses">Ver licencias</string>
     <string name="settings_voip_auto_start_description">Desactivado significa que CallVault pregunta primero: aparece una notificación con un botón Grabar cuando empieza una llamada de app.</string>
     <string name="settings_voip_auto_start_label">Iniciar automáticamente</string>
-    <string name="settings_voip_recording_description">Graba también las llamadas hechas en apps como WhatsApp, Signal y Telegram. Experimental: algunas apps bloquean la grabación, y no se sabe hasta que la llamada está en curso.</string>
+    <string name="settings_voip_recording_description">Graba también las llamadas hechas en apps como WhatsApp, Signal y Telegram. Algunas apps bloquean la grabación, y no se sabe hasta que la llamada está en curso.</string>
     <string name="settings_voip_recording_label">Grabar llamadas VoIP</string>
     <string name="settings_wd_disable_when_idle">Desactivar la Depuración inalámbrica cuando esté inactiva</string>
     <string name="settings_wd_disable_when_idle_description">Desactiva la Depuración inalámbrica una vez que el servicio de grabación está conectado; se reactiva brevemente solo cuando es necesario.</string>
@@ -524,7 +524,7 @@
     <string name="voip_recording_names_hint">Los nombres de contacto proceden de la propia notificación de llamada de cada app. Si las notificaciones de esa app están desactivadas, sus grabaciones se guardan sin nombre.</string>
     <string name="voip_recording_unavailable">No se pudo activar en este dispositivo: la grabación VoIP no está disponible aquí.</string>
     <string name="voip_recording_warning_continue">Entendido, activar</string>
-    <string name="voip_recording_warning_message">Grabar llamadas de apps está regulado de forma más estricta que grabar llamadas telefónicas, y en muchos lugares todos los participantes deben dar su consentimiento antes. Asegúrate de que te está permitido.\n\nEsto es experimental: funciona con unas apps y con otras no, y una app puede bloquear la grabación en cualquier actualización.</string>
+    <string name="voip_recording_warning_message">Grabar llamadas de apps está regulado de forma más estricta que grabar llamadas telefónicas, y en muchos lugares todos los participantes deben dar su consentimiento antes. Asegúrate de que te está permitido.\n\nFunciona con unas apps y con otras no, y una app puede bloquear la grabación en cualquier actualización.</string>
     <string name="voip_recording_warning_title">¿Grabar llamadas VoIP?</string>
     <string name="wizard_audio_subtitle">Elija el formato de grabación y la tasa de bits. Se recomienda Opus a 16 kbps para una voz clara con archivos de tamaño reducido.</string>
     <string name="wizard_audio_title">Calidad de audio</string>
@@ -540,7 +540,7 @@
     <string name="wizard_day_thursday">Jueves</string>
     <string name="wizard_day_tuesday">Martes</string>
     <string name="wizard_day_wednesday">Miércoles</string>
-    <string name="wizard_experimental_subtitle">Una función que aún se está probando. Está desactivada por defecto: puedes activarla más tarde en Ajustes.</string>
+    <string name="wizard_experimental_subtitle">Está desactivada por defecto: puedes activarla más tarde en Ajustes.</string>
     <string name="wizard_experimental_title">Extras opcionales</string>
     <string name="wizard_filename_subtitle">Elija cómo se nombran las grabaciones guardadas.</string>
     <string name="wizard_filename_title">Formato del nombre de archivo</string>
@@ -567,7 +567,7 @@
     <string name="wizard_storage_subtitle">Elija dónde se almacenan sus grabaciones. Puede cambiar esto más tarde en Ajustes.</string>
     <string name="wizard_storage_title">Dónde guardar las grabaciones</string>
     <string name="wizard_title">Configurar CallVault</string>
-    <string name="wizard_transcription_background_note">Las dos descargas solo se hacen por Wi-Fi y continúan en segundo plano. Puedes seguir y terminar la configuración ahora: después, Ajustes ▸ Transcripción y resúmenes muestra el mismo progreso.</string>
+    <string name="wizard_transcription_background_note">Las dos descargas solo se hacen por Wi-Fi y continúan en segundo plano. Puedes seguir y terminar la configuración ahora: después, los ajustes de CallVault muestran el mismo progreso.</string>
     <string name="wizard_transcription_language_note">Está puesto el idioma en el que está este teléfono. Indicarlo es mucho más fiable que dejar que la app lo adivine, y aún puedes elegir otro para una llamada concreta.</string>
     <string name="wizard_transcription_model_note">Para transcribir hace falta antes un modelo de voz en el teléfono: %1$s ocupa %2$d MB y %3$s ocupa %4$d MB. Transcribir una llamada tarda después aproximadamente lo que dura la llamada y exige mucho al procesador.</string>
     <string name="wizard_transcription_model_size">%1$s ocupa %2$d MB</string>
@@ -753,8 +753,6 @@
     <string name="settings_link_share_debug_report">Compartir un informe de depuración</string>
     <string name="settings_link_all_settings">Todos los ajustes</string>
     <string name="settings_language_change_in_transcripts">Se cambia en los ajustes de transcripciones</string>
-    <string name="settings_classic_screen_label">Usar la pantalla de ajustes clásica</string>
-    <string name="settings_classic_screen_description">Activado: los ajustes se abren como una sola lista larga, como antes. Desactivado: el nuevo diseño, donde el icono de ajustes de cada página muestra solo los ajustes de esa página.</string>
     <string name="settings_summary_off">Desactivado</string>
     <string name="settings_summary_unavailable">No disponible aquí</string>
     <string name="settings_summary_count_on">%1$d de %2$d activados</string>
@@ -789,4 +787,10 @@
     <string name="settings_subheader_app_calls">Llamadas de apps</string>
     <string name="settings_subheader_all_calls">Todas las llamadas</string>
     <string name="settings_voip_auto_start_record_label">Grabar automáticamente las llamadas de apps</string>
+
+    <!-- The card at the top of both Settings screens that switches between the new and classic layouts. -->
+    <string name="settings_layout_try_new_title">Probar el nuevo diseño de ajustes</string>
+    <string name="settings_layout_try_new_subtitle">Cada página muestra solo sus propios ajustes</string>
+    <string name="settings_layout_back_to_classic_title">Cambiar a la vista clásica</string>
+    <string name="settings_layout_back_to_classic_subtitle">Todos los ajustes en una sola lista larga, como antes</string>
 </resources>

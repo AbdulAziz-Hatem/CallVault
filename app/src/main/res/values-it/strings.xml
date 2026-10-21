@@ -100,7 +100,7 @@
     <string name="notif_info_channel">Avvisi di CallVault</string>
     <string name="notif_voip_recording_text">CallVault sta registrando una chiamata di un\'app.</string>
     <string name="notif_voip_recording_title">Registrazione chiamata VoIP</string>
-    <string name="notif_wd_required">Il debug wireless deve restare attivo perché il debug USB è disattivato. Attiva il debug USB in Impostazioni ▸ Sperimentale e CallVault disattiverà di nuovo il debug wireless.</string>
+    <string name="notif_wd_required">Il debug wireless deve restare attivo perché il debug USB è disattivato. Attiva il debug USB nelle impostazioni di CallVault e CallVault disattiverà di nuovo il debug wireless.</string>
     <string name="offline_recording_warning_continue">Continua comunque</string>
     <string name="offline_recording_warning_message">Questa opzione apre una porta di debug locale sul telefono affinché le chiamate possano essere registrate senza Wi-Fi. È protetta dalla chiave del dispositivo, ma rappresenta un piccolo compromesso in termini di sicurezza. Abilitala solo se hai bisogno di registrare chiamate senza Wi-Fi.</string>
     <string name="offline_recording_warning_shizuku">Shizuku è in esecuzione. Attivando questa opzione si riavvia il servizio di debug di Android, il che arresta Shizuku: CallVault lo riavvierà subito dopo e ti avviserà se non ci riesce.</string>
@@ -223,7 +223,7 @@
     <string name="settings_file_name_template_placeholders">Segnaposto:</string>
     <string name="settings_file_name_template_placeholders_preview">Anteprima: %1$s</string>
     <string name="settings_file_name_template_preset">Preimpostazione</string>
-    <string name="settings_handoff_persist_description">Mantiene attiva la registrazione anche se il processo in background viene chiuso durante la chiamata (ad es. quando blocchi lo schermo). Sperimentale.</string>
+    <string name="settings_handoff_persist_description">Mantiene attiva la registrazione anche se il processo in background viene chiuso durante la chiamata (ad es. quando blocchi lo schermo).</string>
     <string name="settings_handoff_persist_label">Registrazione resiliente</string>
     <string name="settings_ignore_anonymous_incoming">Ignora le chiamate anonime in entrata</string>
     <string name="settings_ignore_contacts_all">Ignora tutti i contatti</string>
@@ -238,7 +238,7 @@
     <string name="settings_offline_recording_desc">Registra le chiamate anche senza rete Wi-Fi. Richiede il debug USB attivo.</string>
     <string name="settings_offline_recording_label">Registrazione offline (senza Wi-Fi)</string>
     <string name="settings_persistent_server">Server di registrazione persistente</string>
-    <string name="settings_persistent_server_description">Registra le chiamate tramite un servizio privilegiato in background, così il Debug wireless può restare disattivato tra una chiamata e l\'altra. Sperimentale.</string>
+    <string name="settings_persistent_server_description">Registra le chiamate tramite un servizio privilegiato in background, così il Debug wireless può restare disattivato tra una chiamata e l\'altra.</string>
     <string name="settings_recording_folder_label">Cartella di registrazione</string>
     <string name="settings_section_about">Info</string>
     <string name="settings_section_audio">Configurazione audio</string>
@@ -336,7 +336,7 @@
     <string name="settings_view_licenses">Visualizza licenze</string>
     <string name="settings_voip_auto_start_description">Se disattivato, CallVault chiede prima: all\'inizio di una chiamata in un\'app compare una notifica con un pulsante Registra.</string>
     <string name="settings_voip_auto_start_label">Avvia automaticamente</string>
-    <string name="settings_voip_recording_description">Registra anche le chiamate fatte in app come WhatsApp, Signal e Telegram. Sperimentale: alcune app bloccano la registrazione, e non è possibile saperlo prima che la chiamata sia in corso.</string>
+    <string name="settings_voip_recording_description">Registra anche le chiamate fatte in app come WhatsApp, Signal e Telegram. Alcune app bloccano la registrazione, e non è possibile saperlo prima che la chiamata sia in corso.</string>
     <string name="settings_voip_recording_label">Registra le chiamate VoIP</string>
     <string name="settings_wd_disable_when_idle">Disattiva il Debug wireless quando inattivo</string>
     <string name="settings_wd_disable_when_idle_description">Disattiva il Debug wireless una volta che il servizio di registrazione è connesso; viene riattivato brevemente solo quando necessario.</string>
@@ -524,7 +524,7 @@
     <string name="voip_recording_names_hint">I nomi dei contatti provengono dalla notifica di chiamata dell\'app stessa. Se le notifiche di quell\'app sono disattivate, le sue registrazioni vengono salvate senza nome.</string>
     <string name="voip_recording_unavailable">Non è stato possibile attivarla su questo dispositivo: la registrazione VoIP non è disponibile qui.</string>
     <string name="voip_recording_warning_continue">Ho capito, attiva</string>
-    <string name="voip_recording_warning_message">Registrare le chiamate nelle app è regolamentato in modo più severo rispetto alle chiamate telefoniche e in molti luoghi tutti i partecipanti devono acconsentire prima. Assicurati di esserne autorizzato.\n\nQuesta funzione è sperimentale: con alcune app funziona e con altre no, e un\'app può bloccare la registrazione con un aggiornamento.</string>
+    <string name="voip_recording_warning_message">Registrare le chiamate nelle app è regolamentato in modo più severo rispetto alle chiamate telefoniche e in molti luoghi tutti i partecipanti devono acconsentire prima. Assicurati di esserne autorizzato.\n\nCon alcune app funziona e con altre no, e un\'app può bloccare la registrazione con un aggiornamento.</string>
     <string name="voip_recording_warning_title">Registrare le chiamate VoIP?</string>
     <string name="wizard_audio_subtitle">Scelga il formato di registrazione e il bit rate. Opus a 16 kbps è consigliato per una voce nitida con file di piccole dimensioni.</string>
     <string name="wizard_audio_title">Qualità audio</string>
@@ -540,7 +540,7 @@
     <string name="wizard_day_thursday">Giovedì</string>
     <string name="wizard_day_tuesday">Martedì</string>
     <string name="wizard_day_wednesday">Mercoledì</string>
-    <string name="wizard_experimental_subtitle">Una funzione ancora in prova. È disattivata per impostazione predefinita: puoi attivarla più tardi nelle Impostazioni.</string>
+    <string name="wizard_experimental_subtitle">È disattivata per impostazione predefinita: puoi attivarla più tardi nelle Impostazioni.</string>
     <string name="wizard_experimental_title">Extra facoltativi</string>
     <string name="wizard_filename_subtitle">Scelga come vengono denominate le registrazioni salvate.</string>
     <string name="wizard_filename_title">Formato nome file</string>
@@ -567,7 +567,7 @@
     <string name="wizard_storage_subtitle">Scelga dove archiviare le registrazioni. Potrà modificarlo in seguito nelle Impostazioni.</string>
     <string name="wizard_storage_title">Dove salvare le registrazioni</string>
     <string name="wizard_title">Configura CallVault</string>
-    <string name="wizard_transcription_background_note">Entrambi i download avvengono solo tramite Wi-Fi e proseguono in background. Puoi andare avanti e finire la configurazione adesso: lo stesso avanzamento si trova poi in Impostazioni ▸ Trascrizione e riassunti.</string>
+    <string name="wizard_transcription_background_note">Entrambi i download avvengono solo tramite Wi-Fi e proseguono in background. Puoi andare avanti e finire la configurazione adesso: lo stesso avanzamento si trova poi nelle impostazioni di CallVault.</string>
     <string name="wizard_transcription_language_note">È impostata la lingua a cui è impostato questo telefono. Indicarla è molto più affidabile che lasciar indovinare l\'app, e puoi comunque sceglierne un\'altra per la singola chiamata.</string>
     <string name="wizard_transcription_model_note">Per trascrivere serve prima un modello vocale sul telefono: %1$s occupa %2$d MB, %3$s occupa %4$d MB. Trascrivere una chiamata richiede poi all\'incirca la sua stessa durata e impegna molto il processore.</string>
     <string name="wizard_transcription_model_size">%1$s occupa %2$d MB</string>
@@ -753,8 +753,6 @@
     <string name="settings_link_share_debug_report">Condividi un report di debug</string>
     <string name="settings_link_all_settings">Tutte le impostazioni</string>
     <string name="settings_language_change_in_transcripts">Si cambia nelle impostazioni delle trascrizioni</string>
-    <string name="settings_classic_screen_label">Usa la schermata impostazioni classica</string>
-    <string name="settings_classic_screen_description">Attivo: le impostazioni si aprono come un\'unica lunga lista, come prima. Disattivo: il nuovo layout, in cui l\'icona delle impostazioni di ogni pagina mostra solo le impostazioni di quella pagina.</string>
     <string name="settings_summary_off">Disattivo</string>
     <string name="settings_summary_unavailable">Non disponibile qui</string>
     <string name="settings_summary_count_on">%1$d di %2$d attivi</string>
@@ -789,4 +787,10 @@
     <string name="settings_subheader_app_calls">Chiamate delle app</string>
     <string name="settings_subheader_all_calls">Tutte le chiamate</string>
     <string name="settings_voip_auto_start_record_label">Registra automaticamente le chiamate delle app</string>
+
+    <!-- The card at the top of both Settings screens that switches between the new and classic layouts. -->
+    <string name="settings_layout_try_new_title">Prova il nuovo layout delle impostazioni</string>
+    <string name="settings_layout_try_new_subtitle">Ogni pagina mostra solo le sue impostazioni</string>
+    <string name="settings_layout_back_to_classic_title">Passa alla vista classica</string>
+    <string name="settings_layout_back_to_classic_subtitle">Tutte le impostazioni in un\'unica lunga lista, come prima</string>
 </resources>

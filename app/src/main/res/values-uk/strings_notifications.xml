@@ -6,8 +6,8 @@
     <string name="notif_readiness_starting_title">Запуск рекордера…</string>
     <string name="notif_readiness_ready_text">Рекордер підключено.</string>
     <string name="notif_readiness_starting_text">Підключення рекордера. Дзвінки поки не записуються.</string>
-    <string name="notif_usb_lock_warning">Блокування екрана може зупинити запис. У налаштуваннях виберіть режим USB «Лише заряджання».</string>
-    <string name="notif_usb_check_unavailable">Якщо перевірка не завершується, встановіть «Режим USB при розблокуванні» на «Лише заряджання» в Налаштуваннях ▸ Експериментальні — на деяких телефонах режим USB для передачі даних не дає рекордеру підключитися.</string>
+    <string name="notif_usb_lock_warning">Блокування екрана може зупинити запис. У налаштуваннях CallVault виберіть режим USB «Лише заряджання».</string>
+    <string name="notif_usb_check_unavailable">Якщо перевірка не завершується, встановіть «Режим USB при розблокуванні» на «Лише заряджання» в налаштуваннях CallVault — на деяких телефонах режим USB для передачі даних не дає рекордеру підключитися.</string>
     <string name="notif_pairing_channel">Сполучення ADB</string>
     <string name="notif_pairing_searching_title">Пошук служби сполучення…</string>
     <string name="notif_pairing_searching_text">Відкрийте «Звʼязати пристрій за кодом» у налаштуваннях телефону.</string>

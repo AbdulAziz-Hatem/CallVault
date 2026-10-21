@@ -6,8 +6,8 @@
     <string name="notif_readiness_starting_title">Εκκίνηση καταγραφέα κλήσεων…</string>
     <string name="notif_readiness_ready_text">Ο καταγραφέας είναι συνδεδεμένος.</string>
     <string name="notif_readiness_starting_text">Σύνδεση του καταγραφέα — οι κλήσεις δεν θα καταγράφονται μέχρι να ολοκληρωθεί αυτό.</string>
-    <string name="notif_usb_lock_warning">Το κλείδωμα της οθόνης κατά τη διάρκεια μιας κλήσης μπορεί να σταματήσει την καταγραφή. Στις Ρυθμίσεις ▸ Πειραματικά, ορίστε το «USB όταν ξεκλειδώνει η οθόνη» σε Μόνο φόρτιση.</string>
-    <string name="notif_usb_check_unavailable">Αν αυτό δεν ολοκληρωθεί, ορίστε το «USB όταν ξεκλειδώνει η οθόνη» σε Μόνο φόρτιση στις Ρυθμίσεις ▸ Πειραματικά — σε ορισμένα τηλέφωνα μια λειτουργία USB δεδομένων εμποδίζει τη σύνδεση του καταγραφέα.</string>
+    <string name="notif_usb_lock_warning">Το κλείδωμα της οθόνης κατά τη διάρκεια μιας κλήσης μπορεί να σταματήσει την καταγραφή. Στις ρυθμίσεις του CallVault, ορίστε το «USB όταν ξεκλειδώνει η οθόνη» σε Μόνο φόρτιση.</string>
+    <string name="notif_usb_check_unavailable">Αν αυτό δεν ολοκληρωθεί, ορίστε το «USB όταν ξεκλειδώνει η οθόνη» σε Μόνο φόρτιση στις ρυθμίσεις του CallVault — σε ορισμένα τηλέφωνα μια λειτουργία USB δεδομένων εμποδίζει τη σύνδεση του καταγραφέα.</string>
 
     <!-- ADB wireless-debugging pairing notifications -->
     <string name="notif_pairing_channel">Σύζευξη ADB</string>

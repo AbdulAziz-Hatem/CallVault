@@ -175,7 +175,7 @@
     <string name="whatsnew_230_title">Обʼєднання кількох дзвінків в один запис</string>
     <string name="offline_failed_no_wifi">Не вдалося ввімкнути: немає Wi-Fi. Один раз підключіться до будь-якої мережі й повторіть.</string>
     <string name="offline_failed_wd_refused">Android заборонив бездротове налагодження в цій мережі. Увімкніть його в параметрах розробника та підтвердьте.</string>
-    <string name="offline_failed_needs_usb">Спочатку ввімкніть налагодження USB. Воно потрібне для запису без Wi-Fi.</string>
+    <string name="offline_failed_needs_usb">Спочатку ввімкніть налагодження USB у налаштуваннях CallVault. Воно потрібне для запису без Wi-Fi.</string>
     <string name="home_transcripts_empty_hint">Виберіть «Розпізнати» в меню запису або імпортуйте аудіо. Текст зʼявиться тут після обробки.</string>
     <string name="home_summaries_empty_hint">Відкрийте розмову з транскрипцією та створіть підсумок. Він зʼявиться тут.</string>
     <string name="transcripts_waiting_hint">Ці файли додані для розпізнавання. Натисніть, щоб розпочати, або відкрийте для прослуховування чи видалення.</string>

@@ -280,7 +280,7 @@
     <string name="merge_progress_cleaning_up">جارٍ التنظيف</string>
     <string name="offline_failed_no_wifi">تعذر التمكين — أنت غير متصل بـ Wi-Fi. اتصل بأي شبكة Wi-Fi مرة واحدة، ثم حاول مرة أخرى.</string>
     <string name="offline_failed_wd_refused">تعذر التمكين — لم يسمح Android بتصحيح أخطاء اللاسلكي على هذه الشبكة. قم بتشغيله مرة واحدة في خيارات المطور، واقبل المطالبة، ثم حاول مرة أخرى.</string>
-    <string name="offline_failed_needs_usb">قم بتشغيل تصحيح أخطاء USB أولاً — لا يمكن أن يعمل التسجيل بدون Wi-Fi بدونه. الإعدادات ▸ التجريبي ▸ تصحيح أخطاء USB.</string>
+    <string name="offline_failed_needs_usb">قم بتشغيل تصحيح أخطاء USB في إعدادات CallVault أولاً — لا يمكن أن يعمل التسجيل بدون Wi-Fi بدونه.</string>
     <string name="home_hub_library_title">المكتبة</string>
     <string name="home_hub_recordings_body">كل مكالمة سجلها CallVault.</string>
     <string name="home_hub_transcripts_body">مكالماتك كنصوص — وأي صوت تجلبه.</string>

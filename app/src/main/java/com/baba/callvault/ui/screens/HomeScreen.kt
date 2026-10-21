@@ -910,7 +910,9 @@ fun HomeScreen(
                 // Where the Telegram card goes when the user long-presses it away — moved, not dismissed,
                 // because someone who tucks it away has usually joined and may still want the way back.
                 // Long-pressing here undoes it, which is the only way back: nothing else mentions it.
-                if (communityTucked) {
+                // Main screen only: on the pages it crowded the title row, and with a long title pushed
+                // the settings icon off screen (OP9, 2026-10-21).
+                if (communityTucked && section == HomeSection.Hub) {
                     Spacer(Modifier.width(8.dp))
                     CommunityPill(
                         onClick = { context.openTelegramGroup() },

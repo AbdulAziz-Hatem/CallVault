@@ -101,16 +101,33 @@ fun CvScaffold(
                 // When a [titleTrailing] element is present it sits right next to the title (a weighted
                 // spacer then pushes [actions] to the far edge); otherwise the title column itself takes
                 // the remaining width, preserving the original layout for every existing caller.
-                Column(if (titleTrailing == null) Modifier.weight(1f) else Modifier) {
-                    Text(title, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)
-                    if (subtitle != null) {
-                        Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (titleTrailing == null) {
+                    Column(Modifier.weight(1f)) {
+                        Text(title, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)
+                        if (subtitle != null) {
+                            Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
                     }
-                }
-                if (titleTrailing != null) {
-                    Spacer(Modifier.width(10.dp))
-                    titleTrailing()
-                    Spacer(Modifier.weight(1f))
+                } else {
+                    // Title and pill share what is left once [actions] are placed: weighted children are
+                    // measured last, so the settings icon can never be pushed off screen. When they do not
+                    // fit, the title gives way (one line, ellipsised) rather than the icon.
+                    Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f, fill = false)) {
+                            Text(
+                                title,
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                            if (subtitle != null) {
+                                Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                        }
+                        Spacer(Modifier.width(10.dp))
+                        titleTrailing()
+                    }
                 }
                 actions()
             }

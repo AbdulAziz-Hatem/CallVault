@@ -100,7 +100,7 @@
     <string name="notif_info_channel">CallVault 通知</string>
     <string name="notif_voip_recording_text">CallVault 正在录制一通应用内通话。</string>
     <string name="notif_voip_recording_title">正在录制 VoIP 通话</string>
-    <string name="notif_wd_required">由于 USB 调试已关闭，无线调试必须保持开启。在 设置 ▸ 实验性功能 中开启 USB 调试后，CallVault 会再次关闭无线调试。</string>
+    <string name="notif_wd_required">由于 USB 调试已关闭，无线调试必须保持开启。在 CallVault 的设置中开启 USB 调试后，CallVault 会再次关闭无线调试。</string>
     <string name="offline_recording_warning_continue">仍然继续</string>
     <string name="offline_recording_warning_message">此操作会在您的手机上开启一个本地调试端口，以便在没有 Wi-Fi 的情况下录制通话。它受设备密钥保护，但会带来轻微的安全权衡。仅在您需要在没有 Wi-Fi 的情况下录制通话时才启用。</string>
     <string name="offline_recording_warning_shizuku">Shizuku 正在运行。开启此项会重启 Android 的调试服务，从而停止 Shizuku——CallVault 会随后立即重新启动它，若无法启动会通知你。</string>
@@ -223,7 +223,7 @@
     <string name="settings_file_name_template_placeholders">占位符：</string>
     <string name="settings_file_name_template_placeholders_preview">预览：%1$s</string>
     <string name="settings_file_name_template_preset">预设</string>
-    <string name="settings_handoff_persist_description">即使后台助手在通话中被终止（例如锁定屏幕时），也能继续录音。实验性功能。</string>
+    <string name="settings_handoff_persist_description">即使后台助手在通话中被终止（例如锁定屏幕时），也能继续录音。</string>
     <string name="settings_handoff_persist_label">弹性录音</string>
     <string name="settings_ignore_anonymous_incoming">如果对方隐藏了来电显示（仅部分国家运营商支持）则不录音</string>
     <string name="settings_ignore_contacts_all">不要录制所有联系人的通话</string>
@@ -238,7 +238,7 @@
     <string name="settings_offline_recording_desc">即使没有 Wi-Fi 网络也能录音。需要开启 USB 调试。</string>
     <string name="settings_offline_recording_label">离线录音（无 Wi-Fi）</string>
     <string name="settings_persistent_server">常驻录音服务器</string>
-    <string name="settings_persistent_server_description">通过后台特权服务录制通话，使无线调试在两次通话之间可以保持关闭。实验性功能。</string>
+    <string name="settings_persistent_server_description">通过后台特权服务录制通话，使无线调试在两次通话之间可以保持关闭。</string>
     <string name="settings_recording_folder_label">选取保存目录</string>
     <string name="settings_section_about">关于</string>
     <string name="settings_section_audio">音源选项</string>
@@ -336,7 +336,7 @@
     <string name="settings_view_licenses">阅读许可协议</string>
     <string name="settings_voip_auto_start_description">关闭后，CallVault 会先询问：应用内通话开始时会显示带“录制”按钮的通知。</string>
     <string name="settings_voip_auto_start_label">自动开始</string>
-    <string name="settings_voip_recording_description">同时录制在 WhatsApp、Signal、Telegram 等应用中进行的通话。实验性功能——部分应用会阻止录音，而这只有在通话进行时才能得知。</string>
+    <string name="settings_voip_recording_description">同时录制在 WhatsApp、Signal、Telegram 等应用中进行的通话。部分应用会阻止录音，而这只有在通话进行时才能得知。</string>
     <string name="settings_voip_recording_label">录制 VoIP 通话</string>
     <string name="settings_wd_disable_when_idle">空闲时关闭无线调试</string>
     <string name="settings_wd_disable_when_idle_description">录音服务连接后即关闭无线调试；仅在需要时短暂重新启用。</string>
@@ -524,7 +524,7 @@
     <string name="voip_recording_names_hint">联系人姓名来自通话应用自己的来电通知。如果该应用的通知被关闭，它的录音将不带姓名保存。</string>
     <string name="voip_recording_unavailable">无法在此设备上启用 — 这里不支持 VoIP 录音。</string>
     <string name="voip_recording_warning_continue">我明白，开启</string>
-    <string name="voip_recording_warning_message">录制应用内通话所受的法律约束比录制电话通话更严格，许多地区要求所有参与者事先同意。请确认你有权这样做。\n\n这是实验性功能：对部分应用有效，对另一些无效，应用也可能在任何一次更新中阻止录音。</string>
+    <string name="voip_recording_warning_message">录制应用内通话所受的法律约束比录制电话通话更严格，许多地区要求所有参与者事先同意。请确认你有权这样做。\n\n对部分应用有效，对另一些无效，应用也可能在任何一次更新中阻止录音。</string>
     <string name="voip_recording_warning_title">录制 VoIP 通话？</string>
     <string name="wizard_audio_subtitle">选择录音格式和比特率。推荐使用 16 kbps 的 Opus，可在小文件下获得清晰的语音。</string>
     <string name="wizard_audio_title">音频质量</string>
@@ -540,7 +540,7 @@
     <string name="wizard_day_thursday">星期四</string>
     <string name="wizard_day_tuesday">星期二</string>
     <string name="wizard_day_wednesday">星期三</string>
-    <string name="wizard_experimental_subtitle">一项仍在验证中的功能，默认关闭，你可以稍后在「设置」中开启。</string>
+    <string name="wizard_experimental_subtitle">默认关闭，你可以稍后在「设置」中开启。</string>
     <string name="wizard_experimental_title">可选功能</string>
     <string name="wizard_filename_subtitle">选择已保存录音的命名方式。</string>
     <string name="wizard_filename_title">文件名格式</string>
@@ -567,7 +567,7 @@
     <string name="wizard_storage_subtitle">选择录音的存储位置。你之后可以在设置中更改。</string>
     <string name="wizard_storage_title">录音保存位置</string>
     <string name="wizard_title">设置 CallVault</string>
-    <string name="wizard_transcription_background_note">两项下载都只通过 Wi-Fi 进行，并且会在后台继续。你现在可以继续完成设置——之后在设置 ▸ 转写与摘要中也能看到同样的进度。</string>
+    <string name="wizard_transcription_background_note">两项下载都只通过 Wi-Fi 进行，并且会在后台继续。你现在可以继续完成设置——之后在 CallVault 的设置中也能看到同样的进度。</string>
     <string name="wizard_transcription_language_note">已按这部手机的系统语言设定。指明语言比让应用去猜可靠得多，之后你仍然可以为单通电话选择别的语言。</string>
     <string name="wizard_transcription_model_note">转写需要先在手机上准备一个语音模型：%1$s 为 %2$d MB，%3$s 为 %4$d MB。之后转写一通电话所需的时间大致与通话本身一样长，并且会重度占用处理器。</string>
     <string name="wizard_transcription_model_size">%1$s 为 %2$d MB</string>
@@ -752,8 +752,6 @@
     <string name="settings_link_share_debug_report">分享调试报告</string>
     <string name="settings_link_all_settings">全部设置</string>
     <string name="settings_language_change_in_transcripts">在转写设置中更改</string>
-    <string name="settings_classic_screen_label">使用经典设置界面</string>
-    <string name="settings_classic_screen_description">开启：设置像以前一样以一个长列表打开。关闭：使用新布局，每个页面的设置图标只显示该页面的设置。</string>
     <string name="settings_summary_off">关闭</string>
     <string name="settings_summary_unavailable">此处不可用</string>
     <string name="settings_summary_count_on">已开启 %1$d/%2$d 项</string>
@@ -788,4 +786,10 @@
     <string name="settings_subheader_app_calls">应用通话</string>
     <string name="settings_subheader_all_calls">所有通话</string>
     <string name="settings_voip_auto_start_record_label">应用通话自动录音</string>
+
+    <!-- The card at the top of both Settings screens that switches between the new and classic layouts. -->
+    <string name="settings_layout_try_new_title">试用新的设置布局</string>
+    <string name="settings_layout_try_new_subtitle">每个页面只显示自己的设置</string>
+    <string name="settings_layout_back_to_classic_title">切换到经典视图</string>
+    <string name="settings_layout_back_to_classic_subtitle">所有设置集中在一个长列表中，与以前一样</string>
 </resources>

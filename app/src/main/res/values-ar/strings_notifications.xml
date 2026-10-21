@@ -5,8 +5,8 @@
     <string name="notif_readiness_starting_title">مسجل المكالمات قيد التشغيل…</string>
     <string name="notif_readiness_ready_text">المسجل متصل.</string>
     <string name="notif_readiness_starting_text">جارٍ توصيل المسجل — لن يتم تسجيل المكالمات حتى ينتهي هذا.</string>
-    <string name="notif_usb_lock_warning">قد يؤدي قفل الشاشة أثناء المكالمة إلى إيقاف التسجيل. في الإعدادات ▸ التجريبي، اضبط "USB عند إلغاء قفل الشاشة" على الشحن فقط.</string>
-    <string name="notif_usb_check_unavailable">إذا لم ينته هذا، فاضبط "USB عند إلغاء قفل الشاشة" على الشحن فقط في الإعدادات ▸ التجريبي — على بعض الهواتف، يؤدي وضع بيانات USB إلى توقف المسجل عن الاتصال.</string>
+    <string name="notif_usb_lock_warning">قد يؤدي قفل الشاشة أثناء المكالمة إلى إيقاف التسجيل. في إعدادات CallVault، اضبط "USB عند إلغاء قفل الشاشة" على الشحن فقط.</string>
+    <string name="notif_usb_check_unavailable">إذا لم ينته هذا، فاضبط "USB عند إلغاء قفل الشاشة" على الشحن فقط في إعدادات CallVault — على بعض الهواتف، يؤدي وضع بيانات USB إلى توقف المسجل عن الاتصال.</string>
     <string name="notif_pairing_channel">اقتران ADB</string>
     <string name="notif_pairing_searching_title">البحث عن خدمة الاقتران…</string>
     <string name="notif_pairing_searching_text">افتح مربع حوار "اقتران الجهاز برمز الاقتران" في الهاتف.</string>

@@ -109,7 +109,7 @@
     <string name="settings_subsection_resilience">Стійкість запису</string>
     <string name="settings_subsection_voip">Дзвінки VoIP</string>
     <string name="settings_voip_recording_label">Записувати дзвінки VoIP</string>
-    <string name="settings_voip_recording_description">Запис дзвінків із WhatsApp, Signal і Telegram. Експериментально: деякі програми або прошивки блокують захоплення звуку.</string>
+    <string name="settings_voip_recording_description">Запис дзвінків із WhatsApp, Signal і Telegram. Деякі програми або прошивки блокують захоплення звуку.</string>
     <string name="settings_voip_auto_start_label">Починати автоматично</string>
     <string name="settings_voip_auto_start_description">Якщо вимкнено, під час VoIP-дзвінка зʼявиться сповіщення з кнопкою запису.</string>
     <string name="voip_prompt_title">Триває дзвінок у застосунку</string>
@@ -132,7 +132,7 @@
     <string name="settings_section_security">Безпека</string>
     <string name="settings_section_recorder_server">Служба запису</string>
     <string name="settings_persistent_server">Постійна служба запису</string>
-    <string name="settings_persistent_server_description">Фонова служба з підвищеними дозволами дозволяє вимикати бездротове налагодження між дзвінками. Експериментально.</string>
+    <string name="settings_persistent_server_description">Фонова служба з підвищеними дозволами дозволяє вимикати бездротове налагодження між дзвінками.</string>
     <string name="settings_wd_disable_when_idle">Вимикати бездротове налагодження в простої</string>
     <string name="settings_wd_disable_when_idle_description">Вимикає бездротове налагодження після підключення служби запису.</string>
     <string name="settings_storage_section">Сховище</string>
@@ -150,7 +150,7 @@
     <string name="settings_offline_recording_label">Запис без Wi-Fi</string>
     <string name="settings_offline_recording_desc">Записувати навіть без мережі Wi-Fi. Потрібне налагодження USB.</string>
     <string name="settings_handoff_persist_label">Стійкий запис</string>
-    <string name="settings_handoff_persist_description">Продовжувати запис, якщо Android зупинить фонову службу під час дзвінка. Експериментально.</string>
+    <string name="settings_handoff_persist_description">Продовжувати запис, якщо Android зупинить фонову службу під час дзвінка.</string>
     <string name="settings_usb_default_label">Режим USB при розблокуванні</string>
     <string name="settings_usb_default_applying">Застосування…</string>
     <string name="settings_usb_default_busy">Неможливо змінити параметр під час запису: це перезапустить службу налагодження Android.</string>
@@ -273,7 +273,7 @@
     <string name="wizard_auto_record_title">Автоматичний запис</string>
     <string name="wizard_auto_record_subtitle">Оберіть, які дзвінки записувати автоматично. Пізніше це можна точніше налаштувати в Налаштуваннях.</string>
     <string name="wizard_experimental_title">Додаткові можливості</string>
-    <string name="wizard_experimental_subtitle">Експериментальна функція вимкнена за замовчуванням. Можна ввімкнути пізніше.</string>
+    <string name="wizard_experimental_subtitle">Функція вимкнена за замовчуванням. Можна ввімкнути пізніше в налаштуваннях.</string>
     <string name="wizard_updates_title">Оновлення</string>
     <string name="wizard_updates_subtitle">CallVault перевіряє оновлення через GitHub.</string>
     <string name="wizard_reliability_title">Надійний запис</string>
@@ -425,14 +425,14 @@
     <string name="permission_battery_description">Дозволяє програмі працювати у фоні без обмежень енергозбереження. На деяких телефонах потрібно окремо дозволити фонову активність.</string>
     <string name="permission_battery_oem_hint">Оптимізацію батареї вимкнено. На сторінці програми відкрийте «Батарея» й виберіть необмежену фонову активність.</string>
     <string name="home_hero_pill_with_mode">%1$s · %2$s</string>
-    <string name="voip_recording_warning_message">Запис розмов у месенджерах може вимагати згоди всіх учасників. Перевірте місцеві вимоги перед увімкненням.\n\nЦе експериментальна можливість: якість та доступність залежать від застосунку й прошивки.</string>
+    <string name="voip_recording_warning_message">Запис розмов у месенджерах може вимагати згоди всіх учасників. Перевірте місцеві вимоги перед увімкненням.\n\nЯкість та доступність залежать від застосунку й прошивки.</string>
     <string name="voip_missed_not_ready">VoIP-дзвінок не записано — CallVault не встиг підготуватися. Наступний дзвінок має працювати.</string>
     <string name="voip_one_sided_warning_vivo">Записано лише ваш голос. На vivo відкрийте «Диктофон» → запис дзвінків із застосунків та увімкніть відповідну опцію.</string>
     <string name="voip_recording_names_hint">Імена беруться зі сповіщень месенджера. Якщо його сповіщення вимкнені, запис може не містити імені.</string>
     <string name="settings_usb_debugging_on_hint">CallVault може тримати бездротове налагодження вимкненим. Якщо вимкнути USB-налагодження, служба тимчасово перезапуститься через Wi-Fi.</string>
     <string name="settings_usb_debugging_shizuku_hint">Під час використання Shizuku залишайте USB-налагодження увімкненим, оскільки його вимкнення зупинить службу Shizuku.</string>
     <string name="notif_info_channel">Повідомлення CallVault</string>
-    <string name="notif_wd_required">Бездротове налагодження потрібно тримати ввімкненим, доки вимкнено налагодження USB. Увімкніть USB-налагодження в експериментальних параметрах.</string>
+    <string name="notif_wd_required">Бездротове налагодження потрібно тримати ввімкненим, доки вимкнено налагодження USB. Увімкніть USB-налагодження в налаштуваннях CallVault.</string>
     <string name="settings_usb_default_hint">Режим «Лише заряджання» допомагає зберігати запис після блокування екрана. Режими передавання даних можуть заважати запису.</string>
     <string name="settings_usb_default_shizuku_hint">Не змінюйте цей параметр під час використання Shizuku. Зміна перезапустить налагодження Android і зупинить Shizuku.</string>
     <string name="offline_recording_warning_message">Буде відкрито порт налагодження Android, щоб запис працював без Wi-Fi. Порт захищений ключем пристрою, але це додатковий ризик безпеки. Увімкніть лише за необхідності.</string>
@@ -470,7 +470,7 @@
     <string name="wizard_transcription_model_sizes_note">Для розпізнавання потрібна модель на телефоні: %1$s. Процес може тривати приблизно стільки ж, скільки сама розмова.</string>
     <string name="wizard_transcription_model_size">%1$s — %2$d МБ</string>
     <string name="wizard_transcription_summary_body">Коли розмову розпізнано, CallVault може створити короткий підсумок прямо на телефоні.</string>
-    <string name="wizard_transcription_background_note">Моделі завантажуються лише через Wi-Fi. Завантаження може тривати у фоні; стан можна переглянути в налаштуваннях транскрипції та підсумків.</string>
+    <string name="wizard_transcription_background_note">Моделі завантажуються лише через Wi-Fi. Завантаження може тривати у фоні; стан можна переглянути в налаштуваннях CallVault.</string>
     <string name="home_status_dev_options_off_suggestion">Для запису через ADB потрібні параметри розробника. Увімкніть їх та бездротове налагодження в налаштуваннях Android.</string>
     <string name="home_status_update_regrant_title">Повторно підключіть рекордер</string>
     <string name="home_status_update_regrant_suggestion">Після оновлення втрачено дозвіл на запуск рекордера. Увімкніть бездротове налагодження один раз, щоб відновити роботу.</string>
@@ -763,8 +763,6 @@
     <string name="settings_link_share_debug_report">Поділитися звітом діагностики</string>
     <string name="settings_link_all_settings">Усі налаштування</string>
     <string name="settings_language_change_in_transcripts">Змінюється в налаштуваннях транскрипцій</string>
-    <string name="settings_classic_screen_label">Класичний екран налаштувань</string>
-    <string name="settings_classic_screen_description">Увімк.: налаштування відкриваються одним довгим списком, як раніше. Вимк.: новий вигляд, де значок налаштувань на кожній сторінці показує лише її налаштування.</string>
     <string name="settings_summary_off">Вимк.</string>
     <string name="settings_summary_unavailable">Тут недоступно</string>
     <string name="settings_summary_count_on">Увімкнено: %1$d з %2$d</string>
@@ -799,4 +797,10 @@
     <string name="settings_subheader_app_calls">Дзвінки в застосунках</string>
     <string name="settings_subheader_all_calls">Усі дзвінки</string>
     <string name="settings_voip_auto_start_record_label">Автоматично записувати дзвінки в застосунках</string>
+
+    <!-- The card at the top of both Settings screens that switches between the new and classic layouts. -->
+    <string name="settings_layout_try_new_title">Спробувати новий вигляд налаштувань</string>
+    <string name="settings_layout_try_new_subtitle">Кожна сторінка показує лише свої налаштування</string>
+    <string name="settings_layout_back_to_classic_title">Повернутися до класичного вигляду</string>
+    <string name="settings_layout_back_to_classic_subtitle">Усі налаштування одним довгим списком, як раніше</string>
 </resources>

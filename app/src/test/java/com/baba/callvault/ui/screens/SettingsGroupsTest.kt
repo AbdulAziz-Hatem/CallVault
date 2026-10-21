@@ -113,7 +113,8 @@ class SettingsGroupsTest {
         val placed = all.flatMap { SettingsGroups.settingKeysOf(it) }.toSet()
         listOf(
             "wd_enforced", "storage_target", "recording_folder_uri", "drive_folder_uri",
-            "logging_enabled", "classic_settings_screen",
+            // classic_settings_screen is not in a group: the layout switch card above the groups holds it.
+            "logging_enabled",
         ).forEach { assertTrue("$it has no group", it in placed) }
     }
 
