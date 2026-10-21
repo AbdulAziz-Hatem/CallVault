@@ -28,14 +28,6 @@ class SettingsGroupSummariesTest {
     }
 
     @Test
-    fun `a feature that cannot work here is unavailable, not off`() {
-        assertEquals(FeatureSummary.UNAVAILABLE, featureSummary(isOn = true, isAvailable = false))
-        assertEquals(FeatureSummary.UNAVAILABLE, featureSummary(isOn = false, isAvailable = false))
-        assertEquals(FeatureSummary.ON, featureSummary(isOn = true, isAvailable = true))
-        assertEquals(FeatureSummary.OFF, featureSummary(isOn = false, isAvailable = true))
-    }
-
-    @Test
     fun `count summary counts only switches the user can use`() {
         val switches = listOf(
             SwitchSummaryInput(isOn = true, isAvailable = true),
@@ -58,5 +50,40 @@ class SettingsGroupSummariesTest {
         assertEquals("On · incoming only", joinSummary(listOf("On", null, "", "incoming only")))
         assertEquals("Opus", joinSummary(listOf("Opus")))
         assertEquals("", joinSummary(listOf(null, " ")))
+    }
+
+    @Test
+    fun `calls to record names phone and app calls and the phone directions`() {
+        assertEquals(
+            CallsToRecordSummary(CallsWhich.PHONE_AND_APP, RecordingSummary.BOTH),
+            callsToRecordSummary(isPhoneOn = true, isAppOn = true, isIncomingOn = true, isOutgoingOn = true),
+        )
+        assertEquals(
+            CallsToRecordSummary(CallsWhich.PHONE_ONLY, RecordingSummary.INCOMING_ONLY),
+            callsToRecordSummary(isPhoneOn = true, isAppOn = false, isIncomingOn = true, isOutgoingOn = false),
+        )
+        assertEquals(
+            CallsToRecordSummary(CallsWhich.PHONE_ONLY, RecordingSummary.MANUAL_ONLY),
+            callsToRecordSummary(isPhoneOn = true, isAppOn = false, isIncomingOn = false, isOutgoingOn = false),
+        )
+    }
+
+    @Test
+    fun `app calls alone carry no direction, and nothing on reads off`() {
+        assertEquals(
+            CallsToRecordSummary(CallsWhich.APP_ONLY, null),
+            callsToRecordSummary(isPhoneOn = false, isAppOn = true, isIncomingOn = true, isOutgoingOn = true),
+        )
+        assertEquals(
+            CallsToRecordSummary(CallsWhich.NONE, null),
+            callsToRecordSummary(isPhoneOn = false, isAppOn = false, isIncomingOn = true, isOutgoingOn = true),
+        )
+    }
+
+    @Test
+    fun `skip rules count only the rules that are on`() {
+        assertEquals(0, activeRuleCount(listOf(false, false, false)))
+        assertEquals(2, activeRuleCount(listOf(true, false, true)))
+        assertEquals(0, activeRuleCount(emptyList()))
     }
 }

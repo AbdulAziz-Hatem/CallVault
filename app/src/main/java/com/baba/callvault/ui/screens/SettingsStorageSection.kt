@@ -58,25 +58,12 @@ internal fun StorageSection(
     onSelectFolder: () -> Unit,
     onSelectDriveFolder: () -> Unit
 ) {
-    val context = LocalContext.current
-
-    val recordingFolderLabel = remember(updateTrigger) { SafHelper.getFolderDisplayNameOrNull(context, preferences.getRecordingFolderUri()) }
-    val recordingFolderIsCloud = remember(updateTrigger) { SafHelper.isCloudFolder(preferences.getRecordingFolderUri()) }
     val storageTarget = remember(updateTrigger) { preferences.getStorageTarget() }
-    val driveFolderLabel = remember(updateTrigger) { SafHelper.getFolderDisplayNameOrNull(context, preferences.getDriveFolderUri()) }
 
     // One open sub-section at a time, within this section only, and nothing open on entry.
     var openSub by rememberSaveable { mutableStateOf<String?>(null) }
 
-    val storageTargetOptions = StorageTarget.entries.map { target ->
-        val labelRes = when (target) {
-            StorageTarget.LOCAL -> R.string.storage_target_local
-            StorageTarget.DRIVE -> R.string.storage_target_drive
-            StorageTarget.BOTH  -> R.string.storage_target_both
-        }
-        OptionItem(target.key, stringResource(labelRes))
-    }
-
+    // The rows are below, one composable each, shared with the new Settings screen's groups.
     SettingsSection(
         title = stringResource(R.string.settings_section_storage),
         expanded = expanded,
@@ -88,64 +75,25 @@ internal fun StorageSection(
         expanded = openSub == SUB_WHERE,
         onToggle = { openSub = if (openSub == SUB_WHERE) null else SUB_WHERE },
       ) {
-        DropdownRow {
-            M3DropdownField(
-                label    = stringResource(R.string.settings_storage_target_label),
-                selected = storageTargetOptions.find { it.key == storageTarget.key } ?: storageTargetOptions.first(),
-                options  = storageTargetOptions,
-                onOptionSelected = { actions.setStorageTarget(StorageTarget.fromKey(it.key)) }
-            )
-        }
+        StorageTargetRow(preferences, updateTrigger, actions)
 
         SettingsDivider()
 
         // Beside the destination rather than with the deletion settings: this is about what lands in
         // the folder, not about what is removed from it.
-        SettingsToggleRow(
-            label = stringResource(R.string.settings_metadata_file_label),
-            description = stringResource(R.string.settings_metadata_file_desc),
-            checked = remember(updateTrigger) { preferences.isWriteMetadataFileEnabled() },
-            onCheckedChange = { actions.setWriteMetadataFileEnabled(it) }
-        )
-        SettingsHint(stringResource(R.string.settings_metadata_file_hint))
+        MetadataFileRow(preferences, updateTrigger, actions)
 
         // Also a destination choice: a text copy of the transcript + notes in the folder, for PC backup.
-        SettingsToggleRow(
-            label = stringResource(R.string.settings_transcript_sidecar_label),
-            description = stringResource(R.string.settings_transcript_sidecar_desc),
-            checked = remember(updateTrigger) { preferences.isWriteTranscriptSidecarEnabled() },
-            onCheckedChange = { actions.setWriteTranscriptSidecarEnabled(it) }
-        )
-        SettingsHint(stringResource(R.string.settings_transcript_sidecar_hint))
+        TranscriptSidecarRow(preferences, updateTrigger, actions)
 
         // A property of the folder, like the two above: what other apps get to see of it.
-        SettingsToggleRow(
-            label = stringResource(R.string.settings_hide_recordings_label),
-            description = stringResource(R.string.settings_hide_recordings_desc),
-            checked = remember(updateTrigger) { preferences.isHideRecordingsEnabled() },
-            onCheckedChange = { actions.setHideRecordingsEnabled(it) }
-        )
-        SettingsHint(stringResource(R.string.settings_hide_recordings_hint))
+        HideRecordingsRow(preferences, updateTrigger, actions)
 
         SettingsDivider()
 
-        NavigationRow(
-            icon = Icons.Filled.Folder,
-            label = stringResource(R.string.settings_recording_folder_label),
-            value = recordingFolderLabel ?: stringResource(R.string.settings_tap_to_select_folder),
-            // Surface a cloud folder (e.g. Google Drive) that was set before we started rejecting them —
-            // otherwise it's indistinguishable from a local folder by name alone.
-            supporting = if (recordingFolderIsCloud) stringResource(R.string.folder_cloud_warning) else null,
-            onClick = onSelectFolder
-        )
+        RecordingFolderRow(preferences, updateTrigger, onSelectFolder)
 
-        NavigationRow(
-            icon = Icons.Filled.Cloud,
-            label = stringResource(R.string.settings_drive_folder_label),
-            value = driveFolderLabel ?: stringResource(R.string.general_not_set),
-            supporting = stringResource(R.string.settings_drive_folder_desc),
-            onClick = onSelectDriveFolder
-        )
+        DriveFolderRow(preferences, updateTrigger, onSelectDriveFolder)
 
       }
 
@@ -171,9 +119,98 @@ internal fun StorageSection(
     }
 }
 
+/** Where recordings are saved: this device, Drive, or both. */
+@Composable
+internal fun StorageTargetRow(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
+    val storageTarget = remember(updateTrigger) { preferences.getStorageTarget() }
+    val storageTargetOptions = StorageTarget.entries.map { target ->
+        val labelRes = when (target) {
+            StorageTarget.LOCAL -> R.string.storage_target_local
+            StorageTarget.DRIVE -> R.string.storage_target_drive
+            StorageTarget.BOTH  -> R.string.storage_target_both
+        }
+        OptionItem(target.key, stringResource(labelRes))
+    }
+    DropdownRow {
+        M3DropdownField(
+            label    = stringResource(R.string.settings_storage_target_label),
+            selected = storageTargetOptions.find { it.key == storageTarget.key } ?: storageTargetOptions.first(),
+            options  = storageTargetOptions,
+            onOptionSelected = { actions.setStorageTarget(StorageTarget.fromKey(it.key)) }
+        )
+    }
+}
+
+/** The BCR-compatible details (.json) file beside each recording. */
+@Composable
+internal fun MetadataFileRow(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
+    SettingsToggleRow(
+        label = stringResource(R.string.settings_metadata_file_label),
+        description = stringResource(R.string.settings_metadata_file_desc),
+        checked = remember(updateTrigger) { preferences.isWriteMetadataFileEnabled() },
+        onCheckedChange = { actions.setWriteMetadataFileEnabled(it) }
+    )
+    SettingsHint(stringResource(R.string.settings_metadata_file_hint))
+}
+
+/** A text copy of the transcript and notes beside each recording, for PC backup. */
+@Composable
+internal fun TranscriptSidecarRow(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
+    SettingsToggleRow(
+        label = stringResource(R.string.settings_transcript_sidecar_label),
+        description = stringResource(R.string.settings_transcript_sidecar_desc),
+        checked = remember(updateTrigger) { preferences.isWriteTranscriptSidecarEnabled() },
+        onCheckedChange = { actions.setWriteTranscriptSidecarEnabled(it) }
+    )
+    SettingsHint(stringResource(R.string.settings_transcript_sidecar_hint))
+}
+
+/** What other apps get to see of the recordings folder. */
+@Composable
+internal fun HideRecordingsRow(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
+    SettingsToggleRow(
+        label = stringResource(R.string.settings_hide_recordings_label),
+        description = stringResource(R.string.settings_hide_recordings_desc),
+        checked = remember(updateTrigger) { preferences.isHideRecordingsEnabled() },
+        onCheckedChange = { actions.setHideRecordingsEnabled(it) }
+    )
+    SettingsHint(stringResource(R.string.settings_hide_recordings_hint))
+}
+
+@Composable
+internal fun RecordingFolderRow(preferences: AppPreferences, updateTrigger: Int, onSelectFolder: () -> Unit) {
+    val context = LocalContext.current
+    val recordingFolderLabel = remember(updateTrigger) { SafHelper.getFolderDisplayNameOrNull(context, preferences.getRecordingFolderUri()) }
+    val recordingFolderIsCloud = remember(updateTrigger) { SafHelper.isCloudFolder(preferences.getRecordingFolderUri()) }
+    NavigationRow(
+        icon = Icons.Filled.Folder,
+        label = stringResource(R.string.settings_recording_folder_label),
+        value = recordingFolderLabel ?: stringResource(R.string.settings_tap_to_select_folder),
+        // Surface a cloud folder (e.g. Google Drive) that was set before we started rejecting them —
+        // otherwise it's indistinguishable from a local folder by name alone.
+        supporting = if (recordingFolderIsCloud) stringResource(R.string.folder_cloud_warning) else null,
+        onClick = onSelectFolder,
+        // A warning, which stays on the row.
+        keepSupportingInline = true,
+    )
+}
+
+@Composable
+internal fun DriveFolderRow(preferences: AppPreferences, updateTrigger: Int, onSelectDriveFolder: () -> Unit) {
+    val context = LocalContext.current
+    val driveFolderLabel = remember(updateTrigger) { SafHelper.getFolderDisplayNameOrNull(context, preferences.getDriveFolderUri()) }
+    NavigationRow(
+        icon = Icons.Filled.Cloud,
+        label = stringResource(R.string.settings_drive_folder_label),
+        value = driveFolderLabel ?: stringResource(R.string.general_not_set),
+        supporting = stringResource(R.string.settings_drive_folder_desc),
+        onClick = onSelectDriveFolder
+    )
+}
+
 /** The one thing merging asks of the user: whether to keep the calls it was made from. */
 @Composable
-private fun MergeSubSection(preferences: AppPreferences, updateTrigger: Int) {
+internal fun MergeSubSection(preferences: AppPreferences, updateTrigger: Int) {
     var keep by remember(updateTrigger) { mutableStateOf(preferences.isKeepOriginalsAfterMerge()) }
     SettingsToggleRow(
         label = stringResource(R.string.settings_merge_keep_originals_title),
@@ -296,6 +333,23 @@ private fun RetentionSubSection(
     updateTrigger: Int,
     actions: SettingsActions
 ) {
+    Column {
+        MinDurationRow(preferences, updateTrigger, actions)
+
+        SettingsDivider()
+
+        RetentionPolicyRows(preferences, updateTrigger, actions)
+    }
+}
+
+/**
+ * "Skip calls shorter than". First in Retention, because it is the only control there that decides whether a
+ * recording is ever kept at all — the rest decide how long a kept one lives. Not confirmed like the periods:
+ * it takes nothing that already exists, so the worst a mistaken setting can do is stop capturing short calls
+ * from now on, which is visible and instantly reversible.
+ */
+@Composable
+internal fun MinDurationRow(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
     val minDurationSeconds = remember(updateTrigger) { preferences.getMinDurationSeconds() }
     val minDurationOptions = MinDurationPolicy.PRESET_SECONDS.map { seconds ->
         OptionItem(
@@ -307,6 +361,24 @@ private fun RetentionSubSection(
             }
         )
     }
+    DropdownRow {
+        M3DropdownField(
+            label = stringResource(R.string.min_duration_label),
+            selected = minDurationOptions.find { it.key == minDurationSeconds.toString() }
+                ?: minDurationOptions.first(),
+            options = minDurationOptions,
+            onOptionSelected = { actions.setMinDurationSeconds(it.key.toIntOrNull() ?: 0) }
+        )
+    }
+    SettingsHint(stringResource(R.string.min_duration_caption))
+}
+
+/**
+ * Retention proper: the age periods (linked or per destination), the space limit and when the sweep runs,
+ * each destructive change confirmed first. The confirmation dialog lives here with the rows it guards.
+ */
+@Composable
+internal fun RetentionPolicyRows(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
     val capBytes = remember(updateTrigger) { preferences.getStorageCapBytes() }
     val capOptions = StorageCapPolicy.PRESET_BYTES.map { bytes ->
         OptionItem(
@@ -335,140 +407,121 @@ private fun RetentionSubSection(
         }
     }
 
-    Column {
-        // First, because it is the only control here that decides whether a recording is ever kept
-        // at all — the rest decide how long a kept one lives. Not confirmed like the periods below:
-        // it takes nothing that already exists, so the worst a mistaken setting can do is stop
-        // capturing short calls from now on, which is visible and instantly reversible.
+    SettingsToggleRow(
+        label = stringResource(R.string.retention_linked_label),
+        checked = linked,
+        onCheckedChange = { nowLinked ->
+            actions.setRetentionLinked(nowLinked)
+            // When linking, unify the Drive period to the device one so they match.
+            if (nowLinked) actions.setRetentionDriveDays(localDays)
+        }
+    )
+
+    SettingsDivider()
+
+    if (linked) {
         DropdownRow {
             M3DropdownField(
-                label = stringResource(R.string.min_duration_label),
-                selected = minDurationOptions.find { it.key == minDurationSeconds.toString() }
-                    ?: minDurationOptions.first(),
-                options = minDurationOptions,
-                onOptionSelected = { actions.setMinDurationSeconds(it.key.toIntOrNull() ?: 0) }
-            )
-        }
-        SettingsHint(stringResource(R.string.min_duration_caption))
-
-        SettingsDivider()
-
-        SettingsToggleRow(
-            label = stringResource(R.string.retention_linked_label),
-            checked = linked,
-            onCheckedChange = { nowLinked ->
-                actions.setRetentionLinked(nowLinked)
-                // When linking, unify the Drive period to the device one so they match.
-                if (nowLinked) actions.setRetentionDriveDays(localDays)
-            }
-        )
-
-        SettingsDivider()
-
-        if (linked) {
-            DropdownRow {
-                M3DropdownField(
-                    label = stringResource(R.string.retention_period_label),
-                    selected = optionFor(localDays),
-                    options = options,
-                    onOptionSelected = { opt ->
-                        val days = opt.key.toIntOrNull() ?: 0
-                        applyOrConfirm(wasOff = localDays == 0 && driveDays == 0, newDays = days) {
-                            actions.setRetentionLocalDays(days)
-                            actions.setRetentionDriveDays(days)
-                        }
-                    }
-                )
-            }
-        } else {
-            DropdownRow {
-                M3DropdownField(
-                    label = stringResource(R.string.retention_local_label),
-                    selected = optionFor(localDays),
-                    options = options,
-                    onOptionSelected = { opt ->
-                        val days = opt.key.toIntOrNull() ?: 0
-                        applyOrConfirm(wasOff = localDays == 0, newDays = days) { actions.setRetentionLocalDays(days) }
-                    }
-                )
-            }
-            DropdownRow {
-                M3DropdownField(
-                    label = stringResource(R.string.retention_drive_label),
-                    selected = optionFor(driveDays),
-                    options = options,
-                    onOptionSelected = { opt ->
-                        val days = opt.key.toIntOrNull() ?: 0
-                        applyOrConfirm(wasOff = driveDays == 0, newDays = days) { actions.setRetentionDriveDays(days) }
-                    }
-                )
-            }
-        }
-
-        SettingsDivider()
-
-        // Device only. A Drive copy costs nothing on this phone and has its own quota, so deleting
-        // one to free space here would be indefensible — and because only the device copy goes, a
-        // recording that is also in Drive keeps its transcript and its place in the list.
-        DropdownRow {
-            M3DropdownField(
-                label = stringResource(R.string.storage_cap_label),
-                selected = capOptions.find { it.key == capBytes.toString() } ?: capOptions.first(),
-                options = capOptions,
+                label = stringResource(R.string.retention_period_label),
+                selected = optionFor(localDays),
+                options = options,
                 onOptionSelected = { opt ->
-                    val bytes = opt.key.toLongOrNull() ?: 0L
-                    if (capBytes == 0L && bytes > 0L) {
-                        pendingConfirm = PendingDestructiveChange(R.string.storage_cap_confirm_message) {
-                            actions.setStorageCapBytes(bytes)
-                        }
-                    } else {
-                        actions.setStorageCapBytes(bytes)
+                    val days = opt.key.toIntOrNull() ?: 0
+                    applyOrConfirm(wasOff = localDays == 0 && driveDays == 0, newDays = days) {
+                        actions.setRetentionLocalDays(days)
+                        actions.setRetentionDriveDays(days)
                     }
                 }
             )
         }
-        SettingsHint(stringResource(R.string.storage_cap_caption))
-
-        // Sweep time — only relevant once retention is enabled. Two dropdowns (Hour/Minute) in the
-        // device's LOCAL time zone, mirroring the sync-schedule picker. The cap counts: it runs in
-        // this same daily sweep, so a cap-only setup still needs to be able to say when.
-        if (localDays > 0 || driveDays > 0 || capBytes > 0L) {
-            SettingsDivider()
-            val hour = remember(updateTrigger) { preferences.getRetentionTimeHour() }
-            val minute = remember(updateTrigger) { preferences.getRetentionTimeMinute() }
-            val hourOptions = (0..23).map { OptionItem(it.toString(), it.toString().padStart(2, '0')) }
-            val minuteOptions = listOf(0, 15, 30, 45).map { OptionItem(it.toString(), it.toString().padStart(2, '0')) }
-            Text(
-                text = stringResource(R.string.retention_time_label),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+    } else {
+        DropdownRow {
+            M3DropdownField(
+                label = stringResource(R.string.retention_local_label),
+                selected = optionFor(localDays),
+                options = options,
+                onOptionSelected = { opt ->
+                    val days = opt.key.toIntOrNull() ?: 0
+                    applyOrConfirm(wasOff = localDays == 0, newDays = days) { actions.setRetentionLocalDays(days) }
+                }
             )
-            DropdownRow {
-                M3DropdownField(
-                    label = stringResource(R.string.wizard_schedule_hour_label),
-                    selected = hourOptions.find { it.key == hour.toString() } ?: hourOptions.first(),
-                    options = hourOptions,
-                    onOptionSelected = { actions.setRetentionTimeHour(it.key.toIntOrNull() ?: 0) }
-                )
-            }
-            DropdownRow {
-                M3DropdownField(
-                    label = stringResource(R.string.wizard_schedule_minute_label),
-                    selected = minuteOptions.find { it.key == minute.toString() } ?: minuteOptions.first(),
-                    options = minuteOptions,
-                    onOptionSelected = { actions.setRetentionTimeMinute(it.key.toIntOrNull() ?: 0) }
-                )
-            }
         }
+        DropdownRow {
+            M3DropdownField(
+                label = stringResource(R.string.retention_drive_label),
+                selected = optionFor(driveDays),
+                options = options,
+                onOptionSelected = { opt ->
+                    val days = opt.key.toIntOrNull() ?: 0
+                    applyOrConfirm(wasOff = driveDays == 0, newDays = days) { actions.setRetentionDriveDays(days) }
+                }
+            )
+        }
+    }
 
-        Text(
-            text = stringResource(R.string.retention_description),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+    SettingsDivider()
+
+    // Device only. A Drive copy costs nothing on this phone and has its own quota, so deleting
+    // one to free space here would be indefensible — and because only the device copy goes, a
+    // recording that is also in Drive keeps its transcript and its place in the list.
+    DropdownRow {
+        M3DropdownField(
+            label = stringResource(R.string.storage_cap_label),
+            selected = capOptions.find { it.key == capBytes.toString() } ?: capOptions.first(),
+            options = capOptions,
+            onOptionSelected = { opt ->
+                val bytes = opt.key.toLongOrNull() ?: 0L
+                if (capBytes == 0L && bytes > 0L) {
+                    pendingConfirm = PendingDestructiveChange(R.string.storage_cap_confirm_message) {
+                        actions.setStorageCapBytes(bytes)
+                    }
+                } else {
+                    actions.setStorageCapBytes(bytes)
+                }
+            }
         )
     }
+    SettingsHint(stringResource(R.string.storage_cap_caption))
+
+    // Sweep time — only relevant once retention is enabled. Two dropdowns (Hour/Minute) in the
+    // device's LOCAL time zone, mirroring the sync-schedule picker. The cap counts: it runs in
+    // this same daily sweep, so a cap-only setup still needs to be able to say when.
+    if (localDays > 0 || driveDays > 0 || capBytes > 0L) {
+        SettingsDivider()
+        val hour = remember(updateTrigger) { preferences.getRetentionTimeHour() }
+        val minute = remember(updateTrigger) { preferences.getRetentionTimeMinute() }
+        val hourOptions = (0..23).map { OptionItem(it.toString(), it.toString().padStart(2, '0')) }
+        val minuteOptions = listOf(0, 15, 30, 45).map { OptionItem(it.toString(), it.toString().padStart(2, '0')) }
+        Text(
+            text = stringResource(R.string.retention_time_label),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+        )
+        DropdownRow {
+            M3DropdownField(
+                label = stringResource(R.string.wizard_schedule_hour_label),
+                selected = hourOptions.find { it.key == hour.toString() } ?: hourOptions.first(),
+                options = hourOptions,
+                onOptionSelected = { actions.setRetentionTimeHour(it.key.toIntOrNull() ?: 0) }
+            )
+        }
+        DropdownRow {
+            M3DropdownField(
+                label = stringResource(R.string.wizard_schedule_minute_label),
+                selected = minuteOptions.find { it.key == minute.toString() } ?: minuteOptions.first(),
+                options = minuteOptions,
+                onOptionSelected = { actions.setRetentionTimeMinute(it.key.toIntOrNull() ?: 0) }
+            )
+        }
+    }
+
+    Text(
+        text = stringResource(R.string.retention_description),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+    )
 
     pendingConfirm?.let { confirm ->
         AlertDialog(

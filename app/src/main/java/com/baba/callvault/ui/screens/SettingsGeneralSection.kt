@@ -58,10 +58,7 @@ internal fun GeneralSection(
     updateTrigger: Int,
     actions: SettingsActions,
     expanded: Boolean,
-    onToggle: () -> Unit,
-    // False on the new Settings screen, where these rows live in the App calls and Reliability groups
-    // instead. The classic screen keeps the default and shows Experimental as before.
-    includeExperimental: Boolean = true,
+    onToggle: () -> Unit
 ) {
     // One open sub-section at a time, within this section only, and nothing open on entry.
     var openSub by rememberSaveable { mutableStateOf<String?>(null) }
@@ -82,13 +79,11 @@ internal fun GeneralSection(
             expanded = openSub == SUB_PRIVACY,
             onToggle = { openSub = if (openSub == SUB_PRIVACY) null else SUB_PRIVACY },
         ) { PrivacySubSection(preferences, updateTrigger) }
-        if (includeExperimental) {
-            SettingsSubSection(
-                title = stringResource(R.string.settings_section_experimental),
-                expanded = openSub == SUB_EXPERIMENTAL,
-                onToggle = { openSub = if (openSub == SUB_EXPERIMENTAL) null else SUB_EXPERIMENTAL },
-            ) { ExperimentalSubSection() }
-        }
+        SettingsSubSection(
+            title = stringResource(R.string.settings_section_experimental),
+            expanded = openSub == SUB_EXPERIMENTAL,
+            onToggle = { openSub = if (openSub == SUB_EXPERIMENTAL) null else SUB_EXPERIMENTAL },
+        ) { ExperimentalSubSection() }
         SettingsSubSection(
             title = stringResource(R.string.settings_section_updates),
             expanded = openSub == SUB_UPDATES,
@@ -105,7 +100,7 @@ internal fun GeneralSection(
  * somewhere obvious to go.
  */
 @Composable
-private fun PrivacySubSection(preferences: AppPreferences, updateTrigger: Int) {
+internal fun PrivacySubSection(preferences: AppPreferences, updateTrigger: Int) {
     val context = LocalContext.current
     // Re-read on every settings change: the user may have gone to system Settings and added a screen
     // lock precisely because this row told them to, and coming back to a still-disabled row would
@@ -154,10 +149,21 @@ private fun PrivacySubSection(preferences: AppPreferences, updateTrigger: Int) {
 
 @Composable
 private fun VisualSubSection(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
+    Column {
+        AppearanceRows(preferences, updateTrigger, actions)
+        VibrationRow(preferences, updateTrigger, actions)
+    }
+}
+
+/**
+ * The app's look: its language, theme, dynamic colour and toasts. Shared with the new Settings screen's
+ * "App" group; vibration, the last row of Visual on the classic screen, is [VibrationRow].
+ */
+@Composable
+internal fun AppearanceRows(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
     val currentThemeMode = remember(updateTrigger) { preferences.getThemeMode() }
     val isDynamicColorEnabled = remember(updateTrigger) { preferences.isDynamicColorEnabled() }
     val isShowToastsEnabled = remember(updateTrigger) { preferences.isShowToastsEnabled() }
-    val isVibrationEnabled = remember(updateTrigger) { preferences.isVibrationEnabled() }
     val context = LocalContext.current
     val resources = LocalResources.current
 
@@ -198,7 +204,7 @@ private fun VisualSubSection(preferences: AppPreferences, updateTrigger: Int, ac
         options.distinctBy { it.key }
     }
 
-    Column {
+    run {
         DropdownRow {
             M3DropdownField(
                 label = stringResource(R.string.settings_language),
@@ -243,13 +249,19 @@ private fun VisualSubSection(preferences: AppPreferences, updateTrigger: Int, ac
             checked         = isShowToastsEnabled,
             onCheckedChange = { actions.setShowToastsEnabled(it) }
         )
-        SettingsToggleRow(
-            icon            = Icons.Filled.Vibration,
-            label           = stringResource(R.string.settings_vibration_enabled),
-            checked         = isVibrationEnabled,
-            onCheckedChange = { actions.setVibrationEnabled(it) }
-        )
     }
+}
+
+/** Vibrate when a recording starts and stops. */
+@Composable
+internal fun VibrationRow(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
+    val isVibrationEnabled = remember(updateTrigger) { preferences.isVibrationEnabled() }
+    SettingsToggleRow(
+        icon            = Icons.Filled.Vibration,
+        label           = stringResource(R.string.settings_vibration_enabled),
+        checked         = isVibrationEnabled,
+        onCheckedChange = { actions.setVibrationEnabled(it) }
+    )
 }
 
 /**
@@ -288,6 +300,27 @@ internal fun ResilienceRows() {
     PairAgainRow()
 }
 
+/**
+ * The same rows as [ResilienceRows], in the new Settings screen's "Connection" order (round 2, 2026-10-21):
+ * what keeps the recorder reachable first, then what keeps a recording alive, then the Wireless debugging
+ * details.
+ */
+@Composable
+internal fun ConnectionRows() {
+    UsbDebuggingToggle()
+    SettingsDivider()
+    OfflineRecordingToggle()
+    SettingsDivider()
+    HandoffPersistToggle()
+    SettingsDivider()
+    WirelessDebuggingEnforceToggle()
+    SettingsDivider()
+    WifiNetworkAutoApproveToggle()
+    SettingsDivider()
+    UsbDefaultConfigRow()
+    PairAgainRow()
+}
+
 /** A branded, collapsible section: a tappable [CvSectionHeader] (with a rotating chevron) above a
  * [CvCard] grouping its rows. Tapping the header invokes [onToggle]; the body animates in and out.
  * The expand/collapse state is HOISTED to the parent so the Settings screen can run an accordion
@@ -303,7 +336,7 @@ internal fun ResilienceRows() {
  * Home banner, and installs only on an explicit tap.
  */
 @Composable
-private fun UpdatesSubSection(
+internal fun UpdatesSubSection(
     preferences: AppPreferences,
     updateTrigger: Int,
     actions: SettingsActions

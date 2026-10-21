@@ -750,13 +750,11 @@
     <string name="settings_title_recordings">Einstellungen für Aufnahmen</string>
     <string name="settings_title_transcripts">Einstellungen für Transkripte</string>
     <string name="settings_title_summaries">Einstellungen für Zusammenfassungen</string>
-    <string name="settings_group_app_calls">App-Anrufe</string>
     <string name="settings_link_share_debug_report">Debug-Bericht teilen</string>
     <string name="settings_link_all_settings">Alle Einstellungen</string>
     <string name="settings_language_change_in_transcripts">In den Transkript-Einstellungen änderbar</string>
     <string name="settings_classic_screen_label">Klassischen Einstellungsbildschirm verwenden</string>
     <string name="settings_classic_screen_description">An: Die Einstellungen öffnen wie bisher als eine lange Liste. Aus: das neue Layout, in dem das Einstellungssymbol jeder Seite nur deren Einstellungen zeigt.</string>
-    <string name="settings_summary_on">An</string>
     <string name="settings_summary_off">Aus</string>
     <string name="settings_summary_unavailable">Hier nicht verfügbar</string>
     <string name="settings_summary_count_on">%1$d von %2$d an</string>
@@ -765,4 +763,27 @@
     <string name="settings_summary_recording_outgoing">nur ausgehend</string>
     <string name="settings_summary_recording_manual">nur manuell</string>
     <string name="settings_summary_not_downloaded">Nicht heruntergeladen</string>
+
+    <!-- New Settings screen: the ⓘ button that explains a row. -->
+    <string name="settings_info_about">Über %1$s</string>
+    <string name="settings_info_got_it">Verstanden</string>
+
+    <!-- New Settings screen, round 2: groups by what you want to do. -->
+    <string name="settings_group_calls_to_record">Welche Anrufe aufnehmen</string>
+    <string name="settings_group_calls_to_skip">Welche Anrufe überspringen</string>
+    <string name="settings_group_sound_and_names">Ton und Dateinamen</string>
+    <string name="settings_group_where_recordings_go">Wohin Aufnahmen gehen</string>
+    <string name="settings_group_cleaning_up">Aufräumen</string>
+    <string name="settings_group_connection">Verbindung</string>
+    <string name="settings_group_model_and_language">Modell und Sprache</string>
+    <string name="settings_group_when_to_transcribe">Wann transkribieren</string>
+    <string name="settings_group_app">App</string>
+    <string name="settings_group_help_and_about">Hilfe und Info</string>
+    <string name="settings_subheader_which_calls">Welche Anrufe</string>
+    <string name="settings_subheader_when_to_start">Wann starten</string>
+    <string name="settings_summary_calls_phone_and_app">Telefon- und App-Anrufe</string>
+    <string name="settings_summary_calls_phone_only">Nur Telefonanrufe</string>
+    <string name="settings_summary_calls_app_only">Nur App-Anrufe</string>
+    <string name="settings_summary_nothing_skipped">Nichts übersprungen</string>
+    <string name="settings_summary_skip_rules_on">Aktive Regeln: %1$d</string>
 </resources>

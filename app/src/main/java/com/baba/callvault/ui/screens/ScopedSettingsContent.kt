@@ -18,14 +18,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
+import androidx.compose.material.icons.filled.Cable
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.GraphicEq
-import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Shield
-import androidx.compose.material.icons.filled.Subtitles
+import androidx.compose.material.icons.filled.PhoneDisabled
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Summarize
 import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material.icons.filled.Tune
@@ -115,6 +115,23 @@ fun ScopedSettingsContent(
         listState.animateScrollToItem(index)
     }
 
+    val callbacks = GroupBodyCallbacks(
+        onSelectFolder = onSelectFolder,
+        onSelectDriveFolder = onSelectDriveFolder,
+        onOpenContactsIncoming = onOpenContactsIncoming,
+        onOpenContactsOutgoing = onOpenContactsOutgoing,
+        onShareLogs = onShareLogs,
+        onSaveLogs = onSaveLogs,
+        onExportSettings = onExportSettings,
+        onImportSettings = onImportSettings,
+        onShowLicenses = { showLicensesDialog = true },
+        // Transcripts and summaries share ONE language on purpose; Summaries only links to it.
+        onChangeLanguage = {
+            val target = if (scope == SettingsScope.ALL) SettingsScope.ALL else SettingsScope.TRANSCRIPTS
+            jumpTo(target, SettingsGroup.MODEL_AND_LANGUAGE)
+        },
+    )
+
     CvScaffold(
         modifier = modifier.fillMaxSize(),
         title = stringResource(titleOf(scope)),
@@ -144,12 +161,6 @@ fun ScopedSettingsContent(
                 }
             }
             items(groups, key = { it.key }) { group ->
-                if (group == SettingsGroup.BACKUP) {
-                    Column(Modifier.padding(horizontal = 4.dp, vertical = 8.dp)) {
-                        ExportImportRow(onExport = onExportSettings, onImport = onImportSettings)
-                    }
-                    return@items
-                }
                 val expanded = openGroup == group
                 SettingsGroupCard(
                     icon = iconOf(group),
@@ -158,31 +169,14 @@ fun ScopedSettingsContent(
                     expanded = expanded,
                     onToggle = { setOpenGroup(scope, if (expanded) null else group) },
                 ) {
-                    GroupBody(
-                        group = group,
-                        preferences = preferences,
-                        updateTrigger = updateTrigger,
-                        actions = actions,
-                        onSelectFolder = onSelectFolder,
-                        onSelectDriveFolder = onSelectDriveFolder,
-                        onOpenContactsIncoming = onOpenContactsIncoming,
-                        onOpenContactsOutgoing = onOpenContactsOutgoing,
-                        onShareLogs = onShareLogs,
-                        onSaveLogs = onSaveLogs,
-                        onShowLicenses = { showLicensesDialog = true },
-                        // Transcripts and summaries share ONE language on purpose; Summaries only links to it.
-                        onChangeLanguage = {
-                            val target = if (scope == SettingsScope.ALL) SettingsScope.ALL else SettingsScope.TRANSCRIPTS
-                            jumpTo(target, SettingsGroup.TRANSCRIPTION)
-                        },
-                    )
+                    GroupBody(group, preferences, updateTrigger, actions, callbacks)
                 }
             }
             item(key = "footer") {
                 Column {
                     SettingsFooterLink(
                         text = stringResource(R.string.settings_link_share_debug_report),
-                        onClick = { jumpTo(SettingsScope.ALL, SettingsGroup.DEBUG) },
+                        onClick = { jumpTo(SettingsScope.ALL, SettingsGroup.HELP_AND_ABOUT) },
                     )
                     if (scope != SettingsScope.ALL) {
                         SettingsFooterLink(
@@ -201,70 +195,6 @@ fun ScopedSettingsContent(
     SettingsContactPicker(contactPickerState, onConfirmContacts, onDismissContacts)
 }
 
-/**
- * A group's rows: the classic screen's sections and rows, reused as they are. Sections draw only their rows
- * here (see [LocalSettingsSectionInGroupCard]), so `expanded` and `onToggle` are unused placeholders.
- */
-@Composable
-private fun GroupBody(
-    group: SettingsGroup,
-    preferences: AppPreferences,
-    updateTrigger: Int,
-    actions: SettingsActions,
-    onSelectFolder: () -> Unit,
-    onSelectDriveFolder: () -> Unit,
-    onOpenContactsIncoming: () -> Unit,
-    onOpenContactsOutgoing: () -> Unit,
-    onShareLogs: () -> Unit,
-    onSaveLogs: () -> Unit,
-    onShowLicenses: () -> Unit,
-    onChangeLanguage: () -> Unit,
-) {
-    when (group) {
-        SettingsGroup.RECORDING -> RecordingSection(
-            preferences, updateTrigger, actions, expanded = true, onToggle = {},
-            onOpenContactsIncoming = onOpenContactsIncoming,
-            onOpenContactsOutgoing = onOpenContactsOutgoing,
-        )
-        SettingsGroup.APP_CALLS -> VoipRecordingToggle()
-        SettingsGroup.RELIABILITY -> ResilienceRows()
-        SettingsGroup.AUDIO -> AudioSection(preferences, updateTrigger, actions, expanded = true, onToggle = {})
-        SettingsGroup.STORAGE -> StorageSection(
-            preferences, updateTrigger, actions, expanded = true, onToggle = {},
-            onSelectFolder = onSelectFolder,
-            onSelectDriveFolder = onSelectDriveFolder,
-        )
-        // No summary rows: they are the Summaries group's.
-        SettingsGroup.TRANSCRIPTION -> TranscriptionSection(preferences, updateTrigger, actions, expanded = true, onToggle = {})
-        SettingsGroup.SUMMARIES -> {
-            NavigationRow(
-                icon = Icons.Filled.Translate,
-                label = stringResource(R.string.transcription_language_label),
-                value = sharedLanguageLabel(preferences, updateTrigger),
-                supporting = stringResource(R.string.settings_language_change_in_transcripts),
-                onClick = onChangeLanguage,
-            )
-            SettingsDivider()
-            SummarySettingsRows(preferences, updateTrigger, actions)
-        }
-        // Without Experimental: its rows are the App calls and Reliability groups here.
-        SettingsGroup.GENERAL -> GeneralSection(
-            preferences, updateTrigger, actions, expanded = true, onToggle = {},
-            includeExperimental = false,
-        )
-        SettingsGroup.DEBUG -> BugReportSection(
-            preferences, updateTrigger, actions, onShareLogs, onSaveLogs, expanded = true, onToggle = {},
-        )
-        SettingsGroup.ABOUT -> AboutSection(
-            versionString = actions.getAppVersion(),
-            onShowLicenses = onShowLicenses,
-            expanded = true,
-            onToggle = {},
-        )
-        SettingsGroup.BACKUP -> Unit // drawn as a plain row by the screen, never inside a card
-    }
-}
-
 private fun titleOf(scope: SettingsScope): Int = when (scope) {
     SettingsScope.RECORDINGS -> R.string.settings_title_recordings
     SettingsScope.TRANSCRIPTS -> R.string.settings_title_transcripts
@@ -273,29 +203,29 @@ private fun titleOf(scope: SettingsScope): Int = when (scope) {
 }
 
 private fun titleOf(group: SettingsGroup): Int = when (group) {
-    SettingsGroup.RECORDING -> R.string.settings_section_recording
-    SettingsGroup.APP_CALLS -> R.string.settings_group_app_calls
-    SettingsGroup.RELIABILITY -> R.string.settings_section_reliability
-    SettingsGroup.AUDIO -> R.string.settings_section_audio
-    SettingsGroup.STORAGE -> R.string.settings_section_storage
-    SettingsGroup.TRANSCRIPTION -> R.string.settings_section_transcription
+    SettingsGroup.CALLS_TO_RECORD -> R.string.settings_group_calls_to_record
+    SettingsGroup.CALLS_TO_SKIP -> R.string.settings_group_calls_to_skip
+    SettingsGroup.SOUND_AND_NAMES -> R.string.settings_group_sound_and_names
+    SettingsGroup.WHERE_RECORDINGS_GO -> R.string.settings_group_where_recordings_go
+    SettingsGroup.CLEANING_UP -> R.string.settings_group_cleaning_up
+    SettingsGroup.CONNECTION -> R.string.settings_group_connection
+    SettingsGroup.MODEL_AND_LANGUAGE -> R.string.settings_group_model_and_language
+    SettingsGroup.WHEN_TO_TRANSCRIBE -> R.string.settings_group_when_to_transcribe
     SettingsGroup.SUMMARIES -> R.string.home_summaries_title
-    SettingsGroup.GENERAL -> R.string.settings_section_general
-    SettingsGroup.DEBUG -> R.string.settings_section_debug
-    SettingsGroup.ABOUT -> R.string.settings_section_about
-    SettingsGroup.BACKUP -> R.string.settings_backup_title
+    SettingsGroup.APP -> R.string.settings_group_app
+    SettingsGroup.HELP_AND_ABOUT -> R.string.settings_group_help_and_about
 }
 
 private fun iconOf(group: SettingsGroup): ImageVector = when (group) {
-    SettingsGroup.RECORDING -> Icons.Filled.Call
-    SettingsGroup.APP_CALLS -> Icons.Filled.Groups
-    SettingsGroup.RELIABILITY -> Icons.Filled.Shield
-    SettingsGroup.AUDIO -> Icons.Filled.GraphicEq
-    SettingsGroup.STORAGE -> Icons.Filled.Folder
-    SettingsGroup.TRANSCRIPTION -> Icons.Filled.Subtitles
+    SettingsGroup.CALLS_TO_RECORD -> Icons.Filled.Call
+    SettingsGroup.CALLS_TO_SKIP -> Icons.Filled.PhoneDisabled
+    SettingsGroup.SOUND_AND_NAMES -> Icons.Filled.GraphicEq
+    SettingsGroup.WHERE_RECORDINGS_GO -> Icons.Filled.Folder
+    SettingsGroup.CLEANING_UP -> Icons.Filled.CleaningServices
+    SettingsGroup.CONNECTION -> Icons.Filled.Cable
+    SettingsGroup.MODEL_AND_LANGUAGE -> Icons.Filled.Translate
+    SettingsGroup.WHEN_TO_TRANSCRIBE -> Icons.Filled.Schedule
     SettingsGroup.SUMMARIES -> Icons.Filled.Summarize
-    SettingsGroup.GENERAL -> Icons.Filled.Tune
-    SettingsGroup.DEBUG -> Icons.Filled.BugReport
-    SettingsGroup.ABOUT -> Icons.Filled.Info
-    SettingsGroup.BACKUP -> Icons.Filled.Info
+    SettingsGroup.APP -> Icons.Filled.Tune
+    SettingsGroup.HELP_AND_ABOUT -> Icons.AutoMirrored.Filled.HelpOutline
 }

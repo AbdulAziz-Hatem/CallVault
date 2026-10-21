@@ -17,9 +17,6 @@ package com.baba.callvault.ui.screens
 /** What the Recording card says about phone calls. */
 enum class RecordingSummary { OFF, BOTH, INCOMING_ONLY, OUTGOING_ONLY, MANUAL_ONLY }
 
-/** A single feature that is on, off, or cannot work in the current mode or on this Android. */
-enum class FeatureSummary { ON, OFF, UNAVAILABLE }
-
 /** One switch as its row draws it: whether it is on, and whether the row is enabled at all. */
 data class SwitchSummaryInput(val isOn: Boolean, val isAvailable: Boolean)
 
@@ -37,13 +34,6 @@ fun recordingSummary(isCarrierOn: Boolean, isIncomingOn: Boolean, isOutgoingOn: 
     else -> RecordingSummary.MANUAL_ONLY
 }
 
-/** Mirrors the rows: a switch that cannot work here is drawn off and greyed, so it is unavailable, not off. */
-fun featureSummary(isOn: Boolean, isAvailable: Boolean): FeatureSummary = when {
-    !isAvailable -> FeatureSummary.UNAVAILABLE
-    isOn -> FeatureSummary.ON
-    else -> FeatureSummary.OFF
-}
-
 /**
  * Counts only the switches that can be used: a greyed row is drawn off whatever is stored, so counting
  * it would say "1 of 5 on" about a switch the user cannot see on.
@@ -56,3 +46,32 @@ fun countSummary(switches: List<SwitchSummaryInput>): CountSummary {
 /** Joins the non-blank parts of a summary into one line. */
 fun joinSummary(parts: List<String?>): String =
     parts.filterNot { it.isNullOrBlank() }.joinToString(SUMMARY_SEPARATOR)
+
+/** Which kinds of call are recorded at all, for the "Calls to record" card. */
+enum class CallsWhich { NONE, PHONE_ONLY, APP_ONLY, PHONE_AND_APP }
+
+/** The "Calls to record" line: which calls, and for phone calls, which directions start by themselves. */
+data class CallsToRecordSummary(val which: CallsWhich, val direction: RecordingSummary?)
+
+/**
+ * [isAppOn] must already account for the mode: an app-call switch greyed out here records nothing. The
+ * direction is about phone calls only, since app calls have no incoming/outgoing switches.
+ */
+fun callsToRecordSummary(
+    isPhoneOn: Boolean,
+    isAppOn: Boolean,
+    isIncomingOn: Boolean,
+    isOutgoingOn: Boolean,
+): CallsToRecordSummary {
+    val which = when {
+        isPhoneOn && isAppOn -> CallsWhich.PHONE_AND_APP
+        isPhoneOn -> CallsWhich.PHONE_ONLY
+        isAppOn -> CallsWhich.APP_ONLY
+        else -> CallsWhich.NONE
+    }
+    val direction = if (isPhoneOn) recordingSummary(true, isIncomingOn, isOutgoingOn) else null
+    return CallsToRecordSummary(which, direction)
+}
+
+/** How many skip rules are in force, for the "Calls to skip" card. Zero reads "Nothing skipped". */
+fun activeRuleCount(rules: List<Boolean>): Int = rules.count { it }

@@ -111,7 +111,11 @@ internal fun SettingsGroupCard(
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically(),
             ) {
-                CompositionLocalProvider(LocalSettingsSectionInGroupCard provides true) {
+                CompositionLocalProvider(
+                    LocalSettingsSectionInGroupCard provides true,
+                    // Rows show name and value; ⓘ opens the explanation (round 2, 2026-10-21).
+                    LocalSettingsDescriptionsAsInfo provides true,
+                ) {
                     Column(
                         modifier = Modifier.padding(bottom = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(2.dp),

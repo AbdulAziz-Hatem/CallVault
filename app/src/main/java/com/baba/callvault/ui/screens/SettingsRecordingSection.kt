@@ -78,32 +78,15 @@ internal fun RecordingSection(
     onOpenContactsIncoming: () -> Unit,
     onOpenContactsOutgoing: () -> Unit
 ) {
-    // Evaluate these here so they are fetched on every recomposition.
-    val fileNameFormat = remember(updateTrigger) { preferences.getFileNameTemplate() }
+    // Read here as well as in the rows: they decide which sub-sections show.
     val carrierRecording = remember(updateTrigger) { preferences.isCarrierRecordingEnabled() }
     val autoRecordIncoming = remember(updateTrigger) { preferences.isAutoRecordIncomingEnabled() }
     val autoRecordOutgoing = remember(updateTrigger) { preferences.isAutoRecordOutgoingEnabled() }
-    val recordFromAnswer = remember(updateTrigger) { preferences.isRecordFromAnswerEnabled() }
-    val ignoreAnonymousIncoming = remember(updateTrigger) { preferences.isIgnoreAnonymousIncomingEnabled() }
-    val ignoreCrossCountryIncoming = remember(updateTrigger) { preferences.isIgnoreCrossCountryIncomingEnabled() }
-    val ignoreContactsModeIncoming = remember(updateTrigger) { preferences.getIgnoreContactsModeIncoming() }
-    val ignoreContactsModeOutgoing = remember(updateTrigger) { preferences.getIgnoreContactsModeOutgoing() }
-    val ignoreCrossCountryOutgoing = remember(updateTrigger) { preferences.isIgnoreCrossCountryOutgoingEnabled() }
-    // The count on the "Select contacts" button belongs to whichever list the chosen mode uses.
-    val ignoredContactsIncomingCount = remember(updateTrigger, ignoreContactsModeIncoming) {
-        if (ignoreContactsModeIncoming == AppPreferences.IgnoreContactsMode.ONLY_SELECTED) preferences.getRecordOnlyContactsIncoming().size
-        else preferences.getIgnoredContactsIncoming().size
-    }
-    val ignoredContactsOutgoingCount = remember(updateTrigger, ignoreContactsModeOutgoing) {
-        if (ignoreContactsModeOutgoing == AppPreferences.IgnoreContactsMode.ONLY_SELECTED) preferences.getRecordOnlyContactsOutgoing().size
-        else preferences.getIgnoredContactsOutgoing().size
-    }
-
-    var showFileNameFormatDialog by remember { mutableStateOf(false) }
 
     // One open sub-section at a time, within this section only, and nothing open on entry.
     var openSub by rememberSaveable { mutableStateOf<String?>(null) }
 
+    // The rows are in SettingsRecordingRows.kt, shared with the new Settings screen's groups.
     SettingsSection(
         title = stringResource(R.string.settings_section_recording),
         expanded = expanded,
@@ -115,16 +98,7 @@ internal fun RecordingSection(
         expanded = openSub == SUB_FILE_NAME,
         onToggle = { openSub = if (openSub == SUB_FILE_NAME) null else SUB_FILE_NAME },
       ) {
-        NavigationRow(
-            icon = Icons.Filled.DriveFileRenameOutline,
-            label = stringResource(R.string.settings_file_name_template),
-            value = stringResource(presetForTemplateOrFirst(fileNameFormat).labelRes),
-            supporting = stringResource(
-                R.string.settings_file_name_template_example,
-                fileNameTemplateExample(fileNameFormat)
-            ),
-            onClick = { showFileNameFormatDialog = true }
-        )
+        FileNameTemplateRow(preferences, updateTrigger, actions)
       }
 
       // The master switch for phone calls, in its own sub-section above the per-direction ones it
@@ -135,13 +109,7 @@ internal fun RecordingSection(
         expanded = openSub == SUB_PHONE_CALLS,
         onToggle = { openSub = if (openSub == SUB_PHONE_CALLS) null else SUB_PHONE_CALLS },
       ) {
-        SettingsToggleRow(
-            icon = Icons.Filled.Smartphone,
-            label = stringResource(R.string.settings_carrier_recording),
-            description = stringResource(R.string.settings_carrier_recording_description),
-            checked = carrierRecording,
-            onCheckedChange = { actions.setCarrierRecording(it) }
-        )
+        CarrierRecordingRow(preferences, updateTrigger, actions)
       }
 
       AnimatedVisibility(
@@ -155,36 +123,16 @@ internal fun RecordingSection(
         expanded = openSub == SUB_INCOMING,
         onToggle = { openSub = if (openSub == SUB_INCOMING) null else SUB_INCOMING },
       ) {
-        SettingsToggleRow(
-            icon = Icons.AutoMirrored.Filled.CallReceived,
-            label = stringResource(R.string.settings_auto_record_incoming),
-            checked = autoRecordIncoming,
-            onCheckedChange = { actions.setAutoRecordIncoming(it) }
-        )
+        AutoRecordIncomingRow(preferences, updateTrigger, actions)
         AnimatedVisibility(
             visible = autoRecordIncoming,
             enter   = fadeIn() +  expandVertically(),
             exit    = fadeOut() + shrinkVertically()
         ) {
             NestedGroup {
-                SettingsToggleRow(
-                    label           = stringResource(R.string.settings_ignore_anonymous_incoming),
-                    checked         = ignoreAnonymousIncoming,
-                    onCheckedChange = { actions.setIgnoreAnonymousIncoming(it) }
-                )
-                SettingsToggleRow(
-                    label           = stringResource(R.string.settings_ignore_cross_country_incoming),
-                    checked         = ignoreCrossCountryIncoming,
-                    onCheckedChange = { actions.setIgnoreCrossCountryIncoming(it) },
-                    enabled         = ignoreAnonymousIncoming
-                )
-                IgnoreContactsOptions(
-                    label           = stringResource(R.string.settings_ignore_contacts_incoming),
-                    selectedEnum     = ignoreContactsModeIncoming,
-                    selectedCount    = ignoredContactsIncomingCount,
-                    onSelected      = { actions.setIgnoreContactsModeIncoming(it) },
-                    onSelectContacts = onOpenContactsIncoming
-                )
+                IgnoreAnonymousIncomingRow(preferences, updateTrigger, actions)
+                IgnoreCrossCountryIncomingRow(preferences, updateTrigger, actions)
+                IgnoreContactsIncomingRow(preferences, updateTrigger, actions, onOpenContactsIncoming)
             }
         }
       }
@@ -194,56 +142,21 @@ internal fun RecordingSection(
         expanded = openSub == SUB_OUTGOING,
         onToggle = { openSub = if (openSub == SUB_OUTGOING) null else SUB_OUTGOING },
       ) {
-        SettingsToggleRow(
-            icon = Icons.AutoMirrored.Filled.CallMade,
-            label = stringResource(R.string.settings_auto_record_outgoing),
-            checked = autoRecordOutgoing,
-            onCheckedChange = { actions.setAutoRecordOutgoing(it) }
-        )
-        // Phone calls only: an app call has no answer signal to wait for (AnswerWait). Not nested
-        // under the automatic switch because a call started from the Record prompt is already past
-        // the dial by the time the button is pressed — this only ever changes an automatic start.
-        SettingsToggleRow(
-            icon = Icons.Filled.PhoneInTalk,
-            label = stringResource(R.string.settings_record_from_answer),
-            description = stringResource(R.string.settings_record_from_answer_description),
-            checked = recordFromAnswer,
-            onCheckedChange = { actions.setRecordFromAnswer(it) }
-        )
+        AutoRecordOutgoingRow(preferences, updateTrigger, actions)
+        RecordFromAnswerRow(preferences, updateTrigger, actions)
         AnimatedVisibility(
             visible = autoRecordOutgoing,
             enter   = fadeIn() +  expandVertically(),
             exit    = fadeOut() + shrinkVertically()
         ) {
             NestedGroup {
-                SettingsToggleRow(
-                    label           = stringResource(R.string.settings_ignore_cross_country_outgoing),
-                    checked         = ignoreCrossCountryOutgoing,
-                    onCheckedChange = { actions.setIgnoreCrossCountryOutgoing(it) }
-                )
-                IgnoreContactsOptions(
-                    label           = stringResource(R.string.settings_ignore_contacts_outgoing),
-                    selectedEnum     = ignoreContactsModeOutgoing,
-                    selectedCount    = ignoredContactsOutgoingCount,
-                    onSelected      = { actions.setIgnoreContactsModeOutgoing(it) },
-                    onSelectContacts = onOpenContactsOutgoing
-                )
+                IgnoreCrossCountryOutgoingRow(preferences, updateTrigger, actions)
+                IgnoreContactsOutgoingRow(preferences, updateTrigger, actions, onOpenContactsOutgoing)
             }
         }
       }
         }
       }
-    }
-
-    if (showFileNameFormatDialog) {
-        FileNameFormatDialog(
-            initialFormat = fileNameFormat,
-            onConfirm = { format ->
-                actions.setFileNameTemplate(format)
-                showFileNameFormatDialog = false
-            },
-            onDismiss = { showFileNameFormatDialog = false }
-        )
     }
 }
 
@@ -363,7 +276,7 @@ internal fun AudioSection(preferences: AppPreferences, updateTrigger: Int, actio
  *                        [ContactSelectionDialog] via [ContactPickerViewModel].
  */
 @Composable
-private fun IgnoreContactsOptions(
+internal fun IgnoreContactsOptions(
     label: String,
     selectedEnum: AppPreferences.IgnoreContactsMode,
     selectedCount: Int,
@@ -465,7 +378,9 @@ internal fun VoipAppPicker(prefs: AppPreferences) {
         },
         checked = expanded,
         enabled = loaded != null,
-        onCheckedChange = { expanded = it }
+        onCheckedChange = { expanded = it },
+        // Which apps are recorded: a value, not an explanation.
+        keepDescriptionInline = true,
     )
 
     AnimatedVisibility(

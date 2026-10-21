@@ -15,7 +15,9 @@ import androidx.compose.ui.res.stringResource
 import com.baba.callvault.R
 import com.baba.callvault.data.AppPreferences
 import com.baba.callvault.data.ModeCapability
+import com.baba.callvault.data.RetentionPeriod
 import com.baba.callvault.data.StorageTarget
+import com.baba.callvault.transcription.model.TranscriptionModel
 import com.baba.callvault.integrations.adb.AdbShell
 import com.baba.callvault.integrations.scrcpy.ScrcpyAudioCodec
 import com.baba.callvault.summary.SummaryModel
@@ -38,14 +40,9 @@ internal fun groupSummaryText(
     expanded: Boolean,
     actions: SettingsActions,
 ): String = when (group) {
-    SettingsGroup.RECORDING -> recordingSummaryText(preferences, updateTrigger, expanded)
-    SettingsGroup.APP_CALLS -> {
-        val supported = capabilityAvailable(ModeCapability.VOIP_RECORDING)
-        val isOn = remember(updateTrigger, expanded) { preferences.isVoipRecordingEnabled() }
-        featureSummaryText(featureSummary(isOn, supported))
-    }
-    SettingsGroup.RELIABILITY -> reliabilitySummaryText(preferences, updateTrigger, expanded)
-    SettingsGroup.AUDIO -> {
+    SettingsGroup.CALLS_TO_RECORD -> callsToRecordSummaryText(preferences, updateTrigger, expanded)
+    SettingsGroup.CALLS_TO_SKIP -> callsToSkipSummaryText(preferences, updateTrigger, expanded)
+    SettingsGroup.SOUND_AND_NAMES -> {
         val codecKey = remember(updateTrigger) { preferences.getAudioCodec() }
         val bitRate = remember(updateTrigger) { preferences.getAudioBitRate() }
         val codec = ScrcpyAudioCodec.entries.firstOrNull { it.cliKey == codecKey }
@@ -56,7 +53,7 @@ internal fun groupSummaryText(
             )
         )
     }
-    SettingsGroup.STORAGE -> {
+    SettingsGroup.WHERE_RECORDINGS_GO -> {
         val target = remember(updateTrigger) { preferences.getStorageTarget() }
         stringResource(
             when (target) {
@@ -66,14 +63,30 @@ internal fun groupSummaryText(
             }
         )
     }
-    SettingsGroup.TRANSCRIPTION -> {
-        val mode = remember(updateTrigger) { preferences.getTranscriptionMode() }
+    SettingsGroup.CLEANING_UP -> {
+        val localDays = remember(updateTrigger) { preferences.getRetentionLocalDays() }
+        val capBytes = remember(updateTrigger) { preferences.getStorageCapBytes() }
         joinSummary(
             listOf(
-                stringResource(TranscriptionLabels.titleOf(mode)),
+                stringResource(RetentionPeriod.fromDays(localDays).labelRes),
+                if (capBytes > 0L) stringResource(R.string.storage_cap_gigabytes, capBytes / BYTES_PER_GIGABYTE) else null,
+            )
+        )
+    }
+    SettingsGroup.CONNECTION -> connectionSummaryText(preferences, updateTrigger, expanded)
+    SettingsGroup.MODEL_AND_LANGUAGE -> {
+        val modelId = remember(updateTrigger) { preferences.getTranscriptionModelId() }
+        val model = TranscriptionModel.fromId(modelId) ?: TranscriptionModel.DEFAULT
+        joinSummary(
+            listOf(
+                stringResource(TranscriptionLabels.titleOf(model)),
                 sharedLanguageLabel(preferences, updateTrigger),
             )
         )
+    }
+    SettingsGroup.WHEN_TO_TRANSCRIBE -> {
+        val mode = remember(updateTrigger) { preferences.getTranscriptionMode() }
+        stringResource(TranscriptionLabels.titleOf(mode))
     }
     SettingsGroup.SUMMARIES -> {
         val context = LocalContext.current
@@ -87,7 +100,7 @@ internal fun groupSummaryText(
             )
         )
     }
-    SettingsGroup.GENERAL -> {
+    SettingsGroup.APP -> {
         val theme = remember(updateTrigger) { preferences.getThemeMode() }
         stringResource(
             when (theme) {
@@ -97,13 +110,11 @@ internal fun groupSummaryText(
             }
         )
     }
-    SettingsGroup.DEBUG -> {
-        val logging = remember(updateTrigger) { preferences.isLoggingEnabled() }
-        featureSummaryText(featureSummary(logging, isAvailable = true))
-    }
-    SettingsGroup.ABOUT -> actions.getAppVersion()
-    SettingsGroup.BACKUP -> ""
+    SettingsGroup.HELP_AND_ABOUT -> actions.getAppVersion()
 }
+
+/** The storage cap is stored in bytes and offered in whole gigabytes (GiB), as in the Retention dropdown. */
+private const val BYTES_PER_GIGABYTE = 1L shl 30
 
 /** kbps from a stored bit rate in bits per second. */
 private const val BITS_PER_KILOBIT = 1000
@@ -116,39 +127,65 @@ internal fun sharedLanguageLabel(preferences: AppPreferences, updateTrigger: Int
 }
 
 @Composable
-private fun featureSummaryText(summary: FeatureSummary): String = stringResource(
-    when (summary) {
-        FeatureSummary.ON -> R.string.settings_summary_on
-        FeatureSummary.OFF -> R.string.settings_summary_off
-        FeatureSummary.UNAVAILABLE -> R.string.settings_summary_unavailable
-    }
-)
+private fun directionText(direction: RecordingSummary): String? = when (direction) {
+    RecordingSummary.OFF -> null
+    RecordingSummary.BOTH -> stringResource(R.string.settings_summary_recording_both)
+    RecordingSummary.INCOMING_ONLY -> stringResource(R.string.settings_summary_recording_incoming)
+    RecordingSummary.OUTGOING_ONLY -> stringResource(R.string.settings_summary_recording_outgoing)
+    RecordingSummary.MANUAL_ONLY -> stringResource(R.string.settings_summary_recording_manual)
+}
 
+/** "Phone and app calls · incoming and outgoing", "Phone calls only · …", "App calls only", or "Off". */
 @Composable
-private fun recordingSummaryText(preferences: AppPreferences, updateTrigger: Int, expanded: Boolean): String {
-    val summary = remember(updateTrigger, expanded) {
-        recordingSummary(
-            isCarrierOn = preferences.isCarrierRecordingEnabled(),
+private fun callsToRecordSummaryText(preferences: AppPreferences, updateTrigger: Int, expanded: Boolean): String {
+    val appSupported = capabilityAvailable(ModeCapability.VOIP_RECORDING)
+    val summary = remember(updateTrigger, expanded, appSupported) {
+        callsToRecordSummary(
+            isPhoneOn = preferences.isCarrierRecordingEnabled(),
+            isAppOn = appSupported && preferences.isVoipRecordingEnabled(),
             isIncomingOn = preferences.isAutoRecordIncomingEnabled(),
             isOutgoingOn = preferences.isAutoRecordOutgoingEnabled(),
         )
     }
-    val detail = when (summary) {
-        RecordingSummary.OFF -> return stringResource(R.string.settings_summary_off)
-        RecordingSummary.BOTH -> R.string.settings_summary_recording_both
-        RecordingSummary.INCOMING_ONLY -> R.string.settings_summary_recording_incoming
-        RecordingSummary.OUTGOING_ONLY -> R.string.settings_summary_recording_outgoing
-        RecordingSummary.MANUAL_ONLY -> R.string.settings_summary_recording_manual
+    val which = when (summary.which) {
+        CallsWhich.NONE -> return stringResource(R.string.settings_summary_off)
+        CallsWhich.PHONE_AND_APP -> R.string.settings_summary_calls_phone_and_app
+        CallsWhich.PHONE_ONLY -> R.string.settings_summary_calls_phone_only
+        CallsWhich.APP_ONLY -> R.string.settings_summary_calls_app_only
     }
-    return joinSummary(listOf(stringResource(R.string.settings_summary_on), stringResource(detail)))
+    return joinSummary(listOf(stringResource(which), summary.direction?.let { directionText(it) }))
 }
 
 /**
- * "N of M on" over the Reliability switches, counting only the ones usable in this mode, as their rows
+ * How many skip rules are on. A rule counts only where its row can act: other-country incoming is greyed out
+ * unless anonymous incoming is skipped, and the app-call rule needs app calls on.
+ */
+@Composable
+private fun callsToSkipSummaryText(preferences: AppPreferences, updateTrigger: Int, expanded: Boolean): String {
+    val count = remember(updateTrigger, expanded) {
+        val ignoreAnonymous = preferences.isIgnoreAnonymousIncomingEnabled()
+        activeRuleCount(
+            listOf(
+                preferences.getIgnoreContactsModeIncoming() != AppPreferences.IgnoreContactsMode.NONE,
+                preferences.getIgnoreContactsModeOutgoing() != AppPreferences.IgnoreContactsMode.NONE,
+                ignoreAnonymous,
+                ignoreAnonymous && preferences.isIgnoreCrossCountryIncomingEnabled(),
+                preferences.isIgnoreCrossCountryOutgoingEnabled(),
+                preferences.isVoipRecordingEnabled() && preferences.isVoipApplyIgnoredContactsEnabled(),
+                preferences.getMinDurationSeconds() > 0,
+            )
+        )
+    }
+    if (count == 0) return stringResource(R.string.settings_summary_nothing_skipped)
+    return stringResource(R.string.settings_summary_skip_rules_on, count)
+}
+
+/**
+ * "N of M on" over the Connection switches, counting only the ones usable in this mode, as their rows
  * grey out the rest. The mode is read live (never remembered) so the line follows a mode switch.
  */
 @Composable
-private fun reliabilitySummaryText(preferences: AppPreferences, updateTrigger: Int, expanded: Boolean): String {
+private fun connectionSummaryText(preferences: AppPreferences, updateTrigger: Int, expanded: Boolean): String {
     val context = LocalContext.current
     val usesEmbeddedAdb = !currentPrivilegedMode().needsShizuku
     val handoffSupported = capabilityAvailable(ModeCapability.RESILIENT_RECORDING)

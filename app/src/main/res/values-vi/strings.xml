@@ -749,13 +749,11 @@
     <string name="settings_title_recordings">Cài đặt bản ghi âm</string>
     <string name="settings_title_transcripts">Cài đặt bản chép lời</string>
     <string name="settings_title_summaries">Cài đặt bản tóm tắt</string>
-    <string name="settings_group_app_calls">Cuộc gọi qua ứng dụng</string>
     <string name="settings_link_share_debug_report">Chia sẻ báo cáo gỡ lỗi</string>
     <string name="settings_link_all_settings">Tất cả cài đặt</string>
     <string name="settings_language_change_in_transcripts">Thay đổi trong cài đặt bản chép lời</string>
     <string name="settings_classic_screen_label">Dùng màn hình cài đặt cổ điển</string>
     <string name="settings_classic_screen_description">Bật: cài đặt mở ra thành một danh sách dài như trước. Tắt: bố cục mới, trong đó biểu tượng cài đặt của mỗi trang chỉ hiện cài đặt của trang đó.</string>
-    <string name="settings_summary_on">Bật</string>
     <string name="settings_summary_off">Tắt</string>
     <string name="settings_summary_unavailable">Không khả dụng ở đây</string>
     <string name="settings_summary_count_on">Bật %1$d/%2$d</string>
@@ -764,4 +762,27 @@
     <string name="settings_summary_recording_outgoing">chỉ cuộc gọi đi</string>
     <string name="settings_summary_recording_manual">chỉ thủ công</string>
     <string name="settings_summary_not_downloaded">Chưa tải xuống</string>
+
+    <!-- New Settings screen: the ⓘ button that explains a row. -->
+    <string name="settings_info_about">Giới thiệu về %1$s</string>
+    <string name="settings_info_got_it">Đã hiểu</string>
+
+    <!-- New Settings screen, round 2: groups by what you want to do. -->
+    <string name="settings_group_calls_to_record">Cuộc gọi cần ghi</string>
+    <string name="settings_group_calls_to_skip">Cuộc gọi bỏ qua</string>
+    <string name="settings_group_sound_and_names">Âm thanh và tên tệp</string>
+    <string name="settings_group_where_recordings_go">Nơi lưu bản ghi âm</string>
+    <string name="settings_group_cleaning_up">Dọn dẹp</string>
+    <string name="settings_group_connection">Kết nối</string>
+    <string name="settings_group_model_and_language">Mô hình và ngôn ngữ</string>
+    <string name="settings_group_when_to_transcribe">Khi nào chép lời</string>
+    <string name="settings_group_app">Ứng dụng</string>
+    <string name="settings_group_help_and_about">Trợ giúp và giới thiệu</string>
+    <string name="settings_subheader_which_calls">Cuộc gọi nào</string>
+    <string name="settings_subheader_when_to_start">Khi nào bắt đầu</string>
+    <string name="settings_summary_calls_phone_and_app">Cuộc gọi điện thoại và qua ứng dụng</string>
+    <string name="settings_summary_calls_phone_only">Chỉ cuộc gọi điện thoại</string>
+    <string name="settings_summary_calls_app_only">Chỉ cuộc gọi qua ứng dụng</string>
+    <string name="settings_summary_nothing_skipped">Không bỏ qua gì</string>
+    <string name="settings_summary_skip_rules_on">Quy tắc bỏ qua đang bật: %1$d</string>
 </resources>

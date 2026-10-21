@@ -749,13 +749,11 @@
     <string name="settings_title_recordings">录音设置</string>
     <string name="settings_title_transcripts">转写设置</string>
     <string name="settings_title_summaries">摘要设置</string>
-    <string name="settings_group_app_calls">应用通话</string>
     <string name="settings_link_share_debug_report">分享调试报告</string>
     <string name="settings_link_all_settings">全部设置</string>
     <string name="settings_language_change_in_transcripts">在转写设置中更改</string>
     <string name="settings_classic_screen_label">使用经典设置界面</string>
     <string name="settings_classic_screen_description">开启：设置像以前一样以一个长列表打开。关闭：使用新布局，每个页面的设置图标只显示该页面的设置。</string>
-    <string name="settings_summary_on">开启</string>
     <string name="settings_summary_off">关闭</string>
     <string name="settings_summary_unavailable">此处不可用</string>
     <string name="settings_summary_count_on">已开启 %1$d/%2$d 项</string>
@@ -764,4 +762,27 @@
     <string name="settings_summary_recording_outgoing">仅主叫</string>
     <string name="settings_summary_recording_manual">仅手动</string>
     <string name="settings_summary_not_downloaded">未下载</string>
+
+    <!-- New Settings screen: the ⓘ button that explains a row. -->
+    <string name="settings_info_about">关于“%1$s”</string>
+    <string name="settings_info_got_it">知道了</string>
+
+    <!-- New Settings screen, round 2: groups by what you want to do. -->
+    <string name="settings_group_calls_to_record">要录音的通话</string>
+    <string name="settings_group_calls_to_skip">要跳过的通话</string>
+    <string name="settings_group_sound_and_names">声音和文件名</string>
+    <string name="settings_group_where_recordings_go">录音保存位置</string>
+    <string name="settings_group_cleaning_up">清理</string>
+    <string name="settings_group_connection">连接</string>
+    <string name="settings_group_model_and_language">模型和语言</string>
+    <string name="settings_group_when_to_transcribe">何时转写</string>
+    <string name="settings_group_app">应用</string>
+    <string name="settings_group_help_and_about">帮助和关于</string>
+    <string name="settings_subheader_which_calls">哪些通话</string>
+    <string name="settings_subheader_when_to_start">何时开始</string>
+    <string name="settings_summary_calls_phone_and_app">电话和应用通话</string>
+    <string name="settings_summary_calls_phone_only">仅电话</string>
+    <string name="settings_summary_calls_app_only">仅应用通话</string>
+    <string name="settings_summary_nothing_skipped">不跳过任何通话</string>
+    <string name="settings_summary_skip_rules_on">已启用的跳过规则：%1$d</string>
 </resources>

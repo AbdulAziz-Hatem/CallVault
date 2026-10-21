@@ -752,13 +752,11 @@
     <string name="settings_title_recordings">Настройки записей</string>
     <string name="settings_title_transcripts">Настройки расшифровок</string>
     <string name="settings_title_summaries">Настройки сводок</string>
-    <string name="settings_group_app_calls">Звонки в приложениях</string>
     <string name="settings_link_share_debug_report">Поделиться отчётом для отладки</string>
     <string name="settings_link_all_settings">Все настройки</string>
     <string name="settings_language_change_in_transcripts">Меняется в настройках расшифровок</string>
     <string name="settings_classic_screen_label">Классический экран настроек</string>
     <string name="settings_classic_screen_description">Вкл.: настройки открываются одним длинным списком, как раньше. Выкл.: новый вид, где значок настроек на каждой странице показывает только её настройки.</string>
-    <string name="settings_summary_on">Вкл.</string>
     <string name="settings_summary_off">Выкл.</string>
     <string name="settings_summary_unavailable">Здесь недоступно</string>
     <string name="settings_summary_count_on">Включено: %1$d из %2$d</string>
@@ -767,4 +765,27 @@
     <string name="settings_summary_recording_outgoing">только исходящие</string>
     <string name="settings_summary_recording_manual">только вручную</string>
     <string name="settings_summary_not_downloaded">Не скачано</string>
+
+    <!-- New Settings screen: the ⓘ button that explains a row. -->
+    <string name="settings_info_about">Подробнее: %1$s</string>
+    <string name="settings_info_got_it">Понятно</string>
+
+    <!-- New Settings screen, round 2: groups by what you want to do. -->
+    <string name="settings_group_calls_to_record">Какие звонки записывать</string>
+    <string name="settings_group_calls_to_skip">Какие звонки пропускать</string>
+    <string name="settings_group_sound_and_names">Звук и имена файлов</string>
+    <string name="settings_group_where_recordings_go">Куда сохраняются записи</string>
+    <string name="settings_group_cleaning_up">Очистка</string>
+    <string name="settings_group_connection">Подключение</string>
+    <string name="settings_group_model_and_language">Модель и язык</string>
+    <string name="settings_group_when_to_transcribe">Когда расшифровывать</string>
+    <string name="settings_group_app">Приложение</string>
+    <string name="settings_group_help_and_about">Помощь и о приложении</string>
+    <string name="settings_subheader_which_calls">Какие звонки</string>
+    <string name="settings_subheader_when_to_start">Когда начинать</string>
+    <string name="settings_summary_calls_phone_and_app">Обычные звонки и звонки в приложениях</string>
+    <string name="settings_summary_calls_phone_only">Только обычные звонки</string>
+    <string name="settings_summary_calls_app_only">Только звонки в приложениях</string>
+    <string name="settings_summary_nothing_skipped">Ничего не пропускается</string>
+    <string name="settings_summary_skip_rules_on">Активных правил: %1$d</string>
 </resources>

@@ -337,7 +337,9 @@ internal fun AboutSection(
             label = stringResource(R.string.settings_ui_about_app),
             value = versionString,
             supporting = stringResource(R.string.settings_scrcpy_server, serverVersion),
-            showChevron = false
+            showChevron = false,
+            // A version number: a value, not an explanation.
+            keepSupportingInline = true,
         )
 
         SettingsDivider()
