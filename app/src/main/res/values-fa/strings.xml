@@ -838,4 +838,24 @@
     <string name="tile_recording_on">ضبط فعال</string>
     <string name="tile_recording_stopped">متوقف</string>
     <string name="home_hero_pill_starting">در حال شروع…</string>
+
+    <!-- New Settings screen (settings per page, step 2). -->
+    <string name="settings_title_recordings">تنظیمات فایل‌های ضبط‌شده</string>
+    <string name="settings_title_transcripts">تنظیمات رونوشت‌ها</string>
+    <string name="settings_title_summaries">تنظیمات خلاصه‌ها</string>
+    <string name="settings_group_app_calls">تماس‌های برنامه‌ها</string>
+    <string name="settings_link_share_debug_report">اشتراک‌گذاری گزارش اشکال‌زدایی</string>
+    <string name="settings_link_all_settings">همه تنظیمات</string>
+    <string name="settings_language_change_in_transcripts">در تنظیمات رونوشت‌ها تغییر می‌کند</string>
+    <string name="settings_classic_screen_label">استفاده از صفحه تنظیمات کلاسیک</string>
+    <string name="settings_classic_screen_description">روشن: تنظیمات مثل قبل به‌صورت یک فهرست بلند باز می‌شود. خاموش: چیدمان جدید، که در آن نماد تنظیمات هر صفحه فقط تنظیمات همان صفحه را نشان می‌دهد.</string>
+    <string name="settings_summary_on">روشن</string>
+    <string name="settings_summary_off">خاموش</string>
+    <string name="settings_summary_unavailable">اینجا در دسترس نیست</string>
+    <string name="settings_summary_count_on">%1$d از %2$d روشن</string>
+    <string name="settings_summary_recording_both">ورودی و خروجی</string>
+    <string name="settings_summary_recording_incoming">فقط ورودی</string>
+    <string name="settings_summary_recording_outgoing">فقط خروجی</string>
+    <string name="settings_summary_recording_manual">فقط دستی</string>
+    <string name="settings_summary_not_downloaded">دانلود نشده</string>
 </resources>

@@ -747,4 +747,24 @@
     <string name="tile_recording_on">Nagrywanie włączone</string>
     <string name="tile_recording_stopped">Zatrzymane</string>
     <string name="home_hero_pill_starting">Uruchamianie…</string>
+
+    <!-- New Settings screen (settings per page, step 2). -->
+    <string name="settings_title_recordings">Ustawienia nagrań</string>
+    <string name="settings_title_transcripts">Ustawienia transkrypcji</string>
+    <string name="settings_title_summaries">Ustawienia podsumowań</string>
+    <string name="settings_group_app_calls">Połączenia w aplikacjach</string>
+    <string name="settings_link_share_debug_report">Udostępnij raport debugowania</string>
+    <string name="settings_link_all_settings">Wszystkie ustawienia</string>
+    <string name="settings_language_change_in_transcripts">Zmiana w ustawieniach transkrypcji</string>
+    <string name="settings_classic_screen_label">Używaj klasycznego ekranu ustawień</string>
+    <string name="settings_classic_screen_description">Włączone: ustawienia otwierają się jako jedna długa lista, jak dotąd. Wyłączone: nowy układ, w którym ikona ustawień na każdej stronie pokazuje tylko ustawienia tej strony.</string>
+    <string name="settings_summary_on">Włączone</string>
+    <string name="settings_summary_off">Wyłączone</string>
+    <string name="settings_summary_unavailable">Niedostępne tutaj</string>
+    <string name="settings_summary_count_on">Włączone: %1$d z %2$d</string>
+    <string name="settings_summary_recording_both">przychodzące i wychodzące</string>
+    <string name="settings_summary_recording_incoming">tylko przychodzące</string>
+    <string name="settings_summary_recording_outgoing">tylko wychodzące</string>
+    <string name="settings_summary_recording_manual">tylko ręcznie</string>
+    <string name="settings_summary_not_downloaded">Nie pobrano</string>
 </resources>

@@ -30,7 +30,7 @@ class AppPreferencesExportTest {
         listOf(
             "adb_paired", "loopback_adb_port", "privileged_mode", "recording_folder_uri",
             "drive_folder_uri", "log_pseudonym_salt", "wizard_completed", "disclaimer_accepted",
-            "available_update_tag", "wd_enabled_by_us", "shell_grant_state",
+            "available_update_tag", "wd_enabled_by_us", "shell_grant_state", "classic_settings_screen",
         ).forEach { key ->
             assertFalse("$key must not be exportable", AppPreferences.EXPORTABLE_KEYS.contains(key))
         }

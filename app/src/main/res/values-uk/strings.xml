@@ -755,4 +755,24 @@
     <string name="settings_voip_ignore_contacts_label">Також пропускати ігноровані контакти</string>
     <string name="settings_voip_ignore_contacts_desc">Застосовувати список ігнорованих контактів і до дзвінків у застосунках</string>
     <string name="settings_voip_ignore_contacts_hint">Порівнюється з імʼям або номером, які застосунок показує для дзвінка, і лише повністю — імʼя, що збігається частково, все одно записується. Telegram може показувати власне імʼя людини замість імені з ваших контактів, тож там збіг може не спрацювати. Якщо ви самі натиснете «Записати», запис все одно відбудеться.</string>
+
+    <!-- New Settings screen (settings per page, step 2). -->
+    <string name="settings_title_recordings">Налаштування записів</string>
+    <string name="settings_title_transcripts">Налаштування транскрипцій</string>
+    <string name="settings_title_summaries">Налаштування підсумків</string>
+    <string name="settings_group_app_calls">Дзвінки в застосунках</string>
+    <string name="settings_link_share_debug_report">Поділитися звітом діагностики</string>
+    <string name="settings_link_all_settings">Усі налаштування</string>
+    <string name="settings_language_change_in_transcripts">Змінюється в налаштуваннях транскрипцій</string>
+    <string name="settings_classic_screen_label">Класичний екран налаштувань</string>
+    <string name="settings_classic_screen_description">Увімк.: налаштування відкриваються одним довгим списком, як раніше. Вимк.: новий вигляд, де значок налаштувань на кожній сторінці показує лише її налаштування.</string>
+    <string name="settings_summary_on">Увімк.</string>
+    <string name="settings_summary_off">Вимк.</string>
+    <string name="settings_summary_unavailable">Тут недоступно</string>
+    <string name="settings_summary_count_on">Увімкнено: %1$d з %2$d</string>
+    <string name="settings_summary_recording_both">вхідні й вихідні</string>
+    <string name="settings_summary_recording_incoming">лише вхідні</string>
+    <string name="settings_summary_recording_outgoing">лише вихідні</string>
+    <string name="settings_summary_recording_manual">лише вручну</string>
+    <string name="settings_summary_not_downloaded">Не завантажено</string>
 </resources>

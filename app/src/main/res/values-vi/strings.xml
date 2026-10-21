@@ -744,4 +744,24 @@
     <string name="tile_recording_on">Đang ghi âm</string>
     <string name="tile_recording_stopped">Đã dừng</string>
     <string name="home_hero_pill_starting">Đang khởi động…</string>
+
+    <!-- New Settings screen (settings per page, step 2). -->
+    <string name="settings_title_recordings">Cài đặt bản ghi âm</string>
+    <string name="settings_title_transcripts">Cài đặt bản chép lời</string>
+    <string name="settings_title_summaries">Cài đặt bản tóm tắt</string>
+    <string name="settings_group_app_calls">Cuộc gọi qua ứng dụng</string>
+    <string name="settings_link_share_debug_report">Chia sẻ báo cáo gỡ lỗi</string>
+    <string name="settings_link_all_settings">Tất cả cài đặt</string>
+    <string name="settings_language_change_in_transcripts">Thay đổi trong cài đặt bản chép lời</string>
+    <string name="settings_classic_screen_label">Dùng màn hình cài đặt cổ điển</string>
+    <string name="settings_classic_screen_description">Bật: cài đặt mở ra thành một danh sách dài như trước. Tắt: bố cục mới, trong đó biểu tượng cài đặt của mỗi trang chỉ hiện cài đặt của trang đó.</string>
+    <string name="settings_summary_on">Bật</string>
+    <string name="settings_summary_off">Tắt</string>
+    <string name="settings_summary_unavailable">Không khả dụng ở đây</string>
+    <string name="settings_summary_count_on">Bật %1$d/%2$d</string>
+    <string name="settings_summary_recording_both">cuộc gọi đến và đi</string>
+    <string name="settings_summary_recording_incoming">chỉ cuộc gọi đến</string>
+    <string name="settings_summary_recording_outgoing">chỉ cuộc gọi đi</string>
+    <string name="settings_summary_recording_manual">chỉ thủ công</string>
+    <string name="settings_summary_not_downloaded">Chưa tải xuống</string>
 </resources>

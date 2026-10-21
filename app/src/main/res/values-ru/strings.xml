@@ -747,4 +747,24 @@
     <string name="tile_recording_on">Запись включена</string>
     <string name="tile_recording_stopped">Остановлено</string>
     <string name="home_hero_pill_starting">Запуск…</string>
+
+    <!-- New Settings screen (settings per page, step 2). -->
+    <string name="settings_title_recordings">Настройки записей</string>
+    <string name="settings_title_transcripts">Настройки расшифровок</string>
+    <string name="settings_title_summaries">Настройки сводок</string>
+    <string name="settings_group_app_calls">Звонки в приложениях</string>
+    <string name="settings_link_share_debug_report">Поделиться отчётом для отладки</string>
+    <string name="settings_link_all_settings">Все настройки</string>
+    <string name="settings_language_change_in_transcripts">Меняется в настройках расшифровок</string>
+    <string name="settings_classic_screen_label">Классический экран настроек</string>
+    <string name="settings_classic_screen_description">Вкл.: настройки открываются одним длинным списком, как раньше. Выкл.: новый вид, где значок настроек на каждой странице показывает только её настройки.</string>
+    <string name="settings_summary_on">Вкл.</string>
+    <string name="settings_summary_off">Выкл.</string>
+    <string name="settings_summary_unavailable">Здесь недоступно</string>
+    <string name="settings_summary_count_on">Включено: %1$d из %2$d</string>
+    <string name="settings_summary_recording_both">входящие и исходящие</string>
+    <string name="settings_summary_recording_incoming">только входящие</string>
+    <string name="settings_summary_recording_outgoing">только исходящие</string>
+    <string name="settings_summary_recording_manual">только вручную</string>
+    <string name="settings_summary_not_downloaded">Не скачано</string>
 </resources>

@@ -67,6 +67,14 @@ internal fun SettingsSubHeader(text: String, nested: Boolean = false, modifier: 
     )
 }
 
+/**
+ * True while a section is drawn inside a group card on the new Settings screen ([ScopedSettingsContent]).
+ * The card then owns the header, the folding and the frame, so [SettingsSection] draws only its rows.
+ *
+ * False by default, which is the classic screen: it never provides this, so it renders exactly as before.
+ */
+internal val LocalSettingsSectionInGroupCard = staticCompositionLocalOf { false }
+
 @Composable
 internal fun SettingsSection(
     title: String,
@@ -78,6 +86,11 @@ internal fun SettingsSection(
     wrapInCard: Boolean = true,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    if (LocalSettingsSectionInGroupCard.current) {
+        // The same rows, without this section's own header and fold: the group card around it has both.
+        Column(verticalArrangement = Arrangement.spacedBy(if (wrapInCard) 0.dp else 6.dp)) { content() }
+        return
+    }
     val chevronRotation by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
         label = "settingsSectionChevron"

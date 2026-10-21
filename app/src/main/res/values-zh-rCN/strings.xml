@@ -744,4 +744,24 @@
     <string name="tile_recording_on">录音已开启</string>
     <string name="tile_recording_stopped">已停止</string>
     <string name="home_hero_pill_starting">正在启动…</string>
+
+    <!-- New Settings screen (settings per page, step 2). -->
+    <string name="settings_title_recordings">录音设置</string>
+    <string name="settings_title_transcripts">转写设置</string>
+    <string name="settings_title_summaries">摘要设置</string>
+    <string name="settings_group_app_calls">应用通话</string>
+    <string name="settings_link_share_debug_report">分享调试报告</string>
+    <string name="settings_link_all_settings">全部设置</string>
+    <string name="settings_language_change_in_transcripts">在转写设置中更改</string>
+    <string name="settings_classic_screen_label">使用经典设置界面</string>
+    <string name="settings_classic_screen_description">开启：设置像以前一样以一个长列表打开。关闭：使用新布局，每个页面的设置图标只显示该页面的设置。</string>
+    <string name="settings_summary_on">开启</string>
+    <string name="settings_summary_off">关闭</string>
+    <string name="settings_summary_unavailable">此处不可用</string>
+    <string name="settings_summary_count_on">已开启 %1$d/%2$d 项</string>
+    <string name="settings_summary_recording_both">被叫和主叫</string>
+    <string name="settings_summary_recording_incoming">仅被叫</string>
+    <string name="settings_summary_recording_outgoing">仅主叫</string>
+    <string name="settings_summary_recording_manual">仅手动</string>
+    <string name="settings_summary_not_downloaded">未下载</string>
 </resources>

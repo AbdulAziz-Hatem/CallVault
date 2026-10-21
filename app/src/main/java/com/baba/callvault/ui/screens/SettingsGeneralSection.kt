@@ -58,7 +58,10 @@ internal fun GeneralSection(
     updateTrigger: Int,
     actions: SettingsActions,
     expanded: Boolean,
-    onToggle: () -> Unit
+    onToggle: () -> Unit,
+    // False on the new Settings screen, where these rows live in the App calls and Reliability groups
+    // instead. The classic screen keeps the default and shows Experimental as before.
+    includeExperimental: Boolean = true,
 ) {
     // One open sub-section at a time, within this section only, and nothing open on entry.
     var openSub by rememberSaveable { mutableStateOf<String?>(null) }
@@ -79,11 +82,13 @@ internal fun GeneralSection(
             expanded = openSub == SUB_PRIVACY,
             onToggle = { openSub = if (openSub == SUB_PRIVACY) null else SUB_PRIVACY },
         ) { PrivacySubSection(preferences, updateTrigger) }
-        SettingsSubSection(
-            title = stringResource(R.string.settings_section_experimental),
-            expanded = openSub == SUB_EXPERIMENTAL,
-            onToggle = { openSub = if (openSub == SUB_EXPERIMENTAL) null else SUB_EXPERIMENTAL },
-        ) { ExperimentalSubSection() }
+        if (includeExperimental) {
+            SettingsSubSection(
+                title = stringResource(R.string.settings_section_experimental),
+                expanded = openSub == SUB_EXPERIMENTAL,
+                onToggle = { openSub = if (openSub == SUB_EXPERIMENTAL) null else SUB_EXPERIMENTAL },
+            ) { ExperimentalSubSection() }
+        }
         SettingsSubSection(
             title = stringResource(R.string.settings_section_updates),
             expanded = openSub == SUB_UPDATES,
@@ -256,22 +261,31 @@ private fun VisualSubSection(preferences: AppPreferences, updateTrigger: Int, ac
 private fun ExperimentalSubSection() {
     Column {
         SettingsSubHeader(stringResource(R.string.settings_subsection_resilience), nested = true)
-        HandoffPersistToggle()
-        SettingsDivider()
-        OfflineRecordingToggle()
-        SettingsDivider()
-        UsbDebuggingToggle()
-        SettingsDivider()
-        WirelessDebuggingEnforceToggle()
-        SettingsDivider()
-        WifiNetworkAutoApproveToggle()
-        SettingsDivider()
-        UsbDefaultConfigRow()
-        PairAgainRow()
+        ResilienceRows()
 
         SettingsSubHeader(stringResource(R.string.settings_subsection_voip), nested = true)
         VoipRecordingToggle()
     }
+}
+
+/**
+ * The Resilience rows, in their order. Shared by the classic Experimental sub-section and the new
+ * screen's Reliability group, so the two cannot list different switches.
+ */
+@Composable
+internal fun ResilienceRows() {
+    HandoffPersistToggle()
+    SettingsDivider()
+    OfflineRecordingToggle()
+    SettingsDivider()
+    UsbDebuggingToggle()
+    SettingsDivider()
+    WirelessDebuggingEnforceToggle()
+    SettingsDivider()
+    WifiNetworkAutoApproveToggle()
+    SettingsDivider()
+    UsbDefaultConfigRow()
+    PairAgainRow()
 }
 
 /** A branded, collapsible section: a tappable [CvSectionHeader] (with a rotating chevron) above a
