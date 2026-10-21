@@ -102,7 +102,7 @@ internal fun SettingsLayoutSwitchCard(preferences: AppPreferences, actions: Sett
                 text = subtitle,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
-                maxLines = 1,
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
         }
