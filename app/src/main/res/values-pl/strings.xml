@@ -760,7 +760,7 @@
     <string name="settings_summary_off">Wyłączone</string>
     <string name="settings_summary_unavailable">Niedostępne tutaj</string>
     <string name="settings_summary_count_on">Włączone: %1$d z %2$d</string>
-    <string name="settings_summary_recording_both">przychodzące i wychodzące</string>
+    <string name="settings_summary_recording_both">oba kierunki</string>
     <string name="settings_summary_recording_incoming">tylko przychodzące</string>
     <string name="settings_summary_recording_outgoing">tylko wychodzące</string>
     <string name="settings_summary_recording_manual">tylko ręcznie</string>
@@ -774,7 +774,7 @@
     <string name="settings_group_calls_to_record">Które połączenia nagrywać</string>
     <string name="settings_group_calls_to_skip">Które połączenia pomijać</string>
     <string name="settings_group_sound_and_names">Dźwięk i nazwy plików</string>
-    <string name="settings_group_where_recordings_go">Gdzie trafiają nagrania</string>
+    <string name="settings_group_save_and_sync">Zapis i synchronizacja</string>
     <string name="settings_group_cleaning_up">Porządki</string>
     <string name="settings_group_connection">Łączność</string>
     <string name="settings_group_model_and_language">Model i język</string>

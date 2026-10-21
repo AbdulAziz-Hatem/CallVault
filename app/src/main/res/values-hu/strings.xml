@@ -758,7 +758,7 @@
     <string name="settings_summary_off">Ki</string>
     <string name="settings_summary_unavailable">Itt nem érhető el</string>
     <string name="settings_summary_count_on">%1$d / %2$d bekapcsolva</string>
-    <string name="settings_summary_recording_both">bejövő és kimenő</string>
+    <string name="settings_summary_recording_both">mindkét irány</string>
     <string name="settings_summary_recording_incoming">csak bejövő</string>
     <string name="settings_summary_recording_outgoing">csak kimenő</string>
     <string name="settings_summary_recording_manual">csak kézi</string>
@@ -772,7 +772,7 @@
     <string name="settings_group_calls_to_record">Rögzítendő hívások</string>
     <string name="settings_group_calls_to_skip">Kihagyandó hívások</string>
     <string name="settings_group_sound_and_names">Hang és fájlnevek</string>
-    <string name="settings_group_where_recordings_go">Hová kerülnek a felvételek</string>
+    <string name="settings_group_save_and_sync">Mentés és szinkronizálás</string>
     <string name="settings_group_cleaning_up">Takarítás</string>
     <string name="settings_group_connection">Kapcsolat</string>
     <string name="settings_group_model_and_language">Modell és nyelv</string>

@@ -112,6 +112,58 @@ internal fun SettingsInfoButton(label: String, explanation: String) {
     }
 }
 
+/** A row's explanations for its ⓘ: the description, a blank line, then the hint. Null when there are none. */
+internal fun joinExplanations(vararg parts: String?): String? =
+    parts.filterNot { it.isNullOrBlank() }.joinToString("\n\n").takeIf { it.isNotEmpty() }
+
+/**
+ * A free-standing EXPLANATORY hint under a row. Drawn as [SettingsHint] on the classic screen; in ⓘ mode it
+ * draws nothing, because the row it explains carries it in its ⓘ (pass the same text as that row's
+ * `infoExtra`, or wrap the control in [WithInfo]). Live status and warnings use [SettingsHint] directly.
+ */
+@Composable
+internal fun SettingsExplanation(text: String) {
+    if (!LocalSettingsDescriptionsAsInfo.current) SettingsHint(text)
+}
+
+/** [SettingsExplanation] for the smaller [HintText] used under dropdowns. */
+@Composable
+internal fun HintExplanation(text: String) {
+    if (!LocalSettingsDescriptionsAsInfo.current) HintText(text)
+}
+
+/**
+ * An explanatory paragraph that belongs to a whole group (retention, the transcription mode, the summariser's
+ * costs). Drawn on the classic screen; in ⓘ mode the group card's own ⓘ carries it instead.
+ */
+@Composable
+internal fun ExplanationParagraph(text: String) {
+    if (LocalSettingsDescriptionsAsInfo.current) return
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+    )
+}
+
+/**
+ * A control with no ⓘ of its own (a dropdown) gets one beside it in ⓘ mode, carrying [explanation]. On the
+ * classic screen [content] is drawn as it always was, with nothing around it.
+ */
+@Composable
+internal fun WithInfo(label: String, explanation: String?, content: @Composable () -> Unit) {
+    if (!LocalSettingsDescriptionsAsInfo.current || explanation.isNullOrBlank()) {
+        content()
+        return
+    }
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.weight(1f)) { content() }
+        SettingsInfoButton(label = label, explanation = explanation)
+        Spacer(Modifier.width(8.dp))
+    }
+}
+
 @Composable
 internal fun SettingsSection(
     title: String,
@@ -297,8 +349,13 @@ internal fun NavigationRow(
     // True when [supporting] is a value or a warning rather than an explanation, so the new screen's
     // ⓘ mode ([LocalSettingsDescriptionsAsInfo]) must still show it on the row.
     keepSupportingInline: Boolean = false,
+    // An explanatory paragraph that the classic screen draws under this row (the row's caller draws it with
+    // [SettingsExplanation]). In ⓘ mode it joins the row's ⓘ instead; ignored otherwise.
+    infoExtra: String? = null,
 ) {
-    val supportingAsInfo = LocalSettingsDescriptionsAsInfo.current && supporting != null && !keepSupportingInline
+    val infoMode = LocalSettingsDescriptionsAsInfo.current
+    val supportingAsInfo = infoMode && supporting != null && !keepSupportingInline
+    val infoText = if (infoMode) joinExplanations(supporting.takeIf { supportingAsInfo }, infoExtra) else null
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -330,8 +387,8 @@ internal fun NavigationRow(
                 )
             }
         }
-        if (supportingAsInfo && supporting != null) {
-            SettingsInfoButton(label = label, explanation = supporting)
+        if (infoText != null) {
+            SettingsInfoButton(label = label, explanation = infoText)
         }
         if (showChevron) {
             Spacer(Modifier.width(8.dp))
@@ -362,12 +419,18 @@ internal fun SettingsToggleRow(
     // True when [description] is a value or a status rather than an explanation, so the new screen's
     // ⓘ mode ([LocalSettingsDescriptionsAsInfo]) must still show it on the row.
     keepDescriptionInline: Boolean = false,
+    // An explanatory paragraph that the classic screen draws under this row (the row's caller draws it with
+    // [SettingsExplanation]). In ⓘ mode it joins the row's ⓘ instead; ignored otherwise.
+    infoExtra: String? = null,
 ) {
     val contentAlpha = if (enabled) 1f else 0.38f
     // A disabled row's description is the reason it is disabled (e.g. not available in this mode): a
     // warning, so it stays on the row even in ⓘ mode.
     val descriptionAsInfo = LocalSettingsDescriptionsAsInfo.current && description != null &&
         enabled && !keepDescriptionInline
+    val infoText = if (LocalSettingsDescriptionsAsInfo.current) {
+        joinExplanations(description.takeIf { descriptionAsInfo }, infoExtra)
+    } else null
 
     @Composable
     fun descriptionText(modifier: Modifier = Modifier) {
@@ -403,8 +466,8 @@ internal fun SettingsToggleRow(
                 }
             }
             Spacer(Modifier.width(12.dp))
-            if (descriptionAsInfo && description != null) {
-                SettingsInfoButton(label = label, explanation = description)
+            if (infoText != null) {
+                SettingsInfoButton(label = label, explanation = infoText)
             }
             Switch(checked = checked, onCheckedChange = onCheckedChange, enabled = enabled)
         }

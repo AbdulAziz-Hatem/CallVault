@@ -962,7 +962,7 @@
     <string name="settings_summary_off">Off</string>
     <string name="settings_summary_unavailable">Not available here</string>
     <string name="settings_summary_count_on">%1$d of %2$d on</string>
-    <string name="settings_summary_recording_both">incoming and outgoing</string>
+    <string name="settings_summary_recording_both">both directions</string>
     <string name="settings_summary_recording_incoming">incoming only</string>
     <string name="settings_summary_recording_outgoing">outgoing only</string>
     <string name="settings_summary_recording_manual">manual only</string>
@@ -976,7 +976,7 @@
     <string name="settings_group_calls_to_record">Calls to record</string>
     <string name="settings_group_calls_to_skip">Calls to skip</string>
     <string name="settings_group_sound_and_names">Sound and file names</string>
-    <string name="settings_group_where_recordings_go">Where recordings go</string>
+    <string name="settings_group_save_and_sync">Save and sync</string>
     <string name="settings_group_cleaning_up">Cleaning up</string>
     <string name="settings_group_connection">Connection</string>
     <string name="settings_group_model_and_language">Model and language</string>

@@ -8,6 +8,7 @@
 
 package com.baba.callvault.ui.screens
 
+import com.baba.callvault.data.StorageTarget
 import com.baba.callvault.ui.navigation.HomeSection
 
 /**
@@ -37,7 +38,7 @@ enum class SettingsGroup(val key: String) {
     SOUND_AND_NAMES("group_sound_and_names"),
 
     /** Device / Drive, the folders, the upload schedule, and what lands beside each recording. */
-    WHERE_RECORDINGS_GO("group_where_recordings_go"),
+    SAVE_AND_SYNC("group_save_and_sync"),
 
     /** Retention, the space limit and when it runs, and keeping originals after a merge. */
     CLEANING_UP("group_cleaning_up"),
@@ -72,7 +73,7 @@ object SettingsGroups {
         SettingsGroup.CALLS_TO_RECORD,
         SettingsGroup.CALLS_TO_SKIP,
         SettingsGroup.SOUND_AND_NAMES,
-        SettingsGroup.WHERE_RECORDINGS_GO,
+        SettingsGroup.SAVE_AND_SYNC,
         SettingsGroup.CLEANING_UP,
         SettingsGroup.CONNECTION,
     )
@@ -118,7 +119,7 @@ object SettingsGroups {
             "MinDurationRow",
         )
         SettingsGroup.SOUND_AND_NAMES -> listOf("AudioSection", "FileNameTemplateRow")
-        SettingsGroup.WHERE_RECORDINGS_GO -> listOf(
+        SettingsGroup.SAVE_AND_SYNC -> listOf(
             "StorageTargetRow", "RecordingFolderRow", "DriveFolderRow", "UploadScheduleSubSection",
             "HideRecordingsRow", "MetadataFileRow", "TranscriptSidecarRow",
         )
@@ -153,7 +154,7 @@ object SettingsGroups {
             "voip_apply_ignored_contacts", "min_duration_seconds",
         )
         SettingsGroup.SOUND_AND_NAMES -> listOf("audio_source", "audio_codec", "audio_bitrate", "file_name_template")
-        SettingsGroup.WHERE_RECORDINGS_GO -> listOf(
+        SettingsGroup.SAVE_AND_SYNC -> listOf(
             "storage_target", "recording_folder_uri", "drive_folder_uri",
             "sync_schedule_mode", "sync_time_hour", "sync_time_minute", "sync_day_of_week",
             "hide_recordings", "write_metadata_file", "write_transcript_sidecar",
@@ -173,5 +174,27 @@ object SettingsGroups {
         SettingsGroup.SUMMARIES -> listOf("summary_confirm_requirements")
         SettingsGroup.APP -> listOf("theme_mode", "dynamic_color", "show_toasts", "update_check_enabled")
         SettingsGroup.HELP_AND_ABOUT -> listOf("logging_enabled", "classic_settings_screen")
+    }
+}
+
+/** The rows of "Save and sync", in screen order. */
+enum class SaveAndSyncRow {
+    STORAGE_TARGET, RECORDING_FOLDER, DRIVE_FOLDER, UPLOAD_SCHEDULE, HIDE_RECORDINGS, METADATA_FILE, TRANSCRIPT_SIDECAR,
+}
+
+/**
+ * Which "Save and sync" rows show for a storage target. The recording folder always does: even Drive-only
+ * records into it first and deletes the local copy after the upload. The Drive folder and the upload schedule
+ * only mean something when something is uploaded, so "On this device only" hides them — showing the schedule
+ * under Drive is what makes the two read as one thing (round 3, 2026-10-21).
+ */
+object SaveAndSyncRows {
+    fun uploads(target: StorageTarget): Boolean = target != StorageTarget.LOCAL
+
+    fun visibleRows(target: StorageTarget): List<SaveAndSyncRow> = SaveAndSyncRow.entries.filter { row ->
+        when (row) {
+            SaveAndSyncRow.DRIVE_FOLDER, SaveAndSyncRow.UPLOAD_SCHEDULE -> uploads(target)
+            else -> true
+        }
     }
 }

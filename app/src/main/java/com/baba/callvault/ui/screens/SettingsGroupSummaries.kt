@@ -75,3 +75,7 @@ fun callsToRecordSummary(
 
 /** How many skip rules are in force, for the "Calls to skip" card. Zero reads "Nothing skipped". */
 fun activeRuleCount(rules: List<Boolean>): Int = rules.count { it }
+
+/** A 24-hour clock time, "02:00", as the schedule dropdowns show it. */
+fun clockTime(hour: Int, minute: Int): String =
+    hour.toString().padStart(2, '0') + ":" + minute.toString().padStart(2, '0')

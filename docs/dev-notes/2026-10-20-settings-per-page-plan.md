@@ -53,6 +53,11 @@ the NEW screen; the classic screen keeps its old layout.
   Open: the card summary line is cut off ("Phone and app calls · incoming a…"); free-standing hint paragraphs
   (VoIP names, audio source, retention explanation, …) are still inline; Calls to skip shows phone rules even
   when auto-record is off. Not yet tried by the maintainer.
+- 🧪 Round 3 (maintainer feedback 2026-10-21: no upload schedule found, Drive folder shown for device-only, rename,
+  still long text): `feat/settings-round3` (4f0e8123), merged. Group renamed "Save and sync"; Drive folder and
+  "When to upload to Drive" only when the target is not device-only (`SaveAndSyncRows`); every explanatory hint
+  moved behind a row ⓘ or a card ⓘ, only live status/warnings inline; summaries wrap to 2 lines. 2068 tests.
+  Classic screen identical on the OP9 (log size + scroll offset only). Seen by Claude on the OP9.
 
 ## Rollback (maintainer requirement, 2026-10-21: "a big UI change … make sure we have a simple rollback")
 

@@ -326,6 +326,10 @@ internal fun UsbDefaultConfigRow() {
     val selected = options.find { it.key == mode.name } ?: options.first()
 
     DropdownRow {
+      // The advice ("Charging only" keeps the recorder alive) goes behind ⓘ in the new screen; it only
+      // applies when the row can be used, and the warnings below stay on screen.
+      val usbAdvice = if (supported) stringResource(R.string.settings_usb_default_hint) else null
+      WithInfo(stringResource(R.string.settings_usb_default_label), usbAdvice) {
         M3DropdownField(
             label = stringResource(R.string.settings_usb_default_label),
             selected = selected,
@@ -343,6 +347,7 @@ internal fun UsbDefaultConfigRow() {
                 }
             },
         )
+      }
         // While the change is being applied + verified, grey the field (above) and show a live spinner,
         // so the (few-second) delay before the value updates can't be mistaken for "nothing happened".
         if (applying) {
@@ -361,16 +366,15 @@ internal fun UsbDefaultConfigRow() {
         } else if (refusedWhileRecording) {
             HintText(stringResource(R.string.settings_usb_default_busy))
         } else {
-            HintText(
-                when {
-                    // The Shizuku answer is not "you cannot change this here" but "do not change this
-                    // at all, including from system Settings" — which is what the reporter did.
-                    !supported && privilegedMode.needsShizuku ->
-                        stringResource(R.string.settings_usb_default_shizuku_hint)
-                    else -> unavailableReason(ModeCapability.WIRELESS_DEBUGGING_CONTROL)
-                        ?: stringResource(R.string.settings_usb_default_hint)
-                }
-            )
+            // The Shizuku answer is not "you cannot change this here" but "do not change this
+            // at all, including from system Settings" — which is what the reporter did. It and the
+            // unavailable reason are warnings and stay on screen; the plain advice is an explanation.
+            val warning = when {
+                !supported && privilegedMode.needsShizuku -> stringResource(R.string.settings_usb_default_shizuku_hint)
+                else -> unavailableReason(ModeCapability.WIRELESS_DEBUGGING_CONTROL)
+            }
+            if (warning != null) HintText(warning)
+            else HintExplanation(usbAdvice ?: stringResource(R.string.settings_usb_default_hint))
         }
     }
 }
@@ -420,6 +424,7 @@ internal fun OfflineRecordingToggle() {
         onCheckedChange = { turnOn ->
             dialogMode = if (turnOn) OfflineDialogMode.ENABLE else OfflineDialogMode.DISABLE
         },
+        infoExtra = if (enabled && supported) stringResource(R.string.settings_offline_recording_reboot_note) else null,
     )
 
     // Stated up front, and only to the people it applies to. The listener does not survive a reboot
@@ -428,7 +433,7 @@ internal fun OfflineRecordingToggle() {
     // Left unsaid it looks like an oversight the first time a call after a reboot is missed; said
     // here it is a known condition with a ten-second fix.
     if (enabled && supported) {
-        SettingsHint(stringResource(R.string.settings_offline_recording_reboot_note))
+        SettingsExplanation(stringResource(R.string.settings_offline_recording_reboot_note))
     }
 
     dialogMode?.let { mode ->

@@ -37,7 +37,7 @@ class SettingsGroupsTest {
                 SettingsGroup.CALLS_TO_RECORD,
                 SettingsGroup.CALLS_TO_SKIP,
                 SettingsGroup.SOUND_AND_NAMES,
-                SettingsGroup.WHERE_RECORDINGS_GO,
+                SettingsGroup.SAVE_AND_SYNC,
                 SettingsGroup.CLEANING_UP,
                 SettingsGroup.CONNECTION,
             ),

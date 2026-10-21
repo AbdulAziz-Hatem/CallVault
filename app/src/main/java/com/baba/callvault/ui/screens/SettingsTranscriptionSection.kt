@@ -229,18 +229,15 @@ internal fun TranscriptionModelDownloadRows(preferences: AppPreferences, updateT
 @Composable
 internal fun TranscriptionModeNote(preferences: AppPreferences, updateTrigger: Int) {
     val mode = remember(updateTrigger) { preferences.getTranscriptionMode() }
-    Text(
-        text = stringResource(
-            when (mode) {
-                TranscriptionMode.MANUAL -> R.string.transcription_note_manual
-                TranscriptionMode.AFTER_EACH_CALL -> R.string.transcription_note_after_each_call
-                TranscriptionMode.AUTOMATIC -> R.string.transcription_note_automatic
-            }
-        ),
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-    )
+    // In ⓘ mode this is behind the "When to transcribe" card's ⓘ (see groupExplanationText).
+    ExplanationParagraph(stringResource(transcriptionModeNoteRes(mode)))
+}
+
+/** What the chosen transcription mode means in practice. */
+internal fun transcriptionModeNoteRes(mode: TranscriptionMode): Int = when (mode) {
+    TranscriptionMode.MANUAL -> R.string.transcription_note_manual
+    TranscriptionMode.AFTER_EACH_CALL -> R.string.transcription_note_after_each_call
+    TranscriptionMode.AUTOMATIC -> R.string.transcription_note_automatic
 }
 
 /** Bytes in a megabyte, for stating a model's download size. Shared with the wizard's own cost note. */

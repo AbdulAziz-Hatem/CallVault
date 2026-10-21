@@ -798,7 +798,7 @@
     <string name="settings_summary_off">معطّل</string>
     <string name="settings_summary_unavailable">غير متاح هنا</string>
     <string name="settings_summary_count_on">%1$d من %2$d مفعّلة</string>
-    <string name="settings_summary_recording_both">الواردة والصادرة</string>
+    <string name="settings_summary_recording_both">كلا الاتجاهين</string>
     <string name="settings_summary_recording_incoming">الواردة فقط</string>
     <string name="settings_summary_recording_outgoing">الصادرة فقط</string>
     <string name="settings_summary_recording_manual">يدويًا فقط</string>
@@ -812,7 +812,7 @@
     <string name="settings_group_calls_to_record">المكالمات المراد تسجيلها</string>
     <string name="settings_group_calls_to_skip">المكالمات المراد تخطيها</string>
     <string name="settings_group_sound_and_names">الصوت وأسماء الملفات</string>
-    <string name="settings_group_where_recordings_go">أين تُحفظ التسجيلات</string>
+    <string name="settings_group_save_and_sync">الحفظ والمزامنة</string>
     <string name="settings_group_cleaning_up">التنظيف</string>
     <string name="settings_group_connection">الاتصال</string>
     <string name="settings_group_model_and_language">النموذج واللغة</string>

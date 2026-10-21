@@ -768,7 +768,7 @@
     <string name="settings_summary_off">Вимк.</string>
     <string name="settings_summary_unavailable">Тут недоступно</string>
     <string name="settings_summary_count_on">Увімкнено: %1$d з %2$d</string>
-    <string name="settings_summary_recording_both">вхідні й вихідні</string>
+    <string name="settings_summary_recording_both">обидва напрямки</string>
     <string name="settings_summary_recording_incoming">лише вхідні</string>
     <string name="settings_summary_recording_outgoing">лише вихідні</string>
     <string name="settings_summary_recording_manual">лише вручну</string>
@@ -782,7 +782,7 @@
     <string name="settings_group_calls_to_record">Які дзвінки записувати</string>
     <string name="settings_group_calls_to_skip">Які дзвінки пропускати</string>
     <string name="settings_group_sound_and_names">Звук і назви файлів</string>
-    <string name="settings_group_where_recordings_go">Куди зберігаються записи</string>
+    <string name="settings_group_save_and_sync">Збереження й синхронізація</string>
     <string name="settings_group_cleaning_up">Очищення</string>
     <string name="settings_group_connection">Підключення</string>
     <string name="settings_group_model_and_language">Модель і мова</string>

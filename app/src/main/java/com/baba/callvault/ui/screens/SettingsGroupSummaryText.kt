@@ -17,6 +17,8 @@ import com.baba.callvault.data.AppPreferences
 import com.baba.callvault.data.ModeCapability
 import com.baba.callvault.data.RetentionPeriod
 import com.baba.callvault.data.StorageTarget
+import com.baba.callvault.data.SyncScheduleMode
+import com.baba.callvault.ui.common.SyncScheduleLabels
 import com.baba.callvault.transcription.model.TranscriptionModel
 import com.baba.callvault.integrations.adb.AdbShell
 import com.baba.callvault.integrations.scrcpy.ScrcpyAudioCodec
@@ -53,16 +55,7 @@ internal fun groupSummaryText(
             )
         )
     }
-    SettingsGroup.WHERE_RECORDINGS_GO -> {
-        val target = remember(updateTrigger) { preferences.getStorageTarget() }
-        stringResource(
-            when (target) {
-                StorageTarget.LOCAL -> R.string.storage_target_local
-                StorageTarget.DRIVE -> R.string.storage_target_drive
-                StorageTarget.BOTH -> R.string.storage_target_both
-            }
-        )
-    }
+    SettingsGroup.SAVE_AND_SYNC -> saveAndSyncSummaryText(preferences, updateTrigger)
     SettingsGroup.CLEANING_UP -> {
         val localDays = remember(updateTrigger) { preferences.getRetentionLocalDays() }
         val capBytes = remember(updateTrigger) { preferences.getStorageCapBytes() }
@@ -115,6 +108,31 @@ internal fun groupSummaryText(
 
 /** The storage cap is stored in bytes and offered in whole gigabytes (GiB), as in the Retention dropdown. */
 private const val BYTES_PER_GIGABYTE = 1L shl 30
+
+/** "On this device only", or the target and the upload schedule: "Device + Google Drive · Daily · 02:00". */
+@Composable
+private fun saveAndSyncSummaryText(preferences: AppPreferences, updateTrigger: Int): String {
+    val target = remember(updateTrigger) { preferences.getStorageTarget() }
+    val targetText = stringResource(
+        when (target) {
+            StorageTarget.LOCAL -> R.string.storage_target_local
+            StorageTarget.DRIVE -> R.string.storage_target_drive
+            StorageTarget.BOTH -> R.string.storage_target_both
+        }
+    )
+    if (!SaveAndSyncRows.uploads(target)) return targetText
+    val mode = remember(updateTrigger) { preferences.getSyncScheduleMode() }
+    val hour = remember(updateTrigger) { preferences.getSyncTimeHour() }
+    val minute = remember(updateTrigger) { preferences.getSyncTimeMinute() }
+    val day = remember(updateTrigger) { preferences.getSyncDayOfWeek() }
+    return joinSummary(
+        listOf(targetText, stringResource(SyncScheduleLabels.titleOf(mode))) + when (mode) {
+            SyncScheduleMode.IMMEDIATE -> emptyList()
+            SyncScheduleMode.DAILY -> listOf(clockTime(hour, minute))
+            SyncScheduleMode.WEEKLY -> listOf(stringResource(SyncScheduleLabels.dayOfWeekOf(day)) + " " + clockTime(hour, minute))
+        }
+    )
+}
 
 /** kbps from a stored bit rate in bits per second. */
 private const val BITS_PER_KILOBIT = 1000
@@ -205,3 +223,21 @@ private fun connectionSummaryText(preferences: AppPreferences, updateTrigger: In
     if (count.total == 0) return stringResource(R.string.settings_summary_unavailable)
     return stringResource(R.string.settings_summary_count_on, count.on, count.total)
 }
+
+/**
+ * The explanation behind a group card's ⓘ: text that belongs to the whole group rather than one row, which
+ * the classic screen prints as a paragraph and the new screen hides ([ExplanationParagraph]). Null for groups
+ * with none.
+ */
+@Composable
+internal fun groupExplanationText(group: SettingsGroup, preferences: AppPreferences, updateTrigger: Int): String? =
+    when (group) {
+        SettingsGroup.CLEANING_UP -> stringResource(R.string.retention_description)
+        SettingsGroup.WHEN_TO_TRANSCRIBE -> {
+            val mode = remember(updateTrigger) { preferences.getTranscriptionMode() }
+            stringResource(transcriptionModeNoteRes(mode))
+        }
+        SettingsGroup.SUMMARIES -> summaryModelExplanation()
+        SettingsGroup.HELP_AND_ABOUT -> stringResource(R.string.settings_bugreport_share_hint)
+        else -> null
+    }

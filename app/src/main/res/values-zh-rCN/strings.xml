@@ -757,7 +757,7 @@
     <string name="settings_summary_off">关闭</string>
     <string name="settings_summary_unavailable">此处不可用</string>
     <string name="settings_summary_count_on">已开启 %1$d/%2$d 项</string>
-    <string name="settings_summary_recording_both">被叫和主叫</string>
+    <string name="settings_summary_recording_both">双向</string>
     <string name="settings_summary_recording_incoming">仅被叫</string>
     <string name="settings_summary_recording_outgoing">仅主叫</string>
     <string name="settings_summary_recording_manual">仅手动</string>
@@ -771,7 +771,7 @@
     <string name="settings_group_calls_to_record">要录音的通话</string>
     <string name="settings_group_calls_to_skip">要跳过的通话</string>
     <string name="settings_group_sound_and_names">声音和文件名</string>
-    <string name="settings_group_where_recordings_go">录音保存位置</string>
+    <string name="settings_group_save_and_sync">保存和同步</string>
     <string name="settings_group_cleaning_up">清理</string>
     <string name="settings_group_connection">连接</string>
     <string name="settings_group_model_and_language">模型和语言</string>
