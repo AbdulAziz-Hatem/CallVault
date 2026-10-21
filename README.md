@@ -50,13 +50,13 @@ Recordings are Opus in an `.ogg` file at 24 kbps by default (AAC/`.m4a` also ava
 
 <div align="center">
 
-| Recordings | Playback & summary | Transcript |
-|:---:|:---:|:---:|
-| <img src="docs/screenshots/01-home.png" width="230"/> | <img src="docs/screenshots/02b-playback-summary-note.png" width="230"/> | <img src="docs/screenshots/03-transcript.png" width="230"/> |
+| Main screen | Recordings | Playback & summary | Transcript |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/00-main.png" width="190"/> | <img src="docs/screenshots/01-home.png" width="190"/> | <img src="docs/screenshots/02b-playback-summary-note.png" width="190"/> | <img src="docs/screenshots/03-transcript.png" width="190"/> |
 
-| Search | Transcription settings | Settings |
+| Search | Transcripts settings | Recordings settings |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/05-transcript-search.png" width="230"/> | <img src="docs/screenshots/04-transcription-settings.png" width="230"/> | <img src="docs/screenshots/06-settings.png" width="230"/> |
+| <img src="docs/screenshots/05-transcript-search.png" width="190"/> | <img src="docs/screenshots/04-transcription-settings.png" width="190"/> | <img src="docs/screenshots/06-settings.png" width="190"/> |
 
 </div>
 
