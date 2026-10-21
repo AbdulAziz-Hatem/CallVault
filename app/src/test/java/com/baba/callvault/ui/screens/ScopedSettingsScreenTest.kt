@@ -36,9 +36,9 @@ class ScopedSettingsScreenTest {
     private fun source(name: String) = File(screensDir, name).readText()
 
     @Test
-    fun `the classic screen is the default until the new one is verified`() {
+    fun `the new screen is the default, and the classic one is opt-in`() {
         val prefs = AppPreferences(ApplicationProvider.getApplicationContext())
-        assertTrue(prefs.isClassicSettingsScreen())
+        assertFalse(prefs.isClassicSettingsScreen())
     }
 
     @Test

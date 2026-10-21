@@ -33,8 +33,12 @@ class AppPreferences(context: Context) {
     companion object {
         private const val PREFS_NAME = "callvault_prefs"
 
-        /** The classic Settings screen stays the default until the new one is verified on phones. */
-        internal const val CLASSIC_SETTINGS_SCREEN_DEFAULT = true
+        /**
+         * The new Settings layout is the default (maintainer, 2026-10-21, after trying it on the OP9). The
+         * classic one stays one tap away on the card at the top of Settings, and is deleted a release later.
+         * A user who already picked a layout keeps their pick: only an unset value follows this.
+         */
+        internal const val CLASSIC_SETTINGS_SCREEN_DEFAULT = false
 
         /**
          * The settings that may be exported and imported — an explicit ALLOW-list, device-independent
