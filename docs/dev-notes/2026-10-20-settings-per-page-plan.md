@@ -105,7 +105,7 @@ looking in the wrong place.
 
 ## Order of work
 
-0. **Design canvas.** Two or three looks for a page's settings view: a header naming the page, the
+0. **Design canvas** — made 2026-10-21: https://claude.ai/artifact/Bt8twpoGHXX7hW85UFFsxH (A sheet, B page tabs, C folded groups; Transcripts, Summaries, title row). Waiting on the maintainer's pick. Two or three looks for a page's settings view: a header naming the page, the
    "All settings" footer, the Reliability and App-calls subsections, and the cleaner title row. The maintainer
    picks before any code ([[offer-design-options]]).
 1. Split `SettingsScreen.kt` into files, with no change in behaviour. Run all tests, and compare before/after
