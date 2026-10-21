@@ -20,13 +20,26 @@ enum class WirelessDebuggingOffCause {
     OURS,
     ANDROID_REFUSED,
     ANDROID_NO_WIFI,
+
+    /**
+     * The phone left a Wi-Fi network moments ago. AOSP writes the switch off on every disconnect, and when the
+     * phone moves straight to another network Wi-Fi already reads connected again (OP9, 2026-10-21).
+     */
+    ANDROID_NETWORK_CHANGED,
     USER;
 
     companion object {
-        fun of(weJustTurnedItOff: Boolean, weJustTurnedItOn: Boolean, wifi: WifiState): WirelessDebuggingOffCause = when {
+        /** @param wifiJustLost a Wi-Fi network was lost within the last few seconds. */
+        fun of(
+            weJustTurnedItOff: Boolean,
+            weJustTurnedItOn: Boolean,
+            wifi: WifiState,
+            wifiJustLost: Boolean = false,
+        ): WirelessDebuggingOffCause = when {
             weJustTurnedItOff -> OURS
             weJustTurnedItOn -> ANDROID_REFUSED
             wifi == WifiState.NOT_CONNECTED -> ANDROID_NO_WIFI
+            wifiJustLost -> ANDROID_NETWORK_CHANGED
             else -> USER
         }
     }

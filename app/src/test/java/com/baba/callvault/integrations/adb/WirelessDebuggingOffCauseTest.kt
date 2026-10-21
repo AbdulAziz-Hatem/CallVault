@@ -36,6 +36,19 @@ class WirelessDebuggingOffCauseTest {
     }
 
     @Test
+    fun `off as the phone leaves a Wi-Fi network is Android, even when the next network is already up`() {
+        // OP9, 2026-10-21: moving from the home Wi-Fi straight to a hotspot. Android logged "Network
+        // disconnected. Disabling adbwifi." while Wi-Fi still read connected (the hotspot), and this was taken
+        // for the user's tap: CallVault then refused to switch it back on for the rest of the day.
+        assertEquals(
+            WirelessDebuggingOffCause.ANDROID_NETWORK_CHANGED,
+            WirelessDebuggingOffCause.of(
+                weJustTurnedItOff = false, weJustTurnedItOn = false, wifi = WifiState.CONNECTED, wifiJustLost = true,
+            ),
+        )
+    }
+
+    @Test
     fun `anything else is the user`() {
         assertEquals(WirelessDebuggingOffCause.USER, WirelessDebuggingOffCause.of(weJustTurnedItOff = false, weJustTurnedItOn = false, wifi = WifiState.CONNECTED))
         assertEquals(WirelessDebuggingOffCause.USER, WirelessDebuggingOffCause.of(weJustTurnedItOff = false, weJustTurnedItOn = false, wifi = WifiState.UNKNOWN))
