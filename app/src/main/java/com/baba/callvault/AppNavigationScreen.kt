@@ -13,6 +13,8 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.rememberCoroutineScope
 import com.baba.callvault.ui.common.SettingsSidebar
+import com.baba.callvault.ui.screens.SettingsGroups
+import com.baba.callvault.ui.screens.SettingsScope
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
@@ -275,20 +277,30 @@ fun AppNavigationScreen(
                 // a handler registered out there would swallow back on the wizard.
                 BackHandler(enabled = section != HomeSection.Hub) { goToSection(HomeSection.Hub) }
 
+                // Which page's settings the panel shows. Taken from the section showing when the gear is
+                // tapped, so each page's settings icon opens its own scope and the hub opens everything,
+                // without the pages themselves knowing about it. Only the new Settings screen uses it.
+                var settingsScope by rememberSaveable { mutableStateOf(SettingsScope.ALL) }
+
                 SettingsSidebar(
                     drawerState = drawerState,
                     onClose = { scope.launch { drawerState.close() } },
                     settings = {
                         SettingsScreen(
                             viewModel = settingsViewModel,
-                            onBack = { scope.launch { drawerState.close() } }
+                            onBack = { scope.launch { drawerState.close() } },
+                            settingsScope = settingsScope,
+                            onScopeChange = { settingsScope = it },
                         )
                     },
                 ) {
                     HomeScreen(
                         section = section,
                         onSelectSection = goToSection,
-                        onOpenSettings = { scope.launch { drawerState.open() } },
+                        onOpenSettings = {
+                            settingsScope = SettingsGroups.scopeFor(section)
+                            scope.launch { drawerState.open() }
+                        },
                         openRecording = openRecording,
                         onOpenRecordingHandled = onOpenRecordingHandled,
                         openTranscript = openTranscript,
