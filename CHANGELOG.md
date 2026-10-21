@@ -10,8 +10,12 @@ All notable changes to CallVault are documented here. The format is based on
 - **Approve new Wi-Fi networks automatically** (opt-in, built-in mode). When the phone joins a Wi-Fi network,
   CallVault answers Android's "Allow wireless debugging on this network?" itself, through its recorder, so
   recording does not wait for a tap. Off by default; Settings ▸ General ▸ Experimental. Requested by a user.
-  <!-- 🧪 VERIFYING: OP9 2026-10-21, approval on Wi-Fi rejoin works and respects a user's "off"; not yet tried
-       on an untrusted network (hotspot). docs/dev-notes/2026-10-21-auto-approve-new-wifi-network.md -->
+  <!-- ✅ VERIFIED 2026-10-21 (maintainer): OP9 moved to an untrusted hotspot, no prompt, recorder approved it.
+       Still 🧪: a recorder restart on the new network; Android 17. docs/dev-notes/2026-10-21-auto-approve-new-wifi-network.md -->
+- **Changing Wi-Fi networks no longer reads as you switching Wireless debugging off.** Moving straight from
+  one network to another, Android switches it off itself; CallVault took that for your choice and stopped
+  switching it back on, so recording could stay paused until you opened the app.
+  <!-- 🧪 VERIFYING: one run on the OP9, 2026-10-21 (home Wi-Fi → hotspot), reclassified 3 s after the switch-off. -->
 - **App calls record in Shizuku mode too** (Android 14 and newer). The Shizuku-hosted recorder now
   presents itself as the shell, as CallVault's own recorder does, so Android lets it capture both sides.
   <!-- ✅ VERIFIED 2026-10-19 (maintainer): WhatsApp call OP9→OP12 in Shizuku mode "recorded properly";

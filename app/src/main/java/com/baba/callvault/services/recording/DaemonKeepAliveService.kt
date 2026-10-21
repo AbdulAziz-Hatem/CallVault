@@ -266,9 +266,12 @@ class DaemonKeepAliveService : Service() {
                     weJustTurnedItOff = AdbShell.didWeJustSetWirelessDebugging(enabled = false),
                     weJustTurnedItOn = AdbShell.didWeJustSetWirelessDebugging(enabled = true),
                     wifi = WifiState.of(applicationContext),
+                    wifiJustLost = wifiLostRecently(),
                 )
             ) {
                 WirelessDebuggingOffCause.OURS -> Unit
+                WirelessDebuggingOffCause.ANDROID_NETWORK_CHANGED ->
+                    AppLogger.i(TAG, "Wireless debugging went off as the phone left a Wi-Fi network; Android's doing, not the user's")
                 WirelessDebuggingOffCause.ANDROID_REFUSED ->
                     AppLogger.i(TAG, "Android switched Wireless debugging off right after we turned it on (network not trusted)")
                 WirelessDebuggingOffCause.ANDROID_NO_WIFI ->
@@ -304,7 +307,8 @@ class DaemonKeepAliveService : Service() {
     private val recheckWirelessDebuggingOffCause = Runnable {
         val prefs = AppPreferences(applicationContext)
         if (!prefs.wasWirelessDebuggingTurnedOffByUser()) return@Runnable
-        if (WifiState.of(applicationContext) != WifiState.NOT_CONNECTED) return@Runnable
+        // The Wi-Fi loss can be reported just after the switch went off; looked at again here.
+        if (WifiState.of(applicationContext) != WifiState.NOT_CONNECTED && !wifiLostRecently()) return@Runnable
         AppLogger.i(TAG, "Wi-Fi went away with Wireless debugging; that was Android switching it off, not the user")
         prefs.setWirelessDebuggingTurnedOffByUser(false)
         updateNotification(isDaemonAlive())
@@ -319,12 +323,23 @@ class DaemonKeepAliveService : Service() {
      * [AdbShell.approveCurrentNetworkIfWanted].
      */
     private val wifiJoinCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onLost(network: Network) {
+            lastWifiLostAtMs = SystemClock.elapsedRealtime()
+        }
+
         override fun onAvailable(network: Network) {
             // Let Android finish its own "Wi-Fi changed" handling of the switch first.
             watchdogHandler.removeCallbacks(approveJoinedWifi)
             watchdogHandler.postDelayed(approveJoinedWifi, WIFI_JOIN_SETTLE_MS)
         }
     }
+
+    /** When a Wi-Fi network was last lost; tells Android's "Wi-Fi changed" switch-off from the user's. */
+    @Volatile
+    private var lastWifiLostAtMs = 0L
+
+    private fun wifiLostRecently(): Boolean =
+        lastWifiLostAtMs != 0L && SystemClock.elapsedRealtime() - lastWifiLostAtMs < WIFI_LOST_WINDOW_MS
 
     private val approveJoinedWifi = Runnable {
         if (!AppPreferences(applicationContext).isWifiNetworkAutoApproveEnabled()) return@Runnable
@@ -800,6 +815,9 @@ class DaemonKeepAliveService : Service() {
 
         /** After joining a Wi-Fi, before approving it: Android writes its own "Wi-Fi changed" off first. */
         private const val WIFI_JOIN_SETTLE_MS = 4_000L
+
+        /** A switch-off this close to a Wi-Fi loss (either order, read again at the recheck) is Android's. */
+        private const val WIFI_LOST_WINDOW_MS = 6_000L
 
         /** Frames of a stuck relaunch's stack written to the log — enough to name the lock it waits on. */
         private const val STACK_FRAMES_LOGGED = 14

@@ -1,6 +1,6 @@
 # Auto-approving "Allow wireless debugging on this network?" (2026-10-21)
 
-🧪 VERIFYING — built 2026-10-21 on `feat/auto-approve-wifi-network` (opt-in switch "Approve new Wi-Fi networks
+🧪 VERIFYING (the untrusted-network case ✅ VERIFIED 2026-10-21 by the maintainer) — built 2026-10-21 on `feat/auto-approve-wifi-network` (opt-in switch "Approve new Wi-Fi networks
 automatically", Settings ▸ General ▸ Experimental). Research read from AOSP (`android-16.0.0_r4`, `android-17.0.0_r1`)
 and the six repos a user suggested. **Not yet tried on a network Android does not trust** (see "Tested" below).
 
@@ -93,5 +93,14 @@ shell call above needs none of that, so it is the better route.
   Log: `CV:WdApproval: Approved Wi-Fi "Baba-5G" … (alwaysAllow=false)` from the recorder (shell pid), then
   `adbd: adbwifi started`. So OxygenOS lets the shell make the call. Before this build it stayed off.
 - Switched off by hand (simulated with `settings put`), then Wi-Fi off and on: stayed off, `RESPECT_USER`.
-- **Still to do:** a network Android does not trust (a phone hotspot): no prompt should appear. Shizuku mode
-  (switch greyed out). A real recorder restart on the new network.
+- ✅ VERIFIED 2026-10-21 (maintainer, "nope it didnt come up"): OP9 moved from home Wi-Fi straight to the
+  OP12 hotspot "Feroza" (never trusted). No prompt. Log: Android "Network disconnected. Disabling adbwifi" →
+  CallVault reclassified it as Android's 3 s later → recorder approved "Feroza" 6.5 s after the switch-off →
+  `adbwifi started`. The hotspot was not added to Android's trusted list (allow-once).
+- **The first hotspot try found a bug, fixed in `25cf2162`:** moving straight between networks, Wi-Fi reads
+  connected when Android writes the switch off, so CallVault took it for the user's tap and refused to switch
+  it on again (`RESPECT_USER`). Pre-existing: it also blocked the recorder restart after any direct network
+  switch. Now a switch-off within 6 s of a Wi-Fi loss is `ANDROID_NETWORK_CHANGED`. 🧪 beyond this one run.
+- Shizuku mode: switch shown off and greyed, "Not available in Shizuku mode" (checked by Claude on the OP9).
+- **Not tested:** a real recorder restart on the new network (it should find Wireless debugging on), "WD off
+  when idle" + always-allow, Android 17.
