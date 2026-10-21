@@ -904,13 +904,11 @@
     <string name="settings_title_recordings">Ρυθμίσεις εγγραφών</string>
     <string name="settings_title_transcripts">Ρυθμίσεις απομαγνητοφωνήσεων</string>
     <string name="settings_title_summaries">Ρυθμίσεις περιλήψεων</string>
-    <string name="settings_group_app_calls">Κλήσεις εφαρμογών</string>
     <string name="settings_link_share_debug_report">Κοινοποίηση αναφοράς σφαλμάτων</string>
     <string name="settings_link_all_settings">Όλες οι ρυθμίσεις</string>
     <string name="settings_language_change_in_transcripts">Αλλάζει στις ρυθμίσεις απομαγνητοφωνήσεων</string>
     <string name="settings_classic_screen_label">Χρήση της κλασικής οθόνης ρυθμίσεων</string>
     <string name="settings_classic_screen_description">Ενεργό: οι ρυθμίσεις ανοίγουν ως μία μεγάλη λίστα, όπως πριν. Ανενεργό: η νέα διάταξη, όπου το εικονίδιο ρυθμίσεων κάθε σελίδας δείχνει μόνο τις ρυθμίσεις της.</string>
-    <string name="settings_summary_on">Ενεργό</string>
     <string name="settings_summary_off">Ανενεργό</string>
     <string name="settings_summary_unavailable">Δεν είναι διαθέσιμο εδώ</string>
     <string name="settings_summary_count_on">%1$d από %2$d ενεργά</string>
@@ -923,4 +921,23 @@
     <!-- New Settings screen: the ⓘ button that explains a row. -->
     <string name="settings_info_about">Σχετικά με %1$s</string>
     <string name="settings_info_got_it">Κατάλαβα</string>
+
+    <!-- New Settings screen, round 2: groups by what you want to do. -->
+    <string name="settings_group_calls_to_record">Κλήσεις για εγγραφή</string>
+    <string name="settings_group_calls_to_skip">Κλήσεις για παράλειψη</string>
+    <string name="settings_group_sound_and_names">Ήχος και ονόματα αρχείων</string>
+    <string name="settings_group_where_recordings_go">Πού πηγαίνουν οι εγγραφές</string>
+    <string name="settings_group_cleaning_up">Καθαρισμός</string>
+    <string name="settings_group_connection">Σύνδεση</string>
+    <string name="settings_group_model_and_language">Μοντέλο και γλώσσα</string>
+    <string name="settings_group_when_to_transcribe">Πότε γίνεται απομαγνητοφώνηση</string>
+    <string name="settings_group_app">Εφαρμογή</string>
+    <string name="settings_group_help_and_about">Βοήθεια και πληροφορίες</string>
+    <string name="settings_subheader_which_calls">Ποιες κλήσεις</string>
+    <string name="settings_subheader_when_to_start">Πότε ξεκινά</string>
+    <string name="settings_summary_calls_phone_and_app">Τηλεφωνικές κλήσεις και κλήσεις εφαρμογών</string>
+    <string name="settings_summary_calls_phone_only">Μόνο τηλεφωνικές κλήσεις</string>
+    <string name="settings_summary_calls_app_only">Μόνο κλήσεις εφαρμογών</string>
+    <string name="settings_summary_nothing_skipped">Δεν παραλείπεται τίποτα</string>
+    <string name="settings_summary_skip_rules_on">Ενεργοί κανόνες παράλειψης: %1$d</string>
 </resources>

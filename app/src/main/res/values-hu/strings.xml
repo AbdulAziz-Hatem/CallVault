@@ -750,13 +750,11 @@
     <string name="settings_title_recordings">Felvételek beállításai</string>
     <string name="settings_title_transcripts">Átiratok beállításai</string>
     <string name="settings_title_summaries">Összefoglalók beállításai</string>
-    <string name="settings_group_app_calls">Alkalmazáshívások</string>
     <string name="settings_link_share_debug_report">Hibakeresési jelentés megosztása</string>
     <string name="settings_link_all_settings">Összes beállítás</string>
     <string name="settings_language_change_in_transcripts">Az átiratok beállításaiban módosítható</string>
     <string name="settings_classic_screen_label">Klasszikus beállítási képernyő használata</string>
     <string name="settings_classic_screen_description">Be: a beállítások a korábbiak szerint egyetlen hosszú listaként nyílnak meg. Ki: az új elrendezés, ahol minden oldal beállítás ikonja csak az adott oldal beállításait mutatja.</string>
-    <string name="settings_summary_on">Be</string>
     <string name="settings_summary_off">Ki</string>
     <string name="settings_summary_unavailable">Itt nem érhető el</string>
     <string name="settings_summary_count_on">%1$d / %2$d bekapcsolva</string>
@@ -769,4 +767,23 @@
     <!-- New Settings screen: the ⓘ button that explains a row. -->
     <string name="settings_info_about">Erről: %1$s</string>
     <string name="settings_info_got_it">Értem</string>
+
+    <!-- New Settings screen, round 2: groups by what you want to do. -->
+    <string name="settings_group_calls_to_record">Rögzítendő hívások</string>
+    <string name="settings_group_calls_to_skip">Kihagyandó hívások</string>
+    <string name="settings_group_sound_and_names">Hang és fájlnevek</string>
+    <string name="settings_group_where_recordings_go">Hová kerülnek a felvételek</string>
+    <string name="settings_group_cleaning_up">Takarítás</string>
+    <string name="settings_group_connection">Kapcsolat</string>
+    <string name="settings_group_model_and_language">Modell és nyelv</string>
+    <string name="settings_group_when_to_transcribe">Mikor készüljön átirat</string>
+    <string name="settings_group_app">Alkalmazás</string>
+    <string name="settings_group_help_and_about">Súgó és névjegy</string>
+    <string name="settings_subheader_which_calls">Mely hívások</string>
+    <string name="settings_subheader_when_to_start">Mikor induljon</string>
+    <string name="settings_summary_calls_phone_and_app">Telefon- és alkalmazáshívások</string>
+    <string name="settings_summary_calls_phone_only">Csak telefonhívások</string>
+    <string name="settings_summary_calls_app_only">Csak alkalmazáshívások</string>
+    <string name="settings_summary_nothing_skipped">Semmi sincs kihagyva</string>
+    <string name="settings_summary_skip_rules_on">Aktív kihagyási szabályok: %1$d</string>
 </resources>

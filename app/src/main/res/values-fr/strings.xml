@@ -750,13 +750,11 @@
     <string name="settings_title_recordings">Paramètres des enregistrements</string>
     <string name="settings_title_transcripts">Paramètres des transcriptions</string>
     <string name="settings_title_summaries">Paramètres des résumés</string>
-    <string name="settings_group_app_calls">Appels d\'applis</string>
     <string name="settings_link_share_debug_report">Partager un rapport de débogage</string>
     <string name="settings_link_all_settings">Tous les paramètres</string>
     <string name="settings_language_change_in_transcripts">Modifiable dans les paramètres des transcriptions</string>
     <string name="settings_classic_screen_label">Utiliser l\'écran de paramètres classique</string>
     <string name="settings_classic_screen_description">Activé : les paramètres s\'ouvrent en une seule longue liste, comme avant. Désactivé : la nouvelle présentation, où l\'icône des paramètres de chaque page n\'affiche que les paramètres de cette page.</string>
-    <string name="settings_summary_on">Activé</string>
     <string name="settings_summary_off">Désactivé</string>
     <string name="settings_summary_unavailable">Indisponible ici</string>
     <string name="settings_summary_count_on">%1$d sur %2$d activés</string>
@@ -769,4 +767,23 @@
     <!-- New Settings screen: the ⓘ button that explains a row. -->
     <string name="settings_info_about">À propos de %1$s</string>
     <string name="settings_info_got_it">Compris</string>
+
+    <!-- New Settings screen, round 2: groups by what you want to do. -->
+    <string name="settings_group_calls_to_record">Appels à enregistrer</string>
+    <string name="settings_group_calls_to_skip">Appels à ignorer</string>
+    <string name="settings_group_sound_and_names">Son et noms de fichiers</string>
+    <string name="settings_group_where_recordings_go">Où vont les enregistrements</string>
+    <string name="settings_group_cleaning_up">Nettoyage</string>
+    <string name="settings_group_connection">Connexion</string>
+    <string name="settings_group_model_and_language">Modèle et langue</string>
+    <string name="settings_group_when_to_transcribe">Quand transcrire</string>
+    <string name="settings_group_app">Application</string>
+    <string name="settings_group_help_and_about">Aide et à propos</string>
+    <string name="settings_subheader_which_calls">Quels appels</string>
+    <string name="settings_subheader_when_to_start">Quand démarrer</string>
+    <string name="settings_summary_calls_phone_and_app">Appels téléphoniques et d\'applis</string>
+    <string name="settings_summary_calls_phone_only">Appels téléphoniques uniquement</string>
+    <string name="settings_summary_calls_app_only">Appels d\'applis uniquement</string>
+    <string name="settings_summary_nothing_skipped">Rien n\'est ignoré</string>
+    <string name="settings_summary_skip_rules_on">Règles actives : %1$d</string>
 </resources>

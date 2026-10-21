@@ -750,13 +750,11 @@
     <string name="settings_title_recordings">Impostazioni registrazioni</string>
     <string name="settings_title_transcripts">Impostazioni trascrizioni</string>
     <string name="settings_title_summaries">Impostazioni riepiloghi</string>
-    <string name="settings_group_app_calls">Chiamate delle app</string>
     <string name="settings_link_share_debug_report">Condividi un report di debug</string>
     <string name="settings_link_all_settings">Tutte le impostazioni</string>
     <string name="settings_language_change_in_transcripts">Si cambia nelle impostazioni delle trascrizioni</string>
     <string name="settings_classic_screen_label">Usa la schermata impostazioni classica</string>
     <string name="settings_classic_screen_description">Attivo: le impostazioni si aprono come un\'unica lunga lista, come prima. Disattivo: il nuovo layout, in cui l\'icona delle impostazioni di ogni pagina mostra solo le impostazioni di quella pagina.</string>
-    <string name="settings_summary_on">Attivo</string>
     <string name="settings_summary_off">Disattivo</string>
     <string name="settings_summary_unavailable">Non disponibile qui</string>
     <string name="settings_summary_count_on">%1$d di %2$d attivi</string>
@@ -769,4 +767,23 @@
     <!-- New Settings screen: the ⓘ button that explains a row. -->
     <string name="settings_info_about">Informazioni su %1$s</string>
     <string name="settings_info_got_it">Ho capito</string>
+
+    <!-- New Settings screen, round 2: groups by what you want to do. -->
+    <string name="settings_group_calls_to_record">Chiamate da registrare</string>
+    <string name="settings_group_calls_to_skip">Chiamate da saltare</string>
+    <string name="settings_group_sound_and_names">Audio e nomi dei file</string>
+    <string name="settings_group_where_recordings_go">Dove vanno le registrazioni</string>
+    <string name="settings_group_cleaning_up">Pulizia</string>
+    <string name="settings_group_connection">Connessione</string>
+    <string name="settings_group_model_and_language">Modello e lingua</string>
+    <string name="settings_group_when_to_transcribe">Quando trascrivere</string>
+    <string name="settings_group_app">App</string>
+    <string name="settings_group_help_and_about">Aiuto e informazioni</string>
+    <string name="settings_subheader_which_calls">Quali chiamate</string>
+    <string name="settings_subheader_when_to_start">Quando iniziare</string>
+    <string name="settings_summary_calls_phone_and_app">Chiamate telefoniche e delle app</string>
+    <string name="settings_summary_calls_phone_only">Solo chiamate telefoniche</string>
+    <string name="settings_summary_calls_app_only">Solo chiamate delle app</string>
+    <string name="settings_summary_nothing_skipped">Nessuna esclusione</string>
+    <string name="settings_summary_skip_rules_on">Regole attive: %1$d</string>
 </resources>

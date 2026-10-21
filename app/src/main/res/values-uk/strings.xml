@@ -760,13 +760,11 @@
     <string name="settings_title_recordings">Налаштування записів</string>
     <string name="settings_title_transcripts">Налаштування транскрипцій</string>
     <string name="settings_title_summaries">Налаштування підсумків</string>
-    <string name="settings_group_app_calls">Дзвінки в застосунках</string>
     <string name="settings_link_share_debug_report">Поділитися звітом діагностики</string>
     <string name="settings_link_all_settings">Усі налаштування</string>
     <string name="settings_language_change_in_transcripts">Змінюється в налаштуваннях транскрипцій</string>
     <string name="settings_classic_screen_label">Класичний екран налаштувань</string>
     <string name="settings_classic_screen_description">Увімк.: налаштування відкриваються одним довгим списком, як раніше. Вимк.: новий вигляд, де значок налаштувань на кожній сторінці показує лише її налаштування.</string>
-    <string name="settings_summary_on">Увімк.</string>
     <string name="settings_summary_off">Вимк.</string>
     <string name="settings_summary_unavailable">Тут недоступно</string>
     <string name="settings_summary_count_on">Увімкнено: %1$d з %2$d</string>
@@ -779,4 +777,23 @@
     <!-- New Settings screen: the ⓘ button that explains a row. -->
     <string name="settings_info_about">Докладніше: %1$s</string>
     <string name="settings_info_got_it">Зрозуміло</string>
+
+    <!-- New Settings screen, round 2: groups by what you want to do. -->
+    <string name="settings_group_calls_to_record">Які дзвінки записувати</string>
+    <string name="settings_group_calls_to_skip">Які дзвінки пропускати</string>
+    <string name="settings_group_sound_and_names">Звук і назви файлів</string>
+    <string name="settings_group_where_recordings_go">Куди зберігаються записи</string>
+    <string name="settings_group_cleaning_up">Очищення</string>
+    <string name="settings_group_connection">Підключення</string>
+    <string name="settings_group_model_and_language">Модель і мова</string>
+    <string name="settings_group_when_to_transcribe">Коли транскрибувати</string>
+    <string name="settings_group_app">Застосунок</string>
+    <string name="settings_group_help_and_about">Довідка й про застосунок</string>
+    <string name="settings_subheader_which_calls">Які дзвінки</string>
+    <string name="settings_subheader_when_to_start">Коли починати</string>
+    <string name="settings_summary_calls_phone_and_app">Звичайні дзвінки й дзвінки в застосунках</string>
+    <string name="settings_summary_calls_phone_only">Лише звичайні дзвінки</string>
+    <string name="settings_summary_calls_app_only">Лише дзвінки в застосунках</string>
+    <string name="settings_summary_nothing_skipped">Нічого не пропускається</string>
+    <string name="settings_summary_skip_rules_on">Активних правил: %1$d</string>
 </resources>

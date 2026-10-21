@@ -58,10 +58,7 @@ internal fun GeneralSection(
     updateTrigger: Int,
     actions: SettingsActions,
     expanded: Boolean,
-    onToggle: () -> Unit,
-    // False on the new Settings screen, where these rows live in the App calls and Reliability groups
-    // instead. The classic screen keeps the default and shows Experimental as before.
-    includeExperimental: Boolean = true,
+    onToggle: () -> Unit
 ) {
     // One open sub-section at a time, within this section only, and nothing open on entry.
     var openSub by rememberSaveable { mutableStateOf<String?>(null) }
@@ -82,13 +79,11 @@ internal fun GeneralSection(
             expanded = openSub == SUB_PRIVACY,
             onToggle = { openSub = if (openSub == SUB_PRIVACY) null else SUB_PRIVACY },
         ) { PrivacySubSection(preferences, updateTrigger) }
-        if (includeExperimental) {
-            SettingsSubSection(
-                title = stringResource(R.string.settings_section_experimental),
-                expanded = openSub == SUB_EXPERIMENTAL,
-                onToggle = { openSub = if (openSub == SUB_EXPERIMENTAL) null else SUB_EXPERIMENTAL },
-            ) { ExperimentalSubSection() }
-        }
+        SettingsSubSection(
+            title = stringResource(R.string.settings_section_experimental),
+            expanded = openSub == SUB_EXPERIMENTAL,
+            onToggle = { openSub = if (openSub == SUB_EXPERIMENTAL) null else SUB_EXPERIMENTAL },
+        ) { ExperimentalSubSection() }
         SettingsSubSection(
             title = stringResource(R.string.settings_section_updates),
             expanded = openSub == SUB_UPDATES,

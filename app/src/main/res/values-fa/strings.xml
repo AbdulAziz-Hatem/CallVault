@@ -843,13 +843,11 @@
     <string name="settings_title_recordings">تنظیمات فایل‌های ضبط‌شده</string>
     <string name="settings_title_transcripts">تنظیمات رونوشت‌ها</string>
     <string name="settings_title_summaries">تنظیمات خلاصه‌ها</string>
-    <string name="settings_group_app_calls">تماس‌های برنامه‌ها</string>
     <string name="settings_link_share_debug_report">اشتراک‌گذاری گزارش اشکال‌زدایی</string>
     <string name="settings_link_all_settings">همه تنظیمات</string>
     <string name="settings_language_change_in_transcripts">در تنظیمات رونوشت‌ها تغییر می‌کند</string>
     <string name="settings_classic_screen_label">استفاده از صفحه تنظیمات کلاسیک</string>
     <string name="settings_classic_screen_description">روشن: تنظیمات مثل قبل به‌صورت یک فهرست بلند باز می‌شود. خاموش: چیدمان جدید، که در آن نماد تنظیمات هر صفحه فقط تنظیمات همان صفحه را نشان می‌دهد.</string>
-    <string name="settings_summary_on">روشن</string>
     <string name="settings_summary_off">خاموش</string>
     <string name="settings_summary_unavailable">اینجا در دسترس نیست</string>
     <string name="settings_summary_count_on">%1$d از %2$d روشن</string>
@@ -862,4 +860,23 @@
     <!-- New Settings screen: the ⓘ button that explains a row. -->
     <string name="settings_info_about">درباره %1$s</string>
     <string name="settings_info_got_it">متوجه شدم</string>
+
+    <!-- New Settings screen, round 2: groups by what you want to do. -->
+    <string name="settings_group_calls_to_record">تماس‌هایی که ضبط شوند</string>
+    <string name="settings_group_calls_to_skip">تماس‌هایی که رد شوند</string>
+    <string name="settings_group_sound_and_names">صدا و نام فایل‌ها</string>
+    <string name="settings_group_where_recordings_go">محل ذخیرهٔ فایل‌های ضبط‌شده</string>
+    <string name="settings_group_cleaning_up">پاک‌سازی</string>
+    <string name="settings_group_connection">اتصال</string>
+    <string name="settings_group_model_and_language">مدل و زبان</string>
+    <string name="settings_group_when_to_transcribe">زمان رونویسی</string>
+    <string name="settings_group_app">برنامه</string>
+    <string name="settings_group_help_and_about">راهنما و درباره</string>
+    <string name="settings_subheader_which_calls">کدام تماس‌ها</string>
+    <string name="settings_subheader_when_to_start">زمان شروع</string>
+    <string name="settings_summary_calls_phone_and_app">تماس‌های تلفنی و تماس‌های برنامه‌ها</string>
+    <string name="settings_summary_calls_phone_only">فقط تماس‌های تلفنی</string>
+    <string name="settings_summary_calls_app_only">فقط تماس‌های برنامه‌ها</string>
+    <string name="settings_summary_nothing_skipped">چیزی رد نمی‌شود</string>
+    <string name="settings_summary_skip_rules_on">قوانین فعال رد کردن: %1$d</string>
 </resources>

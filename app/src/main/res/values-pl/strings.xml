@@ -752,13 +752,11 @@
     <string name="settings_title_recordings">Ustawienia nagrań</string>
     <string name="settings_title_transcripts">Ustawienia transkrypcji</string>
     <string name="settings_title_summaries">Ustawienia podsumowań</string>
-    <string name="settings_group_app_calls">Połączenia w aplikacjach</string>
     <string name="settings_link_share_debug_report">Udostępnij raport debugowania</string>
     <string name="settings_link_all_settings">Wszystkie ustawienia</string>
     <string name="settings_language_change_in_transcripts">Zmiana w ustawieniach transkrypcji</string>
     <string name="settings_classic_screen_label">Używaj klasycznego ekranu ustawień</string>
     <string name="settings_classic_screen_description">Włączone: ustawienia otwierają się jako jedna długa lista, jak dotąd. Wyłączone: nowy układ, w którym ikona ustawień na każdej stronie pokazuje tylko ustawienia tej strony.</string>
-    <string name="settings_summary_on">Włączone</string>
     <string name="settings_summary_off">Wyłączone</string>
     <string name="settings_summary_unavailable">Niedostępne tutaj</string>
     <string name="settings_summary_count_on">Włączone: %1$d z %2$d</string>
@@ -771,4 +769,23 @@
     <!-- New Settings screen: the ⓘ button that explains a row. -->
     <string name="settings_info_about">Informacje: %1$s</string>
     <string name="settings_info_got_it">Rozumiem</string>
+
+    <!-- New Settings screen, round 2: groups by what you want to do. -->
+    <string name="settings_group_calls_to_record">Które połączenia nagrywać</string>
+    <string name="settings_group_calls_to_skip">Które połączenia pomijać</string>
+    <string name="settings_group_sound_and_names">Dźwięk i nazwy plików</string>
+    <string name="settings_group_where_recordings_go">Gdzie trafiają nagrania</string>
+    <string name="settings_group_cleaning_up">Porządki</string>
+    <string name="settings_group_connection">Łączność</string>
+    <string name="settings_group_model_and_language">Model i język</string>
+    <string name="settings_group_when_to_transcribe">Kiedy transkrybować</string>
+    <string name="settings_group_app">Aplikacja</string>
+    <string name="settings_group_help_and_about">Pomoc i informacje</string>
+    <string name="settings_subheader_which_calls">Które połączenia</string>
+    <string name="settings_subheader_when_to_start">Kiedy zaczynać</string>
+    <string name="settings_summary_calls_phone_and_app">Połączenia telefoniczne i w aplikacjach</string>
+    <string name="settings_summary_calls_phone_only">Tylko połączenia telefoniczne</string>
+    <string name="settings_summary_calls_app_only">Tylko połączenia w aplikacjach</string>
+    <string name="settings_summary_nothing_skipped">Nic nie jest pomijane</string>
+    <string name="settings_summary_skip_rules_on">Aktywne reguły pomijania: %1$d</string>
 </resources>

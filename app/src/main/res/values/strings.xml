@@ -954,13 +954,11 @@
     <string name="settings_title_recordings">Recordings settings</string>
     <string name="settings_title_transcripts">Transcripts settings</string>
     <string name="settings_title_summaries">Summaries settings</string>
-    <string name="settings_group_app_calls">App calls</string>
     <string name="settings_link_share_debug_report">Share a debug report</string>
     <string name="settings_link_all_settings">All settings</string>
     <string name="settings_language_change_in_transcripts">Change it in Transcripts settings</string>
     <string name="settings_classic_screen_label">Use the classic Settings screen</string>
     <string name="settings_classic_screen_description">On: Settings opens as one long list, as before. Off: the new layout, where each page\'s settings icon shows only that page\'s settings.</string>
-    <string name="settings_summary_on">On</string>
     <string name="settings_summary_off">Off</string>
     <string name="settings_summary_unavailable">Not available here</string>
     <string name="settings_summary_count_on">%1$d of %2$d on</string>
@@ -973,4 +971,23 @@
     <!-- New Settings screen: the ⓘ button that explains a row. -->
     <string name="settings_info_about">About %1$s</string>
     <string name="settings_info_got_it">Got it</string>
+
+    <!-- New Settings screen, round 2: groups by what you want to do. -->
+    <string name="settings_group_calls_to_record">Calls to record</string>
+    <string name="settings_group_calls_to_skip">Calls to skip</string>
+    <string name="settings_group_sound_and_names">Sound and file names</string>
+    <string name="settings_group_where_recordings_go">Where recordings go</string>
+    <string name="settings_group_cleaning_up">Cleaning up</string>
+    <string name="settings_group_connection">Connection</string>
+    <string name="settings_group_model_and_language">Model and language</string>
+    <string name="settings_group_when_to_transcribe">When to transcribe</string>
+    <string name="settings_group_app">App</string>
+    <string name="settings_group_help_and_about">Help and about</string>
+    <string name="settings_subheader_which_calls">Which calls</string>
+    <string name="settings_subheader_when_to_start">When to start</string>
+    <string name="settings_summary_calls_phone_and_app">Phone and app calls</string>
+    <string name="settings_summary_calls_phone_only">Phone calls only</string>
+    <string name="settings_summary_calls_app_only">App calls only</string>
+    <string name="settings_summary_nothing_skipped">Nothing skipped</string>
+    <string name="settings_summary_skip_rules_on">Skip rules on: %1$d</string>
 </resources>

@@ -8,70 +8,74 @@
 
 package com.baba.callvault.ui.screens
 
+import androidx.test.core.app.ApplicationProvider
+import com.baba.callvault.data.AppPreferences
 import com.baba.callvault.ui.navigation.HomeSection
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
- * Which groups each page's Settings shows. One table, so the pages cannot drift apart, and so a setting
- * cannot fall off the "everything" view when it moves between pages.
+ * Which groups each page's Settings shows (round 2, grouped by what you want to do). One table, so the pages
+ * cannot drift apart, and so a setting cannot fall off the "everything" view when it moves between groups.
  */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [35])
 class SettingsGroupsTest {
 
+    private val all = SettingsGroups.forScope(SettingsScope.ALL)
+
     @Test
-    fun `recordings shows recording, app calls, reliability, audio and storage in that order`() {
+    fun `recordings shows the six recording groups in order`() {
         assertEquals(
             listOf(
-                SettingsGroup.RECORDING,
-                SettingsGroup.APP_CALLS,
-                SettingsGroup.RELIABILITY,
-                SettingsGroup.AUDIO,
-                SettingsGroup.STORAGE,
+                SettingsGroup.CALLS_TO_RECORD,
+                SettingsGroup.CALLS_TO_SKIP,
+                SettingsGroup.SOUND_AND_NAMES,
+                SettingsGroup.WHERE_RECORDINGS_GO,
+                SettingsGroup.CLEANING_UP,
+                SettingsGroup.CONNECTION,
             ),
             SettingsGroups.forScope(SettingsScope.RECORDINGS),
         )
     }
 
     @Test
-    fun `transcripts shows transcription only`() {
-        assertEquals(listOf(SettingsGroup.TRANSCRIPTION), SettingsGroups.forScope(SettingsScope.TRANSCRIPTS))
+    fun `transcripts shows model and language, then when to transcribe`() {
+        assertEquals(
+            listOf(SettingsGroup.MODEL_AND_LANGUAGE, SettingsGroup.WHEN_TO_TRANSCRIBE),
+            SettingsGroups.forScope(SettingsScope.TRANSCRIPTS),
+        )
     }
 
     @Test
     fun `summaries shows summaries only, so no second language picker can appear there`() {
         assertEquals(listOf(SettingsGroup.SUMMARIES), SettingsGroups.forScope(SettingsScope.SUMMARIES))
-        assertFalse(SettingsGroup.TRANSCRIPTION in SettingsGroups.forScope(SettingsScope.SUMMARIES))
+        assertFalse("TranscriptionLanguageRows" in SettingsGroups.rowsOf(SettingsGroup.SUMMARIES))
+        assertFalse("transcription_language" in SettingsGroups.settingKeysOf(SettingsGroup.SUMMARIES))
     }
 
     @Test
-    fun `all shows every group, ending with the app-wide ones`() {
+    fun `all shows every group, ending with app and help`() {
         assertEquals(
-            listOf(
-                SettingsGroup.RECORDING,
-                SettingsGroup.APP_CALLS,
-                SettingsGroup.RELIABILITY,
-                SettingsGroup.AUDIO,
-                SettingsGroup.STORAGE,
-                SettingsGroup.TRANSCRIPTION,
-                SettingsGroup.SUMMARIES,
-                SettingsGroup.GENERAL,
-                SettingsGroup.DEBUG,
-                SettingsGroup.ABOUT,
-                SettingsGroup.BACKUP,
-            ),
-            SettingsGroups.forScope(SettingsScope.ALL),
+            SettingsGroups.forScope(SettingsScope.RECORDINGS) +
+                SettingsGroups.forScope(SettingsScope.TRANSCRIPTS) +
+                SettingsGroups.forScope(SettingsScope.SUMMARIES) +
+                listOf(SettingsGroup.APP, SettingsGroup.HELP_AND_ABOUT),
+            all,
         )
-        assertEquals(SettingsGroup.entries.toSet(), SettingsGroups.forScope(SettingsScope.ALL).toSet())
+        assertEquals(SettingsGroup.entries.toSet(), all.toSet())
     }
 
     @Test
     fun `all is a superset of every other scope`() {
-        val all = SettingsGroups.forScope(SettingsScope.ALL).toSet()
         SettingsScope.entries.forEach { scope ->
-            val missing = SettingsGroups.forScope(scope).toSet() - all
+            val missing = SettingsGroups.forScope(scope).toSet() - all.toSet()
             assertTrue("$scope has groups that All settings lacks: $missing", missing.isEmpty())
         }
     }
@@ -85,18 +89,47 @@ class SettingsGroupsTest {
     }
 
     @Test
-    fun `reliability and app calls exist as their own groups`() {
-        val recordings = SettingsGroups.forScope(SettingsScope.RECORDINGS)
-        assertTrue(SettingsGroup.RELIABILITY in recordings)
-        assertTrue(SettingsGroup.APP_CALLS in recordings)
+    fun `no row and no setting has two homes`() {
+        val rows = all.flatMap { SettingsGroups.rowsOf(it) }
+        assertEquals("a row in two groups: $rows", rows.size, rows.toSet().size)
+        val keys = all.flatMap { SettingsGroups.settingKeysOf(it) }
+        assertEquals("a setting in two groups: $keys", keys.size, keys.toSet().size)
+    }
+
+    @Test
+    fun `every exportable setting and every gated switch has a home in all settings`() {
+        // Not rows on either screen: the summary language follows the transcription language, and the two
+        // legacy gated switches have had no Settings row since before the split.
+        val noRowOnEitherScreen = setOf("summary_language", "persistent_server", "wd_disable_when_idle")
+        val prefs = AppPreferences(ApplicationProvider.getApplicationContext())
+        val required = AppPreferences.EXPORTABLE_KEYS + prefs.gatedSwitchCapabilities().keys - noRowOnEitherScreen
+        val placed = all.flatMap { SettingsGroups.settingKeysOf(it) }.toSet()
+        val missing = required - placed
+        assertTrue("Settings with no group on the new screen: $missing", missing.isEmpty())
+    }
+
+    @Test
+    fun `the device-only switches the classic screen shows have a home too`() {
+        val placed = all.flatMap { SettingsGroups.settingKeysOf(it) }.toSet()
+        listOf(
+            "wd_enforced", "storage_target", "recording_folder_uri", "drive_folder_uri",
+            "logging_enabled", "classic_settings_screen",
+        ).forEach { assertTrue("$it has no group", it in placed) }
+    }
+
+    @Test
+    fun `the old reliability, app calls and general groups are gone`() {
+        val keys = SettingsGroup.entries.map { it.key }
+        assertTrue(keys.none { it in setOf("group_app_calls", "group_reliability", "group_general", "group_recording") })
     }
 
     @Test
     fun `the debug report and the attribution stay reachable from all settings`() {
         // GPLv3 section 7 attribution lives in About; the debug report is what support asks for.
-        val all = SettingsGroups.forScope(SettingsScope.ALL)
-        assertTrue(SettingsGroup.ABOUT in all)
-        assertTrue(SettingsGroup.DEBUG in all)
+        val help = SettingsGroups.rowsOf(SettingsGroup.HELP_AND_ABOUT)
+        assertTrue("AboutSection" in help)
+        assertTrue("BugReportSection" in help)
+        assertTrue(SettingsGroup.HELP_AND_ABOUT in all)
     }
 
     @Test
