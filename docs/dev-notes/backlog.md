@@ -99,6 +99,18 @@ Call audio is unchanged; the transport around it is what changed.
 
 ---
 
+## 🔵 Auto-approve "Allow wireless debugging on this network?" — feature request 2026-10-21, researched, not started
+
+Dev-note: `2026-10-21-auto-approve-new-wifi-network.md` (📐 read from AOSP 16 + 17; nothing built). The shell uid
+holds `MANAGE_DEBUGGING`, so our daemon (or Shizuku's server) can call `IAdbManager.allowWirelessDebugging` for
+the current network instead of writing `adb_wifi_enabled=1`. Android then never shows the prompt. No root, no
+accessibility service. Works only while a shell process is alive (USB debugging on). Size S-M: reflection for the
+16 and 17 signatures, BSSID/SSID read in the daemon. Suggested: opt-in switch in Recordings ▸ Reliability,
+allow-once (not "always"), behind the existing `WirelessDebuggingEnableGate`. Of the six repos the requester
+suggested, only project-SIMPLE handles this prompt, by clicking it with an accessibility service.
+
+---
+
 ## 🔵 Settings per page — PLANNED 2026-10-20, not started, no date
 
 Plan: `2026-10-20-settings-per-page-plan.md`. Confirmed by the maintainer: Settings opened from a page shows
