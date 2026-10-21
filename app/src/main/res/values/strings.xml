@@ -949,4 +949,24 @@
     <string name="update_popup_text">A new version is ready to install. Updating keeps recording reliable and brings the latest fixes.</string>
     <string name="update_popup_update_now">Update now</string>
     <string name="update_popup_later">Later</string>
+
+    <!-- New Settings screen (settings per page, step 2). -->
+    <string name="settings_title_recordings">Recordings settings</string>
+    <string name="settings_title_transcripts">Transcripts settings</string>
+    <string name="settings_title_summaries">Summaries settings</string>
+    <string name="settings_group_app_calls">App calls</string>
+    <string name="settings_link_share_debug_report">Share a debug report</string>
+    <string name="settings_link_all_settings">All settings</string>
+    <string name="settings_language_change_in_transcripts">Change it in Transcripts settings</string>
+    <string name="settings_classic_screen_label">Use the classic Settings screen</string>
+    <string name="settings_classic_screen_description">On: Settings opens as one long list, as before. Off: the new layout, where each page\'s settings icon shows only that page\'s settings.</string>
+    <string name="settings_summary_on">On</string>
+    <string name="settings_summary_off">Off</string>
+    <string name="settings_summary_unavailable">Not available here</string>
+    <string name="settings_summary_count_on">%1$d of %2$d on</string>
+    <string name="settings_summary_recording_both">incoming and outgoing</string>
+    <string name="settings_summary_recording_incoming">incoming only</string>
+    <string name="settings_summary_recording_outgoing">outgoing only</string>
+    <string name="settings_summary_recording_manual">manual only</string>
+    <string name="settings_summary_not_downloaded">Not downloaded</string>
 </resources>

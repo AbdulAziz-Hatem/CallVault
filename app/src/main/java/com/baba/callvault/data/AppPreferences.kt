@@ -33,6 +33,9 @@ class AppPreferences(context: Context) {
     companion object {
         private const val PREFS_NAME = "callvault_prefs"
 
+        /** The classic Settings screen stays the default until the new one is verified on phones. */
+        internal const val CLASSIC_SETTINGS_SCREEN_DEFAULT = true
+
         /**
          * The settings that may be exported and imported — an explicit ALLOW-list, device-independent
          * user preferences only. It is a positive list on purpose: anything not named here (ADB pairing
@@ -434,7 +437,11 @@ class AppPreferences(context: Context) {
 
         // The section of Home the user was last in. Absent until they have been somewhere, which is
         // a state with its own meaning — see HomeSection.opening — so there is no DefaultsValue entry.
-        LAST_HOME_SECTION("last_home_section");
+        LAST_HOME_SECTION("last_home_section"),
+
+        // Which Settings screen opens: the classic list, or the new per-page one. Device-only on purpose
+        // (not in EXPORTABLE_KEYS): it is a rollback switch for this phone, not a preference to carry over.
+        CLASSIC_SETTINGS_SCREEN("classic_settings_screen");
     }
 
     // -------- Nested enums
@@ -1499,6 +1506,15 @@ class AppPreferences(context: Context) {
     
     /** Sets whether dynamic color is enabled. */
     fun setDynamicColorEnabled(enabled: Boolean) = setBoolean(Key.DYNAMIC_COLOR, enabled)
+
+    /**
+     * Whether Settings opens the classic screen rather than the new per-page one (Debug ▸ "Use the classic
+     * Settings screen"). On by default until the new screen is verified on phones; both screens read and
+     * write the same preferences, so switching loses nothing.
+     */
+    fun isClassicSettingsScreen() = getBoolean(Key.CLASSIC_SETTINGS_SCREEN, CLASSIC_SETTINGS_SCREEN_DEFAULT)
+
+    fun setClassicSettingsScreen(classic: Boolean) = setBoolean(Key.CLASSIC_SETTINGS_SCREEN, classic)
 
     /**
      * The raw key of the section of Home the user was last in, or null if they have never been

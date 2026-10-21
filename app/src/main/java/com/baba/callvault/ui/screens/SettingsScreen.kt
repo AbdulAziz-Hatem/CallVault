@@ -81,12 +81,16 @@ import androidx.compose.material.icons.filled.Save
  * @param onBack    Called when the user taps the top-bar back affordance; the router maps this to
  *                  [com.baba.callvault.ui.viewmodels.AppNavViewModel.navigateBack].
  * @param modifier  Optional modifier for the root scaffold.
+ * @param settingsScope The page Settings was opened from; only the new screen uses it.
+ * @param onScopeChange Called when the new screen's links move to another page's settings.
  */
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
     onBack: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    settingsScope: SettingsScope = SettingsScope.ALL,
+    onScopeChange: (SettingsScope) -> Unit = {},
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -244,56 +248,94 @@ fun SettingsScreen(
     // Read straight from preferences inside each row, the rows kept the old mode's state until Settings
     // was reopened (OP9, 2026-10-19) — leaving offline recording looking available in Shizuku mode.
     val privilegedMode = remember(updateTrigger) { viewModel.preferences.getPrivilegedMode() }
+    // Which screen opens. Re-read on every refresh, so the Debug switch takes effect at once. Rollback layer 1
+    // of the settings-per-page plan: the classic screen is untouched and stays the default until verified.
+    val useClassicScreen = remember(updateTrigger) { viewModel.preferences.isClassicSettingsScreen() }
+
+    // Seed each picker with its OWN current folder so it opens there, instead of letting
+    // Android's DocumentsUI reopen at the last-browsed location (which, after setting Drive,
+    // made re-picking the local folder open at the Drive path).
+    val onSelectFolder = { folderPickerLauncher.launch(viewModel.preferences.getRecordingFolderUri()) }
+    val onSelectDriveFolder = { driveFolderPickerLauncher.launch(viewModel.preferences.getDriveFolderUri()) }
+    val onOpenContactsIncoming = { contactPickerViewModel.openContactPicker(ContactPickerType.INCOMING) }
+    val onOpenContactsOutgoing = { contactPickerViewModel.openContactPicker(ContactPickerType.OUTGOING) }
+    val onConfirmContacts: (Set<String>) -> Unit = { numbers ->
+        contactPickerViewModel.confirmContactPicker(numbers)
+        // Refresh the screen so the new contact list information is shown immediately after confirming and closing the dialog.
+        viewModel.refresh()
+    }
+    val onDismissContacts = { contactPickerViewModel.dismissContactPicker() }
+    // Build the report off the main thread, then hand it to the system share-sheet. The Share
+    // entry point is only shown when a valid log file exists, so the null branch is a safety net.
+    val onShareLogs: () -> Unit = {
+        if (!preparingReport) scope.launch {
+            preparingReport = true
+            try {
+                val (report, systemReport) = buildReports()
+                if (report != null) {
+                    context.shareLogFiles(listOfNotNull(report, systemReport))
+                } else {
+                    Toast.makeText(context, R.string.settings_bugreport_share_empty, Toast.LENGTH_LONG).show()
+                }
+            } finally {
+                preparingReport = false
+            }
+        }
+    }
+    // The save dialog opens first, named with the date and time; the report is built once a place is chosen.
+    val onSaveLogs: () -> Unit = {
+        if (!preparingReport) {
+            val now = LocalDateTime.now()
+            saveReportLauncher.launch(
+                ReportBundle.suggestedFileName(now.year, now.monthValue, now.dayOfMonth, now.hour, now.minute)
+            )
+        }
+    }
+    val onExportSettings = { exportSettingsLauncher.launch("CallVault-settings-${java.time.LocalDate.now()}.json") }
+    val onImportSettings = { importSettingsLauncher.launch(arrayOf("application/json", "text/*")) }
+
     CompositionLocalProvider(LocalPrivilegedMode provides privilegedMode) {
-        SettingsContent(
-            preferences = viewModel.preferences,
-            updateTrigger = updateTrigger,
-            actions = viewModel,
-            contactPickerState = contactPickerState,
-            onBack = onBack,
-            // Seed each picker with its OWN current folder so it opens there, instead of letting
-            // Android's DocumentsUI reopen at the last-browsed location (which, after setting Drive,
-            // made re-picking the local folder open at the Drive path).
-            onSelectFolder = { folderPickerLauncher.launch(viewModel.preferences.getRecordingFolderUri()) },
-            onSelectDriveFolder = { driveFolderPickerLauncher.launch(viewModel.preferences.getDriveFolderUri()) },
-            onOpenContactsIncoming = { contactPickerViewModel.openContactPicker(ContactPickerType.INCOMING) },
-            onOpenContactsOutgoing = { contactPickerViewModel.openContactPicker(ContactPickerType.OUTGOING) },
-            onConfirmContacts = { numbers ->
-                contactPickerViewModel.confirmContactPicker(numbers)
-                // Refresh the screen so the new contact list information is shown immediately after confirming and closing the dialog.
-                viewModel.refresh()
-            },
-            onDismissContacts = { contactPickerViewModel.dismissContactPicker() },
-            // Build the report off the main thread, then hand it to the system share-sheet. The Share
-            // entry point is only shown when a valid log file exists, so the null branch is a safety net.
-            onShareLogs = {
-                if (!preparingReport) scope.launch {
-                    preparingReport = true
-                    try {
-                        val (report, systemReport) = buildReports()
-                        if (report != null) {
-                            context.shareLogFiles(listOfNotNull(report, systemReport))
-                        } else {
-                            Toast.makeText(context, R.string.settings_bugreport_share_empty, Toast.LENGTH_LONG).show()
-                        }
-                    } finally {
-                        preparingReport = false
-                    }
-                }
-            },
-            // The save dialog opens first, named with the date and time; the report is built once a place is chosen.
-            onSaveLogs = {
-                if (!preparingReport) {
-                    val now = LocalDateTime.now()
-                    saveReportLauncher.launch(
-                        ReportBundle.suggestedFileName(now.year, now.monthValue, now.dayOfMonth, now.hour, now.minute)
-                    )
-                }
-            },
-            onExportSettings = { exportSettingsLauncher.launch("CallVault-settings-${java.time.LocalDate.now()}.json") },
-            onImportSettings = { importSettingsLauncher.launch(arrayOf("application/json", "text/*")) },
-            modifier = modifier
-        )
+        if (useClassicScreen) {
+            SettingsContent(
+                preferences = viewModel.preferences,
+                updateTrigger = updateTrigger,
+                actions = viewModel,
+                contactPickerState = contactPickerState,
+                onBack = onBack,
+                onSelectFolder = onSelectFolder,
+                onSelectDriveFolder = onSelectDriveFolder,
+                onOpenContactsIncoming = onOpenContactsIncoming,
+                onOpenContactsOutgoing = onOpenContactsOutgoing,
+                onConfirmContacts = onConfirmContacts,
+                onDismissContacts = onDismissContacts,
+                onShareLogs = onShareLogs,
+                onSaveLogs = onSaveLogs,
+                onExportSettings = onExportSettings,
+                onImportSettings = onImportSettings,
+                modifier = modifier
+            )
+        } else {
+            ScopedSettingsContent(
+                preferences = viewModel.preferences,
+                updateTrigger = updateTrigger,
+                actions = viewModel,
+                contactPickerState = contactPickerState,
+                onBack = onBack,
+                onSelectFolder = onSelectFolder,
+                onSelectDriveFolder = onSelectDriveFolder,
+                onOpenContactsIncoming = onOpenContactsIncoming,
+                onOpenContactsOutgoing = onOpenContactsOutgoing,
+                onConfirmContacts = onConfirmContacts,
+                onDismissContacts = onDismissContacts,
+                onShareLogs = onShareLogs,
+                onSaveLogs = onSaveLogs,
+                onExportSettings = onExportSettings,
+                onImportSettings = onImportSettings,
+                scope = settingsScope,
+                onScopeChange = onScopeChange,
+                modifier = modifier
+            )
+        }
     }
 
     // Modal on purpose: it gives the tap an immediate answer, and it stops a second tap or a walk
@@ -363,33 +405,6 @@ fun SettingsScreen(
  */
 /** Hard ceiling on the optional system-log half of a debug report. See the share handler. */
 private const val SYSTEM_REPORT_BUDGET_MS = 45_000L
-
-/**
- * Back up or restore settings — a section-less row at the very bottom of Settings. Export writes a JSON
- * file of your device-independent preferences; Import reads one back (after a confirm).
- */
-@Composable
-internal fun ExportImportRow(onExport: () -> Unit, onImport: () -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(
-            text = stringResource(R.string.settings_backup_title),
-            style = MaterialTheme.typography.titleMedium,
-        )
-        Text(
-            text = stringResource(R.string.settings_backup_desc),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-            OutlinedButton(onClick = onExport, modifier = Modifier.weight(1f)) {
-                Text(stringResource(R.string.settings_export))
-            }
-            OutlinedButton(onClick = onImport, modifier = Modifier.weight(1f)) {
-                Text(stringResource(R.string.settings_import))
-            }
-        }
-    }
-}
 
 @Composable
 fun SettingsContent(
@@ -536,105 +551,6 @@ fun SettingsContent(
 
     // The contact-picker dialog sits on top of the settings content.
     SettingsContactPicker(contactPickerState, onConfirmContacts, onDismissContacts)
-}
-
-/**
- * The summariser's rows with the Settings-only "ask me first" switch. Shared by the classic screen's
- * Transcription & summaries section and the new screen's Summaries group.
- */
-@Composable
-internal fun SummarySettingsRows(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
-    SummaryRows(
-        updateTrigger = updateTrigger,
-        onDownload = { actions.downloadSummaryModel(it) },
-        onCancel = { actions.cancelSummaryModelDownload(it) },
-        onDelete = { actions.deleteSummaryModel(it) }
-    ) {
-        // Settings-only, and passed in rather than living in SummaryRows because
-        // the wizard renders those same rows and has no business offering a
-        // preference about a dialog it is showing for the first time.
-        //
-        // Its home is here so the dialog's "don't show this again" can be undone
-        // — a dialog that can permanently remove itself with no way back would be
-        // a trap. Same reasoning as the transcription confirmation switch above.
-        val askFirst = remember(updateTrigger) {
-            preferences.getSummaryConfirmRequirements()
-        }
-        SettingsToggleRow(
-            icon = Icons.Filled.Info,
-            label = stringResource(R.string.summary_requirements_heading),
-            description = stringResource(R.string.summary_requirements_toggle_description),
-            checked = askFirst,
-            onCheckedChange = {
-                preferences.setSummaryConfirmRequirements(it)
-                actions.refreshSettings()
-            }
-        )
-    }
-}
-
-/** The open-source licences, full screen. Shared by both Settings screens. */
-@Composable
-internal fun LicensesDialog(onDismiss: () -> Unit) {
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
-    ) {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            shape = MaterialTheme.shapes.large,
-            color = MaterialTheme.colorScheme.surface
-        ) {
-            Column {
-                Text(
-                    text = stringResource(R.string.general_licenses),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(16.dp)
-                )
-
-                val libraries by produceLibraries(R.raw.aboutlibraries)
-                LibrariesContainer(libraries,Modifier
-                    .fillMaxSize()
-                    .weight(1f),
-                    showAuthor = true, showLicenseBadges = true, showFundingBadges = false, showVersion = true, showDescription = true)
-                TextButton(
-                    onClick = onDismiss,
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(8.dp)
-                ) {
-                    Text(stringResource(R.string.general_close))
-                }
-            }
-        }
-    }
-}
-
-/** The contact-picker dialog that sits on top of either Settings screen while it is open. */
-@Composable
-internal fun SettingsContactPicker(
-    contactPickerState: ContactPickerState?,
-    onConfirmContacts: (Set<String>) -> Unit,
-    onDismissContacts: () -> Unit,
-) {
-    contactPickerState?.let { picker ->
-        ContactSelectionDialog(
-            title = when (picker.type) {
-                ContactPickerType.INCOMING ->
-                    if (picker.recordOnly) stringResource(R.string.settings_select_record_only_incoming)
-                    else stringResource(R.string.settings_select_contacts_incoming)
-                ContactPickerType.OUTGOING ->
-                    if (picker.recordOnly) stringResource(R.string.settings_select_record_only_outgoing)
-                    else stringResource(R.string.settings_select_contacts_outgoing)
-            },
-            contacts = picker.contacts,
-            initialSelection = picker.selectedNumbers,
-            onConfirm = onConfirmContacts,
-            onDismiss = onDismissContacts
-        )
-    }
 }
 
 // Settings accordion: stable keys identifying each section. At most one section is open at a time;

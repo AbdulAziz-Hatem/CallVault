@@ -745,4 +745,24 @@
     <string name="tile_recording_on">Rögzítés bekapcsolva</string>
     <string name="tile_recording_stopped">Leállítva</string>
     <string name="home_hero_pill_starting">Indítás…</string>
+
+    <!-- New Settings screen (settings per page, step 2). -->
+    <string name="settings_title_recordings">Felvételek beállításai</string>
+    <string name="settings_title_transcripts">Átiratok beállításai</string>
+    <string name="settings_title_summaries">Összefoglalók beállításai</string>
+    <string name="settings_group_app_calls">Alkalmazáshívások</string>
+    <string name="settings_link_share_debug_report">Hibakeresési jelentés megosztása</string>
+    <string name="settings_link_all_settings">Összes beállítás</string>
+    <string name="settings_language_change_in_transcripts">Az átiratok beállításaiban módosítható</string>
+    <string name="settings_classic_screen_label">Klasszikus beállítási képernyő használata</string>
+    <string name="settings_classic_screen_description">Be: a beállítások a korábbiak szerint egyetlen hosszú listaként nyílnak meg. Ki: az új elrendezés, ahol minden oldal beállítás ikonja csak az adott oldal beállításait mutatja.</string>
+    <string name="settings_summary_on">Be</string>
+    <string name="settings_summary_off">Ki</string>
+    <string name="settings_summary_unavailable">Itt nem érhető el</string>
+    <string name="settings_summary_count_on">%1$d / %2$d bekapcsolva</string>
+    <string name="settings_summary_recording_both">bejövő és kimenő</string>
+    <string name="settings_summary_recording_incoming">csak bejövő</string>
+    <string name="settings_summary_recording_outgoing">csak kimenő</string>
+    <string name="settings_summary_recording_manual">csak kézi</string>
+    <string name="settings_summary_not_downloaded">Nincs letöltve</string>
 </resources>

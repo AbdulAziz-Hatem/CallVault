@@ -745,4 +745,24 @@
     <string name="tile_recording_on">Registrazione attiva</string>
     <string name="tile_recording_stopped">Interrotto</string>
     <string name="home_hero_pill_starting">Avvio…</string>
+
+    <!-- New Settings screen (settings per page, step 2). -->
+    <string name="settings_title_recordings">Impostazioni registrazioni</string>
+    <string name="settings_title_transcripts">Impostazioni trascrizioni</string>
+    <string name="settings_title_summaries">Impostazioni riepiloghi</string>
+    <string name="settings_group_app_calls">Chiamate delle app</string>
+    <string name="settings_link_share_debug_report">Condividi un report di debug</string>
+    <string name="settings_link_all_settings">Tutte le impostazioni</string>
+    <string name="settings_language_change_in_transcripts">Si cambia nelle impostazioni delle trascrizioni</string>
+    <string name="settings_classic_screen_label">Usa la schermata impostazioni classica</string>
+    <string name="settings_classic_screen_description">Attivo: le impostazioni si aprono come un\'unica lunga lista, come prima. Disattivo: il nuovo layout, in cui l\'icona delle impostazioni di ogni pagina mostra solo le impostazioni di quella pagina.</string>
+    <string name="settings_summary_on">Attivo</string>
+    <string name="settings_summary_off">Disattivo</string>
+    <string name="settings_summary_unavailable">Non disponibile qui</string>
+    <string name="settings_summary_count_on">%1$d di %2$d attivi</string>
+    <string name="settings_summary_recording_both">in arrivo e in uscita</string>
+    <string name="settings_summary_recording_incoming">solo in arrivo</string>
+    <string name="settings_summary_recording_outgoing">solo in uscita</string>
+    <string name="settings_summary_recording_manual">solo manuale</string>
+    <string name="settings_summary_not_downloaded">Non scaricato</string>
 </resources>
