@@ -24,6 +24,13 @@ in `CHANGELOG.md` → Unreleased. Re-check every line against the shipped string
 - **Fixed** — with Drive-only storage, a phone copy that could not be deleted no longer vanishes from the list (thanks @kabasik007).
 - **Security** — other apps can no longer take over the recorder (thanks @kabasik007).
 
+## Pre-release regression run (maintainer's OP12)
+
+🧪 Installed 2026-10-21 16:43 over the public 2.4.6 (built from integration/next 80a30467, same signing key,
+built-in mode). Without opening the app: keep-alive foreground again, one recorder daemon on the new APK,
+`armVoipCapture -> true`. Waiting on the maintainer's day-to-day use: phone calls in and out, an app call,
+the new Settings layout, notifications. Release only after that comes back clean.
+
 ## To do at release
 
 - Tell the user who asked for automatic approval of the "Allow wireless debugging on this network?" prompt
