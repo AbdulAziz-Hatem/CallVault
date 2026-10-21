@@ -249,7 +249,7 @@ fun SettingsScreen(
     // was reopened (OP9, 2026-10-19) — leaving offline recording looking available in Shizuku mode.
     val privilegedMode = remember(updateTrigger) { viewModel.preferences.getPrivilegedMode() }
     // Which screen opens. Re-read on every refresh, so the Debug switch takes effect at once. Rollback layer 1
-    // of the settings-per-page plan: the classic screen is untouched and stays the default until verified.
+    // of the settings-per-page plan: the classic screen is untouched; the new one is the default since 2026-10-21.
     val useClassicScreen = remember(updateTrigger) { viewModel.preferences.isClassicSettingsScreen() }
 
     // Seed each picker with its OWN current folder so it opens there, instead of letting
