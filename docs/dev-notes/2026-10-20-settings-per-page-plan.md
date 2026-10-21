@@ -135,9 +135,13 @@ looking in the wrong place.
 0. ✅ **Design canvas** — picked 2026-10-21: option C with B's Shizuku row. Made 2026-10-21: https://claude.ai/artifact/Bt8twpoGHXX7hW85UFFsxH (A sheet, B page tabs, C folded groups; Transcripts, Summaries, title row). Waiting on the maintainer's pick. Two or three looks for a page's settings view: a header naming the page, the
    "All settings" footer, the Reliability and App-calls subsections, and the cleaner title row. The maintainer
    picks before any code ([[offer-design-options]]).
-1. Split `SettingsScreen.kt` into files, with no change in behaviour. Run all tests, and compare before/after
+1. ✅ done 2026-10-21 (`refactor/split-settings-screen`): split by script into nine files, all 75 pieces
+   byte-identical (29 private→internal); 29 before/after screenshots on the OP9 match. Split `SettingsScreen.kt` into files, with no change in behaviour. Run all tests, and compare before/after
    screenshots on the OP9.
-2. Add the new screen beside the classic one, behind Debug ▸ "Use the classic Settings screen" (classic is the
+2. 🧪 built 2026-10-21 (`feat/settings-per-page-screen`, merged into integration/next): new screen beside the classic
+   one; Debug ▸ "Use the classic Settings screen", default ON. Classic screen re-screenshotted on the OP9: unchanged
+   apart from the new Debug row. New screen seen by Claude on the OP9 from all four places (Shizuku mode). Single-group
+   pages open their group. Not yet seen by the maintainer; built-in mode and the OP12 not tried. Add the new screen beside the classic one, behind Debug ▸ "Use the classic Settings screen" (classic is the
    default until verified), with the scope, the per-page entry points and the "All settings" link.
 3. Remove Experimental: move the rows, change the strings in 15 languages, change the wizard text, update the
    tests and mode-switch-check.
