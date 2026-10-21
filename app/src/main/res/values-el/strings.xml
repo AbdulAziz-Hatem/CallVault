@@ -907,8 +907,6 @@
     <string name="settings_link_share_debug_report">Κοινοποίηση αναφοράς σφαλμάτων</string>
     <string name="settings_link_all_settings">Όλες οι ρυθμίσεις</string>
     <string name="settings_language_change_in_transcripts">Αλλάζει στις ρυθμίσεις απομαγνητοφωνήσεων</string>
-    <string name="settings_classic_screen_label">Χρήση της κλασικής οθόνης ρυθμίσεων</string>
-    <string name="settings_classic_screen_description">Ενεργό: οι ρυθμίσεις ανοίγουν ως μία μεγάλη λίστα, όπως πριν. Ανενεργό: η νέα διάταξη, όπου το εικονίδιο ρυθμίσεων κάθε σελίδας δείχνει μόνο τις ρυθμίσεις της.</string>
     <string name="settings_summary_off">Ανενεργό</string>
     <string name="settings_summary_unavailable">Δεν είναι διαθέσιμο εδώ</string>
     <string name="settings_summary_count_on">%1$d από %2$d ενεργά</string>
@@ -943,4 +941,10 @@
     <string name="settings_subheader_app_calls">Κλήσεις εφαρμογών</string>
     <string name="settings_subheader_all_calls">Όλες οι κλήσεις</string>
     <string name="settings_voip_auto_start_record_label">Αυτόματη εγγραφή κλήσεων εφαρμογών</string>
+
+    <!-- The card at the top of both Settings screens that switches between the new and classic layouts. -->
+    <string name="settings_layout_try_new_title">Δοκιμάστε τη νέα διάταξη ρυθμίσεων</string>
+    <string name="settings_layout_try_new_subtitle">Κάθε σελίδα δείχνει μόνο τις δικές της ρυθμίσεις</string>
+    <string name="settings_layout_back_to_classic_title">Μετάβαση στην κλασική προβολή</string>
+    <string name="settings_layout_back_to_classic_subtitle">Όλες οι ρυθμίσεις σε μία μεγάλη λίστα, όπως πριν</string>
 </resources>

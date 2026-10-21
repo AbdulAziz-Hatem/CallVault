@@ -753,8 +753,6 @@
     <string name="settings_link_share_debug_report">Condividi un report di debug</string>
     <string name="settings_link_all_settings">Tutte le impostazioni</string>
     <string name="settings_language_change_in_transcripts">Si cambia nelle impostazioni delle trascrizioni</string>
-    <string name="settings_classic_screen_label">Usa la schermata impostazioni classica</string>
-    <string name="settings_classic_screen_description">Attivo: le impostazioni si aprono come un\'unica lunga lista, come prima. Disattivo: il nuovo layout, in cui l\'icona delle impostazioni di ogni pagina mostra solo le impostazioni di quella pagina.</string>
     <string name="settings_summary_off">Disattivo</string>
     <string name="settings_summary_unavailable">Non disponibile qui</string>
     <string name="settings_summary_count_on">%1$d di %2$d attivi</string>
@@ -789,4 +787,10 @@
     <string name="settings_subheader_app_calls">Chiamate delle app</string>
     <string name="settings_subheader_all_calls">Tutte le chiamate</string>
     <string name="settings_voip_auto_start_record_label">Registra automaticamente le chiamate delle app</string>
+
+    <!-- The card at the top of both Settings screens that switches between the new and classic layouts. -->
+    <string name="settings_layout_try_new_title">Prova il nuovo layout delle impostazioni</string>
+    <string name="settings_layout_try_new_subtitle">Ogni pagina mostra solo le sue impostazioni</string>
+    <string name="settings_layout_back_to_classic_title">Passa alla vista classica</string>
+    <string name="settings_layout_back_to_classic_subtitle">Tutte le impostazioni in un\'unica lunga lista, come prima</string>
 </resources>

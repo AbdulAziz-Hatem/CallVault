@@ -846,8 +846,6 @@
     <string name="settings_link_share_debug_report">اشتراک‌گذاری گزارش اشکال‌زدایی</string>
     <string name="settings_link_all_settings">همه تنظیمات</string>
     <string name="settings_language_change_in_transcripts">در تنظیمات رونوشت‌ها تغییر می‌کند</string>
-    <string name="settings_classic_screen_label">استفاده از صفحه تنظیمات کلاسیک</string>
-    <string name="settings_classic_screen_description">روشن: تنظیمات مثل قبل به‌صورت یک فهرست بلند باز می‌شود. خاموش: چیدمان جدید، که در آن نماد تنظیمات هر صفحه فقط تنظیمات همان صفحه را نشان می‌دهد.</string>
     <string name="settings_summary_off">خاموش</string>
     <string name="settings_summary_unavailable">اینجا در دسترس نیست</string>
     <string name="settings_summary_count_on">%1$d از %2$d روشن</string>
@@ -882,4 +880,10 @@
     <string name="settings_subheader_app_calls">تماس‌های برنامه‌ها</string>
     <string name="settings_subheader_all_calls">همه تماس‌ها</string>
     <string name="settings_voip_auto_start_record_label">ضبط خودکار تماس‌های برنامه‌ها</string>
+
+    <!-- The card at the top of both Settings screens that switches between the new and classic layouts. -->
+    <string name="settings_layout_try_new_title">چیدمان جدید تنظیمات را امتحان کنید</string>
+    <string name="settings_layout_try_new_subtitle">هر صفحه فقط تنظیمات خودش را نشان می‌دهد</string>
+    <string name="settings_layout_back_to_classic_title">رفتن به نمای کلاسیک</string>
+    <string name="settings_layout_back_to_classic_subtitle">همه تنظیمات در یک فهرست بلند، مثل قبل</string>
 </resources>

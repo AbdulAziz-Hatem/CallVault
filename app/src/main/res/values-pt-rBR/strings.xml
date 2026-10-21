@@ -756,8 +756,6 @@
     <string name="settings_link_share_debug_report">Compartilhar um relatório de depuração</string>
     <string name="settings_link_all_settings">Todas as configurações</string>
     <string name="settings_language_change_in_transcripts">Alterável nas configurações de transcrições</string>
-    <string name="settings_classic_screen_label">Usar a tela de configurações clássica</string>
-    <string name="settings_classic_screen_description">Ativado: as configurações abrem como uma única lista longa, como antes. Desativado: o novo layout, em que o ícone de configurações de cada página mostra só as configurações daquela página.</string>
     <string name="settings_summary_off">Desativado</string>
     <string name="settings_summary_unavailable">Indisponível aqui</string>
     <string name="settings_summary_count_on">%1$d de %2$d ativados</string>
@@ -792,4 +790,10 @@
     <string name="settings_subheader_app_calls">Chamadas de apps</string>
     <string name="settings_subheader_all_calls">Todas as chamadas</string>
     <string name="settings_voip_auto_start_record_label">Gravar automaticamente as chamadas de apps</string>
+
+    <!-- The card at the top of both Settings screens that switches between the new and classic layouts. -->
+    <string name="settings_layout_try_new_title">Experimente o novo layout das configurações</string>
+    <string name="settings_layout_try_new_subtitle">Cada página mostra só as próprias configurações</string>
+    <string name="settings_layout_back_to_classic_title">Mudar para a visualização clássica</string>
+    <string name="settings_layout_back_to_classic_subtitle">Todas as configurações em uma única lista longa, como antes</string>
 </resources>

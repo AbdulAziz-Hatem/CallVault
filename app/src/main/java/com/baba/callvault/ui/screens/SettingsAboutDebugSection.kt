@@ -54,7 +54,6 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.ViewAgenda
 
 /**
  * Debug section (always visible). The flow is: turn logging on, reproduce the issue, turn logging
@@ -182,9 +181,6 @@ internal fun BugReportSection(
             }
         }
 
-        // In Debug so it is in BOTH Settings screens and always one tap from a way back.
-        SettingsDivider()
-        ClassicSettingsScreenToggle(preferences, updateTrigger, actions)
     }
 
     if (showLogViewer) {
@@ -388,23 +384,3 @@ internal fun AboutSection(
 }
 
 // ── Internal helper composables ────────────────────────────────────────────────────────────
-
-/**
- * Which Settings screen opens: the classic list (on, the default until the new one is verified on phones)
- * or the new per-page screen. Takes effect at once: the refresh re-reads it in [SettingsScreen].
- * Both screens use the same preferences, so switching either way loses nothing.
- */
-@Composable
-private fun ClassicSettingsScreenToggle(preferences: AppPreferences, updateTrigger: Int, actions: SettingsActions) {
-    val isClassic = remember(updateTrigger) { preferences.isClassicSettingsScreen() }
-    SettingsToggleRow(
-        icon = Icons.Filled.ViewAgenda,
-        label = stringResource(R.string.settings_classic_screen_label),
-        description = stringResource(R.string.settings_classic_screen_description),
-        checked = isClassic,
-        onCheckedChange = {
-            preferences.setClassicSettingsScreen(it)
-            actions.refreshSettings()
-        },
-    )
-}

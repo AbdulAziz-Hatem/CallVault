@@ -753,8 +753,6 @@
     <string name="settings_link_share_debug_report">Partager un rapport de débogage</string>
     <string name="settings_link_all_settings">Tous les paramètres</string>
     <string name="settings_language_change_in_transcripts">Modifiable dans les paramètres des transcriptions</string>
-    <string name="settings_classic_screen_label">Utiliser l\'écran de paramètres classique</string>
-    <string name="settings_classic_screen_description">Activé : les paramètres s\'ouvrent en une seule longue liste, comme avant. Désactivé : la nouvelle présentation, où l\'icône des paramètres de chaque page n\'affiche que les paramètres de cette page.</string>
     <string name="settings_summary_off">Désactivé</string>
     <string name="settings_summary_unavailable">Indisponible ici</string>
     <string name="settings_summary_count_on">%1$d sur %2$d activés</string>
@@ -789,4 +787,10 @@
     <string name="settings_subheader_app_calls">Appels d\'applis</string>
     <string name="settings_subheader_all_calls">Tous les appels</string>
     <string name="settings_voip_auto_start_record_label">Enregistrement automatique des appels d\'applis</string>
+
+    <!-- The card at the top of both Settings screens that switches between the new and classic layouts. -->
+    <string name="settings_layout_try_new_title">Essayer la nouvelle présentation des paramètres</string>
+    <string name="settings_layout_try_new_subtitle">Chaque page n\'affiche que ses propres paramètres</string>
+    <string name="settings_layout_back_to_classic_title">Passer à la vue classique</string>
+    <string name="settings_layout_back_to_classic_subtitle">Tous les paramètres dans une seule longue liste, comme avant</string>
 </resources>

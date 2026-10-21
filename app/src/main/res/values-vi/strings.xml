@@ -752,8 +752,6 @@
     <string name="settings_link_share_debug_report">Chia sẻ báo cáo gỡ lỗi</string>
     <string name="settings_link_all_settings">Tất cả cài đặt</string>
     <string name="settings_language_change_in_transcripts">Thay đổi trong cài đặt bản chép lời</string>
-    <string name="settings_classic_screen_label">Dùng màn hình cài đặt cổ điển</string>
-    <string name="settings_classic_screen_description">Bật: cài đặt mở ra thành một danh sách dài như trước. Tắt: bố cục mới, trong đó biểu tượng cài đặt của mỗi trang chỉ hiện cài đặt của trang đó.</string>
     <string name="settings_summary_off">Tắt</string>
     <string name="settings_summary_unavailable">Không khả dụng ở đây</string>
     <string name="settings_summary_count_on">Bật %1$d/%2$d</string>
@@ -788,4 +786,10 @@
     <string name="settings_subheader_app_calls">Cuộc gọi qua ứng dụng</string>
     <string name="settings_subheader_all_calls">Tất cả cuộc gọi</string>
     <string name="settings_voip_auto_start_record_label">Tự động ghi âm cuộc gọi qua ứng dụng</string>
+
+    <!-- The card at the top of both Settings screens that switches between the new and classic layouts. -->
+    <string name="settings_layout_try_new_title">Dùng thử bố cục cài đặt mới</string>
+    <string name="settings_layout_try_new_subtitle">Mỗi trang chỉ hiện cài đặt của trang đó</string>
+    <string name="settings_layout_back_to_classic_title">Chuyển sang giao diện cổ điển</string>
+    <string name="settings_layout_back_to_classic_subtitle">Tất cả cài đặt trong một danh sách dài, như trước</string>
 </resources>

@@ -173,7 +173,7 @@ object SettingsGroups {
         )
         SettingsGroup.SUMMARIES -> listOf("summary_confirm_requirements")
         SettingsGroup.APP -> listOf("theme_mode", "dynamic_color", "show_toasts", "update_check_enabled")
-        SettingsGroup.HELP_AND_ABOUT -> listOf("logging_enabled", "classic_settings_screen")
+        SettingsGroup.HELP_AND_ABOUT -> listOf("logging_enabled")
     }
 }
 

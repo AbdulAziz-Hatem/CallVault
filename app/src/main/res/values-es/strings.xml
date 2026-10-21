@@ -753,8 +753,6 @@
     <string name="settings_link_share_debug_report">Compartir un informe de depuración</string>
     <string name="settings_link_all_settings">Todos los ajustes</string>
     <string name="settings_language_change_in_transcripts">Se cambia en los ajustes de transcripciones</string>
-    <string name="settings_classic_screen_label">Usar la pantalla de ajustes clásica</string>
-    <string name="settings_classic_screen_description">Activado: los ajustes se abren como una sola lista larga, como antes. Desactivado: el nuevo diseño, donde el icono de ajustes de cada página muestra solo los ajustes de esa página.</string>
     <string name="settings_summary_off">Desactivado</string>
     <string name="settings_summary_unavailable">No disponible aquí</string>
     <string name="settings_summary_count_on">%1$d de %2$d activados</string>
@@ -789,4 +787,10 @@
     <string name="settings_subheader_app_calls">Llamadas de apps</string>
     <string name="settings_subheader_all_calls">Todas las llamadas</string>
     <string name="settings_voip_auto_start_record_label">Grabar automáticamente las llamadas de apps</string>
+
+    <!-- The card at the top of both Settings screens that switches between the new and classic layouts. -->
+    <string name="settings_layout_try_new_title">Probar el nuevo diseño de ajustes</string>
+    <string name="settings_layout_try_new_subtitle">Cada página muestra solo sus propios ajustes</string>
+    <string name="settings_layout_back_to_classic_title">Cambiar a la vista clásica</string>
+    <string name="settings_layout_back_to_classic_subtitle">Todos los ajustes en una sola lista larga, como antes</string>
 </resources>

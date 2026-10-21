@@ -763,8 +763,6 @@
     <string name="settings_link_share_debug_report">Поділитися звітом діагностики</string>
     <string name="settings_link_all_settings">Усі налаштування</string>
     <string name="settings_language_change_in_transcripts">Змінюється в налаштуваннях транскрипцій</string>
-    <string name="settings_classic_screen_label">Класичний екран налаштувань</string>
-    <string name="settings_classic_screen_description">Увімк.: налаштування відкриваються одним довгим списком, як раніше. Вимк.: новий вигляд, де значок налаштувань на кожній сторінці показує лише її налаштування.</string>
     <string name="settings_summary_off">Вимк.</string>
     <string name="settings_summary_unavailable">Тут недоступно</string>
     <string name="settings_summary_count_on">Увімкнено: %1$d з %2$d</string>
@@ -799,4 +797,10 @@
     <string name="settings_subheader_app_calls">Дзвінки в застосунках</string>
     <string name="settings_subheader_all_calls">Усі дзвінки</string>
     <string name="settings_voip_auto_start_record_label">Автоматично записувати дзвінки в застосунках</string>
+
+    <!-- The card at the top of both Settings screens that switches between the new and classic layouts. -->
+    <string name="settings_layout_try_new_title">Спробувати новий вигляд налаштувань</string>
+    <string name="settings_layout_try_new_subtitle">Кожна сторінка показує лише свої налаштування</string>
+    <string name="settings_layout_back_to_classic_title">Повернутися до класичного вигляду</string>
+    <string name="settings_layout_back_to_classic_subtitle">Усі налаштування одним довгим списком, як раніше</string>
 </resources>

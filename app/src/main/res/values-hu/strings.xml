@@ -753,8 +753,6 @@
     <string name="settings_link_share_debug_report">Hibakeresési jelentés megosztása</string>
     <string name="settings_link_all_settings">Összes beállítás</string>
     <string name="settings_language_change_in_transcripts">Az átiratok beállításaiban módosítható</string>
-    <string name="settings_classic_screen_label">Klasszikus beállítási képernyő használata</string>
-    <string name="settings_classic_screen_description">Be: a beállítások a korábbiak szerint egyetlen hosszú listaként nyílnak meg. Ki: az új elrendezés, ahol minden oldal beállítás ikonja csak az adott oldal beállításait mutatja.</string>
     <string name="settings_summary_off">Ki</string>
     <string name="settings_summary_unavailable">Itt nem érhető el</string>
     <string name="settings_summary_count_on">%1$d / %2$d bekapcsolva</string>
@@ -789,4 +787,10 @@
     <string name="settings_subheader_app_calls">Alkalmazáshívások</string>
     <string name="settings_subheader_all_calls">Minden hívás</string>
     <string name="settings_voip_auto_start_record_label">Automatikus alkalmazáshívás-rögzítés</string>
+
+    <!-- The card at the top of both Settings screens that switches between the new and classic layouts. -->
+    <string name="settings_layout_try_new_title">Próbáld ki az új beállítási elrendezést</string>
+    <string name="settings_layout_try_new_subtitle">Minden oldal csak a saját beállításait mutatja</string>
+    <string name="settings_layout_back_to_classic_title">Váltás a klasszikus nézetre</string>
+    <string name="settings_layout_back_to_classic_subtitle">Minden beállítás egyetlen hosszú listában, mint korábban</string>
 </resources>

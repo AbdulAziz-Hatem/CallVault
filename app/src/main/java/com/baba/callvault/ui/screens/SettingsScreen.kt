@@ -466,6 +466,8 @@ fun SettingsContent(
                 // find this out here too. Self-hiding when it does not apply.
                 OemGateNotice(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
             }
+            // The same card as at the top of the new screen, with its own wording: the one way between them.
+            item { SettingsLayoutSwitchCard(preferences, actions) }
             item {
                 RecordingSection(
                     preferences = preferences,

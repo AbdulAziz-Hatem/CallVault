@@ -755,8 +755,6 @@
     <string name="settings_link_share_debug_report">Поделиться отчётом для отладки</string>
     <string name="settings_link_all_settings">Все настройки</string>
     <string name="settings_language_change_in_transcripts">Меняется в настройках расшифровок</string>
-    <string name="settings_classic_screen_label">Классический экран настроек</string>
-    <string name="settings_classic_screen_description">Вкл.: настройки открываются одним длинным списком, как раньше. Выкл.: новый вид, где значок настроек на каждой странице показывает только её настройки.</string>
     <string name="settings_summary_off">Выкл.</string>
     <string name="settings_summary_unavailable">Здесь недоступно</string>
     <string name="settings_summary_count_on">Включено: %1$d из %2$d</string>
@@ -791,4 +789,10 @@
     <string name="settings_subheader_app_calls">Звонки в приложениях</string>
     <string name="settings_subheader_all_calls">Все звонки</string>
     <string name="settings_voip_auto_start_record_label">Автоматическая запись звонков в приложениях</string>
+
+    <!-- The card at the top of both Settings screens that switches between the new and classic layouts. -->
+    <string name="settings_layout_try_new_title">Попробовать новый вид настроек</string>
+    <string name="settings_layout_try_new_subtitle">Каждая страница показывает только свои настройки</string>
+    <string name="settings_layout_back_to_classic_title">Вернуться к классическому виду</string>
+    <string name="settings_layout_back_to_classic_subtitle">Все настройки одним длинным списком, как раньше</string>
 </resources>

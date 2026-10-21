@@ -111,7 +111,9 @@ fun ScopedSettingsContent(
     // could open scrolled to wherever the previous page's were left.
     LaunchedEffect(scope, scrollRequest) {
         val groupIndex = openGroup?.let { groups.indexOf(it) }?.takeIf { it >= 0 }
-        val index = if (groupIndex == null) 0 else groupIndex + if (showsModeRow) 1 else 0
+        // Items above the groups: the mode row (where shown) and the layout switch card.
+        val itemsAbove = (if (showsModeRow) 1 else 0) + 1
+        val index = if (groupIndex == null) 0 else groupIndex + itemsAbove
         listState.animateScrollToItem(index)
     }
 
@@ -160,6 +162,8 @@ fun ScopedSettingsContent(
                     }
                 }
             }
+            // Under the mode row where there is one, otherwise first: the same card as on the classic screen.
+            item(key = "layout_switch") { SettingsLayoutSwitchCard(preferences, actions) }
             items(groups, key = { it.key }) { group ->
                 val expanded = openGroup == group
                 SettingsGroupCard(
