@@ -141,12 +141,6 @@ object AdbShell {
     }
 
     /**
-     * True if adbd's classic-tcpip listener is armed on OUR loopback port — i.e. `service.adb.tcp.port`
-     * equals [AppPreferences.getLoopbackAdbPort]. The property PERSISTS across adbd restarts (only a
-     * reboot clears it), so "armed but connect refused" means adbd is mid-restart and the port will come
-     * back — worth waiting for instead of re-arming via Wireless Debugging.
-     */
-    /**
      * What to do with Wireless debugging now that the daemon is up — see [WirelessDebuggingPolicy].
      *
      * Reads the two things that keep `adbd` alive independently of Wireless debugging: USB debugging,
@@ -181,8 +175,22 @@ object AdbShell {
         wirelessDebuggingOn = isWirelessDebuggingEnabled(context),
     )
 
-    internal fun isLoopbackArmed(context: Context): Boolean =
-        getSystemProperty("service.adb.tcp.port") == AppPreferences(context).getLoopbackAdbPort().toString()
+    /**
+     * True if adbd has a classic-tcpip listener we can use on loopback: ours, or, in offline mode, one another
+     * app armed (a Shizuku fork's TCP mode). See [LoopbackPorts.isUsable]. `service.adb.tcp.port` PERSISTS
+     * across adbd restarts (only a reboot clears it), so "armed but connect refused" means adbd is mid-restart
+     * and the port will come back — worth waiting for instead of re-arming via Wireless Debugging.
+     */
+    internal fun isLoopbackArmed(context: Context): Boolean {
+        val prefs = AppPreferences(context)
+        return LoopbackPorts.isUsable(prefs.getLoopbackAdbPort(), adbdTcpPort(), prefs.isOfflineRecordingEnabled())
+    }
+
+    /** True only when the listener is the one CallVault armed, so it is ours to close. */
+    private fun isOwnLoopbackArmed(context: Context): Boolean =
+        LoopbackPorts.isOurs(AppPreferences(context).getLoopbackAdbPort(), adbdTcpPort())
+
+    private fun adbdTcpPort(): Int? = LoopbackPorts.parse(getSystemProperty("service.adb.tcp.port"))
 
     /**
      * Whether adbd is actually running, from Android's own `init.svc.adbd`.
@@ -524,10 +532,18 @@ object AdbShell {
      * this plain RSA-AUTH port. Holds no lock itself — callers order locks (heavy → monitor).
      */
     private fun connectLoopback(context: Context): Boolean {
-        val port = AppPreferences(context).getLoopbackAdbPort()
+        val ourPort = AppPreferences(context).getLoopbackAdbPort()
         val mgr = AdbConnectionManager.getInstance(context)
-        return connectBounded(context, "loopback tcpip :$port") { mgr.connect("127.0.0.1", port) }
-            .also { if (it) AppLogger.i(TAG, "Connected over loopback tcpip :$port (works off-WiFi)") }
+        // Another app (a Shizuku fork's TCP mode) may have moved adbd to its own port. Use that one rather
+        // than re-arming ours: re-arming restarts adbd and stops that app, and its watchdog moves adbd back.
+        for (port in LoopbackPorts.candidates(ourPort, adbdTcpPort())) {
+            if (connectBounded(context, "loopback tcpip :$port") { mgr.connect("127.0.0.1", port) }) {
+                val whose = if (port == ourPort) "" else ", armed by another app, used as it is"
+                AppLogger.i(TAG, "Connected over loopback tcpip :$port (works off-WiFi$whose)")
+                return true
+            }
+        }
+        return false
     }
 
     /**
@@ -637,6 +653,7 @@ object AdbShell {
             // connection, so reading the stream's response can stall forever (the read never gets an EOF when
             // the socket dies mid-flight). Opening the stream is what arms adbd; do it on a daemon thread with
             // a hard cap so a stalled open/close can never hang the caller.
+            markOwnAdbdRestart()
             armFireThread(mgr, port)
 
             Thread.sleep(TCPIP_RESTART_WAIT_MS)
@@ -686,6 +703,13 @@ object AdbShell {
      * now, the port simply closes on the next reboot. Call OFF the main thread.
      */
     fun disarmLoopback(context: Context) = synchronized(heavyOperationLock) {
+        // A listener another app armed (a Shizuku fork's TCP mode) is not ours to close: closing it restarts
+        // adbd, stops that app, and takes away what it set up.
+        // Read the port itself: offline mode is already off by now, so isLoopbackArmed would not see it.
+        if (LoopbackPorts.isListening(adbdTcpPort()) && !isOwnLoopbackArmed(context)) {
+            AppLogger.i(TAG, "disarmLoopback: adbd's tcp listener was armed by another app; leaving it")
+            return@synchronized
+        }
         val mgr = AdbConnectionManager.getInstance(context)
         if (!mgr.isConnected && !ensureConnected(context)) {
             AppLogger.i(TAG, "disarmLoopback: no connection to send usb: (port closes on next reboot)")
@@ -695,6 +719,7 @@ object AdbShell {
         // Closing the listener restarts adbd exactly as opening it did, so it stops a running Shizuku the
         // same way. Turning off-Wi-Fi recording OFF has no warning dialog, so this one is always told after.
         AdbdChurnNotice.around(context, "closing the off-Wi-Fi listener") {
+            markOwnAdbdRestart()
             val t = Thread {
                 runCatching { mgr.openStream("usb:").close() }
                     .onFailure { AppLogger.d(TAG, "usb: revert ended: ${it.message} (adbd restarting — expected)") }
@@ -877,6 +902,23 @@ object AdbShell {
         ownWdWriteValue = value
         ownWdWriteAtMs = android.os.SystemClock.elapsedRealtime()
     }
+
+    @Volatile private var ownAdbdRestartAtMs = 0L
+
+    /**
+     * How long after our own `tcpip:` / `usb:` a Wireless-debugging change is put down to it. Covers the arm
+     * (about 2 s) plus the listener wait ([LOOPBACK_SELFHEAL_MS]).
+     */
+    private const val OWN_ADBD_RESTART_WINDOW_MS = 20_000L
+
+    private fun markOwnAdbdRestart() {
+        ownAdbdRestartAtMs = android.os.SystemClock.elapsedRealtime()
+    }
+
+    /** True when CallVault restarted adbd itself within [OWN_ADBD_RESTART_WINDOW_MS]. */
+    fun didWeJustRestartAdbd(): Boolean =
+        ownAdbdRestartAtMs != 0L &&
+            android.os.SystemClock.elapsedRealtime() - ownAdbdRestartAtMs < OWN_ADBD_RESTART_WINDOW_MS
 
     /** True when the current Wireless-debugging state is one CallVault itself just set. */
     fun didWeJustSetWirelessDebugging(enabled: Boolean): Boolean =

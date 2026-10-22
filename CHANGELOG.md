@@ -81,6 +81,15 @@ All notable changes to CallVault are documented here. The format is based on
 
 ### Fixed
 
+- **CallVault and Shizuku's watchdog no longer fight.** With off-Wi-Fi recording on and Shizuku's Watchdog
+  or TCP mode on, each app kept restarting the phone's debugging connection, which stopped the other, and
+  recording could stay down until Shizuku was removed. CallVault now uses the connection Shizuku set up
+  instead of restarting it, leaves it open when you turn off-Wi-Fi recording off, and no longer takes
+  Shizuku switching Wireless debugging off for your choice. Reported by a user.
+  <!-- 🧪 VERIFYING: unit tests only. Reporter voss, POCO X7 Pro HyperOS 3, reports (15)/(16) 2026-10-22.
+       Shizuku's side (TCP mode port, who wrote WD off) is inferred, not in our logs. Needs: Shizuku fork with
+       Watchdog + TCP mode, CallVault standalone + Offline on, reboot; expect "armed by another app, used as
+       it is" and no AdbdChurn line. -->
 - **The Telegram pill no longer pushes the settings icon off screen.** Once the Telegram card was tucked away,
   its pill showed on every page and, beside a long page title, left no room for the settings icon. It now
   shows on the main screen only, and a title that does not fit is shortened instead.
