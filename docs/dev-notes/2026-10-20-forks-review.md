@@ -44,3 +44,39 @@ Update 2026-10-20: #1 fixed (`3907971e`, 🧪). #2 checked and **not needed**: s
 
 Note: three forks fixed "Android SDK setup" in their CI. Our `build-app.yml` is manual-only and has not run
 since 2026-07-26, when it failed. We build releases locally, so this does not block anything.
+
+## Second pass (2026-10-22)
+
+📐 CALCULATED — code read through the GitHub API; lint run on our tree (integration/next 0daff772). Nothing
+adopted, nothing posted on GitHub. 19 forks now; three changed since the first pass.
+
+| Fork | What changed | Verdict |
+|---|---|---|
+| SMMH1987 (new, 2026-10-21) | A company build for "Avanegar", a Persian cloud speech-to-text service. Four stacked branches: `dual-track-recording`, `remove-ondevice-ai`, `lighter-settings`, `server-upload` (uploads every recording to their server; updater pointed at their repo). | Skip. Details below. |
+| alirezamsc2-dotcom | New branch `security/harden-recorder-binder`: the same `sendBinder` caller check we shipped in `3907971e`; removes `MANAGE_EXTERNAL_STORAGE` from the debug manifest. | Nothing new. Ours also trusts root. The debug permission is inert and never in a release build. |
+| sanju0070 | A new branch name (`codespace-…`) holding the same two commits as `fix-build`; `private-hardening` is empty. | Already covered (model import, row 5 above). |
+
+**SMMH1987 dual-track carrier capture (`03f04db7`).** Opens `VOICE_UPLINK` and `VOICE_DOWNLINK` as two
+mono records and writes a stereo file (L = you, R = far), at 64 kbps minimum. Their reason: on a Galaxy A56
+stereo `VOICE_CALL` gives the same mix on both channels. Not adopted:
+- Our own A/B on the OP12 (2026-08-23, memory `no-second-voice-capture-during-call`) showed that a second
+  voice capture during a call silences the user's side **without any error**. Their fallback only catches a
+  failed start, so on a phone like the OP12 it would ship one-sided recordings that look normal. That
+  breaks the both-sides-or-fail rule.
+- Our OP12 direct path already gets ~60 dB separation from stereo `VOICE_CALL`, and the delivered file
+  stays mono by design.
+- Possible later use: speaker labels on Samsung carrier calls, if a Samsung user asks. It would need a check
+  that the near side is not silent, and a two-sided test on a Samsung.
+
+**Lint (lead from SMMH1987's CI, `7193a7ed`).** We never run `lintDebug`. Run 2026-10-22: 31 errors.
+- 📐 **Real, narrow: the vendor-constructor bypass cannot work on Android 12.** `BypassedAudioRecord.kt:123`
+  calls `AttributionSource.myAttributionSource()`, which exists only from API 33 (SDK api-versions.xml). On
+  API 31–32 it throws `NoSuchMethodError`; both callers (`HostAudioRecord`, `VoipAudioPolicy`) catch it, so
+  nothing crashes, but a phone whose own `AudioRecord` constructor crashes (the vivo case) cannot record on
+  Android 12. Fix idea: on 31–32 build it with the public `AttributionSource.Builder(uid).setPackageName(…)`.
+  Unverified end-to-end; the Android 12 `native_setup` signature also needs checking.
+- Harmless: `ModelDownloadWorker.getStopReason` (a WorkManager field read, log only); `VoipTelephonyGate`
+  (already inside `runCatching`); `AudioConcat`/`AudioSplit` sample flags (the standard idiom; our files
+  carry no encrypted or partial frames); Compose `LocalContext`/locale warnings.
+- Cosmetic: Polish and Russian plurals lack the `few`/`many` forms (8 strings each), so some counts read
+  ungrammatically ("2 месяцев").
