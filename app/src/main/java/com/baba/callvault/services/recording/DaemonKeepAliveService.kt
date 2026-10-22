@@ -267,9 +267,12 @@ class DaemonKeepAliveService : Service() {
                     weJustTurnedItOn = AdbShell.didWeJustSetWirelessDebugging(enabled = true),
                     wifi = WifiState.of(applicationContext),
                     wifiJustLost = wifiLostRecently(),
+                    weJustRestartedAdbd = AdbShell.didWeJustRestartAdbd(),
                 )
             ) {
                 WirelessDebuggingOffCause.OURS -> Unit
+                WirelessDebuggingOffCause.AFTER_OUR_ADBD_RESTART ->
+                    AppLogger.i(TAG, "Wireless debugging went off just after CallVault restarted adbd (another app, such as Shizuku, reacting); not the user's")
                 WirelessDebuggingOffCause.ANDROID_NETWORK_CHANGED ->
                     AppLogger.i(TAG, "Wireless debugging went off as the phone left a Wi-Fi network; Android's doing, not the user's")
                 WirelessDebuggingOffCause.ANDROID_REFUSED ->

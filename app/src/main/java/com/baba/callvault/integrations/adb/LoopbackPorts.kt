@@ -1,0 +1,48 @@
+/*
+ * CallVault: FOSS call recording, self-contained over embedded ADB
+ *  Copyright (C) 2026-present The CallVault Authors
+ *  This software is licensed under the GNU General Public License v3 or later, with additional terms as permitted under Section 7.
+ *  The full license text is available in the LICENSE file at the root of this project.
+ *  This software is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+package com.baba.callvault.integrations.adb
+
+/**
+ * Which loopback port to connect to, given the port adbd is listening on (`service.adb.tcp.port`).
+ *
+ * adbd listens on one tcp port at a time, and other apps can set it too. Shizuku forks have a "TCP mode" that
+ * runs the same `tcpip:` as our off-Wi-Fi recording, on their own port (5555 by default). Before this,
+ * CallVault accepted only its own port, so it re-armed. That restarted adbd and stopped Shizuku. Shizuku's
+ * watchdog then started it again and moved adbd back to its port. The two never settled (voss, POCO X7 Pro,
+ * HyperOS 3, 2026-10-22: recording down until Shizuku was uninstalled).
+ *
+ * Any port adbd listens on works for us: it is the same adbd and the same key. So we use it as it is, and only
+ * restart adbd when nothing is listening.
+ *
+ * Free of Android types so every branch is tested.
+ */
+object LoopbackPorts {
+
+    private const val MAX_PORT = 65_535
+
+    /** The port in `service.adb.tcp.port`, or null when it is unset, off (0 / -1) or not a number. */
+    fun parse(property: String?): Int? = property?.trim()?.toIntOrNull()?.takeIf { it in 1..MAX_PORT }
+
+    /** Ports to try, in order. A port another app set comes first; ours stays as the fallback. */
+    fun candidates(ourPort: Int, adbdPort: Int?): List<Int> =
+        if (adbdPort == null || adbdPort == ourPort) listOf(ourPort) else listOf(adbdPort, ourPort)
+
+    /** True when adbd is listening on some tcp port, ours or another app's. */
+    fun isListening(adbdPort: Int?): Boolean = adbdPort != null
+
+    /**
+     * True when CallVault can reach adbd over this listener. Another app's port only counts in offline mode:
+     * outside it CallVault never dials loopback, so recovery and notices must not count it as a way in.
+     */
+    fun isUsable(ourPort: Int, adbdPort: Int?, offlineMode: Boolean): Boolean =
+        isOurs(ourPort, adbdPort) || (offlineMode && isListening(adbdPort))
+
+    /** True when the listener is the one CallVault armed. Only that one is ours to close. */
+    fun isOurs(ourPort: Int, adbdPort: Int?): Boolean = adbdPort == ourPort
+}

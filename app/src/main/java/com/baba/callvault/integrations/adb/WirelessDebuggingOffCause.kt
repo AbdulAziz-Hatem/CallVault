@@ -26,20 +26,31 @@ enum class WirelessDebuggingOffCause {
      * phone moves straight to another network Wi-Fi already reads connected again (OP9, 2026-10-21).
      */
     ANDROID_NETWORK_CHANGED,
+
+    /**
+     * CallVault restarted adbd moments ago, and another app reacted by switching it off. voss, POCO X7 Pro,
+     * 2026-10-22: 1.2-1.5 s after each of our `tcpip:` arms, every time; Shizuku's watchdog is the likely writer.
+     */
+    AFTER_OUR_ADBD_RESTART,
     USER;
 
     companion object {
-        /** @param wifiJustLost a Wi-Fi network was lost within the last few seconds. */
+        /**
+         * @param wifiJustLost a Wi-Fi network was lost within the last few seconds.
+         * @param weJustRestartedAdbd CallVault opened `tcpip:` or `usb:` within the last few seconds.
+         */
         fun of(
             weJustTurnedItOff: Boolean,
             weJustTurnedItOn: Boolean,
             wifi: WifiState,
             wifiJustLost: Boolean = false,
+            weJustRestartedAdbd: Boolean = false,
         ): WirelessDebuggingOffCause = when {
             weJustTurnedItOff -> OURS
             weJustTurnedItOn -> ANDROID_REFUSED
             wifi == WifiState.NOT_CONNECTED -> ANDROID_NO_WIFI
             wifiJustLost -> ANDROID_NETWORK_CHANGED
+            weJustRestartedAdbd -> AFTER_OUR_ADBD_RESTART
             else -> USER
         }
     }

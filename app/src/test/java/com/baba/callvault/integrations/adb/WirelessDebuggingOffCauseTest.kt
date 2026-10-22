@@ -49,6 +49,28 @@ class WirelessDebuggingOffCauseTest {
     }
 
     @Test
+    fun `off just after we restarted adbd is another app reacting, not the user`() {
+        // voss, POCO X7 Pro, 2026-10-22: 1.2-1.5 s after each of our tcpip arms the switch went off, every time.
+        // Shizuku's watchdog restarting Shizuku is the likely writer. Taken for the user, CallVault stood down.
+        assertEquals(
+            WirelessDebuggingOffCause.AFTER_OUR_ADBD_RESTART,
+            WirelessDebuggingOffCause.of(
+                weJustTurnedItOff = false, weJustTurnedItOn = false, wifi = WifiState.CONNECTED, weJustRestartedAdbd = true,
+            ),
+        )
+    }
+
+    @Test
+    fun `Android's own causes still win over our adbd restart`() {
+        assertEquals(
+            WirelessDebuggingOffCause.ANDROID_NO_WIFI,
+            WirelessDebuggingOffCause.of(
+                weJustTurnedItOff = false, weJustTurnedItOn = false, wifi = WifiState.NOT_CONNECTED, weJustRestartedAdbd = true,
+            ),
+        )
+    }
+
+    @Test
     fun `anything else is the user`() {
         assertEquals(WirelessDebuggingOffCause.USER, WirelessDebuggingOffCause.of(weJustTurnedItOff = false, weJustTurnedItOn = false, wifi = WifiState.CONNECTED))
         assertEquals(WirelessDebuggingOffCause.USER, WirelessDebuggingOffCause.of(weJustTurnedItOff = false, weJustTurnedItOn = false, wifi = WifiState.UNKNOWN))
