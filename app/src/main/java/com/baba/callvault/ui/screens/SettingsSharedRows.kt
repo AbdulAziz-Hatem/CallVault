@@ -78,7 +78,11 @@ internal fun SummarySettingsRows(preferences: AppPreferences, updateTrigger: Int
         updateTrigger = updateTrigger,
         onDownload = { actions.downloadSummaryModel(it) },
         onCancel = { actions.cancelSummaryModelDownload(it) },
-        onDelete = { actions.deleteSummaryModel(it) }
+        onDelete = { actions.deleteSummaryModel(it) },
+        onImport = { model, uri -> actions.importModel(model, uri) },
+        onCancelImport = { actions.cancelModelImport(it) },
+        onBackup = { model, uri -> actions.backUpModel(model, uri) },
+        onCancelBackup = { actions.cancelModelBackup(it) }
     ) {
         // Settings-only, and passed in rather than living in SummaryRows because
         // the wizard renders those same rows and has no business offering a

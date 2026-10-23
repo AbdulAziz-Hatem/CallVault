@@ -9,6 +9,7 @@
 package com.baba.callvault.ui.viewmodels
 
 import android.app.Application
+import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import com.baba.callvault.data.AppPreferences
@@ -18,6 +19,8 @@ import com.baba.callvault.system.storage.SyncScheduler
 import com.baba.callvault.transcription.model.DownloadableModel
 import com.baba.callvault.transcription.model.ModelDownloadWorker
 import com.baba.callvault.transcription.model.ModelRepository
+import com.baba.callvault.transcription.model.ModelTransferWorker
+import com.baba.callvault.utils.AppLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -165,6 +168,25 @@ class WizardViewModel(application: Application) : AndroidViewModel(application) 
     /** Stops a download in progress. The partial file is kept, so resuming does not re-fetch it. */
     fun cancelModelDownload(model: DownloadableModel) {
         ModelDownloadWorker.cancel(appContext, model)
+        bump()
+    }
+
+    /**
+     * Imports a model from a file the user picked (GitHub #58) — the same call Settings makes, so
+     * either screen shows its progress. The grant is made persistable first, so a job WorkManager
+     * re-runs after the picker's temporary grant has gone can still read the file.
+     */
+    fun importModel(model: DownloadableModel, source: Uri) {
+        runCatching {
+            appContext.contentResolver.takePersistableUriPermission(source, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }.onFailure { AppLogger.w("CV:Wizard", "No persistable read grant for the import of ${model.id}: ${it.javaClass.simpleName}") }
+        ModelTransferWorker.enqueueImport(appContext, model, source)
+        bump()
+    }
+
+    /** Stops an import; the worker releases the file's grant once the job has let go of it. */
+    fun cancelModelImport(model: DownloadableModel) {
+        ModelTransferWorker.cancelImport(appContext, model)
         bump()
     }
 

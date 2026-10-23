@@ -50,6 +50,7 @@ import com.baba.callvault.data.AppPreferences
 import com.baba.callvault.data.SyncScheduleMode
 import com.baba.callvault.data.TranscriptionMode
 import com.baba.callvault.summary.SummaryModel
+import com.baba.callvault.transcription.model.DownloadableModel
 import com.baba.callvault.transcription.model.TranscriptionModel
 import com.baba.callvault.data.StorageTarget
 import com.baba.callvault.system.storage.SafHelper
@@ -646,6 +647,10 @@ private fun SettingsScreenPreview() {
             override fun downloadSummaryModel(model: SummaryModel) {}
             override fun cancelSummaryModelDownload(model: SummaryModel) {}
             override fun deleteSummaryModel(model: SummaryModel) {}
+            override fun importModel(model: DownloadableModel, source: Uri) {}
+            override fun cancelModelImport(model: DownloadableModel) {}
+            override fun backUpModel(model: DownloadableModel, target: Uri) {}
+            override fun cancelModelBackup(model: DownloadableModel) {}
             override fun setSyncTimeHour(hour: Int) {}
             override fun setSyncTimeMinute(minute: Int) {}
             override fun setSyncDayOfWeek(day: Int) {}

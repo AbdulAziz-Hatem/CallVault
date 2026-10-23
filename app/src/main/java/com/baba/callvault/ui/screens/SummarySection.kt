@@ -8,6 +8,7 @@
 
 package com.baba.callvault.ui.screens
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
@@ -31,7 +32,6 @@ import com.baba.callvault.ui.common.ConfirmDialog
 import com.baba.callvault.ui.common.SummaryRequirementsDialog
 import com.baba.callvault.summary.SummaryModel
 import com.baba.callvault.transcription.model.ModelDownloadWorker
-import com.baba.callvault.transcription.model.ModelTransferWorker
 import com.baba.callvault.ui.common.ModelDownloadState
 import com.baba.callvault.ui.common.rememberModelDownloadState
 
@@ -51,6 +51,7 @@ import com.baba.callvault.ui.common.rememberModelDownloadState
  *   a dialog it has just shown, passes nothing. A slot rather than a flag so the wizard cannot end
  *   up with a switch it must then explain — the same shape [TranscriptionSection] already uses to
  *   host these rows inside itself.
+ * @param onBackup Null hides the backup row (the wizard: a fresh install has nothing to save).
  */
 @Composable
 internal fun SummaryRows(
@@ -58,6 +59,10 @@ internal fun SummaryRows(
     onDownload: (SummaryModel) -> Unit,
     onCancel: (SummaryModel) -> Unit,
     onDelete: (SummaryModel) -> Unit,
+    onImport: (SummaryModel, Uri) -> Unit,
+    onCancelImport: (SummaryModel) -> Unit,
+    onBackup: ((SummaryModel, Uri) -> Unit)? = null,
+    onCancelBackup: (SummaryModel) -> Unit = {},
     extraRows: @Composable ColumnScope.() -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -70,22 +75,52 @@ internal fun SummaryRows(
     val preferences = remember(context) { AppPreferences(context) }
     val askFirst = remember(updateTrigger) { preferences.getSummaryConfirmRequirements() }
     var showRequirements by remember { mutableStateOf(false) }
+    // What Continue does: the download, or — when the dialog was raised by Import — the file picker.
+    var afterRequirements by remember { mutableStateOf<(() -> Unit)?>(null) }
 
     // The costs are stated before the download starts, not after. Skipped once the user has said
-    // they do not want asking again — a choice they can undo from the switch below.
-    val startDownload = {
-        if (askFirst) showRequirements = true else onDownload(model)
+    // they do not want asking again — a choice they can undo from the switch below. An import is
+    // asked about the same way: the file is free, but running it needs the same 3.5 GB of memory.
+    val askThen = { proceed: () -> Unit ->
+        if (askFirst) {
+            afterRequirements = proceed
+            showRequirements = true
+        } else {
+            proceed()
+        }
     }
+    val startDownload = { askThen { onDownload(model) } }
 
     if (showRequirements) {
         SummaryRequirementsDialog(
             model = model,
-            onDismiss = { showRequirements = false },
+            onDismiss = {
+                showRequirements = false
+                afterRequirements = null
+            },
             onContinue = { dontAskAgain ->
                 showRequirements = false
                 if (dontAskAgain) preferences.setSummaryConfirmRequirements(false)
-                onDownload(model)
+                afterRequirements?.invoke()
+                afterRequirements = null
             }
+        )
+    }
+
+    val importRow: @Composable (String?) -> Unit = { failure ->
+        ModelImportRow(
+            model = model,
+            onPicked = { onImport(model, it) },
+            beforePick = { launch -> askThen(launch) },
+            failureText = failure
+        )
+    }
+    val downloadRow: @Composable () -> Unit = {
+        NavigationRow(
+            icon = Icons.Filled.Download,
+            label = stringResource(R.string.summary_model_download),
+            value = stringResource(R.string.summary_model_download_subtitle, model.sizeBytes.toGigabytes()),
+            onClick = startDownload
         )
     }
 
@@ -119,22 +154,22 @@ internal fun SummaryRows(
         ExplanationParagraph(summaryRequirementsText(model))
 
         when (val current = state) {
-            ModelDownloadState.Installed -> NavigationRow(
-                icon = Icons.Filled.Delete,
-                label = stringResource(R.string.summary_model_delete),
-                value = stringResource(R.string.summary_model_installed),
-                onClick = { pendingDiscard = model.sizeBytes }
-            )
+            ModelDownloadState.Installed -> {
+                NavigationRow(
+                    icon = Icons.Filled.Delete,
+                    label = stringResource(R.string.summary_model_delete),
+                    value = stringResource(R.string.summary_model_installed),
+                    onClick = { pendingDiscard = model.sizeBytes }
+                )
+                if (onBackup != null) {
+                    ModelBackupRow(model, onPicked = { onBackup(model, it) }, onCancel = { onCancelBackup(model) })
+                }
+            }
 
-            ModelDownloadState.Absent -> NavigationRow(
-                icon = Icons.Filled.Download,
-                label = stringResource(R.string.summary_model_download),
-                value = stringResource(
-                    R.string.summary_model_download_subtitle,
-                    model.sizeBytes.toGigabytes()
-                ),
-                onClick = startDownload
-            )
+            ModelDownloadState.Absent -> {
+                downloadRow()
+                importRow(null)
+            }
 
             // Stopped part-way. Saying so is the point: those bytes are banked, the server resumes
             // from exactly that offset, and a row reading "Download, 3.5 GB" would hide a gigabyte
@@ -160,6 +195,7 @@ internal fun SummaryRows(
                     ),
                     onClick = { pendingDiscard = current.downloadedBytes }
                 )
+                importRow(null)
             }
 
             // Queued and 0% look identical on a bar and mean different things, so waiting says so
@@ -176,27 +212,18 @@ internal fun SummaryRows(
                 onCancel = { onCancel(model) }
             )
 
-            is ModelDownloadState.Importing -> ModelDownloadingRow(
-                label = current.percent?.let { stringResource(R.string.model_importing, it) }
-                    ?: stringResource(R.string.model_import_waiting),
+            // An import holds the model's write lock; the bar and its cancel are all that fits.
+            is ModelDownloadState.Importing -> ModelImportingRow(
                 percent = current.percent,
-                onCancel = { ModelTransferWorker.cancelImport(context, model) }
+                onCancel = { onCancelImport(model) }
             )
 
-            // Placeholder: shown as the plain failed row until Task 5 builds the real import rows.
+            // Nothing about the download failed, so it is offered plainly; the import row says what
+            // was wrong with the file. The summariser has no display name of its own, so the
+            // wrong-file message names the file to look for.
             is ModelDownloadState.ImportFailed -> {
-                NavigationRow(
-                    icon = Icons.Filled.Download,
-                    label = stringResource(R.string.summary_model_download),
-                    value = stringResource(
-                        when (current.reason) {
-                            ModelDownloadWorker.ERROR_NO_SPACE -> R.string.summary_model_failed_space
-                            ModelDownloadWorker.ERROR_VERIFICATION_FAILED -> R.string.summary_model_failed_verify
-                            else -> R.string.summary_model_failed
-                        }
-                    ),
-                    onClick = startDownload
-                )
+                downloadRow()
+                importRow(importFailureText(current.reason, model.fileName))
             }
 
             // A failure says which one it was, because the two the user can act on need different
@@ -214,6 +241,7 @@ internal fun SummaryRows(
                     ),
                     onClick = startDownload
                 )
+                importRow(null)
             }
         }
 

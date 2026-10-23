@@ -31,6 +31,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CancellationException
 
 /**
@@ -44,10 +45,13 @@ import java.util.concurrent.CancellationException
  * import is never resumed — the source may have changed in between, and the digest check would have
  * to start over anyway — so a stop only throws the partial copy away.
  *
- * **The URI grant is released only after this job's own success or failure, never on a stop.** A
- * system stop is re-run from zero and needs it; a user cancel and a REPLACE both look like
- * [WorkInfo.STOP_REASON_CANCELLED_BY_APP], and a REPLACE with the same URI needs it too. The user's
- * cancel releases it from the ViewModel instead.
+ * **The URI grant is released after this job's own success or failure, and after a user's cancel —
+ * never after any other stop.** A system stop is re-run from zero and needs it. A user cancel and a
+ * REPLACE both look like [WorkInfo.STOP_REASON_CANCELLED_BY_APP], and a REPLACE with the same URI (the
+ * user re-picking the file) needs it too — so the two are told apart by a mark: [cancelImport] and
+ * [cancelBackup] note the model before cancelling, a REPLACE never does, and the stopped run releases
+ * the grant only when its model is marked. The mark lives in this process, which is the one the
+ * worker runs in; it cannot be done from the ViewModel, which does not know when the run has let go.
  */
 class ModelTransferWorker(
     context: Context,
@@ -106,8 +110,9 @@ class ModelTransferWorker(
                 }
             }
         } finally {
-            // Never on a stop (see the class KDoc), including one while still waiting for the lock.
-            if (!isStopped) releaseGrant(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            // Not on a system stop or a REPLACE (see the class KDoc), including one while still waiting
+            // for the lock; only on an end of its own or the user's cancel.
+            if (shouldReleaseGrant(cancelledImports, model)) releaseGrant(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }
 
@@ -195,8 +200,8 @@ class ModelTransferWorker(
             if (!isWritten && !willRunAgain()) {
                 runCatching { DocumentsContract.deleteDocument(applicationContext.contentResolver, uri) }
             }
-            // Never on a stop (see the class KDoc).
-            if (!isStopped) releaseGrant(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            // Not on a system stop or a REPLACE (see the class KDoc).
+            if (shouldReleaseGrant(cancelledBackups, model)) releaseGrant(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         }
     }
 
@@ -207,6 +212,13 @@ class ModelTransferWorker(
         setProgressAsync(workDataOf(KEY_MODEL_ID to model.id, KEY_PERCENT to percent))
     }
 
+    /**
+     * True when this run ended on its own, or was stopped because the user cancelled it. Clears the
+     * cancel mark either way it is consumed, so it cannot outlive the run it was meant for.
+     */
+    private fun shouldReleaseGrant(cancelled: MutableSet<String>, model: DownloadableModel): Boolean =
+        !isStopped || cancelled.remove(model.id)
+
     private fun releaseGrant(uri: Uri, flag: Int) {
         runCatching { applicationContext.contentResolver.releasePersistableUriPermission(uri, flag) }
     }
@@ -214,7 +226,7 @@ class ModelTransferWorker(
     /**
      * Stopped by Android rather than cancelled: WorkManager will start this request again from zero, so a
      * partial backup document is left for that run to overwrite. A cancel (by the user, or a replacing
-     * request) is never re-run. Says nothing about the grant, which no stop releases.
+     * request) is never re-run. Says nothing about the grant: see [shouldReleaseGrant].
      */
     private fun willRunAgain(): Boolean = isStopped && stopReason != WorkInfo.STOP_REASON_CANCELLED_BY_APP
 
@@ -260,12 +272,21 @@ class ModelTransferWorker(
         /** The backup could not be written in full. */
         const val ERROR_WRITE_FAILED = "write-failed"
 
+        /**
+         * Models whose import or backup the user cancelled, so the stopped run knows to release its
+         * grant (see the class KDoc). One set per op: cancelling a backup must not release an import's.
+         */
+        private val cancelledImports: MutableSet<String> = ConcurrentHashMap.newKeySet()
+        private val cancelledBackups: MutableSet<String> = ConcurrentHashMap.newKeySet()
+
         fun importWorkName(model: DownloadableModel): String = "cv_model_import_${model.id}"
 
         fun backupWorkName(model: DownloadableModel): String = "cv_model_backup_${model.id}"
 
         /** Imports [model] from [source]; replaces any import of the same model already queued. */
         fun enqueueImport(context: Context, model: DownloadableModel, source: Uri) {
+            // A fresh pick: a mark left by a cancel that reached no running job must not release this one's grant.
+            cancelledImports.remove(model.id)
             val request = OneTimeWorkRequestBuilder<ModelTransferWorker>()
                 .setInputData(inputFor(model, OP_IMPORT, source))
                 .setConstraints(Constraints.Builder().setRequiresStorageNotLow(true).build())
@@ -277,6 +298,7 @@ class ModelTransferWorker(
 
         /** Backs [model] up to [target]; replaces any backup of the same model already queued. */
         fun enqueueBackup(context: Context, model: DownloadableModel, target: Uri) {
+            cancelledBackups.remove(model.id)
             val request = OneTimeWorkRequestBuilder<ModelTransferWorker>()
                 .setInputData(inputFor(model, OP_BACKUP, target))
                 .build()
@@ -285,11 +307,15 @@ class ModelTransferWorker(
             AppLogger.i(TAG, "Queued backup of ${model.id}")
         }
 
+        /** The user's cancel: marks the model first, so the stopped run releases its read grant. */
         fun cancelImport(context: Context, model: DownloadableModel) {
+            cancelledImports.add(model.id)
             WorkManager.getInstance(context).cancelUniqueWork(importWorkName(model))
         }
 
+        /** The user's cancel: marks the model first, so the stopped run releases its write grant. */
         fun cancelBackup(context: Context, model: DownloadableModel) {
+            cancelledBackups.add(model.id)
             WorkManager.getInstance(context).cancelUniqueWork(backupWorkName(model))
         }
 

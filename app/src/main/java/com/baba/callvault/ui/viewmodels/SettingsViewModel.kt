@@ -9,6 +9,8 @@
 package com.baba.callvault.ui.viewmodels
 
 import android.app.Application
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.viewModelScope
@@ -23,7 +25,9 @@ import com.baba.callvault.data.SyncScheduleMode
 import com.baba.callvault.data.TranscriptionMode
 import com.baba.callvault.transcription.TranscriptionScheduler
 import com.baba.callvault.summary.SummaryModel
+import com.baba.callvault.transcription.model.DownloadableModel
 import com.baba.callvault.transcription.model.ModelDownloadWorker
+import com.baba.callvault.transcription.model.ModelTransferWorker
 import com.baba.callvault.transcription.model.ModelRepository
 import com.baba.callvault.transcription.model.TranscriptionModel
 import com.baba.callvault.system.interop.TranscriptSidecarBackfillWorker
@@ -116,6 +120,18 @@ interface SettingsActions {
     /** Stops a download in progress. The partial file is kept, so resuming does not re-fetch it. */
     fun cancelSummaryModelDownload(model: SummaryModel)
     fun deleteSummaryModel(model: SummaryModel)
+
+    /** Imports either model from a file the user picked (GitHub #58). */
+    fun importModel(model: DownloadableModel, source: Uri)
+
+    /** Stops an import; the worker releases the file's grant once the job has let go of it. */
+    fun cancelModelImport(model: DownloadableModel)
+
+    /** Saves an installed model to a file the user created, to import after a reinstall. */
+    fun backUpModel(model: DownloadableModel, target: Uri)
+
+    /** Stops a backup; the worker deletes the partial file and releases the grant. */
+    fun cancelModelBackup(model: DownloadableModel)
     fun setSyncDayOfWeek(day: Int)
     fun setUpdateCheckEnabled(enabled: Boolean)
 }
@@ -560,6 +576,39 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     override fun deleteSummaryModel(model: SummaryModel) {
         ModelDownloadWorker.cancel(appContext, model)
         ModelRepository.delete(appContext, model)
+        refresh()
+    }
+
+    /**
+     * Queues the import of [source]. The grant is made persistable first, so a job that WorkManager
+     * stops and re-runs later — after the picker's temporary grant has gone — can still read the file.
+     * Some providers offer no persistable grant; the job then runs on the temporary one, and reports
+     * the file unreadable if that lapses rather than failing here.
+     */
+    override fun importModel(model: DownloadableModel, source: Uri) {
+        runCatching {
+            appContext.contentResolver.takePersistableUriPermission(source, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }.onFailure { AppLogger.w("CV:Settings", "No persistable read grant for the import of ${model.id}: ${it.javaClass.simpleName}") }
+        ModelTransferWorker.enqueueImport(appContext, model, source)
+        refresh()
+    }
+
+    override fun cancelModelImport(model: DownloadableModel) {
+        ModelTransferWorker.cancelImport(appContext, model)
+        refresh()
+    }
+
+    /** Queues the backup to [target], holding a persistable write grant for the reason [importModel] gives. */
+    override fun backUpModel(model: DownloadableModel, target: Uri) {
+        runCatching {
+            appContext.contentResolver.takePersistableUriPermission(target, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        }.onFailure { AppLogger.w("CV:Settings", "No persistable write grant for the backup of ${model.id}: ${it.javaClass.simpleName}") }
+        ModelTransferWorker.enqueueBackup(appContext, model, target)
+        refresh()
+    }
+
+    override fun cancelModelBackup(model: DownloadableModel) {
+        ModelTransferWorker.cancelBackup(appContext, model)
         refresh()
     }
 

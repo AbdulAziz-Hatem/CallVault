@@ -8,6 +8,7 @@
 
 package com.baba.callvault.ui.screens
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,14 +23,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.baba.callvault.R
 import com.baba.callvault.transcription.model.ModelDownloadWorker
-import com.baba.callvault.transcription.model.ModelTransferWorker
 import com.baba.callvault.transcription.model.TranscriptionModel
 import com.baba.callvault.ui.common.ModelDownloadState
+import com.baba.callvault.ui.common.TranscriptionLabels
 import com.baba.callvault.ui.common.rememberModelDownloadState
 
 /**
@@ -47,8 +47,12 @@ import com.baba.callvault.ui.common.rememberModelDownloadState
  * flipped from "Download model" to "Downloaded and ready" only if something else happened to bump
  * the trigger. Progress that is only correct on entry is not progress.
  *
+ * The import row (GitHub #58) sits under the download row wherever a download could be started,
+ * because a copy already on hand is the same answer to "get the model" at none of the network cost.
+ *
  * @param model         The tier currently selected, which is the one all of this is about.
  * @param updateTrigger Re-reads the filesystem when it changes; deleting a model touches no work.
+ * @param onBackup      Null hides the backup row: the wizard runs on a fresh install, with nothing to save.
  */
 @Composable
 internal fun TranscriptionModelRows(
@@ -56,48 +60,57 @@ internal fun TranscriptionModelRows(
     updateTrigger: Int,
     onDownload: (TranscriptionModel) -> Unit,
     onCancel: (TranscriptionModel) -> Unit,
-    onDelete: (TranscriptionModel) -> Unit
+    onDelete: (TranscriptionModel) -> Unit,
+    onImport: (TranscriptionModel, Uri) -> Unit,
+    onCancelImport: (TranscriptionModel) -> Unit,
+    onBackup: ((TranscriptionModel, Uri) -> Unit)? = null,
+    onCancelBackup: (TranscriptionModel) -> Unit = {}
 ) {
-    val context = LocalContext.current
     val state by rememberModelDownloadState(model, refreshKey = updateTrigger)
+    val importRow: @Composable (String?) -> Unit = { failure ->
+        ModelImportRow(model = model, onPicked = { onImport(model, it) }, failureText = failure)
+    }
 
     Column(Modifier.fillMaxWidth()) {
         when (val current = state) {
             // The model is the gate: nothing can be transcribed until one is on the device, so its
             // state is stated plainly rather than left for the user to infer from a button that
             // does nothing.
-            ModelDownloadState.Installed -> NavigationRow(
-                icon = Icons.Filled.Delete,
-                label = stringResource(R.string.transcription_model_delete),
-                value = stringResource(R.string.transcription_model_installed),
-                onClick = { onDelete(model) }
-            )
+            ModelDownloadState.Installed -> {
+                NavigationRow(
+                    icon = Icons.Filled.Delete,
+                    label = stringResource(R.string.transcription_model_delete),
+                    value = stringResource(R.string.transcription_model_installed),
+                    onClick = { onDelete(model) }
+                )
+                if (onBackup != null) {
+                    ModelBackupRow(model, onPicked = { onBackup(model, it) }, onCancel = { onCancelBackup(model) })
+                }
+            }
 
-            ModelDownloadState.Absent -> NavigationRow(
-                icon = Icons.Filled.Download,
-                label = stringResource(R.string.transcription_model_download),
-                value = stringResource(
-                    R.string.transcription_model_download_subtitle,
-                    model.sizeBytes / BYTES_PER_MB
-                ),
-                onClick = { onDownload(model) }
-            )
+            ModelDownloadState.Absent -> {
+                TranscriptionDownloadRow(model, onDownload)
+                importRow(null)
+            }
 
             // Stopped part-way. Saying so is the point: those bytes are banked and the server
             // resumes from exactly that offset, so a row reading "Download, 574 MB" would hide
             // what the user has already paid for. Same reasoning as the summariser's rows, at a
             // sixth of the size — which is also why discarding needs no separate row here: the
             // delete row below reclaims it, and 574 MB is not a hostage worth its own control.
-            is ModelDownloadState.Paused -> NavigationRow(
-                icon = Icons.Filled.Download,
-                label = stringResource(R.string.transcription_model_resume),
-                value = stringResource(
-                    R.string.transcription_model_resume_subtitle,
-                    current.downloadedBytes / BYTES_PER_MB,
-                    model.sizeBytes / BYTES_PER_MB
-                ),
-                onClick = { onDownload(model) }
-            )
+            is ModelDownloadState.Paused -> {
+                NavigationRow(
+                    icon = Icons.Filled.Download,
+                    label = stringResource(R.string.transcription_model_resume),
+                    value = stringResource(
+                        R.string.transcription_model_resume_subtitle,
+                        current.downloadedBytes / BYTES_PER_MB,
+                        model.sizeBytes / BYTES_PER_MB
+                    ),
+                    onClick = { onDownload(model) }
+                )
+                importRow(null)
+            }
 
             // Queued and 0% look identical on a bar and mean different things, so waiting says so
             // in words and shows an indeterminate bar rather than an empty one.
@@ -113,43 +126,50 @@ internal fun TranscriptionModelRows(
                 onCancel = { onCancel(model) }
             )
 
-            is ModelDownloadState.Importing -> ModelDownloadingRow(
-                label = current.percent?.let { stringResource(R.string.model_importing, it) }
-                    ?: stringResource(R.string.model_import_waiting),
+            // One thing at a time: an import holds the model's write lock, so a download started
+            // beside it would only wait. The bar and its cancel are the whole of what makes sense.
+            is ModelDownloadState.Importing -> ModelImportingRow(
                 percent = current.percent,
-                onCancel = { ModelTransferWorker.cancelImport(context, model) }
+                onCancel = { onCancelImport(model) }
             )
 
-            // Placeholder: shown as the plain failed row until Task 5 builds the real import rows.
-            is ModelDownloadState.ImportFailed -> NavigationRow(
-                icon = Icons.Filled.Download,
-                label = stringResource(R.string.transcription_model_download),
-                value = stringResource(
-                    when (current.reason) {
-                        ModelDownloadWorker.ERROR_NO_SPACE -> R.string.transcription_model_failed_space
-                        ModelDownloadWorker.ERROR_VERIFICATION_FAILED -> R.string.transcription_model_failed_verify
-                        else -> R.string.transcription_model_failed
-                    }
-                ),
-                onClick = { onDownload(model) }
-            )
+            // The download row is offered plainly — nothing about the download failed — and the
+            // import row says what went wrong with the file, where tapping it picks another.
+            is ModelDownloadState.ImportFailed -> {
+                TranscriptionDownloadRow(model, onDownload)
+                importRow(importFailureText(current.reason, stringResource(TranscriptionLabels.titleOf(model))))
+            }
 
             // A failure says which one it was, because the two the user can act on need different
             // actions: free up space, or simply try again.
-            is ModelDownloadState.Failed -> NavigationRow(
-                icon = Icons.Filled.Download,
-                label = stringResource(R.string.transcription_model_download),
-                value = stringResource(
-                    when (current.reason) {
-                        ModelDownloadWorker.ERROR_NO_SPACE -> R.string.transcription_model_failed_space
-                        ModelDownloadWorker.ERROR_VERIFICATION_FAILED -> R.string.transcription_model_failed_verify
-                        else -> R.string.transcription_model_failed
-                    }
-                ),
-                onClick = { onDownload(model) }
-            )
+            is ModelDownloadState.Failed -> {
+                NavigationRow(
+                    icon = Icons.Filled.Download,
+                    label = stringResource(R.string.transcription_model_download),
+                    value = stringResource(
+                        when (current.reason) {
+                            ModelDownloadWorker.ERROR_NO_SPACE -> R.string.transcription_model_failed_space
+                            ModelDownloadWorker.ERROR_VERIFICATION_FAILED -> R.string.transcription_model_failed_verify
+                            else -> R.string.transcription_model_failed
+                        }
+                    ),
+                    onClick = { onDownload(model) }
+                )
+                importRow(null)
+            }
         }
     }
+}
+
+/** "Download the model", with its size: the row for a model with nothing on disk. */
+@Composable
+private fun TranscriptionDownloadRow(model: TranscriptionModel, onDownload: (TranscriptionModel) -> Unit) {
+    NavigationRow(
+        icon = Icons.Filled.Download,
+        label = stringResource(R.string.transcription_model_download),
+        value = stringResource(R.string.transcription_model_download_subtitle, model.sizeBytes / BYTES_PER_MB),
+        onClick = { onDownload(model) }
+    )
 }
 
 /**
@@ -160,7 +180,12 @@ internal fun TranscriptionModelRows(
  * below.
  */
 @Composable
-internal fun ModelDownloadingRow(label: String, percent: Int?, onCancel: () -> Unit) {
+internal fun ModelDownloadingRow(
+    label: String,
+    percent: Int?,
+    onCancel: () -> Unit,
+    cancelLabel: String = stringResource(R.string.summary_model_cancel)
+) {
     // Both colours are stated. Left to the theme, M3 resolves the track to CoralDeep and the bar
     // renders teal-on-pink, which reads as an error rather than as progress — the same trap that
     // has already produced a maroon tonal button, a maroon selected card and a red progress ring
@@ -175,10 +200,11 @@ internal fun ModelDownloadingRow(label: String, percent: Int?, onCancel: () -> U
         NavigationRow(
             icon = Icons.Filled.Close,
             label = label,
-            // The summariser's string, said of both downloads. "Cancel the download" is not about
-            // which model it is, and minting a second identical string would only mean translating
-            // the same sentence twice into ten locales.
-            value = stringResource(R.string.summary_model_cancel),
+            // By default the summariser's string, said of both downloads. "Cancel the download" is
+            // not about which model it is, and minting a second identical string would only mean
+            // translating the same sentence twice into ten locales. An import or a backup is not a
+            // download, so those pass the plain "Cancel" instead.
+            value = cancelLabel,
             onClick = onCancel
         )
         // Determinate only once there is a real figure; an empty bar sitting at zero reads as stuck.
