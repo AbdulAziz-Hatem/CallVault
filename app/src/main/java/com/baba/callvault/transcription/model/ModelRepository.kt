@@ -39,6 +39,9 @@ object ModelRepository {
     /** Suffix for an in-progress download, so a partial file can never be mistaken for a real one. */
     const val PART_SUFFIX = ".part"
 
+    /** Suffix for a model being imported from storage, verified before it takes its real name. */
+    const val IMPORT_SUFFIX = ".import"
+
     private const val DIGEST_ALGORITHM = "SHA-256"
     private const val DIGEST_BUFFER_BYTES = 1 shl 16
 
@@ -166,6 +169,44 @@ object ModelRepository {
     fun partFileFor(dir: File, model: DownloadableModel): File =
         File(dir, model.fileName + PART_SUFFIX)
 
+    /** The temp file a model picked from storage is copied into before it is verified. */
+    fun importFileFor(dir: File, model: DownloadableModel): File =
+        File(dir, model.fileName + IMPORT_SUFFIX)
+
+    /**
+     * Promotes a copied-in model to the real file, but only if it hashes correctly — the same gate
+     * [finalizeDownload] applies. A mismatch deletes the temp file. On success any paused `.part`
+     * of the same model is removed too, since it is now obsolete; on failure it is left alone.
+     *
+     * @return true when the model is now installed.
+     */
+    fun finalizeImport(
+        dir: File,
+        model: DownloadableModel,
+        expectedSha256: String = model.sha256
+    ): Boolean {
+        val temp = importFileFor(dir, model)
+        if (!temp.isFile) return false
+
+        if (!verify(temp, expectedSha256)) {
+            AppLogger.w(TAG, "Discarding ${model.id}: imported file failed its digest check")
+            temp.delete()
+            return false
+        }
+
+        val target = File(dir, model.fileName)
+        if (target.exists()) target.delete()
+
+        val renamed = temp.renameTo(target)
+        if (renamed) {
+            AppLogger.i(TAG, "Installed imported model ${model.id}")
+            partFileFor(dir, model).delete()
+        } else {
+            AppLogger.w(TAG, "Verified imported ${model.id} but could not move it into place")
+        }
+        return renamed
+    }
+
     /**
      * How much of [model] is already on disk from an interrupted download, or 0.
      *
@@ -228,7 +269,7 @@ object ModelRepository {
      * for it, an empty whitelist deletes nothing at all rather than everything, and directories are
      * never touched.
      *
-     * A `.part` file is matched by its base name, so a download **in progress** — which is always for a
+     * A `.part` or `.import` file is matched by its base name, so a download or import **in progress** — which is always for a
      * model that is by definition known — is kept.
      *
      * @param dir  the models directory; a missing one is not an error.
@@ -241,7 +282,7 @@ object ModelRepository {
         var freed = 0L
         dir.listFiles().orEmpty()
             .filter { it.isFile }
-            .filter { it.name.removeSuffix(PART_SUFFIX) !in keep }
+            .filter { it.name.removeSuffix(PART_SUFFIX).removeSuffix(IMPORT_SUFFIX) !in keep }
             .forEach { file ->
                 val size = file.length()
                 if (file.delete()) {
@@ -257,7 +298,7 @@ object ModelRepository {
     /** Deletes [model] and any partial download of it. Safe to call when nothing is installed. */
     fun delete(context: Context, model: DownloadableModel) {
         val dir = modelsDir(context)
-        listOf(File(dir, model.fileName), File(dir, model.fileName + PART_SUFFIX))
+        listOf(File(dir, model.fileName), partFileFor(dir, model), importFileFor(dir, model))
             .filter { it.exists() }
             .forEach { file ->
                 if (file.delete()) AppLogger.i(TAG, "Deleted ${file.name}")
