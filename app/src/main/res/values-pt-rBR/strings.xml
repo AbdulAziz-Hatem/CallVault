@@ -501,6 +501,8 @@
     <string name="transcription_model_resume_subtitle">%1$d MB de %2$d MB já baixados</string>
     <string name="transcription_model_small">Rápido</string>
     <string name="transcription_model_waiting">Aguardando o Wi-Fi</string>
+    <string name="model_importing">Importando… %1$d%%</string>
+    <string name="model_import_waiting">Preparando a importação…</string>
     <string name="transcription_note_after_each_call">Cada chamada é transcrita assim que termina. Chamadas antigas não são tocadas — transcreva-as pelo botão na gravação.</string>
     <string name="transcription_note_automatic">Chamadas sem transcrição são transcritas no horário escolhido. Uma chamada de 30 minutos leva cerca de 30 minutos.</string>
     <string name="transcription_note_manual">As transcrições são feitas apenas quando você pede, pelo botão em uma gravação.</string>

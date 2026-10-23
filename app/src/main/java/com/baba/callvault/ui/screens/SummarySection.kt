@@ -31,6 +31,7 @@ import com.baba.callvault.ui.common.ConfirmDialog
 import com.baba.callvault.ui.common.SummaryRequirementsDialog
 import com.baba.callvault.summary.SummaryModel
 import com.baba.callvault.transcription.model.ModelDownloadWorker
+import com.baba.callvault.transcription.model.ModelTransferWorker
 import com.baba.callvault.ui.common.ModelDownloadState
 import com.baba.callvault.ui.common.rememberModelDownloadState
 
@@ -174,6 +175,29 @@ internal fun SummaryRows(
                 percent = current.percent,
                 onCancel = { onCancel(model) }
             )
+
+            is ModelDownloadState.Importing -> ModelDownloadingRow(
+                label = current.percent?.let { stringResource(R.string.model_importing, it) }
+                    ?: stringResource(R.string.model_import_waiting),
+                percent = current.percent,
+                onCancel = { ModelTransferWorker.cancelImport(context, model) }
+            )
+
+            // Placeholder: shown as the plain failed row until Task 5 builds the real import rows.
+            is ModelDownloadState.ImportFailed -> {
+                NavigationRow(
+                    icon = Icons.Filled.Download,
+                    label = stringResource(R.string.summary_model_download),
+                    value = stringResource(
+                        when (current.reason) {
+                            ModelDownloadWorker.ERROR_NO_SPACE -> R.string.summary_model_failed_space
+                            ModelDownloadWorker.ERROR_VERIFICATION_FAILED -> R.string.summary_model_failed_verify
+                            else -> R.string.summary_model_failed
+                        }
+                    ),
+                    onClick = startDownload
+                )
+            }
 
             // A failure says which one it was, because the two the user can act on need different
             // actions: free up space, or simply try again.

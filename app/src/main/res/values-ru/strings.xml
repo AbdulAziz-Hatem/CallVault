@@ -498,6 +498,8 @@
     <string name="transcription_model_resume_subtitle">Скачано %1$d МБ из %2$d МБ</string>
     <string name="transcription_model_small">Быстрая</string>
     <string name="transcription_model_waiting">Ожидание Wi-Fi</string>
+    <string name="model_importing">Импорт… %1$d%%</string>
+    <string name="model_import_waiting">Подготовка к импорту…</string>
     <string name="transcription_note_after_each_call">Каждый звонок расшифровывается сразу после завершения. Старые звонки не затрагиваются — их можно расшифровать кнопкой на записи.</string>
     <string name="transcription_note_automatic">Звонки без расшифровки расшифровываются в выбранное время. Разговор в 30 минут занимает около 30 минут.</string>
     <string name="transcription_note_manual">Расшифровки создаются только по запросу, кнопкой на записи.</string>

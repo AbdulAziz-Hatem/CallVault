@@ -498,6 +498,8 @@
     <string name="transcription_model_resume_subtitle">Pobrano %1$d MB z %2$d MB</string>
     <string name="transcription_model_small">Szybki</string>
     <string name="transcription_model_waiting">Czekanie na Wi-Fi</string>
+    <string name="model_importing">Importowanie… %1$d%%</string>
+    <string name="model_import_waiting">Przygotowywanie importu…</string>
     <string name="transcription_note_after_each_call">Każda rozmowa jest transkrybowana zaraz po zakończeniu. Starsze rozmowy pozostają nietknięte — te przepiszesz przyciskiem na nagraniu.</string>
     <string name="transcription_note_automatic">Połączenia bez transkrypcji są transkrybowane o wybranej porze. 30-minutowe połączenie zajmuje około 30 minut.</string>
     <string name="transcription_note_manual">Transkrypcje powstają tylko na żądanie, przyciskiem przy nagraniu.</string>

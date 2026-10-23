@@ -22,10 +22,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.baba.callvault.R
 import com.baba.callvault.transcription.model.ModelDownloadWorker
+import com.baba.callvault.transcription.model.ModelTransferWorker
 import com.baba.callvault.transcription.model.TranscriptionModel
 import com.baba.callvault.ui.common.ModelDownloadState
 import com.baba.callvault.ui.common.rememberModelDownloadState
@@ -56,6 +58,7 @@ internal fun TranscriptionModelRows(
     onCancel: (TranscriptionModel) -> Unit,
     onDelete: (TranscriptionModel) -> Unit
 ) {
+    val context = LocalContext.current
     val state by rememberModelDownloadState(model, refreshKey = updateTrigger)
 
     Column(Modifier.fillMaxWidth()) {
@@ -108,6 +111,27 @@ internal fun TranscriptionModelRows(
                 label = stringResource(R.string.transcription_model_downloading, current.percent),
                 percent = current.percent,
                 onCancel = { onCancel(model) }
+            )
+
+            is ModelDownloadState.Importing -> ModelDownloadingRow(
+                label = current.percent?.let { stringResource(R.string.model_importing, it) }
+                    ?: stringResource(R.string.model_import_waiting),
+                percent = current.percent,
+                onCancel = { ModelTransferWorker.cancelImport(context, model) }
+            )
+
+            // Placeholder: shown as the plain failed row until Task 5 builds the real import rows.
+            is ModelDownloadState.ImportFailed -> NavigationRow(
+                icon = Icons.Filled.Download,
+                label = stringResource(R.string.transcription_model_download),
+                value = stringResource(
+                    when (current.reason) {
+                        ModelDownloadWorker.ERROR_NO_SPACE -> R.string.transcription_model_failed_space
+                        ModelDownloadWorker.ERROR_VERIFICATION_FAILED -> R.string.transcription_model_failed_verify
+                        else -> R.string.transcription_model_failed
+                    }
+                ),
+                onClick = { onDownload(model) }
             )
 
             // A failure says which one it was, because the two the user can act on need different

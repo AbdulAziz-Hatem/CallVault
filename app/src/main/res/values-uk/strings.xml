@@ -361,6 +361,8 @@
     <string name="transcription_model_installed">Завантажено й готово</string>
     <string name="transcription_model_downloading">Завантаження… %1$d%%</string>
     <string name="transcription_model_waiting">Очікування Wi-Fi</string>
+    <string name="model_importing">Імпорт… %1$d%%</string>
+    <string name="model_import_waiting">Підготовка до імпорту…</string>
     <string name="transcription_model_resume">Продовжити завантаження</string>
     <string name="transcription_model_resume_subtitle">Завантажено %1$d із %2$d МБ</string>
     <string name="summary_model_download">Завантажити модель підсумків</string>

@@ -498,6 +498,8 @@
     <string name="transcription_model_resume_subtitle">%1$d MB letöltve a %2$d MB-ból</string>
     <string name="transcription_model_small">Gyors</string>
     <string name="transcription_model_waiting">Várakozás Wi-Fire</string>
+    <string name="model_importing">Importálás… %1$d%%</string>
+    <string name="model_import_waiting">Felkészülés az importálásra…</string>
     <string name="transcription_note_after_each_call">Minden hívás átírásra kerül, amint véget ér. A régebbi hívások érintetlenek maradnak — azokat a felvételen lévő gombbal írathatja át.</string>
     <string name="transcription_note_automatic">Az átirat nélküli hívások a megadott időpontban kerülnek átírásra. Egy 30 perces hívás körülbelül 30 percet vesz igénybe.</string>
     <string name="transcription_note_manual">Az átiratok csak kérésre készülnek, a felvételen lévő gombbal.</string>

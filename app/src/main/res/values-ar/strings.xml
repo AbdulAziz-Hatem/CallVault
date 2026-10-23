@@ -460,6 +460,8 @@
     <string name="transcription_model_installed">تم التنزيل وجاهز</string>
     <string name="transcription_model_downloading">جارٍ التنزيل… %1$d%%</string>
     <string name="transcription_model_waiting">في انتظار Wi-Fi</string>
+    <string name="model_importing">جارٍ الاستيراد… %1$d%%</string>
+    <string name="model_import_waiting">جارٍ التحضير للاستيراد…</string>
     <string name="transcription_model_resume">استئناف التنزيل</string>
     <string name="transcription_model_resume_subtitle">تم تنزيل %1$d ميجابايت من %2$d ميجابايت بالفعل</string>
     <string name="transcription_model_failed_space">مساحة خالية غير كافية. قم بتحرير بعض المساحة وحاول مرة أخرى.</string>

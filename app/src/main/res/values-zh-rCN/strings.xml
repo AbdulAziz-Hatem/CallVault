@@ -498,6 +498,8 @@
     <string name="transcription_model_resume_subtitle">已下载 %1$d MB，共 %2$d MB</string>
     <string name="transcription_model_small">快速</string>
     <string name="transcription_model_waiting">等待 Wi-Fi</string>
+    <string name="model_importing">正在导入… %1$d%%</string>
+    <string name="model_import_waiting">正在准备导入…</string>
     <string name="transcription_note_after_each_call">每通电话结束后立即转写。较早的通话不会被处理——请用录音上的按钮单独转写。</string>
     <string name="transcription_note_automatic">尚无转写的通话会在所选时间进行转写。30 分钟的通话大约需要 30 分钟。</string>
     <string name="transcription_note_manual">仅在你从录音上的按钮请求时才生成转写。</string>

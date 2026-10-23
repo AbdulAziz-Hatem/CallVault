@@ -628,6 +628,8 @@
     -->
     <string name="transcription_model_downloading">Downloading… %1$d%%</string>
     <string name="transcription_model_waiting">Waiting for Wi-Fi</string>
+    <string name="model_importing">Importing… %1$d%%</string>
+    <string name="model_import_waiting">Getting ready to import…</string>
     <string name="transcription_model_resume">Resume the download</string>
     <string name="transcription_model_resume_subtitle">%1$d MB of %2$d MB already downloaded</string>
     <string name="transcription_model_failed_space">Not enough free space. Free some up and try again.</string>

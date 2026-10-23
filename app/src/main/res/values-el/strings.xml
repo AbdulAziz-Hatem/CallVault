@@ -569,6 +569,8 @@
     -->
     <string name="transcription_model_downloading">Λήψη… %1$d%%</string>
     <string name="transcription_model_waiting">Αναμονή για Wi-Fi</string>
+    <string name="model_importing">Εισαγωγή… %1$d%%</string>
+    <string name="model_import_waiting">Προετοιμασία εισαγωγής…</string>
     <string name="transcription_model_resume">Συνέχιση της λήψης</string>
     <string name="transcription_model_resume_subtitle">%1$d MB από %2$d MB έχουν ήδη ληφθεί</string>
     <string name="transcription_model_failed_space">Δεν υπάρχει αρκετός ελεύθερος χώρος. Ελευθερώστε λίγο και δοκιμάστε ξανά.</string>

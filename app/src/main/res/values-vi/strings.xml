@@ -498,6 +498,8 @@
     <string name="transcription_model_resume_subtitle">Đã tải %1$d MB trong %2$d MB</string>
     <string name="transcription_model_small">Nhanh</string>
     <string name="transcription_model_waiting">Đang chờ Wi-Fi</string>
+    <string name="model_importing">Đang nhập… %1$d%%</string>
+    <string name="model_import_waiting">Đang chuẩn bị nhập…</string>
     <string name="transcription_note_after_each_call">Mỗi cuộc gọi được chép lời ngay khi kết thúc. Các cuộc gọi cũ không bị đụng tới — hãy chép lời chúng bằng nút trên bản ghi.</string>
     <string name="transcription_note_automatic">Các cuộc gọi chưa có bản ghi lời sẽ được xử lý vào giờ đã chọn. Một cuộc gọi 30 phút mất khoảng 30 phút.</string>
     <string name="transcription_note_manual">Bản ghi lời chỉ được tạo khi bạn yêu cầu, từ nút trên một bản ghi âm.</string>

@@ -526,6 +526,8 @@
     <string name="transcription_model_installed">دانلود شد و آماده است</string>
     <string name="transcription_model_downloading">در حال دانلود… %1$d%%</string>
     <string name="transcription_model_waiting">در انتظار Wi-Fi</string>
+    <string name="model_importing">در حال درون‌ریزی… %1$d%%</string>
+    <string name="model_import_waiting">در حال آماده‌سازی برای درون‌ریزی…</string>
     <string name="transcription_model_resume">ادامه دانلود</string>
     <string name="transcription_model_resume_subtitle">%1$d مگابایت از %2$d مگابایت قبلاً دانلود شده</string>
     <string name="transcription_model_failed_space">فضای آزاد کافی نیست. کمی فضا آزاد کنید و دوباره تلاش کنید.</string>

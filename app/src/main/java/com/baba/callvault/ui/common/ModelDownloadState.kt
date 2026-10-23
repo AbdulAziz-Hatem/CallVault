@@ -18,7 +18,9 @@ import androidx.work.WorkManager
 import com.baba.callvault.transcription.model.DownloadableModel
 import com.baba.callvault.transcription.model.ModelDownloadWorker
 import com.baba.callvault.transcription.model.ModelRepository
+import com.baba.callvault.transcription.model.ModelTransferWorker
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 
 /**
@@ -62,7 +64,25 @@ sealed interface ModelDownloadState {
     /** Stopped and will not resume on its own. [reason] is one of the worker's `ERROR_` values. */
     data class Failed(val reason: String?) : ModelDownloadState
 
+    /**
+     * A file the user picked is being checked and copied in. [percent] is null while it is queued
+     * or has not yet reported a figure, so the row can show an indeterminate bar.
+     */
+    data class Importing(val percent: Int?) : ModelDownloadState
+
+    /**
+     * The import stopped. Separate from [Failed] so the row says "import" rather than "download":
+     * the remedies differ (pick another file vs. try the network again). [reason] is one of
+     * `ModelTransferWorker`'s `ERROR_` values; [otherModelId] names the catalogue model the picked
+     * file turned out to be, when [reason] is `ERROR_OTHER_MODEL`.
+     */
+    data class ImportFailed(val reason: String?, val otherModelId: String?) : ModelDownloadState
+
     companion object {
+
+        private fun isActive(state: WorkInfo.State?): Boolean =
+            state == WorkInfo.State.RUNNING || state == WorkInfo.State.ENQUEUED ||
+                state == WorkInfo.State.BLOCKED
 
         /**
          * The state to show, given what the catalogue and WorkManager each say.
@@ -79,7 +99,11 @@ sealed interface ModelDownloadState {
             workState: WorkInfo.State?,
             percent: Int?,
             error: String?,
-            partialBytes: Long = 0L
+            partialBytes: Long = 0L,
+            importState: WorkInfo.State? = null,
+            importPercent: Int? = null,
+            importError: String? = null,
+            importOtherModelId: String? = null
         ): ModelDownloadState =
             when {
                 isInstalled -> Installed
@@ -88,6 +112,10 @@ sealed interface ModelDownloadState {
                 // ENQUEUED covers both the first moment after a tap and a retry waiting on its
                 // backoff, which is also the shape an interrupted download comes back in.
                 workState == WorkInfo.State.ENQUEUED || workState == WorkInfo.State.BLOCKED -> Waiting
+                // A live import outranks any failure, and a failed import outranks a failed
+                // download: it is the newer thing the user did, so the row must report it.
+                isActive(importState) -> Importing(importPercent)
+                importState == WorkInfo.State.FAILED -> ImportFailed(importError, importOtherModelId)
                 workState == WorkInfo.State.FAILED -> Failed(error)
                 // Nothing running. SUCCEEDED without the file means it was verified then removed;
                 // CANCELLED means the user stopped it; null means no attempt this process. What
@@ -120,6 +148,7 @@ fun rememberModelDownloadState(
     val appContext = remember(context) { context.applicationContext }
     val workManager = remember(context) { WorkManager.getInstance(context) }
     val workName = remember(model.id) { ModelDownloadWorker.workNameFor(model) }
+    val importName = remember(model.id) { ModelTransferWorker.importWorkName(model) }
 
     return produceState<ModelDownloadState>(
         initialValue = ModelDownloadState.from(
@@ -129,11 +158,14 @@ fun rememberModelDownloadState(
             error = null,
             partialBytes = ModelRepository.partialBytes(appContext, model)
         ),
-        workManager, workName, model.id, refreshKey
+        workManager, workName, importName, model.id, refreshKey
     ) {
-        workManager.getWorkInfosForUniqueWorkFlow(workName).collect { infos ->
-            // Unique work, so there is at most one that matters; a retry replaces rather than joins.
-            val info = infos.lastOrNull()
+        combine(
+            workManager.getWorkInfosForUniqueWorkFlow(workName),
+            workManager.getWorkInfosForUniqueWorkFlow(importName)
+        ) { downloads, imports -> downloads.lastOrNull() to imports.lastOrNull() }
+            .collect { (info, importInfo) ->
+            // Unique work, so there is at most one of each that matters; a retry replaces.
             val onDisk = withContext(Dispatchers.IO) {
                 ModelRepository.isInstalled(appContext, model) to
                     ModelRepository.partialBytes(appContext, model)
@@ -143,7 +175,12 @@ fun rememberModelDownloadState(
                 workState = info?.state,
                 percent = info?.let { ModelDownloadWorker.percentOf(it.progress) },
                 error = info?.outputData?.getString(ModelDownloadWorker.KEY_ERROR),
-                partialBytes = onDisk.second
+                partialBytes = onDisk.second,
+                importState = importInfo?.state,
+                importPercent = importInfo?.let { ModelTransferWorker.percentOf(it.progress) },
+                importError = importInfo?.outputData?.getString(ModelTransferWorker.KEY_ERROR),
+                importOtherModelId =
+                    importInfo?.outputData?.getString(ModelTransferWorker.KEY_OTHER_MODEL_ID)
             )
         }
     }

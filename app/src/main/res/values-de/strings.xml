@@ -498,6 +498,8 @@
     <string name="transcription_model_resume_subtitle">%1$d MB von %2$d MB bereits heruntergeladen</string>
     <string name="transcription_model_small">Schnell</string>
     <string name="transcription_model_waiting">Warten auf WLAN</string>
+    <string name="model_importing">Importiere… %1$d%%</string>
+    <string name="model_import_waiting">Import wird vorbereitet…</string>
     <string name="transcription_note_after_each_call">Jeder Anruf wird transkribiert, sobald er endet. Ältere Anrufe bleiben unberührt — diese können Sie über die Schaltfläche auf einer Aufnahme transkribieren.</string>
     <string name="transcription_note_automatic">Anrufe ohne Transkript werden zur gewählten Zeit transkribiert. Ein 30-minütiger Anruf dauert etwa 30 Minuten.</string>
     <string name="transcription_note_manual">Transkripte werden nur auf Anfrage erstellt, über die Schaltfläche an einer Aufnahme.</string>
