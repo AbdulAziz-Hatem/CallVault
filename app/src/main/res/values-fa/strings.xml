@@ -539,6 +539,7 @@
     <string name="model_backup_subtitle">یک نسخه ذخیره کنید که پس از نصب دوباره بماند</string>
     <string name="model_backup_info">فایل مدل را در پوشه‌ای که انتخاب می‌کنید ذخیره می‌کند. پس از نصب دوباره یا روی گوشی جدید، به جای دانلود دوباره، با همان فایل درون‌ریزی کنید.</string>
     <string name="model_backing_up">در حال پشتیبان‌گیری… %1$d%%</string>
+    <string name="model_backup_waiting">در حال آماده‌سازی برای پشتیبان‌گیری…</string>
     <string name="model_backup_done">ذخیره شد</string>
     <string name="model_backup_failed">پشتیبان‌گیری کامل نشد. دوباره امتحان کنید.</string>
     <string name="transcription_model_resume">ادامه دانلود</string>

@@ -582,6 +582,7 @@
     <string name="model_backup_subtitle">Αποθηκεύστε ένα αντίγραφο που μένει μετά από επανεγκατάσταση</string>
     <string name="model_backup_info">Αποθηκεύει το αρχείο μοντέλου σε φάκελο της επιλογής σας. Μετά από επανεγκατάσταση ή σε νέο τηλέφωνο, χρησιμοποιήστε την Εισαγωγή με αυτό το αρχείο αντί να το κατεβάσετε ξανά.</string>
     <string name="model_backing_up">Δημιουργία αντιγράφου… %1$d%%</string>
+    <string name="model_backup_waiting">Προετοιμασία αντιγράφου ασφαλείας…</string>
     <string name="model_backup_done">Αποθηκεύτηκε</string>
     <string name="model_backup_failed">Το αντίγραφο ασφαλείας δεν ολοκληρώθηκε. Δοκιμάστε ξανά.</string>
     <string name="transcription_model_resume">Συνέχιση της λήψης</string>

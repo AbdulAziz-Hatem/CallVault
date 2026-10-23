@@ -514,6 +514,7 @@
     <string name="model_backup_subtitle">Salve uma cópia para manter após reinstalar</string>
     <string name="model_backup_info">Salva o arquivo do modelo em uma pasta que você escolher. Depois de reinstalar ou em um celular novo, use Importar com esse arquivo em vez de baixar de novo.</string>
     <string name="model_backing_up">Fazendo backup… %1$d%%</string>
+    <string name="model_backup_waiting">Preparando o backup…</string>
     <string name="model_backup_done">Salvo</string>
     <string name="model_backup_failed">O backup não terminou. Tente novamente.</string>
     <string name="transcription_note_after_each_call">Cada chamada é transcrita assim que termina. Chamadas antigas não são tocadas — transcreva-as pelo botão na gravação.</string>

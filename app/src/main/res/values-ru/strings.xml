@@ -511,6 +511,7 @@
     <string name="model_backup_subtitle">Сохраните копию на случай переустановки</string>
     <string name="model_backup_info">Сохраняет файл модели в выбранную вами папку. После переустановки или на новом телефоне используйте импорт этого файла вместо повторной загрузки.</string>
     <string name="model_backing_up">Резервное копирование… %1$d%%</string>
+    <string name="model_backup_waiting">Подготовка к резервному копированию…</string>
     <string name="model_backup_done">Сохранено</string>
     <string name="model_backup_failed">Резервное копирование не завершилось. Попробуйте ещё раз.</string>
     <string name="transcription_note_after_each_call">Каждый звонок расшифровывается сразу после завершения. Старые звонки не затрагиваются — их можно расшифровать кнопкой на записи.</string>

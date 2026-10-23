@@ -374,6 +374,7 @@
     <string name="model_backup_subtitle">Збережіть копію на випадок перевстановлення</string>
     <string name="model_backup_info">Зберігає файл моделі в обрану вами теку. Після перевстановлення або на новому телефоні імпортуйте цей файл замість повторного завантаження.</string>
     <string name="model_backing_up">Резервне копіювання… %1$d%%</string>
+    <string name="model_backup_waiting">Підготовка до резервного копіювання…</string>
     <string name="model_backup_done">Збережено</string>
     <string name="model_backup_failed">Резервне копіювання не завершилося. Спробуйте ще раз.</string>
     <string name="transcription_model_resume">Продовжити завантаження</string>

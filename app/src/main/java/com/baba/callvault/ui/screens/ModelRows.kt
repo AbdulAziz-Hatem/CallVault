@@ -29,7 +29,6 @@ import com.baba.callvault.R
 import com.baba.callvault.transcription.model.ModelDownloadWorker
 import com.baba.callvault.transcription.model.TranscriptionModel
 import com.baba.callvault.ui.common.ModelDownloadState
-import com.baba.callvault.ui.common.TranscriptionLabels
 import com.baba.callvault.ui.common.rememberModelDownloadState
 
 /**
@@ -67,8 +66,10 @@ internal fun TranscriptionModelRows(
     onCancelBackup: (TranscriptionModel) -> Unit = {}
 ) {
     val state by rememberModelDownloadState(model, refreshKey = updateTrigger)
+    // Above the `when`, so a state change while the picker is open cannot drop the pick.
+    val launchPicker = rememberModelImportPicker { onImport(model, it) }
     val importRow: @Composable (String?) -> Unit = { failure ->
-        ModelImportRow(model = model, onPicked = { onImport(model, it) }, failureText = failure)
+        ModelImportRow(model = model, launchPicker = launchPicker, failureText = failure)
     }
 
     Column(Modifier.fillMaxWidth()) {
@@ -99,16 +100,7 @@ internal fun TranscriptionModelRows(
             // sixth of the size — which is also why discarding needs no separate row here: the
             // delete row below reclaims it, and 574 MB is not a hostage worth its own control.
             is ModelDownloadState.Paused -> {
-                NavigationRow(
-                    icon = Icons.Filled.Download,
-                    label = stringResource(R.string.transcription_model_resume),
-                    value = stringResource(
-                        R.string.transcription_model_resume_subtitle,
-                        current.downloadedBytes / BYTES_PER_MB,
-                        model.sizeBytes / BYTES_PER_MB
-                    ),
-                    onClick = { onDownload(model) }
-                )
+                TranscriptionResumeRow(model, current.downloadedBytes, onDownload)
                 importRow(null)
             }
 
@@ -136,8 +128,12 @@ internal fun TranscriptionModelRows(
             // The download row is offered plainly — nothing about the download failed — and the
             // import row says what went wrong with the file, where tapping it picks another.
             is ModelDownloadState.ImportFailed -> {
-                TranscriptionDownloadRow(model, onDownload)
-                importRow(importFailureText(current.reason, stringResource(TranscriptionLabels.titleOf(model))))
+                if (current.partialBytes > 0L) {
+                    TranscriptionResumeRow(model, current.partialBytes, onDownload)
+                } else {
+                    TranscriptionDownloadRow(model, onDownload)
+                }
+                importRow(importFailureText(current.reason, model))
             }
 
             // A failure says which one it was, because the two the user can act on need different
@@ -159,6 +155,25 @@ internal fun TranscriptionModelRows(
             }
         }
     }
+}
+
+/** "Resume the download", with what is already banked: the row for a model stopped part-way. */
+@Composable
+private fun TranscriptionResumeRow(
+    model: TranscriptionModel,
+    downloadedBytes: Long,
+    onDownload: (TranscriptionModel) -> Unit
+) {
+    NavigationRow(
+        icon = Icons.Filled.Download,
+        label = stringResource(R.string.transcription_model_resume),
+        value = stringResource(
+            R.string.transcription_model_resume_subtitle,
+            downloadedBytes / BYTES_PER_MB,
+            model.sizeBytes / BYTES_PER_MB
+        ),
+        onClick = { onDownload(model) }
+    )
 }
 
 /** "Download the model", with its size: the row for a model with nothing on disk. */

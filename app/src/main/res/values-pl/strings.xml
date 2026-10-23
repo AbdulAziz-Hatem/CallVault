@@ -511,6 +511,7 @@
     <string name="model_backup_subtitle">Zapisz kopię, która przetrwa ponowną instalację</string>
     <string name="model_backup_info">Zapisuje plik modelu w wybranym folderze. Po ponownej instalacji lub na nowym telefonie użyj Importu z tym plikiem zamiast pobierać go ponownie.</string>
     <string name="model_backing_up">Tworzenie kopii… %1$d%%</string>
+    <string name="model_backup_waiting">Przygotowywanie kopii zapasowej…</string>
     <string name="model_backup_done">Zapisano</string>
     <string name="model_backup_failed">Kopia zapasowa nie została ukończona. Spróbuj ponownie.</string>
     <string name="transcription_note_after_each_call">Każda rozmowa jest transkrybowana zaraz po zakończeniu. Starsze rozmowy pozostają nietknięte — te przepiszesz przyciskiem na nagraniu.</string>

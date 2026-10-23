@@ -57,15 +57,42 @@ internal fun importFailureRes(reason: String?): Int = when (reason) {
     else -> R.string.model_import_failed_unreadable
 }
 
-/** [importFailureRes] resolved; [modelName] fills the wrong-file message. */
-@Composable
-internal fun importFailureText(reason: String?, modelName: String): String {
+/** A failed import's message: the string and its format arguments. */
+internal data class ImportFailureMessage(@StringRes val res: Int, val args: List<Any>)
+
+/**
+ * [importFailureRes] with its arguments. The wrong-file message names [model]'s file — the name the
+ * info text told the user to look for — never a tier label like "Fast", which no file is called.
+ */
+internal fun importFailureMessage(reason: String?, model: DownloadableModel): ImportFailureMessage {
     val res = importFailureRes(reason)
-    return if (res == R.string.model_import_failed_wrong_file) stringResource(res, modelName) else stringResource(res)
+    val args = if (res == R.string.model_import_failed_wrong_file) listOf<Any>(model.fileName) else emptyList()
+    return ImportFailureMessage(res, args)
+}
+
+/** [importFailureMessage] resolved to text. */
+@Composable
+internal fun importFailureText(reason: String?, model: DownloadableModel): String {
+    val message = importFailureMessage(reason, model)
+    return stringResource(message.res, *message.args.toTypedArray())
 }
 
 /**
- * "Import from a file": opens the system file picker and hands back what was picked.
+ * The import file picker, registered once by the caller above its state switch: a launcher registered
+ * inside one branch is dropped when the state flips while the picker is open, and the pick with it.
+ * Returns the launch.
+ */
+@Composable
+internal fun rememberModelImportPicker(onPicked: (Uri) -> Unit): () -> Unit {
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) onPicked(uri)
+    }
+    return { launchSafely("import") { picker.launch(ANY_FILE) } }
+}
+
+/**
+ * "Import from a file": opens the system file picker through [launchPicker], from
+ * [rememberModelImportPicker].
  *
  * @param failureText Replaces the subtitle after a failed import, so the row that failed is the row
  *   that says why — and tapping it again is the remedy for every failure it can report.
@@ -76,20 +103,16 @@ internal fun importFailureText(reason: String?, modelName: String): String {
 @Composable
 internal fun ModelImportRow(
     model: DownloadableModel,
-    onPicked: (Uri) -> Unit,
+    launchPicker: () -> Unit,
     beforePick: ((launch: () -> Unit) -> Unit)? = null,
     failureText: String? = null
 ) {
-    val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) onPicked(uri)
-    }
-    val launch = { launchSafely("import") { picker.launch(ANY_FILE) } }
     WithRowInfo {
         NavigationRow(
             icon = Icons.Filled.FileOpen,
             label = stringResource(R.string.model_import),
             value = failureText ?: stringResource(R.string.model_import_subtitle),
-            onClick = { beforePick?.invoke(launch) ?: launch() },
+            onClick = { beforePick?.invoke(launchPicker) ?: launchPicker() },
             infoExtra = stringResource(R.string.model_import_info, model.fileName, model.sizeBytes / BYTES_PER_MB)
         )
     }
@@ -124,8 +147,9 @@ internal fun ModelBackupRow(model: DownloadableModel, onPicked: (Uri) -> Unit, o
 
     when (val current = state) {
         is ModelBackupState.Running -> ModelDownloadingRow(
-            // No figure yet reads as 0% over an indeterminate bar: a backup has no network to wait for.
-            label = stringResource(R.string.model_backing_up, current.percent ?: 0),
+            // No figure yet means queued or just starting: said in words over an indeterminate bar.
+            label = current.percent?.let { stringResource(R.string.model_backing_up, it) }
+                ?: stringResource(R.string.model_backup_waiting),
             percent = current.percent,
             onCancel = onCancel,
             cancelLabel = stringResource(R.string.general_cancel)

@@ -641,6 +641,7 @@
     <string name="model_backup_subtitle">Save a copy to keep after a reinstall</string>
     <string name="model_backup_info">Saves the model file to a folder you choose. After a reinstall or on a new phone, use Import with that file instead of downloading again.</string>
     <string name="model_backing_up">Backing up… %1$d%%</string>
+    <string name="model_backup_waiting">Getting ready to back up…</string>
     <string name="model_backup_done">Saved</string>
     <string name="model_backup_failed">The backup didn\'t finish. Try again.</string>
     <string name="transcription_model_resume">Resume the download</string>

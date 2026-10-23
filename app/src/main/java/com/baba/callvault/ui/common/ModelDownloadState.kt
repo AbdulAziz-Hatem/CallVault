@@ -74,9 +74,15 @@ sealed interface ModelDownloadState {
      * The import stopped. Separate from [Failed] so the row says "import" rather than "download":
      * the remedies differ (pick another file vs. try the network again). [reason] is one of
      * `ModelTransferWorker`'s `ERROR_` values; [otherModelId] names the catalogue model the picked
-     * file turned out to be, when [reason] is `ERROR_OTHER_MODEL`.
+     * file turned out to be, when [reason] is `ERROR_OTHER_MODEL`. [partialBytes] are the bytes of
+     * an earlier download still banked on disk, so the download row can keep saying "Resume" rather
+     * than hiding them behind the import's failure.
      */
-    data class ImportFailed(val reason: String?, val otherModelId: String?) : ModelDownloadState
+    data class ImportFailed(
+        val reason: String?,
+        val otherModelId: String?,
+        val partialBytes: Long = 0L
+    ) : ModelDownloadState
 
     companion object {
 
@@ -115,7 +121,7 @@ sealed interface ModelDownloadState {
                 // A live import outranks any failure, and a failed import outranks a failed
                 // download: it is the newer thing the user did, so the row must report it.
                 isActive(importState) -> Importing(importPercent)
-                importState == WorkInfo.State.FAILED -> ImportFailed(importError, importOtherModelId)
+                importState == WorkInfo.State.FAILED -> ImportFailed(importError, importOtherModelId, partialBytes)
                 workState == WorkInfo.State.FAILED -> Failed(error)
                 // Nothing running. SUCCEEDED without the file means it was verified then removed;
                 // CANCELLED means the user stopped it; null means no attempt this process. What

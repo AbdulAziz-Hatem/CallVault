@@ -473,6 +473,7 @@
     <string name="model_backup_subtitle">احفظ نسخة تبقى بعد إعادة التثبيت</string>
     <string name="model_backup_info">يحفظ ملف النموذج في مجلد تختاره. بعد إعادة التثبيت أو على هاتف جديد، استخدم الاستيراد مع ذلك الملف بدلًا من التنزيل مجددًا.</string>
     <string name="model_backing_up">جارٍ النسخ الاحتياطي… %1$d%%</string>
+    <string name="model_backup_waiting">جارٍ التحضير للنسخ الاحتياطي…</string>
     <string name="model_backup_done">تم الحفظ</string>
     <string name="model_backup_failed">لم يكتمل النسخ الاحتياطي. حاول مرة أخرى.</string>
     <string name="transcription_model_resume">استئناف التنزيل</string>

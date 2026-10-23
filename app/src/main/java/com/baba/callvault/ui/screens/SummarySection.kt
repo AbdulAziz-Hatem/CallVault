@@ -107,10 +107,12 @@ internal fun SummaryRows(
         )
     }
 
+    // Above the `when`, so a state change while the picker is open cannot drop the pick.
+    val launchPicker = rememberModelImportPicker { onImport(model, it) }
     val importRow: @Composable (String?) -> Unit = { failure ->
         ModelImportRow(
             model = model,
-            onPicked = { onImport(model, it) },
+            launchPicker = launchPicker,
             beforePick = { launch -> askThen(launch) },
             failureText = failure
         )
@@ -149,6 +151,29 @@ internal fun SummaryRows(
         )
     }
 
+    // Stopped part-way. Saying so is the point: those bytes are banked, the server resumes from
+    // exactly that offset, and a row reading "Download, 3.5 GB" would hide a gigabyte the user has
+    // already paid for. The discard row exists because otherwise that gigabyte can only be
+    // reclaimed by clearing the app's data.
+    val pausedRows: @Composable (Long) -> Unit = { downloadedBytes ->
+        NavigationRow(
+            icon = Icons.Filled.Download,
+            label = stringResource(R.string.summary_model_resume),
+            value = stringResource(
+                R.string.summary_model_resume_subtitle,
+                downloadedBytes.toGigabytes(),
+                model.sizeBytes.toGigabytes()
+            ),
+            onClick = startDownload
+        )
+        NavigationRow(
+            icon = Icons.Filled.Delete,
+            label = stringResource(R.string.summary_model_discard),
+            value = stringResource(R.string.summary_model_discard_subtitle, downloadedBytes.toGigabytes()),
+            onClick = { pendingDiscard = downloadedBytes }
+        )
+    }
+
     Column {
         // In ⓘ mode both notes are behind the Summaries card's ⓘ (see summaryModelExplanation).
         ExplanationParagraph(summaryRequirementsText(model))
@@ -171,30 +196,9 @@ internal fun SummaryRows(
                 importRow(null)
             }
 
-            // Stopped part-way. Saying so is the point: those bytes are banked, the server resumes
-            // from exactly that offset, and a row reading "Download, 3.5 GB" would hide a gigabyte
-            // the user has already paid for. The discard row exists because otherwise that
-            // gigabyte can only be reclaimed by clearing the app's data.
+            // Stopped part-way: see pausedRows.
             is ModelDownloadState.Paused -> {
-                NavigationRow(
-                    icon = Icons.Filled.Download,
-                    label = stringResource(R.string.summary_model_resume),
-                    value = stringResource(
-                        R.string.summary_model_resume_subtitle,
-                        current.downloadedBytes.toGigabytes(),
-                        model.sizeBytes.toGigabytes()
-                    ),
-                    onClick = startDownload
-                )
-                NavigationRow(
-                    icon = Icons.Filled.Delete,
-                    label = stringResource(R.string.summary_model_discard),
-                    value = stringResource(
-                        R.string.summary_model_discard_subtitle,
-                        current.downloadedBytes.toGigabytes()
-                    ),
-                    onClick = { pendingDiscard = current.downloadedBytes }
-                )
+                pausedRows(current.downloadedBytes)
                 importRow(null)
             }
 
@@ -218,12 +222,12 @@ internal fun SummaryRows(
                 onCancel = { onCancelImport(model) }
             )
 
-            // Nothing about the download failed, so it is offered plainly; the import row says what
-            // was wrong with the file. The summariser has no display name of its own, so the
-            // wrong-file message names the file to look for.
+            // Nothing about the download failed, so it is offered as it was — resumable, with its
+            // banked bytes, if it had been stopped part-way; the import row says what was wrong
+            // with the file.
             is ModelDownloadState.ImportFailed -> {
-                downloadRow()
-                importRow(importFailureText(current.reason, model.fileName))
+                if (current.partialBytes > 0L) pausedRows(current.partialBytes) else downloadRow()
+                importRow(importFailureText(current.reason, model))
             }
 
             // A failure says which one it was, because the two the user can act on need different

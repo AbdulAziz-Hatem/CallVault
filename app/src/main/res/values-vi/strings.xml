@@ -511,6 +511,7 @@
     <string name="model_backup_subtitle">Lưu một bản sao để giữ lại sau khi cài lại</string>
     <string name="model_backup_info">Lưu tệp mô hình vào thư mục bạn chọn. Sau khi cài lại hoặc trên điện thoại mới, hãy dùng Nhập với tệp đó thay vì tải lại.</string>
     <string name="model_backing_up">Đang sao lưu… %1$d%%</string>
+    <string name="model_backup_waiting">Đang chuẩn bị sao lưu…</string>
     <string name="model_backup_done">Đã lưu</string>
     <string name="model_backup_failed">Sao lưu chưa hoàn tất. Hãy thử lại.</string>
     <string name="transcription_note_after_each_call">Mỗi cuộc gọi được chép lời ngay khi kết thúc. Các cuộc gọi cũ không bị đụng tới — hãy chép lời chúng bằng nút trên bản ghi.</string>

@@ -214,10 +214,12 @@ class ModelTransferWorker(
 
     /**
      * True when this run ended on its own, or was stopped because the user cancelled it. Clears the
-     * cancel mark either way it is consumed, so it cannot outlive the run it was meant for.
+     * model's cancel mark on every end, so it cannot outlive the run it was meant for.
      */
-    private fun shouldReleaseGrant(cancelled: MutableSet<String>, model: DownloadableModel): Boolean =
-        !isStopped || cancelled.remove(model.id)
+    private fun shouldReleaseGrant(cancelled: MutableSet<String>, model: DownloadableModel): Boolean {
+        val isMarked = cancelled.remove(model.id)
+        return !isStopped || isMarked
+    }
 
     private fun releaseGrant(uri: Uri, flag: Int) {
         runCatching { applicationContext.contentResolver.releasePersistableUriPermission(uri, flag) }

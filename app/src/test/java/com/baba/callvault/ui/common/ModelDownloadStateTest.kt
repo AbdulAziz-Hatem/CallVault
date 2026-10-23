@@ -235,6 +235,17 @@ class ModelDownloadStateTest {
     }
 
     @Test
+    fun `a failed import keeps the paused bytes`() {
+        assertEquals(
+            ModelDownloadState.ImportFailed("wrong-file", null, partialBytes = 7L),
+            ModelDownloadState.from(
+                isInstalled = false, workState = WorkInfo.State.CANCELLED, percent = null, error = null,
+                partialBytes = 7L, importState = WorkInfo.State.FAILED, importError = "wrong-file"
+            )
+        )
+    }
+
+    @Test
     fun `paused bytes still show when no work is running`() {
         assertEquals(
             ModelDownloadState.Paused(5L),

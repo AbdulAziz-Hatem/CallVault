@@ -511,6 +511,7 @@
     <string name="model_backup_subtitle">Ments egy másolatot, ami újratelepítés után is megmarad</string>
     <string name="model_backup_info">A modellfájlt egy általad választott mappába menti. Újratelepítés után vagy új telefonon importáld ezt a fájlt az újbóli letöltés helyett.</string>
     <string name="model_backing_up">Mentés… %1$d%%</string>
+    <string name="model_backup_waiting">Felkészülés a biztonsági mentésre…</string>
     <string name="model_backup_done">Mentve</string>
     <string name="model_backup_failed">A biztonsági mentés nem fejeződött be. Próbáld újra.</string>
     <string name="transcription_note_after_each_call">Minden hívás átírásra kerül, amint véget ér. A régebbi hívások érintetlenek maradnak — azokat a felvételen lévő gombbal írathatja át.</string>

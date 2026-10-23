@@ -10,6 +10,7 @@ package com.baba.callvault.ui.screens
 
 import com.baba.callvault.R
 import com.baba.callvault.transcription.model.ModelTransferWorker
+import com.baba.callvault.transcription.model.TranscriptionModel
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -31,6 +32,20 @@ class ImportFailureTextTest {
 
         // Assert
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `the wrong-file message names the model's file, not its tier label`() {
+        // Arrange
+        val model = TranscriptionModel.SMALL_Q5_1
+
+        // Act
+        val wrong = importFailureMessage(ModelTransferWorker.ERROR_WRONG_FILE, model)
+        val unreadable = importFailureMessage(ModelTransferWorker.ERROR_UNREADABLE, model)
+
+        // Assert
+        assertEquals(ImportFailureMessage(R.string.model_import_failed_wrong_file, listOf(model.fileName)), wrong)
+        assertEquals(ImportFailureMessage(R.string.model_import_failed_unreadable, emptyList()), unreadable)
     }
 
     @Test

@@ -511,6 +511,7 @@
     <string name="model_backup_subtitle">Eine Kopie speichern, die eine Neuinstallation übersteht</string>
     <string name="model_backup_info">Speichert die Modelldatei in einem Ordner deiner Wahl. Nach einer Neuinstallation oder auf einem neuen Handy importierst du diese Datei, statt erneut herunterzuladen.</string>
     <string name="model_backing_up">Wird gesichert… %1$d%%</string>
+    <string name="model_backup_waiting">Sicherung wird vorbereitet…</string>
     <string name="model_backup_done">Gespeichert</string>
     <string name="model_backup_failed">Die Sicherung wurde nicht abgeschlossen. Versuche es erneut.</string>
     <string name="transcription_note_after_each_call">Jeder Anruf wird transkribiert, sobald er endet. Ältere Anrufe bleiben unberührt — diese können Sie über die Schaltfläche auf einer Aufnahme transkribieren.</string>

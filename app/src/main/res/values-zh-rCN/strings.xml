@@ -511,6 +511,7 @@
     <string name="model_backup_subtitle">保存一份副本，重新安装后仍可使用</string>
     <string name="model_backup_info">将模型文件保存到您选择的文件夹。重新安装或换新手机后，用该文件导入，无需重新下载。</string>
     <string name="model_backing_up">正在备份… %1$d%%</string>
+    <string name="model_backup_waiting">正在准备备份…</string>
     <string name="model_backup_done">已保存</string>
     <string name="model_backup_failed">备份未完成。请重试。</string>
     <string name="transcription_note_after_each_call">每通电话结束后立即转写。较早的通话不会被处理——请用录音上的按钮单独转写。</string>
