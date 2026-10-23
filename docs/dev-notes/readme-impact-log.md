@@ -1,5 +1,18 @@
 # README impact log
 
+## 2026-10-23 — the emulator's README demo data is gone
+
+Not a claim change: a **screenshot-shoot blocker.** The #58 emulator run
+(`docs/dev-notes/2026-10-23-model-import-backup.md`) ran `pm clear` on CallVault on the AVD
+`mymemory-test`, which wiped the README demo data staged there: the 6 recording rows, their
+transcripts, a summary and a note. The audio files themselves are still on the AVD; only the app's
+database and settings went. **Before the next README screenshot shoot, re-stage the demo data** (re-import
+the audio and recreate the transcripts, summary and note), or the shots will show an empty app.
+
+The AVD was also left changed: `WRITE_SECURE_SETTINGS` revoked from the app, "always allow on this
+network" ticked for wireless debugging, and the app set up in Shizuku mode with the Fast model. A shoot
+that needs built-in mode must undo those first.
+
 ## 2026-09-16 (latest) — Summaries is a page too
 
 🧪 VERIFYING (built and driven on the emulator; nothing seen on a real phone). The Summaries card now

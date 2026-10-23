@@ -12,11 +12,13 @@ phone yet. **To settle it, the maintainer needs to:**
 
 - Each model row (transcription and summaries, in Settings and in setup step 6) has **Import from a
   file** when the model is not installed. **Back up** shows when it is installed, in Settings only (setup
-  hides it on purpose: a fresh install has nothing to save; seen so on the emulator).
+  hides it on purpose: a fresh install has nothing to save). 📐 That setup hides it is read from the code,
+  not seen: no emulator step looked for it. (An earlier version said "seen so on the emulator", which no
+  recorded step supports.)
 - Import opens the system file picker, copies the file into `files/models/<name>.import` while
   hashing it, and installs it only if the sha256 matches the catalogue. The user's copy is left where it is.
 - A file whose size belongs to a different catalogue model is hashed first: if it really is that model
-  the row says *"That's the file for another model. Choose that model first, then import."*; if the hash
+  the row says *"That's the file for another model (<its name>). Choose that model first, then import."*; if the hash
   does not match, *"That isn't the right file. Pick <name>."*
 - Back up writes the installed file to a folder the user picks (system "save" dialog).
 - Cancel, a wrong file and a full disk all leave no `*.import` behind.
@@ -51,7 +53,8 @@ Not done on the emulator:
   selected. Same code path (`checkSize` → `OtherModel` → `hashOnly` confirms).
 - **REPLACE** (picking Import again while one runs, which WorkManager reports as `CANCELLED_BY_APP`): not
   reachable from the UI. While an import runs the row shows only *Importing… n%* and *Cancel*, in Settings
-  and in setup. Covered by unit tests only.
+  and in setup. **Not tested: no unit or emulator coverage.** (Corrected 2026-10-23: this line used to say
+  "Covered by unit tests only", which was wrong — no unit test exercises a REPLACE.)
 - Gemma (2.6 GB) import or backup: too big for the AVD. That is item 1 for the maintainer above.
 
 Emulator notes for next time: the app kept asking *"Allow wireless debugging on this network?"*, and
@@ -59,3 +62,25 @@ allowing it took the emulator's adb offline for good (until a cold boot). Revoki
 `WRITE_SECURE_SETTINGS` from the app on the emulator before it starts stops the prompt. After `pm clear`,
 setup was finished in Shizuku mode (Shizuku started on the emulator with its `libshizuku.so`) to avoid
 pairing. The AVD needed `-memory 4096`; at 2 GB, a 190 MB `adb push` crashed `system_server`.
+
+**What the run cost the AVD** (step 5's `pm clear`): it wiped the README demo data staged on
+`mymemory-test` — the 6 recording rows, their transcripts, a summary and a note. The audio files remain;
+the database rows do not. It must be re-staged before the next README screenshot shoot (logged in
+`readme-impact-log.md`). The AVD was left with `WRITE_SECURE_SETTINGS` revoked from the app, "always allow
+on this network" ticked, and the app set up in Shizuku mode with the Fast model.
+
+## Changed after the emulator run (final review, 2026-10-23)
+
+🧪 VERIFYING — unit tests and a debug build only; none of this was on the emulator or a phone.
+
+- **Import and backup run as a foreground job**, with the existing "Background processing" notification
+  ("Importing a model" / "Backing up a model"). Without it WorkManager stops a background job after ten
+  minutes, and a 2.6 GB import from a slow or cloud provider would be stopped, its partial copy deleted,
+  and re-run from zero. The `specialUse` subtype text in the manifest now mentions model copies.
+- **Import no longer waits for "storage not low".** That constraint fires at an OEM threshold above the
+  worker's own free-space check, so a phone in between was stopped mid-copy and re-run forever.
+- **The newer failure wins.** A download and an import each stamp the time they failed; the row shows the
+  newer one instead of always the import's.
+- **"That's the file for another model" names it**: the speech model's picker label (e.g. "Best quality"),
+  or the summariser's file name.
+- **A source longer than the model reads as "That isn't the right file"**, not "Couldn't read that file".
