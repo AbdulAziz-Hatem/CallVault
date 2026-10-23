@@ -73,9 +73,7 @@ import com.baba.callvault.system.updates.UpdateScheduler
 import com.baba.callvault.integrations.scrcpy.AUDIO_BIT_RATE_OPTIONS
 import com.baba.callvault.transcription.TranscriptionScheduler
 import com.baba.callvault.transcription.model.DownloadableModel
-import com.baba.callvault.transcription.model.TranscriptionModel
 import com.baba.callvault.ui.common.SyncScheduleLabels
-import com.baba.callvault.ui.common.TranscriptionLabels
 import com.baba.callvault.integrations.adb.UsbDefaultConfig
 import com.baba.callvault.integrations.adb.UsbDefaultMode
 import com.baba.callvault.integrations.scrcpy.ScrcpyAudioCodec
@@ -400,25 +398,11 @@ private fun stepInfo(step: WizardStep): String? {
     return when (step) {
         WizardStep.STORAGE -> joinExplanations(subtitle, stringResource(R.string.wizard_storage_drive_note))
         WizardStep.SCHEDULE -> joinExplanations(subtitle, stringResource(R.string.wizard_schedule_immediate_note))
-        WizardStep.TRANSCRIPTION -> {
-            // Built from the catalogue, so a new model tier is described without touching this.
-            val modelSizes = TranscriptionModel.entries.map { model ->
-                stringResource(
-                    R.string.wizard_transcription_model_size,
-                    stringResource(TranscriptionLabels.titleOf(model)),
-                    model.sizeBytes / BYTES_PER_MB
-                )
-            }
-            joinExplanations(
-                subtitle,
-                stringResource(R.string.wizard_transcription_language_note),
-                stringResource(
-                    R.string.wizard_transcription_model_sizes_note,
-                    modelSizes.joinToString(stringResource(R.string.list_separator))
-                ),
-                stringResource(R.string.wizard_transcription_background_note)
-            )
-        }
+        // Language and model-size notes live on their own rows' (i) in the step.
+        WizardStep.TRANSCRIPTION -> joinExplanations(
+            subtitle,
+            stringResource(R.string.wizard_transcription_background_note)
+        )
         else -> subtitle
     }
 }

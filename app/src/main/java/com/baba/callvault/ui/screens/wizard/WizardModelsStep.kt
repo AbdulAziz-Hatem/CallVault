@@ -12,18 +12,13 @@ import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.baba.callvault.R
 import com.baba.callvault.data.AppPreferences
@@ -72,37 +67,68 @@ internal fun ModelsStep(
     var modelId by remember { mutableStateOf(prefs.getTranscriptionModelId()) }
     val selectedModel = TranscriptionModel.fromId(modelId) ?: TranscriptionModel.DEFAULT
 
+    // Built from the catalogue, so a new model tier is described without touching this.
+    val modelSizes = TranscriptionModel.entries.map { model ->
+        stringResource(
+            R.string.wizard_transcription_model_size,
+            stringResource(TranscriptionLabels.titleOf(model)),
+            model.sizeBytes / BYTES_PER_MB
+        )
+    }.joinToString(stringResource(R.string.list_separator))
+    // True only while the field still holds the phone's own language: once the user picks another
+    // one (or auto-detect), "set to this phone's language" would be a false sentence.
+    val languageIsPhoneDefault = language != null && language == AppPreferences.DefaultsValue.TRANSCRIPTION_LANGUAGE
+
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         CvCard(contentPadding = PaddingValues(vertical = 8.dp)) {
-            TranscriptionModeField(
-                mode = mode,
-                onModeChange = { chosen ->
-                    mode = chosen
-                    prefs.setTranscriptionMode(chosen)
-                    // Reconcile the sweep immediately, exactly as Settings does — persisting the mode
-                    // alone would leave WorkManager disagreeing with it until something else ran.
-                    TranscriptionScheduler.apply(context)
+            WithInfo(
+                label = stringResource(R.string.transcription_mode_label),
+                explanation = stringResource(transcriptionModeNoteRes(mode))
+            ) {
+                TranscriptionModeField(
+                    mode = mode,
+                    onModeChange = { chosen ->
+                        mode = chosen
+                        prefs.setTranscriptionMode(chosen)
+                        // Reconcile the sweep immediately, exactly as Settings does: persisting the mode
+                        // alone would leave WorkManager disagreeing with it until something else ran.
+                        TranscriptionScheduler.apply(context)
+                    }
+                )
+            }
+            WithInfo(
+                label = stringResource(R.string.transcription_language_label),
+                explanation = if (languageIsPhoneDefault) {
+                    stringResource(R.string.wizard_transcription_language_note)
+                } else {
+                    null
                 }
-            )
-            TranscriptionLanguageField(
-                language = language,
-                onLanguageChange = { chosen ->
-                    language = chosen
-                    prefs.setTranscriptionLanguage(chosen)
-                }
-            )
+            ) {
+                TranscriptionLanguageField(
+                    language = language,
+                    onLanguageChange = { chosen ->
+                        language = chosen
+                        prefs.setTranscriptionLanguage(chosen)
+                    }
+                )
+            }
 
-            // Offered here because the download row below fetches whatever this says. Told to pick a
-            // model without being told which one is coming, the difference between 190 MB and 874 MB
-            // would arrive as a surprise on a metered month.
-            TranscriptionModelField(
-                modelId = modelId,
-                onModelChange = { chosen ->
-                    modelId = chosen
-                    prefs.setTranscriptionModelId(chosen)
-                }
-            )
+            // Offered here because the download row below fetches whatever this says. Its ⓘ names the
+            // sizes, so the difference between 190 MB and 874 MB is not a surprise on a metered month.
+            WithInfo(
+                label = stringResource(R.string.transcription_model_label),
+                explanation = stringResource(R.string.wizard_transcription_model_sizes_note, modelSizes)
+            ) {
+                TranscriptionModelField(
+                    modelId = modelId,
+                    onModelChange = { chosen ->
+                        modelId = chosen
+                        prefs.setTranscriptionModelId(chosen)
+                    }
+                )
+            }
 
+            SettingsSubHeader(stringResource(R.string.settings_section_transcription))
             TranscriptionModelRows(
                 model = selectedModel,
                 updateTrigger = updateTrigger,
@@ -115,24 +141,16 @@ internal fun ModelsStep(
             )
         }
 
-        // A card of its own rather than the single sentence that used to be here. Summaries are half
-        // of what this step is for, and a footnote pointing at Settings is how a feature ends up
-        // never being found. The rows are the summariser's own, so the requirements dialog — 3.46 GB
-        // to download, about 3.5 GB of memory to run — still stands between the tap and the fetch.
+        // The rows are the summariser's own, so the requirements dialog (3.46 GB to download, about
+        // 3.5 GB of memory to run) still stands between the tap and the fetch.
         CvCard(contentPadding = PaddingValues(vertical = 8.dp)) {
-            Text(
-                text = stringResource(R.string.wizard_transcription_summary_heading),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
-            )
-            Text(
-                text = stringResource(R.string.wizard_transcription_summary_body),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
+            val summariesLabel = stringResource(R.string.wizard_transcription_summary_heading)
+            WithInfo(
+                label = summariesLabel,
+                explanation = stringResource(R.string.wizard_transcription_summary_body)
+            ) {
+                SettingsSubHeader(summariesLabel)
+            }
             SummaryRows(
                 updateTrigger = updateTrigger,
                 onDownload = onDownloadModel,

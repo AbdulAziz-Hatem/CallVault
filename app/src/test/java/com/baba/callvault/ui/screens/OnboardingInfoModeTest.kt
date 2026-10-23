@@ -82,6 +82,25 @@ class OnboardingInfoModeTest {
         )
     }
 
+    @Test
+    fun `every wizard info button has a non-empty explanation`() {
+        // An (i) that opens an empty dialog is worse than none: catch a literal blank string passed as
+        // the explanation of an info-bearing call.
+        val blank = Regex(
+            """(?:explanation|infoExtra)\s*=\s*"\s*"|""" +
+                """(?:SettingsInfoButton|WithInfo)\s*\([^)]*?(?:explanation\s*=\s*|,\s*)"\s*"\s*[,)]|""" +
+                """description\s*=\s*"\s*\""""
+        )
+        val offenders = scannedFiles.flatMap { file ->
+            val text = source(file)
+            blank.findAll(text).map { "${file.name}:${lineOf(text, it.range.first)}" }.toList()
+        }
+        assertTrue(
+            "Info buttons with an empty explanation (${offenders.size}):\n" + offenders.joinToString("\n"),
+            offenders.isEmpty(),
+        )
+    }
+
     // ---- scanning ----
 
     private val explanationSegment = Regex("""(^|_)(description|desc|body|hint|note|explanation|subtitle)(_|$)""")
