@@ -86,6 +86,12 @@ All notable changes to CallVault are documented here. The format is based on
        rule were added after that run and are unit-tested / unrun. Needs one real Gemma import and one
        backup on a phone. docs/dev-notes/2026-10-23-model-import-backup.md -->
 
+### Changed
+
+- **Simpler setup** — each setup screen is now one line per option with an ⓘ for details, like Settings.
+  The models step offers Import next to Download. <!-- 🧪 emulator only (Shizuku mode); standalone pairing
+  and the Reliability step not yet seen. docs/dev-notes/2026-10-23-onboarding-revamp.md -->
+
 ### Fixed
 
 - **CallVault and Shizuku's watchdog no longer fight.** With off-Wi-Fi recording on and Shizuku's Watchdog
