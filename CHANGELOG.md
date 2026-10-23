@@ -78,6 +78,11 @@ All notable changes to CallVault are documented here. The format is based on
   (@kabasik007).
   <!-- 🧪 VERIFYING — checkTranslations + unit tests; seen on the OP9 2026-10-20. Needs a native speaker
        and a real Ukrainian call transcribed and summarised. -->
+- **Import and back up models** — use a model file you already have instead of downloading it, and save a
+  copy before a reinstall (#58).
+  <!-- 🧪 VERIFYING — unit tests + emulator run 2026-10-23 (Small model: import, wrong file, other model,
+       back up, import in setup after pm clear, cancel). Needs one real Gemma import and one backup on a
+       phone. docs/dev-notes/2026-10-23-model-import-backup.md -->
 
 ### Fixed
 

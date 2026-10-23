@@ -562,3 +562,10 @@ To settle it: open the README on the branch and check the two-row table reads we
   the real duration "0:00 / 2:41" (play tapped and paused at the start, so the first line is highlighted).
 - **Line 30:** "Opt-in, experimental." → "Opt-in." The app no longer calls app-call recording experimental
   (strings changed 2026-10-21, 15 locales).
+
+## 2026-10-23 — Import and back up models (`feat/model-import-backup-58`, #58)
+
+🧪 VERIFYING — emulator only; not yet seen on a phone. README line ~67 says the transcription models are
+"downloaded once over Wi-Fi". Once confirmed, it can add: "or imported from a copy you already have, and
+backed up to a folder you choose before a reinstall". The network paragraph (line ~85, Hugging Face only
+"to download a model you asked for") stays true: import and backup make no network call.
