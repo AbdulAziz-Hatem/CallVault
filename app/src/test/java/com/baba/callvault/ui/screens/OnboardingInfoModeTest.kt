@@ -84,16 +84,18 @@ class OnboardingInfoModeTest {
 
     // ---- scanning ----
 
-    private val explanationSegment = Regex("""(^|_)(description|desc|body|hint|note|explanation)(_|$)""")
+    private val explanationSegment = Regex("""(^|_)(description|desc|body|hint|note|explanation|subtitle)(_|$)""")
 
-    /** Status or action-needed text that must stay visible (Global Constraints), by key, with the reason. */
+    /**
+     * Status or action-needed text that must stay visible (Global Constraints), keyed `File.kt:key` so the same
+     * key used inline in another file still fails; each with its reason. The pairing hint box and the
+     * Developer-options / Wireless-debugging instruction paragraphs are NOT here: their status is already shown
+     * by permission_devmode_off, permission_wd_off and the "Not connected" chip, so the paragraphs go behind (i).
+     */
     private val allowedInline: Map<String, String> = mapOf(
-        "wizard_auto_record_nothing_warning" to "Auto-record 'nothing will record' warning: recording will not work",
-        "permission_adb_hint_wd_on" to "pairing instruction shown only while unpaired: pairing status, needed now",
-        "permission_devmode_enable_hint" to "Developer options off blocks pairing: a blocked state, action needed now",
-        "permission_wd_enable_hint" to "Wireless debugging off blocks pairing: a blocked state, action needed now",
-        "permission_battery_oem_hint" to "Toast after a tap on a refused battery exemption: a transient status, not a card",
-        // The Storage "pick a folder" requirement is a label plus FolderPickerCard (no explanation-suffix key), so it needs no entry.
+        "PermissionsScreen.kt:permission_battery_oem_hint" to "Toast after a refused battery exemption: a transient status, not a card",
+        // The Auto-record 'nothing will record' WarningCard and the Storage 'pick a folder' label carry no
+        // explanation-segment key, so they need no entry.
     )
 
     /** Callees whose explanation arguments are shown behind (i) when LocalSettingsDescriptionsAsInfo is on. */
@@ -108,7 +110,7 @@ class OnboardingInfoModeTest {
         "pluralStringResource",
     )
 
-    private fun isExplanationKey(key: String) = explanationSegment.containsMatchIn(key) && key !in allowedInline
+    private fun isExplanationKey(key: String) = explanationSegment.containsMatchIn(key)
 
     private fun lineOf(text: String, index: Int) = text.substring(0, index).count { it == '\n' } + 1
 
@@ -180,6 +182,7 @@ class OnboardingInfoModeTest {
                 val consumer = enclosingCallees(text, index).firstOrNull { it !in transparentCallees }
                 consumer == null || consumer !in infoAwareCallees
             }
+            .filter { (_, key) -> "$fileName:$key" !in allowedInline }
             .map { (index, key) -> "$fileName:${lineOf(text, index)} $key" }
             .distinct()
             .sorted()
