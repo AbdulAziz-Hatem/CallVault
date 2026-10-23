@@ -19,6 +19,7 @@
     <string name="permissions_ui_eyebrow">Setup</string>
     <string name="permissions_ui_hero_title">Let’s get set up</string>
     <string name="permissions_ui_hero_subtitle">A few permissions so CallVault can capture and label your calls. Approve each item below.</string>
+    <string name="permissions_ui_hero_line">A few permissions to record your calls.</string>
     <string name="permissions_ui_section_label">Permissions</string>
     <string name="permission_adb_hint">Tap Authorize, then enter the pairing code from the notification.</string>
     <string name="permission_adb_desc_short">Required to set up the recorder. Needs Wi-Fi.</string>
@@ -26,14 +27,13 @@
     <string name="permissions_status_adb_connected">Connected</string>
 
     <!-- ADB card: Developer Options status + deep-link shortcuts. -->
-    <string name="permission_devmode_on">Developer Options: on</string>
-    <string name="permission_devmode_off">Developer Options is off</string>
+    <string name="permission_status_devmode_off_tap_build">Developer options off — tap Build number 7×</string>
     <string name="permission_devmode_open_wd">Open Wireless debugging</string>
     <string name="permission_devmode_enable_hint">Enable it: Settings → About phone → tap Build number 7 times.</string>
     <string name="permission_devmode_open_device_info">Open device info</string>
 
     <!-- ADB card: Wireless debugging state (shown when Developer Options is on). -->
-    <string name="permission_wd_on">Wireless debugging: on</string>
+    <string name="permission_status_wd_on_enter_code">Tap Pair, then enter the pairing code</string>
     <string name="permission_wd_off">Wireless debugging is off</string>
     <string name="permission_wd_enable_hint">Turn it on: Developer Options → Wireless debugging.</string>
     <string name="permission_adb_hint_wd_on">Tap Authorize, then enter the pairing code from the Wireless debugging screen.</string>

@@ -11,17 +11,17 @@
     <string name="permission_adb_open_wd">Ouvrir le débogage sans fil</string>
     <string name="permission_adb_pair">Associer</string>
     <string name="permission_devmode_enable_hint">Activez-les : Paramètres → À propos du téléphone → touchez Numéro de build 7 fois.</string>
-    <string name="permission_devmode_off">Les options pour les développeurs sont désactivées</string>
-    <string name="permission_devmode_on">Options pour les développeurs : activées</string>
+    <string name="permission_status_devmode_off_tap_build">Options pour les développeurs désactivées : touchez 7× Numéro de build</string>
     <string name="permission_devmode_open_device_info">Ouvrir les infos de l\'appareil</string>
     <string name="permission_devmode_open_wd">Ouvrir le débogage sans fil</string>
     <string name="permission_wd_enable_hint">Activez-le : Options pour les développeurs → Débogage sans fil.</string>
     <string name="permission_wd_off">Le débogage sans fil est désactivé</string>
-    <string name="permission_wd_on">Débogage sans fil : activé</string>
+    <string name="permission_status_wd_on_enter_code">Touchez Associer, puis saisissez le code d\'association</string>
     <string name="permissions_status_adb_connected">Connecté</string>
     <string name="permissions_status_adb_not_connected">Non connecté</string>
     <string name="permissions_ui_eyebrow">Configuration</string>
     <string name="permissions_ui_hero_subtitle">Quelques autorisations pour que CallVault puisse capturer et étiqueter vos appels. Approuvez chaque élément ci-dessous.</string>
+    <string name="permissions_ui_hero_line">Quelques autorisations pour enregistrer.</string>
     <string name="permissions_ui_hero_title">C\'est parti pour la configuration</string>
     <string name="permissions_ui_section_label">Autorisations</string>
 </resources>

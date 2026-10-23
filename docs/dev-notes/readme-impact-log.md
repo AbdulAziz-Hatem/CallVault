@@ -582,3 +582,20 @@ To settle it: open the README on the branch and check the two-row table reads we
 "downloaded once over Wi-Fi". Once confirmed, it can add: "or imported from a copy you already have, and
 backed up to a folder you choose before a reinstall". The network paragraph (line ~85, Hugging Face only
 "to download a model you asked for") stays true: import and backup make no network call.
+
+## 2026-10-23 — Onboarding redesign (`feat/onboarding-revamp`)
+
+🧪 VERIFYING — emulator only (Shizuku mode); the paired flow is not yet seen. Checked README lines
+~140–150 against the new permissions texts. Nothing is false, but two things drift:
+
+- Line 140 ("grant permissions, pair once (or pick Shizuku), and choose where recordings are saved") is still
+  true. Optional: the models step now also offers Import, so "download or import the models" could be added.
+- Pairing steps 2 and 4: the button is **Pair** (`permission_adb_pair`), matching step 2. Step 4 "**Paired ✓**
+  — tap it" is the notification title (`notif_pairing_success_title`), unchanged. The permissions screen's
+  own status line now reads "Tap Pair, then enter the pairing code", consistent with step 2. If the
+  maintainer wants the README to match the screen after pairing, suggested wording for step 4: "**Paired ✓**
+  — tap it to go back; the Wireless debugging row shows **Connected**." Both are optional.
+- Not README, but related: `permission_adb_hint_wd_on` still says "Tap Authorize" while the button says
+  "Pair"; if the README ever quotes it, quote "Pair".
+
+README.md was not edited (held).

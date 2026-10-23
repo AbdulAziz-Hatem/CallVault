@@ -10,6 +10,8 @@ package com.baba.callvault.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -95,6 +98,7 @@ enum class ShizukuOffer {
  * Colours are stated explicitly rather than left to the M3 defaults: this app's scheme resolves several
  * of those to its coral tone, and a setup card that shows up red reads as an error.
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ShizukuOfferCard(
     status: ShizukuStatus,
@@ -112,33 +116,52 @@ fun ShizukuOfferCard(
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
         ),
     ) {
-        Column(Modifier.padding(16.dp)) {
-            Text(
-                text = stringResource(
-                    when (offer) {
-                        // The standing title asserts the server is up, so it may only be shown when it is.
-                        ShizukuOffer.NotRunning -> R.string.permissions_shizuku_offer_title_stopped
-                        else -> R.string.permissions_shizuku_offer_title
-                    }
-                ),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+        Column(Modifier.padding(start = 16.dp, top = 8.dp, end = 4.dp, bottom = 8.dp)) {
+            val title = stringResource(
+                when (offer) {
+                    // The standing title asserts the server is up, so it may only be shown when it is.
+                    ShizukuOffer.NotRunning -> R.string.permissions_shizuku_offer_title_stopped
+                    else -> R.string.permissions_shizuku_offer_title
+                }
             )
-            Text(
-                text = stringResource(
-                    when (offer) {
-                        ShizukuOffer.NotRunning -> R.string.permissions_shizuku_offer_stopped
-                        ShizukuOffer.Fork -> R.string.permissions_shizuku_offer_body
-                        ShizukuOffer.NeedsPermission -> R.string.permissions_shizuku_needs_permission
-                        ShizukuOffer.Active -> R.string.permissions_shizuku_active
-                    }
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 6.dp),
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                // The choice explained, while it is still a choice. Once Shizuku is chosen the line below
+                // says what is left to do, and that has to stay on screen.
+                if (offer == ShizukuOffer.Fork || offer == ShizukuOffer.NotRunning) {
+                    SettingsInfoButton(
+                        label = title,
+                        explanation = stringResource(
+                            if (offer == ShizukuOffer.Fork) R.string.permissions_shizuku_offer_body
+                            else R.string.permissions_shizuku_offer_stopped
+                        ),
+                    )
+                }
+            }
+            // Status, not explanation: "nothing records until you do" needs action now, and "setup is done"
+            // is the answer to whether anything is left. Both stay visible.
+            if (offer == ShizukuOffer.NeedsPermission || offer == ShizukuOffer.Active) {
+                Text(
+                    text = stringResource(
+                        when (offer) {
+                            ShizukuOffer.NeedsPermission -> R.string.permissions_shizuku_needs_permission
+                            else -> R.string.permissions_shizuku_active
+                        }
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 4.dp, end = 12.dp),
+                )
+            }
 
-            Row(
+            // FlowRow, not Row: in a long locale the buttons do not fit on one line, and a Row squeezes a
+            // label into a mid-word break. End is mirrored in RTL.
+            FlowRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
