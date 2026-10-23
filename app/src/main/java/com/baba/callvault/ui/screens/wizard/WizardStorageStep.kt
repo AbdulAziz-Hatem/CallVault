@@ -15,12 +15,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.baba.callvault.ui.common.CvCard
 import com.baba.callvault.R
 import com.baba.callvault.data.StorageTarget
 
@@ -46,7 +49,7 @@ internal fun StorageStep(
 
         Spacer(Modifier.height(2.dp))
 
-        FolderPickerCard(
+        FolderRow(
             icon = Icons.Filled.Folder,
             label = stringResource(R.string.settings_recording_folder_label),
             chosenName = recordingFolderLabel,
@@ -54,13 +57,31 @@ internal fun StorageStep(
         )
 
         if (usesDrive) {
-            FolderPickerCard(
+            FolderRow(
                 icon = Icons.Filled.CloudUpload,
                 label = stringResource(R.string.settings_drive_folder_label),
                 chosenName = driveFolderLabel,
                 onClick = onPickDriveFolder
             )
         }
+    }
+}
+
+/**
+ * A folder picker as a Settings row. Until a folder is chosen the value reads "Choose folder" in the
+ * accent colour: that is the step's one requirement, so it stays on screen rather than behind an (i).
+ */
+@Composable
+private fun FolderRow(icon: ImageVector, label: String, chosenName: String?, onClick: () -> Unit) {
+    CvCard {
+        NavigationRow(
+            icon = icon,
+            label = label,
+            value = chosenName ?: stringResource(R.string.wizard_ui_folder_choose),
+            onClick = onClick,
+            valueColor = if (chosenName != null) MaterialTheme.colorScheme.primary
+            else MaterialTheme.colorScheme.secondary
+        )
     }
 }
 

@@ -30,12 +30,15 @@ internal fun AudioStep(
 ) {
     CvCard(contentPadding = PaddingValues(vertical = 8.dp)) {
         val codecOptions = ScrcpyAudioCodec.entries.map { OptionItem(it.cliKey, stringResource(it.titleResId)) }
-        M3DropdownField(
-            label = stringResource(R.string.settings_audio_codec),
-            selected = codecOptions.find { it.key == audioCodec } ?: codecOptions.first(),
-            options = codecOptions,
-            onOptionSelected = { onSelectCodec(it.key) }
-        )
+        val codecLabel = stringResource(R.string.settings_audio_codec)
+        WithInfo(codecLabel, stringResource(R.string.settings_audio_bitrate_recommendation)) {
+            M3DropdownField(
+                label = codecLabel,
+                selected = codecOptions.find { it.key == audioCodec } ?: codecOptions.first(),
+                options = codecOptions,
+                onOptionSelected = { onSelectCodec(it.key) }
+            )
+        }
 
         val bitrateOptions = AUDIO_BIT_RATE_OPTIONS.map {
             OptionItem(it.toString(), stringResource(R.string.audio_bitrate_kbps, it / 1000))

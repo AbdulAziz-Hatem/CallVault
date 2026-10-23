@@ -23,6 +23,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -352,6 +353,8 @@ internal fun NavigationRow(
     // An explanatory paragraph that the classic screen draws under this row (the row's caller draws it with
     // [SettingsExplanation]). In ⓘ mode it joins the row's ⓘ instead; ignored otherwise.
     infoExtra: String? = null,
+    // The value's colour; a caller whose value is a "still to do" prompt can tint it instead of the teal default.
+    valueColor: Color = MaterialTheme.colorScheme.primary,
 ) {
     val infoMode = LocalSettingsDescriptionsAsInfo.current
     val supportingAsInfo = infoMode && supporting != null && !keepSupportingInline
@@ -375,7 +378,7 @@ internal fun NavigationRow(
             Text(
                 text = value,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
+                color = valueColor,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
