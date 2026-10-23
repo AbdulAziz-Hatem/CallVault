@@ -374,10 +374,12 @@
     <!-- Wizard: Storage step -->
     <string name="wizard_storage_title">Πού θα αποθηκεύονται οι εγγραφές</string>
     <string name="wizard_storage_subtitle">Επιλέξτε πού αποθηκεύονται οι εγγραφές σας. Μπορείτε να το αλλάξετε αργότερα στις Ρυθμίσεις.</string>
+    <string name="wizard_storage_line">Διάλεξε φάκελο για τις ηχογραφήσεις.</string>
     <string name="wizard_storage_drive_note">Με το Google Drive, το αντίγραφο σε αυτή τη συσκευή είναι προσωρινό και διαγράφεται αφού μεταφορτωθεί.</string>
     <!-- Wizard: Schedule step -->
     <string name="wizard_schedule_title">Πότε να γίνεται μεταφόρτωση στο Drive</string>
     <string name="wizard_schedule_subtitle">Επιλέξτε πόσο συχνά μεταφορτώνονται οι εγγραφές στον φάκελό σας στο Google Drive.</string>
+    <string name="wizard_schedule_line">Διάλεξε πότε ανεβαίνουν οι ηχογραφήσεις.</string>
     <string name="wizard_schedule_mode_label">Πρόγραμμα μεταφόρτωσης</string>
     <string name="wizard_schedule_immediate">Άμεσα</string>
     <string name="wizard_schedule_daily">Καθημερινά</string>
@@ -396,14 +398,18 @@
     <!-- Wizard: Auto-record step -->
     <string name="wizard_auto_record_title">Αυτόματη εγγραφή</string>
     <string name="wizard_auto_record_subtitle">Επιλέξτε ποιες κλήσεις καταγράφονται αυτόματα. Μπορείτε να το ρυθμίσετε λεπτομερέστερα αργότερα στις Ρυθμίσεις.</string>
+    <string name="wizard_auto_record_line">Διάλεξε ποιες κλήσεις ηχογραφούνται μόνες τους.</string>
     <string name="wizard_auto_record_nothing_warning">Με τις τηλεφωνικές κλήσεις και τις κλήσεις εφαρμογών απενεργοποιημένες, το CallVault δεν θα καταγράφει τίποτα. Ενεργοποιήστε τουλάχιστον μία, εκτός αν αυτό θέλετε.</string>
     <!-- Wizard: Audio step -->
     <string name="wizard_experimental_title">Προαιρετικά πρόσθετα</string>
     <string name="wizard_experimental_subtitle">Είναι ανενεργή από προεπιλογή — μπορείτε να την ενεργοποιήσετε αργότερα στις Ρυθμίσεις.</string>
+    <string name="wizard_experimental_line">Ανενεργό από προεπιλογή.</string>
     <string name="wizard_updates_title">Παραμένοντας ενημερωμένοι</string>
     <string name="wizard_updates_subtitle">Το CallVault δεν βρίσκεται σε κατάστημα εφαρμογών, οπότε ελέγχει μόνο του το GitHub για νέες εκδόσεις.</string>
+    <string name="wizard_updates_line">Πώς βρίσκει το CallVault νέες εκδόσεις.</string>
     <string name="wizard_reliability_title">Αξιόπιστη εγγραφή</string>
     <string name="wizard_reliability_subtitle">Δύο προαιρετικές ρυθμίσεις που διατηρούν την εγγραφή σε λειτουργία σε δύσκολες συνθήκες. Μπορείτε να τις παραλείψετε και να τις αλλάξετε αργότερα στις Ρυθμίσεις.</string>
+    <string name="wizard_reliability_line">Δύο προαιρετικά δίχτυα ασφαλείας.</string>
     <string name="wizard_reliability_usb_title">Διατήρηση εγγραφής όταν κλειδώνει η οθόνη</string>
     <string name="wizard_reliability_usb_desc">Σε ορισμένα τηλέφωνα, το κλείδωμα της οθόνης κατά τη διάρκεια μιας κλήσης μπορεί να σταματήσει την εγγραφή. Η ρύθμιση του USB σε \"Μόνο φόρτιση\" το αποτρέπει αυτό. (Το τηλέφωνό σας τότε φορτίζει από προεπιλογή όταν συνδέεται σε υπολογιστή — επιλέξτε Μεταφορά αρχείων χειροκίνητα όταν τη χρειάζεστε.)</string>
     <string name="wizard_reliability_usb_button">Ρύθμιση USB σε Μόνο φόρτιση</string>
@@ -425,6 +431,7 @@
       until the next translation pass says less rather than something wrong.
     -->
     <string name="wizard_transcription_subtitle">Το CallVault μπορεί να μετατρέψει μια εγγραφή σε κείμενο στο ίδιο το τηλέφωνο, και να γράψει μια σύντομη περίληψη από αυτό — τίποτα δεν αποστέλλεται πουθενά. Επιλέξτε πότε συμβαίνει αυτό, σε ποια γλώσσα είναι οι κλήσεις σας, και κατεβάστε ό,τι χρειάζεται.</string>
+    <string name="wizard_transcription_line">Μετατροπή κλήσεων σε κείμενο σε αυτό το τηλέφωνο.</string>
     <string name="wizard_transcription_language_note">Ορίστε την στη γλώσσα στην οποία είναι ρυθμισμένο αυτό το τηλέφωνο. Το να την ονομάσετε είναι πολύ πιο αξιόπιστο από το να αφήσετε την εφαρμογή να μαντέψει, και μπορείτε ακόμα να επιλέξετε διαφορετική ανά κλήση αργότερα.</string>
     <!--
       Dead as of the third model tier, and kept only until the translation pass retires it. It is NOT
@@ -451,8 +458,10 @@
 
     <string name="wizard_audio_title">Ποιότητα ήχου</string>
     <string name="wizard_audio_subtitle">Επιλέξτε τη μορφή εγγραφής και τον ρυθμό bit. Το Opus στα 16 kbps συνιστάται για καθαρή φωνή με μικρά μεγέθη αρχείων.</string>
+    <string name="wizard_audio_line">Διάλεξε μορφή και ποιότητα.</string>
     <string name="wizard_filename_title">Μορφή ονόματος αρχείου</string>
     <string name="wizard_filename_subtitle">Επιλέξτε πώς ονομάζονται οι αποθηκευμένες εγγραφές.</string>
+    <string name="wizard_filename_line">Διάλεξε πώς ονομάζονται τα αρχεία.</string>
 
     <!-- Home -->
     <string name="home_all_set_message">Είστε έτοιμοι. Το CallVault είναι έτοιμο να καταγράψει τις κλήσεις σας.</string>

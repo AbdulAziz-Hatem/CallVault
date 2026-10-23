@@ -115,39 +115,6 @@ internal fun ModelsStep(
             )
         }
 
-        // Said even though the field already shows the language: the value arrived without being asked
-        // for, and a pre-filled answer nobody explains is one people scroll past rather than check.
-        // Only when there IS a pre-filled answer — a phone set to a language the app does not offer
-        // lands on auto-detect, and the field's own warning is the right thing to read there.
-        if (language != null) {
-            NoteCard(stringResource(R.string.wizard_transcription_language_note))
-        }
-
-        // Built from the catalogue, not written out. This note used to name SMALL_Q5_1 and
-        // LARGE_V3_TURBO_Q5_0 by hand into a four-argument format string, which meant adding a third
-        // tier compiled cleanly and left the wizard quietly describing two of three models forever —
-        // the one place in the transcription UI with no `when` to fail on. The dropdown right above
-        // it already offered the model this note did not mention.
-        //
-        // `map` rather than `joinToString`, because only the inline one lets `stringResource` be
-        // called per entry; the join then runs over plain strings.
-        val modelSizes = TranscriptionModel.entries.map { model ->
-            stringResource(
-                R.string.wizard_transcription_model_size,
-                stringResource(TranscriptionLabels.titleOf(model)),
-                model.sizeBytes / BYTES_PER_MB
-            )
-        }
-        // A new key rather than the old one narrowed to one argument: the ten values-* files still
-        // hold a four-placeholder translation of `wizard_transcription_model_note`, and feeding a
-        // one-argument call to a locale's %2$d throws rather than degrading.
-        NoteCard(
-            stringResource(
-                R.string.wizard_transcription_model_sizes_note,
-                modelSizes.joinToString(stringResource(R.string.list_separator))
-            )
-        )
-
         // A card of its own rather than the single sentence that used to be here. Summaries are half
         // of what this step is for, and a footnote pointing at Settings is how a feature ends up
         // never being found. The rows are the summariser's own, so the requirements dialog — 3.46 GB
@@ -176,8 +143,5 @@ internal fun ModelsStep(
                 onCancelImport = onCancelModelImport
             )
         }
-
-        // Last, and about both downloads: whatever was started here does not have to finish here.
-        NoteCard(stringResource(R.string.wizard_transcription_background_note))
     }
 }

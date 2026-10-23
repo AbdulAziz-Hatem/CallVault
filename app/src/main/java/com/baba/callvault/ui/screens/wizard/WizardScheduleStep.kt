@@ -38,14 +38,10 @@ internal fun ScheduleStep(
         SyncScheduleMode.entries.forEach { mode ->
             OptionCard(
                 title = stringResource(SyncScheduleLabels.titleOf(mode)),
-                description = stringResource(SyncScheduleLabels.descriptionOf(mode)),
+                explanation = stringResource(SyncScheduleLabels.descriptionOf(mode)),
                 selected = scheduleMode == mode,
                 onClick = { onSelectMode(mode) }
             )
-        }
-
-        if (scheduleMode == SyncScheduleMode.IMMEDIATE) {
-            NoteCard(stringResource(R.string.wizard_schedule_immediate_note))
         }
 
         if (scheduleMode == SyncScheduleMode.DAILY || scheduleMode == SyncScheduleMode.WEEKLY) {

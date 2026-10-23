@@ -40,25 +40,29 @@ internal fun AutoRecordStep(
         // Offered here and not only in Settings because the wizard cannot be re-run, and someone
         // installing CallVault for app calls alone wants this on day one — otherwise their first
         // week is a Record prompt on every phone call they take.
-        ToggleCard(
-            title = stringResource(R.string.settings_carrier_recording),
-            description = stringResource(R.string.settings_carrier_recording_description),
-            checked = carrier,
-            onCheckedChange = onCarrierChange
-        )
+        CvCard {
+            SettingsToggleRow(
+                label = stringResource(R.string.settings_carrier_recording),
+                checked = carrier,
+                onCheckedChange = onCarrierChange,
+                description = stringResource(R.string.settings_carrier_recording_description)
+            )
+        }
         if (carrier) {
-            ToggleCard(
-                title = stringResource(R.string.settings_auto_record_incoming),
-                description = stringResource(R.string.wizard_ui_auto_incoming_desc),
-                checked = incoming,
-                onCheckedChange = onIncomingChange
-            )
-            ToggleCard(
-                title = stringResource(R.string.settings_auto_record_outgoing),
-                description = stringResource(R.string.wizard_ui_auto_outgoing_desc),
-                checked = outgoing,
-                onCheckedChange = onOutgoingChange
-            )
+            CvCard {
+                SettingsToggleRow(
+                    label = stringResource(R.string.settings_auto_record_incoming),
+                    checked = incoming,
+                    onCheckedChange = onIncomingChange,
+                    description = stringResource(R.string.wizard_ui_auto_incoming_desc)
+                )
+                SettingsToggleRow(
+                    label = stringResource(R.string.settings_auto_record_outgoing),
+                    checked = outgoing,
+                    onCheckedChange = onOutgoingChange,
+                    description = stringResource(R.string.wizard_ui_auto_outgoing_desc)
+                )
+            }
         }
 
         // App calls belong beside phone calls: they are the same decision — what gets recorded — and

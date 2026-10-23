@@ -38,14 +38,10 @@ internal fun StorageStep(
         StorageTarget.entries.forEach { target ->
             OptionCard(
                 title = stringResource(storageTargetTitleRes(target)),
-                description = stringResource(storageTargetDescRes(target)),
+                explanation = stringResource(storageTargetDescRes(target)),
                 selected = storageTarget == target,
                 onClick = { onSelectStorageTarget(target) }
             )
-        }
-
-        if (usesDrive) {
-            NoteCard(stringResource(R.string.wizard_storage_drive_note))
         }
 
         Spacer(Modifier.height(2.dp))

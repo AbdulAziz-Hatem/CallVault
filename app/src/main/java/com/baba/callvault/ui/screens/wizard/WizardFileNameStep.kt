@@ -55,7 +55,8 @@ internal fun FileNameStep(
                 onOptionSelected = { onSelectTemplate(it.key) }
             )
         }
-        NoteCard(
+        // The live preview of the chosen name: a value, not an explanation, so it stays on screen.
+        SettingsHint(
             stringResource(
                 R.string.settings_file_name_template_example,
                 fileNameTemplateExample(selectedTemplate)

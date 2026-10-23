@@ -43,6 +43,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -220,11 +221,14 @@ fun WizardScreen(
                     stepNumber = safeIndex + 1,
                     stepCount = steps.size,
                     title = stringResource(stepTitleRes(currentStep)),
-                    subtitle = stringResource(stepSubtitleRes(currentStep))
+                    line = stringResource(stepLineRes(currentStep)),
+                    explanation = stepInfo(currentStep)
                 )
             }
 
             item {
+                // Same switch as the new Settings: every explanation in a step sits behind an (i).
+                CompositionLocalProvider(LocalSettingsDescriptionsAsInfo provides true) {
                 when (currentStep) {
                     WizardStep.STORAGE -> StorageStep(
                         storageTarget = storageTarget,
@@ -278,6 +282,7 @@ fun WizardScreen(
                         onImportModel = viewModel::importModel,
                         onCancelModelImport = viewModel::cancelModelImport
                     )
+                }
                 }
             }
         }
@@ -340,12 +345,12 @@ internal fun canAdvanceFrom(
 // ── Shell: header + progress + bottom bar ─────────────────────────────────────────────────────
 
 /**
- * The guided header: a small "Setup" eyebrow + "Step N of M", a teal segmented progress bar, then
- * the current step's title + subtitle via [CvHero]. This anchors the wizard as a confident, modern
- * onboarding flow rather than a stock Material stepper.
+ * The guided header: a small "Setup" eyebrow + "Step N of M", a teal segmented progress bar, then the
+ * current step's title with an (i) beside it, and one short line under it. The (i) carries everything the
+ * step used to say in its longer subtitle and note cards ([explanation]).
  */
 @Composable
-private fun WizardHeader(stepNumber: Int, stepCount: Int, title: String, subtitle: String) {
+private fun WizardHeader(stepNumber: Int, stepCount: Int, title: String, line: String, explanation: String?) {
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -366,7 +371,55 @@ private fun WizardHeader(stepNumber: Int, stepCount: Int, title: String, subtitl
         Spacer(Modifier.height(10.dp))
         SegmentedProgress(current = stepNumber, total = stepCount)
         Spacer(Modifier.height(20.dp))
-        CvHero(title = title, subtitle = subtitle)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.weight(1f)
+            )
+            if (!explanation.isNullOrBlank()) SettingsInfoButton(label = title, explanation = explanation)
+        }
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = line,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+/**
+ * Everything a step says beyond its one-line header, for the (i) beside the title: the former subtitle,
+ * then the former note cards. A note that used to show only for one choice (Drive storage, the immediate
+ * upload mode, a pre-filled language) is now always part of this text.
+ */
+@Composable
+private fun stepInfo(step: WizardStep): String? {
+    val subtitle = stringResource(stepSubtitleRes(step))
+    return when (step) {
+        WizardStep.STORAGE -> joinExplanations(subtitle, stringResource(R.string.wizard_storage_drive_note))
+        WizardStep.SCHEDULE -> joinExplanations(subtitle, stringResource(R.string.wizard_schedule_immediate_note))
+        WizardStep.TRANSCRIPTION -> {
+            // Built from the catalogue, so a new model tier is described without touching this.
+            val modelSizes = TranscriptionModel.entries.map { model ->
+                stringResource(
+                    R.string.wizard_transcription_model_size,
+                    stringResource(TranscriptionLabels.titleOf(model)),
+                    model.sizeBytes / BYTES_PER_MB
+                )
+            }
+            joinExplanations(
+                subtitle,
+                stringResource(R.string.wizard_transcription_language_note),
+                stringResource(
+                    R.string.wizard_transcription_model_sizes_note,
+                    modelSizes.joinToString(stringResource(R.string.list_separator))
+                ),
+                stringResource(R.string.wizard_transcription_background_note)
+            )
+        }
+        else -> subtitle
     }
 }
 
@@ -455,3 +508,14 @@ private fun stepSubtitleRes(step: WizardStep): Int = when (step) {
     WizardStep.TRANSCRIPTION -> R.string.wizard_transcription_subtitle
 }
 
+private fun stepLineRes(step: WizardStep): Int = when (step) {
+    WizardStep.STORAGE -> R.string.wizard_storage_line
+    WizardStep.SCHEDULE -> R.string.wizard_schedule_line
+    WizardStep.AUTO_RECORD -> R.string.wizard_auto_record_line
+    WizardStep.RELIABILITY -> R.string.wizard_reliability_line
+    WizardStep.EXPERIMENTAL -> R.string.wizard_experimental_line
+    WizardStep.UPDATES -> R.string.wizard_updates_line
+    WizardStep.AUDIO -> R.string.wizard_audio_line
+    WizardStep.FILE_NAME -> R.string.wizard_filename_line
+    WizardStep.TRANSCRIPTION -> R.string.wizard_transcription_line
+}

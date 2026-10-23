@@ -374,10 +374,12 @@
     <!-- Wizard: Storage step -->
     <string name="wizard_storage_title">محل ذخیره فایل‌های ضبط‌شده</string>
     <string name="wizard_storage_subtitle">انتخاب کنید فایل‌های ضبط‌شده شما کجا ذخیره شوند. می‌توانید این را بعداً در تنظیمات تغییر دهید.</string>
+    <string name="wizard_storage_line">پوشه‌ای برای ضبط‌هایتان انتخاب کنید.</string>
     <string name="wizard_storage_drive_note">با Google Drive، نسخه روی این دستگاه موقتی است و پس از بارگذاری حذف می‌شود.</string>
     <!-- Wizard: Schedule step -->
     <string name="wizard_schedule_title">زمان بارگذاری در Drive</string>
     <string name="wizard_schedule_subtitle">انتخاب کنید فایل‌های ضبط‌شده هر چند وقت یک‌بار در پوشه Google Drive شما بارگذاری شوند.</string>
+    <string name="wizard_schedule_line">انتخاب کنید ضبط‌ها کی آپلود شوند.</string>
     <string name="wizard_schedule_mode_label">زمان‌بندی بارگذاری</string>
     <string name="wizard_schedule_immediate">بی‌درنگ</string>
     <string name="wizard_schedule_daily">روزانه</string>
@@ -396,20 +398,25 @@
     <!-- Wizard: Auto-record step -->
     <string name="wizard_auto_record_title">ضبط خودکار</string>
     <string name="wizard_auto_record_subtitle">انتخاب کنید کدام تماس‌ها به‌طور خودکار ضبط شوند. می‌توانید این را بعداً در تنظیمات دقیق‌تر تنظیم کنید.</string>
+    <string name="wizard_auto_record_line">انتخاب کنید کدام تماس‌ها خودکار ضبط شوند.</string>
     <string name="wizard_auto_record_nothing_warning">با خاموش بودن هر دوی تماس‌های تلفنی و درون‌برنامه‌ای، CallVault چیزی ضبط نمی‌کند. مگر اینکه همین را بخواهید، دست‌کم یکی را روشن کنید.</string>
     <!-- Wizard: Audio step -->
     <string name="wizard_experimental_title">افزودنی‌های اختیاری</string>
     <string name="wizard_experimental_subtitle">به‌طور پیش‌فرض خاموش است — می‌توانید بعداً آن را در تنظیمات روشن کنید.</string>
+    <string name="wizard_experimental_line">به‌طور پیش‌فرض خاموش است.</string>
     <string name="wizard_updates_title">به‌روز ماندن</string>
     <string name="wizard_updates_subtitle">CallVault در فروشگاه برنامه نیست، بنابراین خودش GitHub را برای نسخه‌های جدید بررسی می‌کند.</string>
+    <string name="wizard_updates_line">CallVault نسخه‌های جدید را چگونه پیدا می‌کند.</string>
     <string name="wizard_reliability_title">ضبط قابل اعتماد</string>
     <string name="wizard_reliability_subtitle">دو تنظیم اختیاری که ضبط را در شرایط دشوار فعال نگه می‌دارند. می‌توانید این‌ها را رد کنید و بعداً در تنظیمات تغییر دهید.</string>
+    <string name="wizard_reliability_line">دو پشتیبان اختیاری.</string>
     <string name="wizard_reliability_usb_title">ضبط را هنگام قفل شدن صفحه ادامه بده</string>
     <string name="wizard_reliability_usb_desc">در برخی گوشی‌ها، قفل کردن صفحه در حین تماس می‌تواند ضبط را متوقف کند. تنظیم USB روی \"فقط شارژ\" از این جلوگیری می‌کند. (گوشی شما پس از آن هنگام اتصال به رایانه به‌طور پیش‌فرض روی شارژ می‌رود — وقتی لازم داشتید انتقال فایل را دستی انتخاب کنید.)</string>
     <string name="wizard_reliability_usb_button">تنظیم USB روی فقط شارژ</string>
     <string name="wizard_reliability_usb_done">USB روی فقط شارژ تنظیم شد</string>
     <string name="wizard_transcription_title">تبدیل تماس‌ها به متن</string>
     <string name="wizard_transcription_subtitle">CallVault می‌تواند یک فایل ضبط‌شده را روی خود گوشی به متن تبدیل کند و از آن یک خلاصه کوتاه بنویسد — چیزی به جایی فرستاده نمی‌شود. انتخاب کنید این کار چه زمانی انجام شود، تماس‌های شما به چه زبانی هستند، و آنچه لازم است دانلود کنید.</string>
+    <string name="wizard_transcription_line">تماس‌ها را روی همین گوشی به متن تبدیل کنید.</string>
     <string name="wizard_transcription_language_note">روی زبانی تنظیم کنید که این گوشی روی آن تنظیم شده است. مشخص کردن آن بسیار قابل‌اعتمادتر از این است که بگذارید برنامه حدس بزند، و همچنان می‌توانید بعداً برای هر تماس زبان دیگری انتخاب کنید.</string>
     <string name="wizard_transcription_model_note">رونویسی ابتدا به یک مدل گفتار روی گوشی نیاز دارد: %1$s برابر %2$d مگابایت است، %3$s برابر %4$d مگابایت. رونویسی یک تماس سپس تقریباً به اندازه طول تماس زمان می‌برد و پردازنده را سخت به کار می‌گیرد.</string>
     <string name="wizard_transcription_model_sizes_note">رونویسی ابتدا به یک مدل گفتار روی گوشی نیاز دارد: %1$s. رونویسی یک تماس سپس تقریباً به اندازه طول تماس زمان می‌برد و پردازنده را سخت به کار می‌گیرد.</string>
@@ -422,8 +429,10 @@
 
     <string name="wizard_audio_title">کیفیت صدا</string>
     <string name="wizard_audio_subtitle">قالب ضبط و نرخ بیت را انتخاب کنید. Opus با ۱۶ kbps برای صدای شفاف با اندازه فایل کوچک توصیه می‌شود.</string>
+    <string name="wizard_audio_line">قالب و کیفیت را انتخاب کنید.</string>
     <string name="wizard_filename_title">قالب نام فایل</string>
     <string name="wizard_filename_subtitle">انتخاب کنید فایل‌های ضبط‌شده چگونه نام‌گذاری شوند.</string>
+    <string name="wizard_filename_line">انتخاب کنید فایل‌ها چگونه نام بگیرند.</string>
 
     <!-- Home -->
     <string name="home_all_set_message">همه‌چیز آماده است. CallVault برای ضبط تماس‌های شما آماده است.</string>

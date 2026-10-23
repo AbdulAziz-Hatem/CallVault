@@ -423,10 +423,12 @@
     <!-- Wizard: Storage step -->
     <string name="wizard_storage_title">Where to save recordings</string>
     <string name="wizard_storage_subtitle">Choose where your recordings are stored. You can change this later in Settings.</string>
+    <string name="wizard_storage_line">Pick a folder for your recordings.</string>
     <string name="wizard_storage_drive_note">With Google Drive, the copy on this device is temporary and is deleted after it has been uploaded.</string>
     <!-- Wizard: Schedule step -->
     <string name="wizard_schedule_title">When to upload to Drive</string>
     <string name="wizard_schedule_subtitle">Choose how often recordings are uploaded to your Google Drive folder.</string>
+    <string name="wizard_schedule_line">Pick when recordings upload.</string>
     <string name="wizard_schedule_mode_label">Upload schedule</string>
     <string name="wizard_schedule_immediate">Immediately</string>
     <string name="wizard_schedule_daily">Daily</string>
@@ -445,14 +447,18 @@
     <!-- Wizard: Auto-record step -->
     <string name="wizard_auto_record_title">Automatic recording</string>
     <string name="wizard_auto_record_subtitle">Choose which calls are recorded automatically. You can fine-tune this later in Settings.</string>
+    <string name="wizard_auto_record_line">Pick which calls record on their own.</string>
     <string name="wizard_auto_record_nothing_warning">With both phone calls and app calls off, CallVault will not record anything. Turn at least one on unless that is what you want.</string>
     <!-- Wizard: Audio step -->
     <string name="wizard_experimental_title">Optional extras</string>
     <string name="wizard_experimental_subtitle">It is off by default — you can turn it on later in Settings.</string>
+    <string name="wizard_experimental_line">Off by default.</string>
     <string name="wizard_updates_title">Staying up to date</string>
     <string name="wizard_updates_subtitle">CallVault is not on an app store, so it checks GitHub for new versions itself.</string>
+    <string name="wizard_updates_line">How CallVault finds new versions.</string>
     <string name="wizard_reliability_title">Reliable recording</string>
     <string name="wizard_reliability_subtitle">Two optional settings that keep recording working in tricky conditions. You can skip these and change them later in Settings.</string>
+    <string name="wizard_reliability_line">Two optional safety nets.</string>
     <string name="wizard_reliability_usb_title">Keep recording when the screen locks</string>
     <string name="wizard_reliability_usb_desc">On some phones, locking the screen during a call can stop the recording. Setting USB to \"Charging only\" prevents that. (Your phone then defaults to charging when plugged into a PC — pick File transfer manually when you need it.)</string>
     <string name="wizard_reliability_usb_button">Set USB to Charging only</string>
@@ -474,6 +480,7 @@
       until the next translation pass says less rather than something wrong.
     -->
     <string name="wizard_transcription_subtitle">CallVault can turn a recording into text on the phone itself, and write a short summary from it — nothing is sent anywhere. Choose when that happens, which language your calls are in, and download what it needs.</string>
+    <string name="wizard_transcription_line">Turn calls into text on this phone.</string>
     <string name="wizard_transcription_language_note">Set to the language this phone is set to. Naming it is far more reliable than letting the app guess, and you can still pick a different one per call later.</string>
     <!--
       Dead as of the third model tier, and kept only until the translation pass retires it. It is NOT
@@ -500,8 +507,10 @@
 
     <string name="wizard_audio_title">Audio quality</string>
     <string name="wizard_audio_subtitle">Pick the recording format and bit rate. Opus at 16 kbps is recommended for clear voice at small file sizes.</string>
+    <string name="wizard_audio_line">Pick format and quality.</string>
     <string name="wizard_filename_title">File name format</string>
     <string name="wizard_filename_subtitle">Choose how saved recordings are named.</string>
+    <string name="wizard_filename_line">Pick how files are named.</string>
 
     <!-- Home -->
     <string name="home_all_set_message">You\'re all set. CallVault is ready to record your calls.</string>
