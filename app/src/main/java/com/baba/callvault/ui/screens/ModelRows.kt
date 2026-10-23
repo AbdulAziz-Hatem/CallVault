@@ -133,7 +133,7 @@ internal fun TranscriptionModelRows(
                 } else {
                     TranscriptionDownloadRow(model, onDownload)
                 }
-                importRow(importFailureText(current.reason, model))
+                importRow(importFailureText(current.reason, model, current.otherModelId))
             }
 
             // A failure says which one it was, because the two the user can act on need different

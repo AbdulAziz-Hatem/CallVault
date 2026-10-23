@@ -255,4 +255,40 @@ class ModelDownloadStateTest {
             )
         )
     }
+
+    @Test
+    fun `a download failure newer than an import failure is shown`() {
+        assertEquals(
+            ModelDownloadState.Failed("verification-failed"),
+            ModelDownloadState.from(
+                isInstalled = false, workState = WorkInfo.State.FAILED, percent = null,
+                error = "verification-failed", downloadFailedAt = 2_000L,
+                importState = WorkInfo.State.FAILED, importError = "wrong-file", importFailedAt = 1_000L
+            )
+        )
+    }
+
+    @Test
+    fun `an import failure newer than a download failure is shown`() {
+        assertEquals(
+            ModelDownloadState.ImportFailed("wrong-file", null),
+            ModelDownloadState.from(
+                isInstalled = false, workState = WorkInfo.State.FAILED, percent = null,
+                error = "verification-failed", downloadFailedAt = 1_000L,
+                importState = WorkInfo.State.FAILED, importError = "wrong-file", importFailedAt = 2_000L
+            )
+        )
+    }
+
+    @Test
+    fun `a failure without a time counts as the older one`() {
+        assertEquals(
+            ModelDownloadState.Failed("verification-failed"),
+            ModelDownloadState.from(
+                isInstalled = false, workState = WorkInfo.State.FAILED, percent = null,
+                error = "verification-failed", downloadFailedAt = 1_000L,
+                importState = WorkInfo.State.FAILED, importError = "wrong-file", importFailedAt = null
+            )
+        )
+    }
 }

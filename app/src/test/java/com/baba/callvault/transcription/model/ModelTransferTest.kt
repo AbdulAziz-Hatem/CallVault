@@ -10,7 +10,6 @@ package com.baba.callvault.transcription.model
 
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.IOException
 import java.security.MessageDigest
 import java.util.concurrent.CancellationException
 import kotlin.random.Random
@@ -65,7 +64,7 @@ class ModelTransferTest {
         assertEquals(sha256Of(bytes), result.sha256)
     }
 
-    @Test(expected = IOException::class)
+    @Test(expected = ModelTransfer.LongerThanExpectedException::class)
     fun `copyAndHash refuses a source longer than expected`() {
         ModelTransfer.copyAndHash(ByteArrayInputStream(bytes), ByteArrayOutputStream(), bytes.size - 1L, {})
     }

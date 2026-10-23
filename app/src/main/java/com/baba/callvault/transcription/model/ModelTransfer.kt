@@ -40,6 +40,14 @@ object ModelTransfer {
 
     data class CopyResult(val bytes: Long, val sha256: String)
 
+    /**
+     * The source kept going past the model's size, so it is not that model's file. Its own type so
+     * the import can say "wrong file" rather than "couldn't read it": the file read fine, it is just
+     * the wrong one, and picking it again would not help.
+     */
+    class LongerThanExpectedException(expectedSize: Long) :
+        IOException("longer than the expected $expectedSize bytes")
+
     /** Every model the app can fetch. */
     fun catalogue(): List<DownloadableModel> = TranscriptionModel.entries + SummaryModel.entries
 
@@ -51,8 +59,8 @@ object ModelTransfer {
     }
 
     /**
-     * Copies [input] to [output] while hashing, in one pass. Throws [IOException] as soon as more
-     * than [expectedSize] bytes arrive, and [CancellationException] when [isStopped] turns true.
+     * Copies [input] to [output] while hashing, in one pass. Throws [LongerThanExpectedException] as
+     * soon as more than [expectedSize] bytes arrive, and [CancellationException] when [isStopped] turns true.
      */
     fun copyAndHash(
         input: InputStream,
@@ -70,7 +78,7 @@ object ModelTransfer {
             val read = input.read(buffer)
             if (read < 0) break
             total += read
-            if (total > expectedSize) throw IOException("longer than expected")
+            if (total > expectedSize) throw LongerThanExpectedException(expectedSize)
             digest.update(buffer, 0, read)
             output.write(buffer, 0, read)
             val percent = if (expectedSize > 0) (total * PERCENT / expectedSize).toInt() else 0

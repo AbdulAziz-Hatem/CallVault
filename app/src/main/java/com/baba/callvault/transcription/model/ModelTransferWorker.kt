@@ -15,15 +15,17 @@ import android.net.Uri
 import android.os.SystemClock
 import android.provider.DocumentsContract
 import android.provider.OpenableColumns
-import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
+import androidx.work.ForegroundInfo
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.baba.callvault.R
+import com.baba.callvault.transcription.HeavyWorkNotification
 import com.baba.callvault.utils.AppLogger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.withLock
@@ -58,6 +60,17 @@ class ModelTransferWorker(
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
+    /**
+     * The ongoing notification a running transfer shows. Used by [doWork], and asked for by WorkManager
+     * if this ever runs as expedited work.
+     */
+    override suspend fun getForegroundInfo(): ForegroundInfo =
+        HeavyWorkNotification.forWork(
+            applicationContext,
+            if (inputData.getString(KEY_OP) == OP_BACKUP) R.string.heavy_work_backing_up_model
+            else R.string.heavy_work_importing_model
+        )
+
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val id = inputData.getString(KEY_MODEL_ID)
         val model = ModelTransfer.catalogue().firstOrNull { it.id == id }
@@ -66,6 +79,12 @@ class ModelTransferWorker(
             AppLogger.e(TAG, "Transfer started without a known model or a uri (model=$id); nothing to do")
             return@withContext Result.failure()
         }
+        // A background job is stopped after ten minutes, and copying 2.6 GB from a slow or cloud
+        // provider can take longer — the stop deletes the partial copy and the re-run starts from zero,
+        // so without this a big import could never finish. Best-effort, like the transcription and
+        // summary workers: a phone that refuses the foreground service still gets the copy attempted.
+        runCatching { setForeground(getForegroundInfo()) }
+            .onFailure { AppLogger.w(TAG, "Could not run the ${model.id} transfer in the foreground: ${it.message}") }
         when (inputData.getString(KEY_OP)) {
             OP_IMPORT -> importModel(model, uri)
             OP_BACKUP -> backupModel(model, uri)
@@ -97,6 +116,9 @@ class ModelTransferWorker(
                     throw e
                 } catch (e: SecurityException) {
                     fail(OP_IMPORT, model, ERROR_UNREADABLE, startedAt, e)
+                } catch (e: ModelTransfer.LongerThanExpectedException) {
+                    // Read fine, but bigger than the model: the wrong file, not an unreadable one.
+                    fail(OP_IMPORT, model, ERROR_WRONG_FILE, startedAt, e)
                 } catch (e: IOException) {
                     // FileNotFoundException included: the file was moved or deleted since it was picked.
                     fail(OP_IMPORT, model, ERROR_UNREADABLE, startedAt, e)
@@ -112,7 +134,7 @@ class ModelTransferWorker(
         } finally {
             // Not on a system stop or a REPLACE (see the class KDoc), including one while still waiting
             // for the lock; only on an end of its own or the user's cancel.
-            if (shouldReleaseGrant(cancelledImports, model)) releaseGrant(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            if (shouldReleaseGrant(cancelledImports, model.id, isStopped)) releaseGrant(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }
 
@@ -150,7 +172,10 @@ class ModelTransferWorker(
         if (digest != other.sha256) return fail(OP_IMPORT, target, ERROR_WRONG_FILE, startedAt)
         log(OP_IMPORT, target, "failed $ERROR_OTHER_MODEL (is ${other.id})", 0L, startedAt)
         return Result.failure(
-            workDataOf(KEY_MODEL_ID to target.id, KEY_ERROR to ERROR_OTHER_MODEL, KEY_OTHER_MODEL_ID to other.id)
+            workDataOf(
+                KEY_MODEL_ID to target.id, KEY_ERROR to ERROR_OTHER_MODEL, KEY_OTHER_MODEL_ID to other.id,
+                KEY_FINISHED_AT to System.currentTimeMillis()
+            )
         )
     }
 
@@ -201,7 +226,7 @@ class ModelTransferWorker(
                 runCatching { DocumentsContract.deleteDocument(applicationContext.contentResolver, uri) }
             }
             // Not on a system stop or a REPLACE (see the class KDoc).
-            if (shouldReleaseGrant(cancelledBackups, model)) releaseGrant(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            if (shouldReleaseGrant(cancelledBackups, model.id, isStopped)) releaseGrant(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         }
     }
 
@@ -210,15 +235,6 @@ class ModelTransferWorker(
     /** Only the whole percent: [ModelTransfer.copyAndHash] already calls this once per change. */
     private fun publish(model: DownloadableModel, percent: Int) {
         setProgressAsync(workDataOf(KEY_MODEL_ID to model.id, KEY_PERCENT to percent))
-    }
-
-    /**
-     * True when this run ended on its own, or was stopped because the user cancelled it. Clears the
-     * model's cancel mark on every end, so it cannot outlive the run it was meant for.
-     */
-    private fun shouldReleaseGrant(cancelled: MutableSet<String>, model: DownloadableModel): Boolean {
-        val isMarked = cancelled.remove(model.id)
-        return !isStopped || isMarked
     }
 
     private fun releaseGrant(uri: Uri, flag: Int) {
@@ -237,7 +253,9 @@ class ModelTransferWorker(
 
     private fun fail(op: String, model: DownloadableModel, error: String, startedAt: Long, cause: Throwable? = null): Result {
         log(op, model, "failed $error${cause?.let { " (${it.javaClass.simpleName})" } ?: ""}", 0L, startedAt)
-        return Result.failure(workDataOf(KEY_MODEL_ID to model.id, KEY_ERROR to error))
+        return Result.failure(
+            workDataOf(KEY_MODEL_ID to model.id, KEY_ERROR to error, KEY_FINISHED_AT to System.currentTimeMillis())
+        )
     }
 
     /** Model id, op, outcome, bytes and time only: never the user's URI or file name. */
@@ -252,6 +270,9 @@ class ModelTransferWorker(
         const val KEY_PERCENT = "percent"
         const val KEY_ERROR = "error"
         const val KEY_OTHER_MODEL_ID = "otherModelId"
+
+        /** When a run failed, in epoch millis; shared with [ModelDownloadWorker] (see its KDoc). */
+        const val KEY_FINISHED_AT = ModelDownloadWorker.KEY_FINISHED_AT
 
         private const val KEY_OP = "op"
         private const val KEY_URI = "uri"
@@ -281,6 +302,17 @@ class ModelTransferWorker(
         private val cancelledImports: MutableSet<String> = ConcurrentHashMap.newKeySet()
         private val cancelledBackups: MutableSet<String> = ConcurrentHashMap.newKeySet()
 
+        /**
+         * Whether a run that has just ended releases its URI grant: true when it ended on its own
+         * (`!isStopped`), or was stopped because the user cancelled it ([modelId] marked in
+         * [cancelled]). Clears the mark on every end, so it cannot outlive the run it was meant for.
+         * See the class KDoc for why a system stop and a REPLACE keep the grant.
+         */
+        internal fun shouldReleaseGrant(cancelled: MutableSet<String>, modelId: String, isStopped: Boolean): Boolean {
+            val isMarked = cancelled.remove(modelId)
+            return !isStopped || isMarked
+        }
+
         fun importWorkName(model: DownloadableModel): String = "cv_model_import_${model.id}"
 
         fun backupWorkName(model: DownloadableModel): String = "cv_model_backup_${model.id}"
@@ -291,7 +323,9 @@ class ModelTransferWorker(
             cancelledImports.remove(model.id)
             val request = OneTimeWorkRequestBuilder<ModelTransferWorker>()
                 .setInputData(inputFor(model, OP_IMPORT, source))
-                .setConstraints(Constraints.Builder().setRequiresStorageNotLow(true).build())
+                // No storage-not-low constraint: the worker's own hasRoomFor check is the guard. The
+                // constraint fires at a different, OEM-set threshold, so a phone between the two would
+                // be stopped mid-copy, have the partial deleted, regain the space and re-run — forever.
                 .build()
             WorkManager.getInstance(context)
                 .enqueueUniqueWork(importWorkName(model), ExistingWorkPolicy.REPLACE, request)

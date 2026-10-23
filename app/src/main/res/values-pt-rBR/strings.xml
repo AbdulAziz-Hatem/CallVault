@@ -453,6 +453,8 @@
     <string name="heavy_work_notification_text">O celular pode esquentar enquanto isso.</string>
     <string name="heavy_work_transcribing">Transcrevendo uma gravação</string>
     <string name="heavy_work_summarising">Resumindo uma gravação</string>
+    <string name="heavy_work_importing_model">Importando um modelo</string>
+    <string name="heavy_work_backing_up_model">Fazendo backup de um modelo</string>
     <string name="transcription_charging_title">Somente carregando</string>
     <string name="transcription_confirm_subtitle">Mostra quanto tempo vai levar e permite cancelar.</string>
     <string name="transcribe_language_title">Qual idioma?</string>
@@ -507,7 +509,7 @@
     <string name="model_import_subtitle">Use uma cópia que você já tem</string>
     <string name="model_import_info">Escolha o arquivo oficial do modelo (%1$s, %2$d MB). O CallVault verifica se é exatamente esse arquivo antes de usá-lo e deixa sua cópia onde está.</string>
     <string name="model_import_failed_wrong_file">Esse não é o arquivo certo. Escolha %1$s.</string>
-    <string name="model_import_failed_other_model">Esse é o arquivo de outro modelo. Escolha esse modelo primeiro e depois importe.</string>
+    <string name="model_import_failed_other_model">Esse é o arquivo de outro modelo (%1$s). Escolha esse modelo primeiro e depois importe.</string>
     <string name="model_import_failed_unreadable">Não foi possível ler esse arquivo. Escolha-o novamente.</string>
     <string name="model_import_failed_space">Não há espaço livre suficiente para importá-lo.</string>
     <string name="model_backup">Fazer backup</string>

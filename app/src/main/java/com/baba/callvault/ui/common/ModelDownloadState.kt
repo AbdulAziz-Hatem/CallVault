@@ -13,6 +13,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.work.Data
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.baba.callvault.transcription.model.DownloadableModel
@@ -91,6 +92,14 @@ sealed interface ModelDownloadState {
                 state == WorkInfo.State.BLOCKED
 
         /**
+         * True when the import failed no earlier than the download. A failure without a time (one
+         * from before the time was recorded) counts as the older; with neither timed, or a tie, the
+         * import wins, as it did before the times existed.
+         */
+        private fun isImportNewer(importFailedAt: Long?, downloadFailedAt: Long?): Boolean =
+            (importFailedAt ?: Long.MIN_VALUE) >= (downloadFailedAt ?: Long.MIN_VALUE)
+
+        /**
          * The state to show, given what the catalogue and WorkManager each say.
          *
          * **Installed wins over everything.** A finished download leaves its work in the terminal
@@ -109,7 +118,9 @@ sealed interface ModelDownloadState {
             importState: WorkInfo.State? = null,
             importPercent: Int? = null,
             importError: String? = null,
-            importOtherModelId: String? = null
+            importOtherModelId: String? = null,
+            downloadFailedAt: Long? = null,
+            importFailedAt: Long? = null
         ): ModelDownloadState =
             when {
                 isInstalled -> Installed
@@ -118,10 +129,13 @@ sealed interface ModelDownloadState {
                 // ENQUEUED covers both the first moment after a tap and a retry waiting on its
                 // backoff, which is also the shape an interrupted download comes back in.
                 workState == WorkInfo.State.ENQUEUED || workState == WorkInfo.State.BLOCKED -> Waiting
-                // A live import outranks any failure, and a failed import outranks a failed
-                // download: it is the newer thing the user did, so the row must report it.
+                // A live import outranks any failure. Between two failures the newer one is shown:
+                // WorkManager keeps both FAILED records, so a stale import failure would otherwise
+                // hide a download that failed after it.
                 isActive(importState) -> Importing(importPercent)
-                importState == WorkInfo.State.FAILED -> ImportFailed(importError, importOtherModelId, partialBytes)
+                importState == WorkInfo.State.FAILED &&
+                    (workState != WorkInfo.State.FAILED || isImportNewer(importFailedAt, downloadFailedAt)) ->
+                    ImportFailed(importError, importOtherModelId, partialBytes)
                 workState == WorkInfo.State.FAILED -> Failed(error)
                 // Nothing running. SUCCEEDED without the file means it was verified then removed;
                 // CANCELLED means the user stopped it; null means no attempt this process. What
@@ -186,8 +200,16 @@ fun rememberModelDownloadState(
                 importPercent = importInfo?.let { ModelTransferWorker.percentOf(it.progress) },
                 importError = importInfo?.outputData?.getString(ModelTransferWorker.KEY_ERROR),
                 importOtherModelId =
-                    importInfo?.outputData?.getString(ModelTransferWorker.KEY_OTHER_MODEL_ID)
+                    importInfo?.outputData?.getString(ModelTransferWorker.KEY_OTHER_MODEL_ID),
+                downloadFailedAt = info?.outputData?.finishedAt(),
+                importFailedAt = importInfo?.outputData?.finishedAt()
             )
         }
     }
 }
+
+/** The failure time a model worker stamped into its output, or null when it wrote none. */
+private fun Data.finishedAt(): Long? =
+    getLong(ModelDownloadWorker.KEY_FINISHED_AT, NO_TIME).takeIf { it != NO_TIME }
+
+private const val NO_TIME = -1L

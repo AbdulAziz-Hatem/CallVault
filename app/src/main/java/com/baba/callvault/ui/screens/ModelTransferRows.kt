@@ -22,8 +22,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import com.baba.callvault.R
 import com.baba.callvault.transcription.model.DownloadableModel
+import com.baba.callvault.transcription.model.ModelTransfer
 import com.baba.callvault.transcription.model.ModelTransferWorker
+import com.baba.callvault.transcription.model.TranscriptionModel
 import com.baba.callvault.ui.common.ModelBackupState
+import com.baba.callvault.ui.common.TranscriptionLabels
 import com.baba.callvault.ui.common.rememberModelBackupState
 import com.baba.callvault.utils.AppLogger
 
@@ -44,9 +47,10 @@ private val ANY_FILE = arrayOf("*/*")
 
 /**
  * The string that says why an import failed, for one of `ModelTransferWorker`'s `ERROR_` values.
- * [R.string.model_import_failed_wrong_file] takes the model's name as its one argument; the others
- * take none. Anything unknown reads as "couldn't read that file", whose remedy — pick it again — is
- * the right one for any failure the worker has not named.
+ * [R.string.model_import_failed_wrong_file] takes this model's file name as its one argument and
+ * [R.string.model_import_failed_other_model] the other model's picker label; the others take none.
+ * Anything unknown reads as "couldn't read that file", whose remedy — pick it again — is the right one
+ * for any failure the worker has not named.
  */
 @StringRes
 internal fun importFailureRes(reason: String?): Int = when (reason) {
@@ -57,24 +61,57 @@ internal fun importFailureRes(reason: String?): Int = when (reason) {
     else -> R.string.model_import_failed_unreadable
 }
 
+/** One format argument of a failure message: literal text, or a string resource still to resolve. */
+internal sealed interface FailureArg {
+    data class Text(val text: String) : FailureArg
+    data class Res(@StringRes val res: Int) : FailureArg
+}
+
 /** A failed import's message: the string and its format arguments. */
-internal data class ImportFailureMessage(@StringRes val res: Int, val args: List<Any>)
+internal data class ImportFailureMessage(@StringRes val res: Int, val args: List<FailureArg>)
 
 /**
  * [importFailureRes] with its arguments. The wrong-file message names [model]'s file — the name the
  * info text told the user to look for — never a tier label like "Fast", which no file is called.
+ *
+ * The other-model message names the model the file turned out to be ([otherModelId]) by what the user
+ * picks next: a speech model by its tier label in the picker, the summariser by its file name (it has
+ * no display name, see ruling R8). An id the catalogue no longer knows falls back to the bare id, so
+ * the placeholder is never left unfilled.
  */
-internal fun importFailureMessage(reason: String?, model: DownloadableModel): ImportFailureMessage {
+internal fun importFailureMessage(
+    reason: String?,
+    model: DownloadableModel,
+    otherModelId: String? = null
+): ImportFailureMessage {
     val res = importFailureRes(reason)
-    val args = if (res == R.string.model_import_failed_wrong_file) listOf<Any>(model.fileName) else emptyList()
+    val args = when (res) {
+        R.string.model_import_failed_wrong_file -> listOf(FailureArg.Text(model.fileName))
+        R.string.model_import_failed_other_model -> listOf(otherModelLabel(otherModelId))
+        else -> emptyList()
+    }
     return ImportFailureMessage(res, args)
 }
 
+/** The picker label of the catalogue model [id] names. */
+private fun otherModelLabel(id: String?): FailureArg =
+    when (val other = ModelTransfer.catalogue().firstOrNull { it.id == id }) {
+        is TranscriptionModel -> FailureArg.Res(TranscriptionLabels.titleOf(other))
+        null -> FailureArg.Text(id.orEmpty())
+        else -> FailureArg.Text(other.fileName)
+    }
+
 /** [importFailureMessage] resolved to text. */
 @Composable
-internal fun importFailureText(reason: String?, model: DownloadableModel): String {
-    val message = importFailureMessage(reason, model)
-    return stringResource(message.res, *message.args.toTypedArray())
+internal fun importFailureText(reason: String?, model: DownloadableModel, otherModelId: String? = null): String {
+    val message = importFailureMessage(reason, model, otherModelId)
+    val args = message.args.map { arg ->
+        when (arg) {
+            is FailureArg.Text -> arg.text
+            is FailureArg.Res -> stringResource(arg.res)
+        }
+    }
+    return stringResource(message.res, *args.toTypedArray())
 }
 
 /**

@@ -227,7 +227,7 @@ internal fun SummaryRows(
             // with the file.
             is ModelDownloadState.ImportFailed -> {
                 if (current.partialBytes > 0L) pausedRows(current.partialBytes) else downloadRow()
-                importRow(importFailureText(current.reason, model))
+                importRow(importFailureText(current.reason, model, current.otherModelId))
             }
 
             // A failure says which one it was, because the two the user can act on need different

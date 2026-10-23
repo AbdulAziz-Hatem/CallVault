@@ -545,6 +545,8 @@
     <string name="heavy_work_notification_text">Το τηλέφωνό σας μπορεί να ζεσταθεί όσο εκτελείται αυτό.</string>
     <string name="heavy_work_transcribing">Απομαγνητοφώνηση μιας εγγραφής</string>
     <string name="heavy_work_summarising">Σύνταξη περίληψης μιας εγγραφής</string>
+    <string name="heavy_work_importing_model">Εισαγωγή μοντέλου</string>
+    <string name="heavy_work_backing_up_model">Δημιουργία αντιγράφου ασφαλείας μοντέλου</string>
     <string name="transcription_model_label">Μοντέλο</string>
     <string name="transcription_model_small">Γρήγορο</string>
     <!--
@@ -575,7 +577,7 @@
     <string name="model_import_subtitle">Χρησιμοποιήστε ένα αντίγραφο που ήδη έχετε</string>
     <string name="model_import_info">Επιλέξτε το επίσημο αρχείο μοντέλου (%1$s, %2$d MB). Το CallVault ελέγχει ότι είναι ακριβώς αυτό το αρχείο πριν το χρησιμοποιήσει και αφήνει το αντίγραφό σας εκεί που είναι.</string>
     <string name="model_import_failed_wrong_file">Δεν είναι το σωστό αρχείο. Επιλέξτε %1$s.</string>
-    <string name="model_import_failed_other_model">Αυτό είναι το αρχείο άλλου μοντέλου. Επιλέξτε πρώτα εκείνο το μοντέλο και μετά κάντε εισαγωγή.</string>
+    <string name="model_import_failed_other_model">Αυτό είναι το αρχείο άλλου μοντέλου (%1$s). Επιλέξτε πρώτα εκείνο το μοντέλο και μετά κάντε εισαγωγή.</string>
     <string name="model_import_failed_unreadable">Δεν ήταν δυνατή η ανάγνωση του αρχείου. Επιλέξτε το ξανά.</string>
     <string name="model_import_failed_space">Δεν υπάρχει αρκετός ελεύθερος χώρος για την εισαγωγή.</string>
     <string name="model_backup">Αντίγραφο ασφαλείας</string>

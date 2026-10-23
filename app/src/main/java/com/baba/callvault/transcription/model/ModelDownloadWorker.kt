@@ -96,7 +96,7 @@ class ModelDownloadWorker(
             val remaining = model.sizeBytes - resumeFrom
             if (!ModelDownloadPolicy.hasRoomFor(dir.usableSpace, remaining)) {
                 AppLogger.w(TAG, "Not enough free space for ${model.id}: needs ${ModelDownloadPolicy.mb(remaining)} plus headroom, has ${ModelDownloadPolicy.mb(dir.usableSpace)}")
-                return Result.failure(workDataOf(KEY_ERROR to ERROR_NO_SPACE))
+                return Result.failure(workDataOf(KEY_ERROR to ERROR_NO_SPACE, KEY_FINISHED_AT to System.currentTimeMillis()))
             }
 
             val part = ModelRepository.partFileFor(dir, model)
@@ -120,7 +120,7 @@ class ModelDownloadWorker(
                 AppLogger.w(TAG, "${model.id} failed its digest; downloading it once more from the start")
                 continue
             }
-            return Result.failure(workDataOf(KEY_ERROR to ERROR_VERIFICATION_FAILED))
+            return Result.failure(workDataOf(KEY_ERROR to ERROR_VERIFICATION_FAILED, KEY_FINISHED_AT to System.currentTimeMillis()))
         }
     }
 
@@ -263,6 +263,13 @@ class ModelDownloadWorker(
         const val KEY_MODEL_ID = "modelId"
         const val KEY_PERCENT = "percent"
         const val KEY_ERROR = "error"
+
+        /**
+         * Wall-clock epoch millis at which a run failed, in its failure output. [ModelTransferWorker]
+         * writes the same key, so the row can show whichever of a download's and an import's failures
+         * is newer — WorkManager keeps both FAILED records around and says nothing about their order.
+         */
+        const val KEY_FINISHED_AT = "finishedAt"
 
         /** The model's details, so the worker needs no catalogue to resolve them. */
         private const val KEY_FILE_NAME = "fileName"
