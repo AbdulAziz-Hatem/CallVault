@@ -10,7 +10,6 @@ package com.baba.callvault.ui.screens
 
 import java.io.File
 import org.junit.Assert.assertTrue
-import org.junit.Ignore
 import org.junit.Test
 
 /**
@@ -18,8 +17,7 @@ import org.junit.Test
  * new Settings. Read from source, like [ScopedSettingsScreenTest], because the rule is about which
  * composables are called with which strings.
  *
- * Every test here is `@Ignore`d until the onboarding screens are restyled (Task 6 of the onboarding revamp).
- * Remove the annotations then; the failure message is the list of what is still printed inline.
+ * The failure message of the inline scan is the list of what is still printed inline.
  *
  * What the scan catches, per file:
  *  - `R.string.key` whose name has a `description`/`desc`/`body`/`hint`/`note`/`explanation` segment, used as the
@@ -27,7 +25,7 @@ import org.junit.Test
  *    `when` inside the call, through a local `val x = R.string.key` (or `if`/`when` expression on one line), or
  *    through a helper `fun xRes(...): Int = when { ... R.string.key ... }` called as `stringResource(xRes(..))`.
  *  - It is allowed only when the first real enclosing call is info-aware ([INFO_AWARE_CALLEES]); anything else
- *    (`Text(`, `NoteCard(`, `ToggleCard(`, `OptionCard(`, `PermissionCard(`, a Toast, ...) is an offender.
+ *    (`Text(`, `NoteCard(`, `ToggleCard(`, a Toast, ...) is an offender.
  * What it does NOT catch: strings read into a variable before use (`val s = context.getString(..)`), keys
  * passed through a function parameter, keys whose name has none of the segments (e.g. a `*_subtitle`), and
  * text built by a helper in another file.
@@ -52,7 +50,6 @@ class OnboardingInfoModeTest {
             return (wizard.toList() + named + adb).distinct().sortedBy { it.path }
         }
 
-    @Ignore("enabled in Task 6")
     @Test
     fun `wizard and permissions content is rendered in info mode`() {
         for (name in listOf("WizardScreen.kt", "PermissionsScreen.kt")) {
@@ -63,7 +60,6 @@ class OnboardingInfoModeTest {
         }
     }
 
-    @Ignore("enabled in Task 6")
     @Test
     fun `no onboarding card prints an explanation inline`() {
         val offenders = mutableListOf<String>()
@@ -101,6 +97,44 @@ class OnboardingInfoModeTest {
         )
     }
 
+    @Test
+    fun `permission and pairing status lines stay inline`() {
+        // Status, not explanation (Global Constraints): whether a permission is still Required, whether pairing
+        // is connected, and what stands in its way. Each must be printed on the row, never only behind (i).
+        val visibleCallees = setOf("Text", "CvStatusPill", "DevModeStatusLine")
+        val statusKeys = mapOf(
+            "PermissionsScreen.kt" to listOf(
+                "permissions_status_required", "permissions_status_granted",
+                "permissions_status_adb_connected", "permissions_status_adb_not_connected",
+                "permission_devmode_off", "permission_wd_off", "permission_wd_on",
+            ),
+            "ShizukuOfferCard.kt" to listOf("permissions_shizuku_needs_permission", "permissions_shizuku_active"),
+        )
+        val problems = mutableListOf<String>()
+        for ((fileName, keys) in statusKeys) {
+            // AdbPermissionCard may move into its own file; its status keys count there too.
+            val files = listOf(File(screensDir, fileName)) + if (fileName == "PermissionsScreen.kt") {
+                screensDir.listFiles { f -> f.extension == "kt" && f.name.startsWith("AdbPermission") }.orEmpty().toList()
+            } else emptyList()
+            val texts = files.map { it.name to source(it) }
+            for (key in keys) {
+                val uses = texts.flatMap { (name, text) ->
+                    Regex("""R\.string\.$key\b""").findAll(text).map { m ->
+                        val consumer = enclosingCallees(text, m.range.first).firstOrNull { it !in transparentCallees }
+                        Triple(name, lineOf(text, m.range.first), consumer)
+                    }.toList()
+                }
+                if (uses.isEmpty()) problems += "$fileName: $key is not shown at all"
+                uses.filter { it.third !in visibleCallees }
+                    .forEach { (name, line, consumer) -> problems += "$name:$line $key goes to $consumer, not a visible line" }
+            }
+        }
+        assertTrue(
+            "Status lines must stay on screen (${problems.size}):\n" + problems.joinToString("\n"),
+            problems.isEmpty(),
+        )
+    }
+
     // ---- scanning ----
 
     private val explanationSegment = Regex("""(^|_)(description|desc|body|hint|note|explanation|subtitle)(_|$)""")
@@ -113,6 +147,8 @@ class OnboardingInfoModeTest {
      */
     private val allowedInline: Map<String, String> = mapOf(
         "PermissionsScreen.kt:permission_battery_oem_hint" to "Toast after a refused battery exemption: a transient status, not a card",
+        "WizardScreen.kt:wizard_storage_subtitle" to "stepInfo(): every step subtitle (this key stands for all of " +
+            "stepSubtitleRes) is returned into the header (i); the scan cannot follow a value returned from a function",
         // The Auto-record 'nothing will record' WarningCard and the Storage 'pick a folder' label carry no
         // explanation-segment key, so they need no entry.
     )
@@ -121,6 +157,9 @@ class OnboardingInfoModeTest {
     private val infoAwareCallees = setOf(
         "SettingsInfoButton", "WithInfo", "SettingsToggleRow", "SettingsNavigationRow", "NavigationRow",
         "SettingsSection", "SettingsSubSection", "joinExplanations",
+        // Onboarding's own rows whose explanation argument is drawn only as (i): wizard/WizardCards.kt
+        // OptionCard, PermissionsScreen.kt PermissionRow.
+        "OptionCard", "PermissionRow",
     )
 
     /** Calls that only wrap a string on its way to a real consumer. */

@@ -7,12 +7,12 @@
     <string name="permissions_ui_eyebrow">Налаштування</string>
     <string name="permissions_ui_hero_title">Налаштуймо запис</string>
     <string name="permissions_ui_hero_subtitle">Для запису дзвінків і визначення контактів потрібні дозволи. Підтвердьте їх нижче.</string>
+    <string name="permissions_ui_hero_line">Кілька дозволів для запису дзвінків.</string>
     <string name="permissions_ui_section_label">Дозволи</string>
     <string name="permission_adb_hint">Натисніть «Авторизувати» та введіть код сполучення зі сповіщення.</string>
     <string name="permission_adb_desc_short">Потрібно для запуску рекордера. Необхідний Wi-Fi.</string>
     <string name="permissions_status_adb_not_connected">Не підключено</string>
     <string name="permissions_status_adb_connected">Підключено</string>
-    <string name="permission_devmode_on">Параметри розробника увімкнені</string>
     <string name="permission_devmode_off">Параметри розробника вимкнені</string>
     <string name="permission_devmode_open_wd">Відкрити бездротове налагодження</string>
     <string name="permission_devmode_enable_hint">Увімкніть: Налаштування → Про телефон → 7 разів натисніть «Номер збірки».</string>

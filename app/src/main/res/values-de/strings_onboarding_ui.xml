@@ -12,7 +12,6 @@
     <string name="permission_adb_pair">Koppeln</string>
     <string name="permission_devmode_enable_hint">Aktivieren: Einstellungen → Über das Telefon → 7-mal auf die Build-Nummer tippen.</string>
     <string name="permission_devmode_off">Entwickleroptionen sind aus</string>
-    <string name="permission_devmode_on">Entwickleroptionen: ein</string>
     <string name="permission_devmode_open_device_info">Geräteinfo öffnen</string>
     <string name="permission_devmode_open_wd">Drahtloses Debugging öffnen</string>
     <string name="permission_wd_enable_hint">Einschalten: Entwickleroptionen → Drahtloses Debugging.</string>
@@ -22,6 +21,7 @@
     <string name="permissions_status_adb_not_connected">Nicht verbunden</string>
     <string name="permissions_ui_eyebrow">Einrichtung</string>
     <string name="permissions_ui_hero_subtitle">Ein paar Berechtigungen, damit CallVault Ihre Anrufe aufzeichnen und beschriften kann. Bestätigen Sie jeden Punkt unten.</string>
+    <string name="permissions_ui_hero_line">Ein paar Berechtigungen für die Aufnahme.</string>
     <string name="permissions_ui_hero_title">Los geht\'s mit der Einrichtung</string>
     <string name="permissions_ui_section_label">Berechtigungen</string>
 </resources>
