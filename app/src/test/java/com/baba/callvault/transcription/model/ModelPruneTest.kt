@@ -83,6 +83,17 @@ class ModelPruneTest {
     }
 
     @Test
+    fun `a running import of a known model is kept`() {
+        val running = file("a.bin.import")
+        val stale = file("b.bin.import")
+
+        ModelRepository.pruneOrphans(folder.root, keep = setOf("a.bin"))
+
+        assertTrue("an import in progress must survive", running.exists())
+        assertFalse(stale.exists())
+    }
+
+    @Test
     fun `an empty keep set deletes nothing`() {
         // A caller that failed to build its list must not be read as "keep nothing". This is the
         // difference between a bug and a catastrophe.

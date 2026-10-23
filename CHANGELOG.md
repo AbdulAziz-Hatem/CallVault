@@ -79,6 +79,13 @@ All notable changes to CallVault are documented here. The format is based on
   <!-- 🧪 VERIFYING — checkTranslations + unit tests; seen on the OP9 2026-10-20. Needs a native speaker
        and a real Ukrainian call transcribed and summarised. -->
 
+- **Import and back up models.** Use a model file you already have instead of downloading it, and save a
+  copy before a reinstall. A notification shows while a model is being copied. (#58)
+  <!-- 🧪 VERIFYING — unit tests + emulator run 2026-10-23 (Small model: import, wrong file, other model,
+       back up, import in setup after pm clear, cancel). The foreground notification and the newer-failure
+       rule were added after that run and are unit-tested / unrun. Needs one real Gemma import and one
+       backup on a phone. docs/dev-notes/2026-10-23-model-import-backup.md -->
+
 ### Fixed
 
 - **CallVault and Shizuku's watchdog no longer fight.** With off-Wi-Fi recording on and Shizuku's Watchdog

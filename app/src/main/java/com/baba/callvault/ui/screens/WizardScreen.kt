@@ -8,6 +8,7 @@
 
 package com.baba.callvault.ui.screens
 
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -273,7 +274,9 @@ fun WizardScreen(
                         updateTrigger = updateTrigger,
                         onDownloadModel = viewModel::downloadModel,
                         onCancelModelDownload = viewModel::cancelModelDownload,
-                        onDeleteModel = viewModel::deleteModel
+                        onDeleteModel = viewModel::deleteModel,
+                        onImportModel = viewModel::importModel,
+                        onCancelModelImport = viewModel::cancelModelImport
                     )
                 }
             }
@@ -1027,7 +1030,9 @@ private fun TranscriptionStep(
     updateTrigger: Int,
     onDownloadModel: (DownloadableModel) -> Unit,
     onCancelModelDownload: (DownloadableModel) -> Unit,
-    onDeleteModel: (DownloadableModel) -> Unit
+    onDeleteModel: (DownloadableModel) -> Unit,
+    onImportModel: (DownloadableModel, Uri) -> Unit,
+    onCancelModelImport: (DownloadableModel) -> Unit
 ) {
     val context = LocalContext.current
     val prefs = remember { AppPreferences(context) }
@@ -1072,7 +1077,10 @@ private fun TranscriptionStep(
                 updateTrigger = updateTrigger,
                 onDownload = onDownloadModel,
                 onCancel = onCancelModelDownload,
-                onDelete = onDeleteModel
+                onDelete = onDeleteModel,
+                // No backup in setup: a fresh install has nothing to save yet.
+                onImport = onImportModel,
+                onCancelImport = onCancelModelImport
             )
         }
 
@@ -1131,7 +1139,10 @@ private fun TranscriptionStep(
                 updateTrigger = updateTrigger,
                 onDownload = onDownloadModel,
                 onCancel = onCancelModelDownload,
-                onDelete = onDeleteModel
+                onDelete = onDeleteModel,
+                // No backup in setup: a fresh install has nothing to save yet.
+                onImport = onImportModel,
+                onCancelImport = onCancelModelImport
             )
         }
 

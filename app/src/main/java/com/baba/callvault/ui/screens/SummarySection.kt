@@ -8,6 +8,7 @@
 
 package com.baba.callvault.ui.screens
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
@@ -50,6 +51,7 @@ import com.baba.callvault.ui.common.rememberModelDownloadState
  *   a dialog it has just shown, passes nothing. A slot rather than a flag so the wizard cannot end
  *   up with a switch it must then explain — the same shape [TranscriptionSection] already uses to
  *   host these rows inside itself.
+ * @param onBackup Null hides the backup row (the wizard: a fresh install has nothing to save).
  */
 @Composable
 internal fun SummaryRows(
@@ -57,6 +59,10 @@ internal fun SummaryRows(
     onDownload: (SummaryModel) -> Unit,
     onCancel: (SummaryModel) -> Unit,
     onDelete: (SummaryModel) -> Unit,
+    onImport: (SummaryModel, Uri) -> Unit,
+    onCancelImport: (SummaryModel) -> Unit,
+    onBackup: ((SummaryModel, Uri) -> Unit)? = null,
+    onCancelBackup: (SummaryModel) -> Unit = {},
     extraRows: @Composable ColumnScope.() -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -69,22 +75,54 @@ internal fun SummaryRows(
     val preferences = remember(context) { AppPreferences(context) }
     val askFirst = remember(updateTrigger) { preferences.getSummaryConfirmRequirements() }
     var showRequirements by remember { mutableStateOf(false) }
+    // What Continue does: the download, or — when the dialog was raised by Import — the file picker.
+    var afterRequirements by remember { mutableStateOf<(() -> Unit)?>(null) }
 
     // The costs are stated before the download starts, not after. Skipped once the user has said
-    // they do not want asking again — a choice they can undo from the switch below.
-    val startDownload = {
-        if (askFirst) showRequirements = true else onDownload(model)
+    // they do not want asking again — a choice they can undo from the switch below. An import is
+    // asked about the same way: the file is free, but running it needs the same 3.5 GB of memory.
+    val askThen = { proceed: () -> Unit ->
+        if (askFirst) {
+            afterRequirements = proceed
+            showRequirements = true
+        } else {
+            proceed()
+        }
     }
+    val startDownload = { askThen { onDownload(model) } }
 
     if (showRequirements) {
         SummaryRequirementsDialog(
             model = model,
-            onDismiss = { showRequirements = false },
+            onDismiss = {
+                showRequirements = false
+                afterRequirements = null
+            },
             onContinue = { dontAskAgain ->
                 showRequirements = false
                 if (dontAskAgain) preferences.setSummaryConfirmRequirements(false)
-                onDownload(model)
+                afterRequirements?.invoke()
+                afterRequirements = null
             }
+        )
+    }
+
+    // Above the `when`, so a state change while the picker is open cannot drop the pick.
+    val launchPicker = rememberModelImportPicker { onImport(model, it) }
+    val importRow: @Composable (String?) -> Unit = { failure ->
+        ModelImportRow(
+            model = model,
+            launchPicker = launchPicker,
+            beforePick = { launch -> askThen(launch) },
+            failureText = failure
+        )
+    }
+    val downloadRow: @Composable () -> Unit = {
+        NavigationRow(
+            icon = Icons.Filled.Download,
+            label = stringResource(R.string.summary_model_download),
+            value = stringResource(R.string.summary_model_download_subtitle, model.sizeBytes.toGigabytes()),
+            onClick = startDownload
         )
     }
 
@@ -113,52 +151,55 @@ internal fun SummaryRows(
         )
     }
 
+    // Stopped part-way. Saying so is the point: those bytes are banked, the server resumes from
+    // exactly that offset, and a row reading "Download, 3.5 GB" would hide a gigabyte the user has
+    // already paid for. The discard row exists because otherwise that gigabyte can only be
+    // reclaimed by clearing the app's data.
+    val pausedRows: @Composable (Long) -> Unit = { downloadedBytes ->
+        NavigationRow(
+            icon = Icons.Filled.Download,
+            label = stringResource(R.string.summary_model_resume),
+            value = stringResource(
+                R.string.summary_model_resume_subtitle,
+                downloadedBytes.toGigabytes(),
+                model.sizeBytes.toGigabytes()
+            ),
+            onClick = startDownload
+        )
+        NavigationRow(
+            icon = Icons.Filled.Delete,
+            label = stringResource(R.string.summary_model_discard),
+            value = stringResource(R.string.summary_model_discard_subtitle, downloadedBytes.toGigabytes()),
+            onClick = { pendingDiscard = downloadedBytes }
+        )
+    }
+
     Column {
         // In ⓘ mode both notes are behind the Summaries card's ⓘ (see summaryModelExplanation).
         ExplanationParagraph(summaryRequirementsText(model))
 
         when (val current = state) {
-            ModelDownloadState.Installed -> NavigationRow(
-                icon = Icons.Filled.Delete,
-                label = stringResource(R.string.summary_model_delete),
-                value = stringResource(R.string.summary_model_installed),
-                onClick = { pendingDiscard = model.sizeBytes }
-            )
-
-            ModelDownloadState.Absent -> NavigationRow(
-                icon = Icons.Filled.Download,
-                label = stringResource(R.string.summary_model_download),
-                value = stringResource(
-                    R.string.summary_model_download_subtitle,
-                    model.sizeBytes.toGigabytes()
-                ),
-                onClick = startDownload
-            )
-
-            // Stopped part-way. Saying so is the point: those bytes are banked, the server resumes
-            // from exactly that offset, and a row reading "Download, 3.5 GB" would hide a gigabyte
-            // the user has already paid for. The discard row exists because otherwise that
-            // gigabyte can only be reclaimed by clearing the app's data.
-            is ModelDownloadState.Paused -> {
-                NavigationRow(
-                    icon = Icons.Filled.Download,
-                    label = stringResource(R.string.summary_model_resume),
-                    value = stringResource(
-                        R.string.summary_model_resume_subtitle,
-                        current.downloadedBytes.toGigabytes(),
-                        model.sizeBytes.toGigabytes()
-                    ),
-                    onClick = startDownload
-                )
+            ModelDownloadState.Installed -> {
                 NavigationRow(
                     icon = Icons.Filled.Delete,
-                    label = stringResource(R.string.summary_model_discard),
-                    value = stringResource(
-                        R.string.summary_model_discard_subtitle,
-                        current.downloadedBytes.toGigabytes()
-                    ),
-                    onClick = { pendingDiscard = current.downloadedBytes }
+                    label = stringResource(R.string.summary_model_delete),
+                    value = stringResource(R.string.summary_model_installed),
+                    onClick = { pendingDiscard = model.sizeBytes }
                 )
+                if (onBackup != null) {
+                    ModelBackupRow(model, onPicked = { onBackup(model, it) }, onCancel = { onCancelBackup(model) })
+                }
+            }
+
+            ModelDownloadState.Absent -> {
+                downloadRow()
+                importRow(null)
+            }
+
+            // Stopped part-way: see pausedRows.
+            is ModelDownloadState.Paused -> {
+                pausedRows(current.downloadedBytes)
+                importRow(null)
             }
 
             // Queued and 0% look identical on a bar and mean different things, so waiting says so
@@ -175,6 +216,20 @@ internal fun SummaryRows(
                 onCancel = { onCancel(model) }
             )
 
+            // An import holds the model's write lock; the bar and its cancel are all that fits.
+            is ModelDownloadState.Importing -> ModelImportingRow(
+                percent = current.percent,
+                onCancel = { onCancelImport(model) }
+            )
+
+            // Nothing about the download failed, so it is offered as it was — resumable, with its
+            // banked bytes, if it had been stopped part-way; the import row says what was wrong
+            // with the file.
+            is ModelDownloadState.ImportFailed -> {
+                if (current.partialBytes > 0L) pausedRows(current.partialBytes) else downloadRow()
+                importRow(importFailureText(current.reason, model, current.otherModelId))
+            }
+
             // A failure says which one it was, because the two the user can act on need different
             // actions: free up space, or simply try again.
             is ModelDownloadState.Failed -> {
@@ -190,6 +245,7 @@ internal fun SummaryRows(
                     ),
                     onClick = startDownload
                 )
+                importRow(null)
             }
         }
 

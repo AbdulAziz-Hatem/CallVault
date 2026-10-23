@@ -166,4 +166,129 @@ class ModelDownloadStateTest {
             )
         )
     }
+
+    @Test
+    fun `a running import reports its percentage`() {
+        assertEquals(
+            ModelDownloadState.Importing(40),
+            ModelDownloadState.from(
+                isInstalled = false, workState = null, percent = null, error = null,
+                importState = WorkInfo.State.RUNNING, importPercent = 40
+            )
+        )
+    }
+
+    @Test
+    fun `a queued import is importing with no figure`() {
+        assertEquals(
+            ModelDownloadState.Importing(null),
+            ModelDownloadState.from(
+                isInstalled = false, workState = null, percent = null, error = null,
+                importState = WorkInfo.State.ENQUEUED
+            )
+        )
+    }
+
+    @Test
+    fun `a failed import names the other model`() {
+        assertEquals(
+            ModelDownloadState.ImportFailed("other-model", "small"),
+            ModelDownloadState.from(
+                isInstalled = false, workState = null, percent = null, error = null,
+                importState = WorkInfo.State.FAILED,
+                importError = "other-model", importOtherModelId = "small"
+            )
+        )
+    }
+
+    @Test
+    fun `a running download hides an earlier import failure`() {
+        assertEquals(
+            ModelDownloadState.Downloading(10),
+            ModelDownloadState.from(
+                isInstalled = false, workState = WorkInfo.State.RUNNING, percent = 10, error = null,
+                importState = WorkInfo.State.FAILED, importError = "wrong-file"
+            )
+        )
+    }
+
+    @Test
+    fun `an installed model ignores a failed import`() {
+        assertEquals(
+            ModelDownloadState.Installed,
+            ModelDownloadState.from(
+                isInstalled = true, workState = null, percent = null, error = null,
+                importState = WorkInfo.State.FAILED, importError = "wrong-file"
+            )
+        )
+    }
+
+    @Test
+    fun `a failed import wins over a failed download`() {
+        assertEquals(
+            ModelDownloadState.ImportFailed("unreadable", null),
+            ModelDownloadState.from(
+                isInstalled = false, workState = WorkInfo.State.FAILED, percent = null, error = "x",
+                importState = WorkInfo.State.FAILED, importError = "unreadable"
+            )
+        )
+    }
+
+    @Test
+    fun `a failed import keeps the paused bytes`() {
+        assertEquals(
+            ModelDownloadState.ImportFailed("wrong-file", null, partialBytes = 7L),
+            ModelDownloadState.from(
+                isInstalled = false, workState = WorkInfo.State.CANCELLED, percent = null, error = null,
+                partialBytes = 7L, importState = WorkInfo.State.FAILED, importError = "wrong-file"
+            )
+        )
+    }
+
+    @Test
+    fun `paused bytes still show when no work is running`() {
+        assertEquals(
+            ModelDownloadState.Paused(5L),
+            ModelDownloadState.from(
+                isInstalled = false, workState = null, percent = null, error = null,
+                partialBytes = 5L, importState = null
+            )
+        )
+    }
+
+    @Test
+    fun `a download failure newer than an import failure is shown`() {
+        assertEquals(
+            ModelDownloadState.Failed("verification-failed"),
+            ModelDownloadState.from(
+                isInstalled = false, workState = WorkInfo.State.FAILED, percent = null,
+                error = "verification-failed", downloadFailedAt = 2_000L,
+                importState = WorkInfo.State.FAILED, importError = "wrong-file", importFailedAt = 1_000L
+            )
+        )
+    }
+
+    @Test
+    fun `an import failure newer than a download failure is shown`() {
+        assertEquals(
+            ModelDownloadState.ImportFailed("wrong-file", null),
+            ModelDownloadState.from(
+                isInstalled = false, workState = WorkInfo.State.FAILED, percent = null,
+                error = "verification-failed", downloadFailedAt = 1_000L,
+                importState = WorkInfo.State.FAILED, importError = "wrong-file", importFailedAt = 2_000L
+            )
+        )
+    }
+
+    @Test
+    fun `a failure without a time counts as the older one`() {
+        assertEquals(
+            ModelDownloadState.Failed("verification-failed"),
+            ModelDownloadState.from(
+                isInstalled = false, workState = WorkInfo.State.FAILED, percent = null,
+                error = "verification-failed", downloadFailedAt = 1_000L,
+                importState = WorkInfo.State.FAILED, importError = "wrong-file", importFailedAt = null
+            )
+        )
+    }
 }

@@ -353,6 +353,9 @@
             specialUse rather than dataSync: dataSync is capped at a few hours a day from Android 15,
             and this is on-device computation rather than a data transfer. CallVault is not distributed
             through Play, so the specialUse justification is not a review risk.
+
+            Importing or backing up a model file (GitHub #58) runs here too: a multi-gigabyte local
+            copy that would otherwise hit WorkManager's ten-minute background limit and start over.
         -->
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"
@@ -360,7 +363,7 @@
             tools:node="merge">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="On-device transcription and summarisation of the user's own call recordings." />
+                android:value="On-device transcription and summarisation of the user's own call recordings, and copying a speech or summary model file the user picked into or out of the app." />
         </service>
 
     </application>

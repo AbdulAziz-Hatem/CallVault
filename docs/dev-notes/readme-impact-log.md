@@ -1,5 +1,18 @@
 # README impact log
 
+## 2026-10-23 — the emulator's README demo data is gone
+
+Not a claim change: a **screenshot-shoot blocker.** The #58 emulator run
+(`docs/dev-notes/2026-10-23-model-import-backup.md`) ran `pm clear` on CallVault on the AVD
+`mymemory-test`, which wiped the README demo data staged there: the 6 recording rows, their
+transcripts, a summary and a note. The audio files themselves are still on the AVD; only the app's
+database and settings went. **Before the next README screenshot shoot, re-stage the demo data** (re-import
+the audio and recreate the transcripts, summary and note), or the shots will show an empty app.
+
+The AVD was also left changed: `WRITE_SECURE_SETTINGS` revoked from the app, "always allow on this
+network" ticked for wireless debugging, and the app set up in Shizuku mode with the Fast model. A shoot
+that needs built-in mode must undo those first.
+
 ## 2026-09-16 (latest) — Summaries is a page too
 
 🧪 VERIFYING (built and driven on the emulator; nothing seen on a real phone). The Summaries card now
@@ -562,3 +575,10 @@ To settle it: open the README on the branch and check the two-row table reads we
   the real duration "0:00 / 2:41" (play tapped and paused at the start, so the first line is highlighted).
 - **Line 30:** "Opt-in, experimental." → "Opt-in." The app no longer calls app-call recording experimental
   (strings changed 2026-10-21, 15 locales).
+
+## 2026-10-23 — Import and back up models (`feat/model-import-backup-58`, #58)
+
+🧪 VERIFYING — emulator only; not yet seen on a phone. README line ~67 says the transcription models are
+"downloaded once over Wi-Fi". Once confirmed, it can add: "or imported from a copy you already have, and
+backed up to a folder you choose before a reinstall". The network paragraph (line ~85, Hugging Face only
+"to download a model you asked for") stays true: import and backup make no network call.

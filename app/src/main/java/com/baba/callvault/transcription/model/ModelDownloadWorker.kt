@@ -24,10 +24,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import java.util.concurrent.ConcurrentHashMap
 import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -74,10 +72,10 @@ class ModelDownloadWorker(
         // a blocking read when the new one begins, both used to append to the same .part — a duplicated
         // chunk, a file that fails its digest, "the download was damaged" (report 2026-09-28). The new
         // attempt now waits here until the old one has let go of the file.
-        writerFor(model).withLock { downloadAndInstall(dir, model) }
+        ModelWriters.forModel(model).withLock { downloadAndInstall(dir, model) }
     }
 
-    /** Settles what an earlier attempt left, downloads the rest, verifies, installs. Runs under [writerFor]. */
+    /** Settles what an earlier attempt left, downloads the rest, verifies, installs. Runs under [ModelWriters.forModel]. */
     private suspend fun downloadAndInstall(dir: File, model: DownloadableModel): Result {
         var cleanRetriesUsed = 0
         while (true) {
@@ -98,7 +96,7 @@ class ModelDownloadWorker(
             val remaining = model.sizeBytes - resumeFrom
             if (!ModelDownloadPolicy.hasRoomFor(dir.usableSpace, remaining)) {
                 AppLogger.w(TAG, "Not enough free space for ${model.id}: needs ${ModelDownloadPolicy.mb(remaining)} plus headroom, has ${ModelDownloadPolicy.mb(dir.usableSpace)}")
-                return Result.failure(workDataOf(KEY_ERROR to ERROR_NO_SPACE))
+                return Result.failure(workDataOf(KEY_ERROR to ERROR_NO_SPACE, KEY_FINISHED_AT to System.currentTimeMillis()))
             }
 
             val part = ModelRepository.partFileFor(dir, model)
@@ -122,7 +120,7 @@ class ModelDownloadWorker(
                 AppLogger.w(TAG, "${model.id} failed its digest; downloading it once more from the start")
                 continue
             }
-            return Result.failure(workDataOf(KEY_ERROR to ERROR_VERIFICATION_FAILED))
+            return Result.failure(workDataOf(KEY_ERROR to ERROR_VERIFICATION_FAILED, KEY_FINISHED_AT to System.currentTimeMillis()))
         }
     }
 
@@ -163,7 +161,7 @@ class ModelDownloadWorker(
      * Streams [model] into [part] from [resumeFrom] (0 = a fresh file).
      *
      * The connection is dropped the moment this work is cancelled: a blocking read is not interrupted by
-     * coroutine cancellation, and a stopped attempt left reading would keep the file — and [writerFor] —
+     * coroutine cancellation, and a stopped attempt left reading would keep the file — and its [ModelWriters] lock —
      * for as long as the socket stays up.
      */
     private suspend fun download(model: DownloadableModel, part: File, resumeFrom: Long): Outcome = coroutineScope {
@@ -266,6 +264,13 @@ class ModelDownloadWorker(
         const val KEY_PERCENT = "percent"
         const val KEY_ERROR = "error"
 
+        /**
+         * Wall-clock epoch millis at which a run failed, in its failure output. [ModelTransferWorker]
+         * writes the same key, so the row can show whichever of a download's and an import's failures
+         * is newer — WorkManager keeps both FAILED records around and says nothing about their order.
+         */
+        const val KEY_FINISHED_AT = "finishedAt"
+
         /** The model's details, so the worker needs no catalogue to resolve them. */
         private const val KEY_FILE_NAME = "fileName"
         private const val KEY_URL = "url"
@@ -281,11 +286,6 @@ class ModelDownloadWorker(
         private const val CONNECT_TIMEOUT_MS = 30_000
         private const val READ_TIMEOUT_MS = 60_000
         private const val BUFFER_BYTES = 1 shl 16
-
-        /** One lock per model file, shared by every attempt in this process. See [doWork]. */
-        private val writers = ConcurrentHashMap<String, Mutex>()
-
-        private fun writerFor(model: DownloadableModel): Mutex = writers.getOrPut(model.fileName) { Mutex() }
 
         /** No figure has reached the progress store yet, so even 0% is news. */
         private const val NOTHING_PUBLISHED = -1
