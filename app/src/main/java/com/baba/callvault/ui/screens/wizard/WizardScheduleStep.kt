@@ -12,16 +12,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.baba.callvault.R
 import com.baba.callvault.data.SyncScheduleMode
-import com.baba.callvault.ui.common.SyncScheduleLabels
 import com.baba.callvault.ui.common.CvCard
 import com.baba.callvault.ui.common.M3DropdownField
 import com.baba.callvault.ui.common.OptionItem
+import com.baba.callvault.ui.common.SyncScheduleLabels
 
 @Composable
 internal fun ScheduleStep(

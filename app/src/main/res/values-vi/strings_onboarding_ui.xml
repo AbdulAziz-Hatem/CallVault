@@ -11,12 +11,12 @@
     <string name="permission_adb_open_wd">Mở Gỡ lỗi không dây</string>
     <string name="permission_adb_pair">Ghép nối</string>
     <string name="permission_devmode_enable_hint">Bật nó: Cài đặt → Giới thiệu về điện thoại → nhấn Số bản dựng 7 lần.</string>
-    <string name="permission_devmode_off">Tùy chọn nhà phát triển đang tắt</string>
+    <string name="permission_status_devmode_off_tap_build">Tùy chọn nhà phát triển đang tắt — nhấn Số bản dựng 7 lần</string>
     <string name="permission_devmode_open_device_info">Mở thông tin thiết bị</string>
     <string name="permission_devmode_open_wd">Mở Gỡ lỗi không dây</string>
     <string name="permission_wd_enable_hint">Bật nó lên: Tùy chọn nhà phát triển → Gỡ lỗi không dây.</string>
     <string name="permission_wd_off">Gỡ lỗi không dây đang tắt</string>
-    <string name="permission_wd_on">Gỡ lỗi không dây: bật</string>
+    <string name="permission_status_wd_on_enter_code">Nhấn Ghép nối, rồi nhập mã ghép nối</string>
     <string name="permissions_status_adb_connected">Đã kết nối</string>
     <string name="permissions_status_adb_not_connected">Chưa kết nối</string>
     <string name="permissions_ui_eyebrow">Thiết lập</string>

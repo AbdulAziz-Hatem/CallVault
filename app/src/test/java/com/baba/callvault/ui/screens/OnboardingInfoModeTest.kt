@@ -106,7 +106,7 @@ class OnboardingInfoModeTest {
             "PermissionsScreen.kt" to listOf(
                 "permissions_status_required", "permissions_status_granted",
                 "permissions_status_adb_connected", "permissions_status_adb_not_connected",
-                "permission_devmode_off", "permission_wd_off", "permission_wd_on",
+                "permission_status_devmode_off_tap_build", "permission_wd_off", "permission_status_wd_on_enter_code",
             ),
             "ShizukuOfferCard.kt" to listOf("permissions_shizuku_needs_permission", "permissions_shizuku_active"),
         )
@@ -143,7 +143,7 @@ class OnboardingInfoModeTest {
      * Status or action-needed text that must stay visible (Global Constraints), keyed `File.kt:key` so the same
      * key used inline in another file still fails; each with its reason. The pairing hint box and the
      * Developer-options / Wireless-debugging instruction paragraphs are NOT here: their status is already shown
-     * by permission_devmode_off, permission_wd_off and the "Not connected" chip, so the paragraphs go behind (i).
+     * by permission_status_devmode_off_tap_build, permission_wd_off and the "Not connected" chip, so the paragraphs go behind (i).
      */
     private val allowedInline: Map<String, String> = mapOf(
         "PermissionsScreen.kt:permission_battery_oem_hint" to "Toast after a refused battery exemption: a transient status, not a card",

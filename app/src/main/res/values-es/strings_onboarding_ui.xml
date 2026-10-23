@@ -11,12 +11,12 @@
     <string name="permission_adb_open_wd">Abrir Depuración inalámbrica</string>
     <string name="permission_adb_pair">Emparejar</string>
     <string name="permission_devmode_enable_hint">Actívelas: Ajustes → Acerca del teléfono → toque Número de compilación 7 veces.</string>
-    <string name="permission_devmode_off">Las Opciones de desarrollador están desactivadas</string>
+    <string name="permission_status_devmode_off_tap_build">Opciones de desarrollador inactivas: toque 7× Número de compilación</string>
     <string name="permission_devmode_open_device_info">Abrir información del dispositivo</string>
     <string name="permission_devmode_open_wd">Abrir Depuración inalámbrica</string>
     <string name="permission_wd_enable_hint">Actívela: Opciones de desarrollador → Depuración inalámbrica.</string>
     <string name="permission_wd_off">La Depuración inalámbrica está desactivada</string>
-    <string name="permission_wd_on">Depuración inalámbrica: activada</string>
+    <string name="permission_status_wd_on_enter_code">Toque Emparejar e introduzca el código</string>
     <string name="permissions_status_adb_connected">Conectado</string>
     <string name="permissions_status_adb_not_connected">Sin conexión</string>
     <string name="permissions_ui_eyebrow">Configuración</string>

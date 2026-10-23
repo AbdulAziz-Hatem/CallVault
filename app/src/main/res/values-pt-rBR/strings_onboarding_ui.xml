@@ -13,12 +13,12 @@
     <string name="permission_adb_open_wd">Abrir Depuração sem fio</string>
     <string name="permission_adb_pair">Parear</string>
     <string name="permission_devmode_enable_hint">Para ativar: Configurações → Sobre o telefone → toque 7 vezes em Número da versão.</string>
-    <string name="permission_devmode_off">As Opções do desenvolvedor estão desativadas</string>
+    <string name="permission_status_devmode_off_tap_build">Opções do desenvolvedor desativadas: toque 7× em Número da versão</string>
     <string name="permission_devmode_open_device_info">Abrir informações do dispositivo</string>
     <string name="permission_devmode_open_wd">Abrir Depuração sem fio</string>
     <string name="permission_wd_enable_hint">Para ativar: Opções do desenvolvedor → Depuração sem fio.</string>
     <string name="permission_wd_off">A Depuração sem fio está desativada</string>
-    <string name="permission_wd_on">Depuração sem fio: ativada</string>
+    <string name="permission_status_wd_on_enter_code">Toque em Parear e digite o código de pareamento</string>
     <string name="permissions_status_adb_connected">Conectado</string>
     <string name="permissions_status_adb_not_connected">Não conectado</string>
     <string name="permissions_ui_eyebrow">Configuração</string>

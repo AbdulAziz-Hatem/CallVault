@@ -10,6 +10,8 @@ package com.baba.callvault.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -96,6 +98,7 @@ enum class ShizukuOffer {
  * Colours are stated explicitly rather than left to the M3 defaults: this app's scheme resolves several
  * of those to its coral tone, and a setup card that shows up red reads as an error.
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ShizukuOfferCard(
     status: ShizukuStatus,
@@ -156,7 +159,9 @@ fun ShizukuOfferCard(
                 )
             }
 
-            Row(
+            // FlowRow, not Row: in a long locale the buttons do not fit on one line, and a Row squeezes a
+            // label into a mid-word break. End is mirrored in RTL.
+            FlowRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),

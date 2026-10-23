@@ -13,11 +13,11 @@
     <string name="permission_adb_desc_short">Потрібно для запуску рекордера. Необхідний Wi-Fi.</string>
     <string name="permissions_status_adb_not_connected">Не підключено</string>
     <string name="permissions_status_adb_connected">Підключено</string>
-    <string name="permission_devmode_off">Параметри розробника вимкнені</string>
+    <string name="permission_status_devmode_off_tap_build">Параметри розробника вимкнені — 7 разів натисніть «Номер збірки»</string>
     <string name="permission_devmode_open_wd">Відкрити бездротове налагодження</string>
     <string name="permission_devmode_enable_hint">Увімкніть: Налаштування → Про телефон → 7 разів натисніть «Номер збірки».</string>
     <string name="permission_devmode_open_device_info">Відкрити дані пристрою</string>
-    <string name="permission_wd_on">Бездротове налагодження увімкнено</string>
+    <string name="permission_status_wd_on_enter_code">Натисніть «Сполучити» й уведіть код сполучення</string>
     <string name="permission_wd_off">Бездротове налагодження вимкнено</string>
     <string name="permission_wd_enable_hint">Увімкніть: Параметри розробника → Бездротове налагодження.</string>
     <string name="permission_adb_hint_wd_on">Натисніть «Авторизувати», потім уведіть код зі сторінки бездротового налагодження.</string>

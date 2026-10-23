@@ -11,8 +11,6 @@ package com.baba.callvault.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import com.baba.callvault.ui.common.CvCard
 

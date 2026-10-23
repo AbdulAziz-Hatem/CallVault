@@ -22,12 +22,12 @@
     <string name="permissions_status_adb_not_connected">متصل نیست</string>
     <string name="permissions_status_adb_connected">متصل</string>
 
-    <string name="permission_devmode_off">گزینه‌های توسعه‌دهنده خاموش است</string>
+    <string name="permission_status_devmode_off_tap_build">گزینه‌های توسعه‌دهنده خاموش است — ۷ بار روی شمارهٔ ساخت ضربه بزنید</string>
     <string name="permission_devmode_open_wd">باز کردن اشکال‌زدایی بی‌سیم</string>
     <string name="permission_devmode_enable_hint">برای فعال‌سازی: تنظیمات ← دربارهٔ تلفن ← ۷ بار روی شمارهٔ ساخت ضربه بزنید.</string>
     <string name="permission_devmode_open_device_info">باز کردن اطلاعات دستگاه</string>
 
-    <string name="permission_wd_on">اشکال‌زدایی بی‌سیم: روشن</string>
+    <string name="permission_status_wd_on_enter_code">روی «مرتبط‌سازی» ضربه بزنید و کد را وارد کنید</string>
     <string name="permission_wd_off">اشکال‌زدایی بی‌سیم خاموش است</string>
     <string name="permission_wd_enable_hint">برای روشن کردن: گزینه‌های توسعه‌دهنده ← اشکال‌زدایی بی‌سیم.</string>
     <string name="permission_adb_hint_wd_on">روی «مجاز کردن» ضربه بزنید و سپس کد مرتبط‌سازی را از صفحهٔ اشکال‌زدایی بی‌سیم وارد کنید.</string>

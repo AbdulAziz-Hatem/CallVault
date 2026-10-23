@@ -11,12 +11,12 @@
     <string name="permission_adb_open_wd">Открыть отладку по Wi-Fi</string>
     <string name="permission_adb_pair">Сопрячь</string>
     <string name="permission_devmode_enable_hint">Включите их: Настройки → О телефоне → нажмите «Номер сборки» 7 раз.</string>
-    <string name="permission_devmode_off">Параметры разработчика отключены</string>
+    <string name="permission_status_devmode_off_tap_build">Параметры разработчика выключены — нажмите 7 раз «Номер сборки»</string>
     <string name="permission_devmode_open_device_info">Открыть сведения об устройстве</string>
     <string name="permission_devmode_open_wd">Открыть отладку по Wi-Fi</string>
     <string name="permission_wd_enable_hint">Включите её: Параметры разработчика → Отладка по Wi-Fi.</string>
     <string name="permission_wd_off">Отладка по Wi-Fi отключена</string>
-    <string name="permission_wd_on">Отладка по Wi-Fi: включена</string>
+    <string name="permission_status_wd_on_enter_code">Нажмите «Сопрячь» и введите код сопряжения</string>
     <string name="permissions_status_adb_connected">Подключено</string>
     <string name="permissions_status_adb_not_connected">Не подключено</string>
     <string name="permissions_ui_eyebrow">Настройка</string>

@@ -11,12 +11,12 @@
     <string name="permission_adb_open_wd">Apri Debug wireless</string>
     <string name="permission_adb_pair">Abbina</string>
     <string name="permission_devmode_enable_hint">Per attivarle: Impostazioni → Info sul telefono → tocchi 7 volte Numero build.</string>
-    <string name="permission_devmode_off">Le Opzioni sviluppatore sono disattivate</string>
+    <string name="permission_status_devmode_off_tap_build">Opzioni sviluppatore disattivate: tocchi 7 volte Numero build</string>
     <string name="permission_devmode_open_device_info">Apri informazioni dispositivo</string>
     <string name="permission_devmode_open_wd">Apri Debug wireless</string>
     <string name="permission_wd_enable_hint">Per attivarlo: Opzioni sviluppatore → Debug wireless.</string>
     <string name="permission_wd_off">Il Debug wireless è disattivato</string>
-    <string name="permission_wd_on">Debug wireless: attivo</string>
+    <string name="permission_status_wd_on_enter_code">Tocchi Abbina, poi inserisca il codice di abbinamento</string>
     <string name="permissions_status_adb_connected">Connesso</string>
     <string name="permissions_status_adb_not_connected">Non connesso</string>
     <string name="permissions_ui_eyebrow">Configurazione</string>

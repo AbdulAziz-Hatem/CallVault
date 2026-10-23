@@ -27,13 +27,13 @@
     <string name="permissions_status_adb_connected">Συνδεδεμένο</string>
 
     <!-- ADB card: Developer Options status + deep-link shortcuts. -->
-    <string name="permission_devmode_off">Οι Επιλογές προγραμματιστή είναι ανενεργές</string>
+    <string name="permission_status_devmode_off_tap_build">Επιλογές προγραμματιστή ανενεργές — πατήστε 7× τον Αριθμό έκδοσης</string>
     <string name="permission_devmode_open_wd">Άνοιγμα Ασύρματου εντοπισμού σφαλμάτων</string>
     <string name="permission_devmode_enable_hint">Ενεργοποιήστε τες: Ρυθμίσεις → Σχετικά με το τηλέφωνο → πατήστε 7 φορές τον Αριθμό έκδοσης.</string>
     <string name="permission_devmode_open_device_info">Άνοιγμα πληροφοριών συσκευής</string>
 
     <!-- ADB card: Wireless debugging state (shown when Developer Options is on). -->
-    <string name="permission_wd_on">Ασύρματος εντοπισμός σφαλμάτων: ενεργός</string>
+    <string name="permission_status_wd_on_enter_code">Πατήστε Σύζευξη και εισαγάγετε τον κωδικό σύζευξης</string>
     <string name="permission_wd_off">Ο Ασύρματος εντοπισμός σφαλμάτων είναι ανενεργός</string>
     <string name="permission_wd_enable_hint">Ενεργοποιήστε τον: Επιλογές προγραμματιστή → Ασύρματος εντοπισμός σφαλμάτων.</string>
     <string name="permission_adb_hint_wd_on">Πατήστε Εξουσιοδότηση και μετά εισαγάγετε τον κωδικό σύζευξης από την οθόνη του Ασύρματου εντοπισμού σφαλμάτων.</string>

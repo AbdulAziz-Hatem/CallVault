@@ -13,11 +13,12 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toUri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,12 +33,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BatteryStd
-import androidx.compose.material.icons.filled.Usb
 import androidx.compose.material.icons.filled.DeveloperMode
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.RecentActors
+import androidx.compose.material.icons.filled.Usb
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -46,6 +47,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -61,34 +63,33 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.baba.callvault.R
-import com.baba.callvault.system.storage.SafHelper
 import com.baba.callvault.data.AppPreferences
-import androidx.compose.runtime.mutableIntStateOf
 import com.baba.callvault.data.PrivilegedMode
+import com.baba.callvault.integrations.adb.AdbShell
+import com.baba.callvault.integrations.adb.DeveloperOptions
+import com.baba.callvault.onboarding.OnboardingStatus
 import com.baba.callvault.server.ModeSwitchResult
 import com.baba.callvault.server.RecorderBackend
 import com.baba.callvault.server.ShizukuBackend
 import com.baba.callvault.server.ShizukuStatus
-import com.baba.callvault.integrations.adb.AdbShell
-import com.baba.callvault.integrations.adb.DeveloperOptions
-import com.baba.callvault.onboarding.OnboardingStatus
 import com.baba.callvault.system.openAppSettings
-import com.baba.callvault.system.openDeveloperSettings
 import com.baba.callvault.system.openDeviceInfoSettings
 import com.baba.callvault.system.openWirelessDebugging
+import com.baba.callvault.system.storage.SafHelper
 import com.baba.callvault.ui.common.CvCard
-import com.baba.callvault.ui.common.OemGateNotice
 import com.baba.callvault.ui.common.CvHero
 import com.baba.callvault.ui.common.CvPrimaryButton
 import com.baba.callvault.ui.common.CvSectionHeader
 import com.baba.callvault.ui.common.CvStatusPill
 import com.baba.callvault.ui.common.CvTone
 import com.baba.callvault.ui.common.ModeSwitchDialog
+import com.baba.callvault.ui.common.OemGateNotice
 import com.baba.callvault.ui.theme.CallVaultTheme
 import com.baba.callvault.ui.theme.LocalCvBrand
 import com.baba.callvault.ui.viewmodels.PermissionsViewModel
@@ -548,21 +549,14 @@ private fun AdbPermissionCard(
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconDisc(Icons.Default.DeveloperMode, accent = if (adbConnected) primary else brand.warning)
             Spacer(Modifier.width(14.dp))
-            Text(
-                text = label,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 2,
-                modifier = Modifier.weight(1f)
-            )
-            Spacer(Modifier.width(8.dp))
-            CvStatusPill(
-                text = if (adbConnected)
-                    stringResource(R.string.permissions_status_adb_connected)
-                else stringResource(R.string.permissions_status_adb_not_connected),
-                tone = if (adbConnected) CvTone.Success else CvTone.Warning
-            )
+            LabelAndPill(label = label, modifier = Modifier.weight(1f)) {
+                CvStatusPill(
+                    text = if (adbConnected)
+                        stringResource(R.string.permissions_status_adb_connected)
+                    else stringResource(R.string.permissions_status_adb_not_connected),
+                    tone = if (adbConnected) CvTone.Success else CvTone.Warning
+                )
+            }
             SettingsInfoButton(
                 label = label,
                 explanation = joinExplanations(
@@ -585,13 +579,19 @@ private fun AdbPermissionCard(
             Spacer(Modifier.height(6.dp))
             Box(Modifier.padding(start = 56.dp)) {
                 when {
-                    // Can't pair without Developer Options, and the app can't auto-enable it.
-                    devOptionsProvenOff ->
-                        DevModeStatusLine(text = stringResource(R.string.permission_devmode_off), color = brand.warning)
+                    // Can't pair without Developer Options, and the app can't auto-enable it: the line itself
+                    // says how to turn them on (the bottom button opens About phone).
+                    devOptionsProvenOff -> DevModeStatusLine(
+                        text = stringResource(R.string.permission_status_devmode_off_tap_build),
+                        color = brand.warning
+                    )
                     !wirelessDebuggingEnabled ->
                         DevModeStatusLine(text = stringResource(R.string.permission_wd_off), color = brand.warning)
-                    else ->
-                        DevModeStatusLine(text = stringResource(R.string.permission_wd_on), color = brand.success)
+                    // Wireless debugging is on, so pairing is the next thing to do.
+                    else -> DevModeStatusLine(
+                        text = stringResource(R.string.permission_status_wd_on_enter_code),
+                        color = brand.success
+                    )
                 }
             }
         }
@@ -601,6 +601,31 @@ private fun AdbPermissionCard(
         // only they can reach — see [OemGateNotice]. A warning, so it stays visible; self-hiding when it does
         // not apply.
         OemGateNotice(modifier = Modifier.padding(top = 10.dp, end = 8.dp))
+    }
+}
+
+/**
+ * A row's name with its status [pill] after it. A FlowRow, not a Row: when the two do not fit side by side
+ * (a long word at a large font size), the pill drops under the name instead of squeezing the name into a
+ * mid-word break or clipping it. SpaceBetween keeps the pill at the end while they share a line.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun LabelAndPill(label: String, modifier: Modifier = Modifier, pill: @Composable () -> Unit) {
+    FlowRow(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        itemVerticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(end = 8.dp)
+        )
+        pill()
     }
 }
 
@@ -657,20 +682,14 @@ private fun PermissionRow(
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconDisc(icon, discAccent)
             Spacer(Modifier.width(14.dp))
-            Text(
-                text = label,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.weight(1f)
-            )
-            Spacer(Modifier.width(8.dp))
-            CvStatusPill(
-                text = pillText ?: stringResource(
-                    if (granted) R.string.permissions_status_granted else R.string.permissions_status_required
-                ),
-                tone = pillTone ?: if (granted) CvTone.Success else CvTone.Warning
-            )
+            LabelAndPill(label = label, modifier = Modifier.weight(1f)) {
+                CvStatusPill(
+                    text = pillText ?: stringResource(
+                        if (granted) R.string.permissions_status_granted else R.string.permissions_status_required
+                    ),
+                    tone = pillTone ?: if (granted) CvTone.Success else CvTone.Warning
+                )
+            }
             SettingsInfoButton(label = label, explanation = explanation)
         }
     }

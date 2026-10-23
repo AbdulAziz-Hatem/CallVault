@@ -10,8 +10,6 @@ package com.baba.callvault.ui.screens
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.baba.callvault.R
@@ -31,7 +29,10 @@ internal fun AudioStep(
     CvCard(contentPadding = PaddingValues(vertical = 8.dp)) {
         val codecOptions = ScrcpyAudioCodec.entries.map { OptionItem(it.cliKey, stringResource(it.titleResId)) }
         val codecLabel = stringResource(R.string.settings_audio_codec)
-        WithInfo(codecLabel, stringResource(R.string.settings_audio_bitrate_recommendation)) {
+        // The "try AAC" tip, only while another codec is chosen — the same condition as Settings.
+        val aacAdvice = stringResource(R.string.settings_audio_bitrate_recommendation)
+            .takeIf { audioCodec != ScrcpyAudioCodec.AAC.cliKey }
+        WithInfo(codecLabel, aacAdvice) {
             M3DropdownField(
                 label = codecLabel,
                 selected = codecOptions.find { it.key == audioCodec } ?: codecOptions.first(),
