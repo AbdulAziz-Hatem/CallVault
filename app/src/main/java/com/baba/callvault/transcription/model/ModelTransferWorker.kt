@@ -40,10 +40,14 @@ import java.util.concurrent.CancellationException
  * the content resolver and WorkManager.
  *
  * **Never retried.** A failure here is about the picked file (wrong, unreadable, no room), and the
- * user is looking at the row waiting for the answer; retrying would not change the file. A stop by
- * Android is different: the work is re-run from zero, so on a *system* stop the URI grant is kept for
- * that re-run and only the partial copy is thrown away. A partial import is never resumed — the
- * source may have changed in between, and the digest check would have to start over anyway.
+ * user is looking at the row waiting for the answer; retrying would not change the file. A partial
+ * import is never resumed — the source may have changed in between, and the digest check would have
+ * to start over anyway — so a stop only throws the partial copy away.
+ *
+ * **The URI grant is released only after this job's own success or failure, never on a stop.** A
+ * system stop is re-run from zero and needs it; a user cancel and a REPLACE both look like
+ * [WorkInfo.STOP_REASON_CANCELLED_BY_APP], and a REPLACE with the same URI needs it too. The user's
+ * cancel releases it from the ViewModel instead.
  */
 class ModelTransferWorker(
     context: Context,
@@ -92,13 +96,18 @@ class ModelTransferWorker(
                 } catch (e: IOException) {
                     // FileNotFoundException included: the file was moved or deleted since it was picked.
                     fail(OP_IMPORT, model, ERROR_UNREADABLE, startedAt, e)
+                } catch (e: IllegalArgumentException) {
+                    // Some providers throw this, or the one below, for a URI they no longer recognise.
+                    fail(OP_IMPORT, model, ERROR_UNREADABLE, startedAt, e)
+                } catch (e: UnsupportedOperationException) {
+                    fail(OP_IMPORT, model, ERROR_UNREADABLE, startedAt, e)
                 } finally {
                     temp.delete()
                 }
             }
         } finally {
-            // Also reached when stopped while still waiting for the lock, hence asked here, not in a catch.
-            if (!willRunAgain()) releaseGrant(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            // Never on a stop (see the class KDoc), including one while still waiting for the lock.
+            if (!isStopped) releaseGrant(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }
 
@@ -112,11 +121,12 @@ class ModelTransferWorker(
             ModelTransfer.ImportCheck.WrongFile -> return fail(OP_IMPORT, model, ERROR_WRONG_FILE, startedAt)
             is ModelTransfer.ImportCheck.OtherModel -> return otherModelOrWrong(model, check.model, uri, startedAt)
         }
+        // A stale temp left by a killed process would otherwise count against the free space.
+        temp.delete()
         if (!ModelDownloadPolicy.hasRoomFor(dir.usableSpace, model.sizeBytes)) {
             return fail(OP_IMPORT, model, ERROR_NO_SPACE, startedAt)
         }
 
-        temp.delete()
         val copied = openInput(uri).use { input ->
             temp.outputStream().use { output ->
                 ModelTransfer.copyAndHash(input, output, model.sizeBytes, { publish(model, it) }, { isStopped })
@@ -159,8 +169,10 @@ class ModelTransferWorker(
             if (source == null) return fail(OP_BACKUP, model, ERROR_WRITE_FAILED, startedAt)
             val output = applicationContext.contentResolver.openOutputStream(uri, "w")
                 ?: throw FileNotFoundException("provider returned no stream")
-            val copied = source.inputStream().use { input ->
-                output.use { ModelTransfer.copyAndHash(input, it, model.sizeBytes, { p -> publish(model, p) }, { isStopped }) }
+            val copied = output.use { out ->
+                source.inputStream().use { input ->
+                    ModelTransfer.copyAndHash(input, out, model.sizeBytes, { p -> publish(model, p) }, { isStopped })
+                }
             }
             if (copied.bytes != model.sizeBytes) return fail(OP_BACKUP, model, ERROR_WRITE_FAILED, startedAt)
             isWritten = true
@@ -173,13 +185,18 @@ class ModelTransferWorker(
             return fail(OP_BACKUP, model, ERROR_WRITE_FAILED, startedAt, e)
         } catch (e: IOException) {
             return fail(OP_BACKUP, model, ERROR_WRITE_FAILED, startedAt, e)
+        } catch (e: IllegalArgumentException) {
+            return fail(OP_BACKUP, model, ERROR_WRITE_FAILED, startedAt, e)
+        } catch (e: UnsupportedOperationException) {
+            return fail(OP_BACKUP, model, ERROR_WRITE_FAILED, startedAt, e)
         } finally {
-            // A system stop re-runs this from zero and "w" truncates, so the document and its grant are
-            // what that re-run needs. Any other end (failure, or a cancel) removes the partial document.
-            if (!willRunAgain()) {
-                if (!isWritten) runCatching { DocumentsContract.deleteDocument(applicationContext.contentResolver, uri) }
-                releaseGrant(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            // A system stop re-runs this from zero and "w" truncates, so it keeps the document. Any other
+            // unfinished end (failure, cancel) deletes it; the grant is still held here, so the delete works.
+            if (!isWritten && !willRunAgain()) {
+                runCatching { DocumentsContract.deleteDocument(applicationContext.contentResolver, uri) }
             }
+            // Never on a stop (see the class KDoc).
+            if (!isStopped) releaseGrant(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         }
     }
 
@@ -195,8 +212,9 @@ class ModelTransferWorker(
     }
 
     /**
-     * Stopped by Android rather than cancelled: WorkManager will start this request again from zero, and
-     * that run needs the URI grant. A cancel (by the user, or a replacing request) is never re-run.
+     * Stopped by Android rather than cancelled: WorkManager will start this request again from zero, so a
+     * partial backup document is left for that run to overwrite. A cancel (by the user, or a replacing
+     * request) is never re-run. Says nothing about the grant, which no stop releases.
      */
     private fun willRunAgain(): Boolean = isStopped && stopReason != WorkInfo.STOP_REASON_CANCELLED_BY_APP
 
