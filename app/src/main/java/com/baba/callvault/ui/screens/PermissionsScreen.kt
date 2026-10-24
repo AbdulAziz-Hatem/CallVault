@@ -489,16 +489,13 @@ fun PermissionsContent(
                         target = target,
                         result = switchResult,
                         onDismiss = {
-                            // [status] is the router's snapshot and is only re-read on a grant or a resume.
-                            // A switch to Shizuku settles the ADB step, so without this the bottom button
-                            // kept saying "Pair" (and opening Developer options) until the user left.
-                            // Only after a switch that worked: the refresh can move setup on to the wizard,
-                            // and a failed switch should leave the user here to retry or go back.
-                            val switched = switchResult?.isReady == true
                             switching = null
                             switchResult = null
                             backendRefresh++
-                            if (switched) onStatusChanged()
+                            // [status] is the router's snapshot and is only re-read on a grant or a resume.
+                            // A switch to Shizuku settles the ADB step, so without this the bottom button
+                            // kept saying "Pair" (and opening Developer options) until the user left.
+                            onStatusChanged()
                         },
                     )
                 }
