@@ -21,7 +21,7 @@
     <string name="permissions_ui_hero_subtitle">A few permissions so CallVault can capture and label your calls. Approve each item below.</string>
     <string name="permissions_ui_hero_line">A few permissions to record your calls.</string>
     <string name="permissions_ui_section_label">Permissions</string>
-    <string name="permission_adb_hint">Tap Authorize, then enter the pairing code from the notification.</string>
+    <string name="permission_adb_hint">Tap Pair, then enter the pairing code from the notification.</string>
     <string name="permission_adb_desc_short">Required to set up the recorder. Needs Wi-Fi.</string>
     <string name="permissions_status_adb_not_connected">Not connected</string>
     <string name="permissions_status_adb_connected">Connected</string>
@@ -36,7 +36,7 @@
     <string name="permission_status_wd_on_enter_code">Tap Pair, then enter the pairing code</string>
     <string name="permission_wd_off">Wireless debugging is off</string>
     <string name="permission_wd_enable_hint">Turn it on: Developer Options → Wireless debugging.</string>
-    <string name="permission_adb_hint_wd_on">Tap Authorize, then enter the pairing code from the Wireless debugging screen.</string>
+    <string name="permission_adb_hint_wd_on">Tap Pair, then enter the pairing code from the Wireless debugging screen.</string>
 
     <!-- ADB step: bottom CTA labels that adapt to Wireless-debugging / Developer-Options state. -->
     <string name="permission_adb_open_device_info">Open device info</string>

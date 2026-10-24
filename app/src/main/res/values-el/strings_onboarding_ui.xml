@@ -21,7 +21,7 @@
     <string name="permissions_ui_hero_subtitle">Μερικές άδειες ώστε το CallVault να μπορεί να καταγράφει και να επισημαίνει τις κλήσεις σας. Εγκρίνετε κάθε στοιχείο παρακάτω.</string>
     <string name="permissions_ui_hero_line">Λίγες άδειες για να καταγράφονται οι κλήσεις.</string>
     <string name="permissions_ui_section_label">Άδειες</string>
-    <string name="permission_adb_hint">Πατήστε Εξουσιοδότηση και μετά εισαγάγετε τον κωδικό σύζευξης από την ειδοποίηση.</string>
+    <string name="permission_adb_hint">Πατήστε Σύζευξη και μετά εισαγάγετε τον κωδικό σύζευξης από την ειδοποίηση.</string>
     <string name="permission_adb_desc_short">Απαιτείται για τη ρύθμιση του καταγραφέα. Χρειάζεται Wi-Fi.</string>
     <string name="permissions_status_adb_not_connected">Μη συνδεδεμένο</string>
     <string name="permissions_status_adb_connected">Συνδεδεμένο</string>
@@ -36,7 +36,7 @@
     <string name="permission_status_wd_on_enter_code">Πατήστε Σύζευξη και εισαγάγετε τον κωδικό σύζευξης</string>
     <string name="permission_wd_off">Ο Ασύρματος εντοπισμός σφαλμάτων είναι ανενεργός</string>
     <string name="permission_wd_enable_hint">Ενεργοποιήστε τον: Επιλογές προγραμματιστή → Ασύρματος εντοπισμός σφαλμάτων.</string>
-    <string name="permission_adb_hint_wd_on">Πατήστε Εξουσιοδότηση και μετά εισαγάγετε τον κωδικό σύζευξης από την οθόνη του Ασύρματου εντοπισμού σφαλμάτων.</string>
+    <string name="permission_adb_hint_wd_on">Πατήστε Σύζευξη και μετά εισαγάγετε τον κωδικό σύζευξης από την οθόνη του Ασύρματου εντοπισμού σφαλμάτων.</string>
 
     <!-- ADB step: bottom CTA labels that adapt to Wireless-debugging / Developer-Options state. -->
     <string name="permission_adb_open_device_info">Άνοιγμα πληροφοριών συσκευής</string>
