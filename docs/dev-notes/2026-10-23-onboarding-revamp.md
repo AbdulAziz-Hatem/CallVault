@@ -1,9 +1,8 @@
 # Onboarding redesign (`feat/onboarding-revamp`)
 
-🧪 VERIFYING — built, 2122 unit tests pass, and the emulator run below looked right in Shizuku mode.
-The standalone (paired) flow and the Reliability step have not been seen by anyone. **To settle it, the
-maintainer needs to** run setup on the OP9 in standalone mode (see "Maintainer's check" at the end).
-
+🧪 VERIFYING — the maintainer approved the look from the before/after page on 2026-10-24. Claude then ran
+standalone and Shizuku setup on the OP9 over adb (below). Still open for the maintainer: the "Developer
+options off" line (turning them off cuts USB adb, so Claude could not look) and one real call after setup.
 ## What changed
 
 Same idea as the new Settings layout: one line per option, a control, and an ⓘ for the explanation.
@@ -68,11 +67,37 @@ AVD `mymemory-test`, **Shizuku mode**, debug build.
 - Permission rows are separate cards with their own ⓘ, not one grouped card as in Settings.
 - Persian wording of "Pair" in the new status key may not match its `permission_adb_pair` exactly. 📐 CALCULATED (read from code).
 
-## Found, not fixed (not from this branch)
+## OP9 run, 2026-10-24 (release-signed `2.4.7-rc1-onb`, versionCode 20462, `fix/onboarding-leftovers`)
+
+Driven by Claude over USB adb on the rooted OP9 (Android 14), after `pm clear`. Seen, not yet confirmed by
+the maintainer:
+
+- **Standalone, end to end:** disclaimer → Use CallVault → notifications → "Wireless debugging is off" line
+  (matched the phone) → Pair opened Developer options at the switch → notification went Waiting → Searching
+  → Pairing service found → code typed in the notification → "Paired ✓" → card Connected, button "Grant
+  Access" → contacts, phone, call log → 8-step wizard → home "Ready to record · Active – CallVault".
+- **Wireless debugging on, not paired:** line reads "Tap Pair, then enter the pairing code".
+- **Reliability step** (step 3 of 8, standalone only): "Keep recording when the screen locks — USB is set to
+  Charging only". Correct: the phone's USB config was `adb` only.
+- **Shizuku path:** after "Ready — using Shizuku" the button now reads "Grant Access" (was "Pair"). After a
+  failed switch ("Not ready yet") it also reads "Grant Access". Allowing CallVault in Shizuku now flips the
+  card to "setup is done" at once; revoking it in Shizuku's app shows on return. Home: "Active · Shizuku".
+- Not seen: the "Developer options off" line; the Settings ▸ Shizuku "Allow" row (same listener, untested).
+- Noticed, left alone: the Shizuku question comes back after leaving the screen (the answer is remembered
+  only while the screen is open); the bottom button reads "Authorize" while it is really asking for
+  notifications.
+
+The OP9 is left in Shizuku mode, paired with CallVault's own key too.
+
+## Found during the redesign — fixed 2026-10-24 on `fix/onboarding-leftovers`
+
+All four below are fixed (🧪). The first two were seen fixed on the OP9; the hint and Russian strings are
+checked by text only (`AdbHintNamesButtonTest` guards the hints). Also fixed: the welcome screen had the same
+status-bar overlap, and a failed Shizuku switch left the button on "Pair".
 
 - **After "Use Shizuku" → "Ready — using Shizuku", the permissions screen says setup is done but the
   bottom button still reads "Pair" and opens Developer options.** Back goes to wizard step 1.
-  Reproduced on the pre-redesign build `cf3a0d70`, so it predates this work. Belongs in the backlog.
+  Reproduced on the pre-redesign build `cf3a0d70`, so it predates this work.
 - The "SETUP" eyebrow overlaps the status bar on the permissions screen (also in the "before" screenshots).
 - Russian "входящий вызовов" is ungrammatical.
 - `permission_adb_hint_wd_on` (and `permission_adb_hint`) still say "Tap **Authorize**" while the button
@@ -82,12 +107,10 @@ AVD `mymemory-test`, **Shizuku mode**, debug build.
 
 ## Maintainer's check
 
-On the OP9 (rooted, wiped): clear CallVault's data to re-run onboarding, **standalone mode**.
+Updated 2026-10-24. The look is approved (before/after page). Left for the maintainer:
 
-1. Judge the look of the permissions screen and each wizard step.
-2. Developer options off: does the status line read "Developer options off — tap Build number 7×" and is it clear what to do?
-3. Wireless debugging off, then on but not paired: do the status lines match what you see?
-4. Run the pairing flow end to end.
-5. The **Reliability step** (USB "Charging only" row): nobody has seen it yet.
+1. With Developer options **off**, does the card say to tap Build number 7 times? (Claude could not look:
+   turning them off drops USB adb.)
+2. One real call on the OP9 after setup, to confirm it records.
 
 Tell me what you saw and I will update this note.
