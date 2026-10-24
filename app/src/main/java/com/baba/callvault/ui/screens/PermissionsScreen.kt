@@ -187,7 +187,8 @@ fun PermissionsScreen(
                 },
             )
         },
-        modifier = modifier
+        modifier = modifier,
+        onStatusChanged = onPermissionGranted,
     )
 }
 
@@ -213,7 +214,8 @@ fun PermissionsScreen(
 fun PermissionsContent(
     status: OnboardingStatus.Status,
     onGrantAccessButtonClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onStatusChanged: () -> Unit = {},
 ) {
     val context = LocalContext.current
 
@@ -487,6 +489,10 @@ fun PermissionsContent(
                             switching = null
                             switchResult = null
                             backendRefresh++
+                            // [status] is the router's snapshot and is only re-read on a grant or a resume.
+                            // A switch to Shizuku settles the ADB step, so without this the bottom button
+                            // kept saying "Pair" (and opening Developer options) until the user left.
+                            onStatusChanged()
                         },
                     )
                 }
