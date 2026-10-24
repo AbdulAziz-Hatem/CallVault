@@ -109,8 +109,14 @@ status-bar overlap, and a failed Shizuku switch left the button on "Pair".
 
 Updated 2026-10-24. The look is approved (before/after page). Left for the maintainer:
 
-1. With Developer options **off**, does the card say to tap Build number 7 times? (Claude could not look:
-   turning them off drops USB adb.)
-2. One real call on the OP9 after setup, to confirm it records.
+1. One real call on the OP9 after setup, to confirm it records. (2026-10-24: the first test call was not
+   recorded because auto-record incoming/outgoing defaults to off and the wizard was clicked through. Both
+   were then switched on by hand on the OP9.)
+
+📐 Developer-options-off line: not seeable by Claude on any device. With Developer options off on the emulator
+(2026-10-24) the card said "Wireless debugging is off", by design: `DeveloperOptionsPolicy` counts USB debugging
+or a running adbd as "on" (issue #40: the setting itself can be hidden), and any device Claude watches over adb
+has both. The OFF rule is unit-tested (`DeveloperOptionsPolicyTest`) and `devOptionsProvenOff` shows
+`permission_status_devmode_off_tap_build`. Only a phone with all debugging off, set up without Shizuku, shows it.
 
 Tell me what you saw and I will update this note.
