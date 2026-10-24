@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -283,7 +284,9 @@ fun PermissionsContent(
             modifier = modifier.navigationBarsPadding().fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
+            // The activity draws edge to edge: without the status-bar inset the SETUP eyebrow sat under
+            // the clock. The Surface still paints behind the bar; only the content moves down.
+            Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
                 LazyColumn(
                     modifier = Modifier
                         .weight(1f)
