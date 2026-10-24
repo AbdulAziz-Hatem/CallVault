@@ -58,6 +58,7 @@ fun PrivilegedModeSubSection(onModeChanged: () -> Unit = {}) {
 
     val mode = remember(refresh) { prefs.getPrivilegedMode() }
     val status = remember(refresh) { RecorderBackend.shizukuStatus(context) }
+    OnShizukuPermissionAnswer { refresh++ }
 
     SettingsToggleRow(
         icon = Icons.Filled.Link,

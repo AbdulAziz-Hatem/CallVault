@@ -257,6 +257,8 @@ fun PermissionsContent(
         }
     }
 
+    OnShizukuPermissionAnswer { backendRefresh++ }
+
     var wirelessDebuggingEnabled by remember {
         mutableStateOf(AdbShell.isWirelessDebuggingEnabled(context))
     }
@@ -267,6 +269,8 @@ fun PermissionsContent(
                 devOptionsEnabled = isDeveloperOptionsEnabled(context)
                 offerBuildNumberStep = shouldOfferBuildNumberStep(context)
                 wirelessDebuggingEnabled = AdbShell.isWirelessDebuggingEnabled(context)
+                // Shizuku can be stopped, started or allowed from its own app while we are away.
+                backendRefresh++
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)

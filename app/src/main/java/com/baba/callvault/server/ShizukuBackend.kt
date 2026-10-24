@@ -131,6 +131,24 @@ object ShizukuBackend {
     }
 
     /**
+     * Calls [onResult] each time the user answers a [requestPermission] prompt. Returns the call that
+     * unregisters it. Without this a screen only learns the answer the next time something else makes it
+     * re-read [hasPermission], so it kept asking for a permission the user had just given.
+     */
+    fun observePermissionResult(onResult: (granted: Boolean) -> Unit): () -> Unit {
+        val listener = Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
+            if (requestCode == PERMISSION_REQUEST_CODE) onResult(grantResult == PackageManager.PERMISSION_GRANTED)
+        }
+        try {
+            Shizuku.addRequestPermissionResultListener(listener)
+        } catch (e: RuntimeException) {
+            AppLogger.w(TAG, "Could not listen for the Shizuku permission answer: ${e.message}")
+            return {}
+        }
+        return { runCatching { Shizuku.removeRequestPermissionResultListener(listener) } }
+    }
+
+    /**
      * Asks Shizuku to start the recorder, if it can.
      *
      * Returns false — without side effects — when Shizuku is absent, stopped, or unpermitted. The
