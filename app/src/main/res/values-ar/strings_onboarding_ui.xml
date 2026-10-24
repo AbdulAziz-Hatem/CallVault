@@ -15,7 +15,7 @@
     <string name="permissions_ui_hero_subtitle">بعض الأذونات حتى يتمكن CallVault من التقاط مكالماتك وتسميتها. وافق على كل عنصر أدناه.</string>
     <string name="permissions_ui_hero_line">بضعة أذونات حتى تُسجَّل المكالمات.</string>
     <string name="permissions_ui_section_label">الأذونات</string>
-    <string name="permission_adb_hint">انقر على "تخويل"، ثم أدخل رمز الاقتران من الإشعار.</string>
+    <string name="permission_adb_hint">انقر على "اقتران"، ثم أدخل رمز الاقتران من الإشعار.</string>
     <string name="permission_adb_desc_short">مطلوب لإعداد المسجل. يحتاج إلى Wi-Fi.</string>
     <string name="permissions_status_adb_not_connected">غير متصل</string>
     <string name="permissions_status_adb_connected">متصل</string>
@@ -26,7 +26,7 @@
     <string name="permission_status_wd_on_enter_code">انقر على «اقتران»، ثم أدخل رمز الاقتران</string>
     <string name="permission_wd_off">تصحيح أخطاء اللاسلكي متوقف</string>
     <string name="permission_wd_enable_hint">قم بتشغيله: خيارات المطور ← تصحيح أخطاء اللاسلكي.</string>
-    <string name="permission_adb_hint_wd_on">انقر على "تخويل"، ثم أدخل رمز الاقتران من شاشة "تصحيح أخطاء اللاسلكي".</string>
+    <string name="permission_adb_hint_wd_on">انقر على "اقتران"، ثم أدخل رمز الاقتران من شاشة "تصحيح أخطاء اللاسلكي".</string>
     <string name="permission_adb_open_device_info">فتح معلومات الجهاز</string>
     <string name="permission_adb_open_wd">فتح تصحيح أخطاء اللاسلكي</string>
     <string name="permission_adb_pair">اقتران</string>

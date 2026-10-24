@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -187,7 +188,8 @@ fun PermissionsScreen(
                 },
             )
         },
-        modifier = modifier
+        modifier = modifier,
+        onStatusChanged = onPermissionGranted,
     )
 }
 
@@ -213,7 +215,8 @@ fun PermissionsScreen(
 fun PermissionsContent(
     status: OnboardingStatus.Status,
     onGrantAccessButtonClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onStatusChanged: () -> Unit = {},
 ) {
     val context = LocalContext.current
 
@@ -254,6 +257,8 @@ fun PermissionsContent(
         }
     }
 
+    OnShizukuPermissionAnswer { backendRefresh++ }
+
     var wirelessDebuggingEnabled by remember {
         mutableStateOf(AdbShell.isWirelessDebuggingEnabled(context))
     }
@@ -264,6 +269,8 @@ fun PermissionsContent(
                 devOptionsEnabled = isDeveloperOptionsEnabled(context)
                 offerBuildNumberStep = shouldOfferBuildNumberStep(context)
                 wirelessDebuggingEnabled = AdbShell.isWirelessDebuggingEnabled(context)
+                // Shizuku can be stopped, started or allowed from its own app while we are away.
+                backendRefresh++
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -281,7 +288,9 @@ fun PermissionsContent(
             modifier = modifier.navigationBarsPadding().fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
+            // The activity draws edge to edge: without the status-bar inset the SETUP eyebrow sat under
+            // the clock. The Surface still paints behind the bar; only the content moves down.
+            Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
                 LazyColumn(
                     modifier = Modifier
                         .weight(1f)
@@ -487,6 +496,10 @@ fun PermissionsContent(
                             switching = null
                             switchResult = null
                             backendRefresh++
+                            // [status] is the router's snapshot and is only re-read on a grant or a resume.
+                            // A switch to Shizuku settles the ADB step, so without this the bottom button
+                            // kept saying "Pair" (and opening Developer options) until the user left.
+                            onStatusChanged()
                         },
                     )
                 }
