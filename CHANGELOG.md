@@ -5,6 +5,8 @@ All notable changes to CallVault are documented here. The format is based on
 
 ## [Unreleased]
 
+## [2.4.7] — 2026-10-25
+
 ### Added
 
 - **A new Settings layout.** It is the default now; a card at the top of Settings, "Switch to the classic
@@ -16,8 +18,8 @@ All notable changes to CallVault are documented here. The format is based on
   instead of filling the screen. The Experimental section is gone from it: its switches moved to where they
   belong. The classic layout is unchanged and still there; no setting moved or was reset, and anyone who
   already picked a layout keeps it.
-  <!-- ✅ VERIFIED 2026-10-21 (maintainer, on the OP9: "it looks good", after rounds 2-4). Still default OFF;
-       flip after the maintainer uses it day to day. Classic screen pixel-checked unchanged on the OP9 at every
+  <!-- ✅ VERIFIED 2026-10-21 (maintainer, on the OP9: "it looks good", after rounds 2-4). Made the default
+       2026-10-21 (feat/new-settings-default). Classic screen pixel-checked unchanged on the OP9 at every
        round except the new switch card. docs/dev-notes/2026-10-20-settings-per-page-plan.md -->
 - **Approve new Wi-Fi networks automatically** (opt-in, built-in mode). When the phone joins a Wi-Fi network,
   CallVault answers Android's "Allow wireless debugging on this network?" itself, through its recorder, so
@@ -89,11 +91,22 @@ All notable changes to CallVault are documented here. The format is based on
 ### Changed
 
 - **Simpler setup** — each setup screen is now one line per option with an ⓘ for details, like Settings.
-  The models step offers Import next to Download. <!-- 🧪 emulator only (Shizuku mode); standalone pairing
-  and the Reliability step not yet seen. docs/dev-notes/2026-10-23-onboarding-revamp.md -->
+  The models step offers Import next to Download. Allowing CallVault in Shizuku now updates the setup
+  screen at once, and the setup and welcome screens no longer run under the status bar.
+  <!-- ✅ VERIFIED 2026-10-25 (maintainer): look approved from the before/after page 2026-10-24; a real call
+       to the OP9 recorded properly after setup. Claude ran standalone + Shizuku setup on the OP9 2026-10-24.
+       Still 🧪: the "Developer options off" line (unseeable over adb, unit-tested) and the Shizuku row in
+       Settings. docs/dev-notes/2026-10-23-onboarding-revamp.md -->
 
 ### Fixed
 
+- **App calls record on Honor phones with MagicOS 11** (Android 17). Honor's ROM refused to start any
+  recording in a process with no app attached, which is how CallVault's recorder runs, so WhatsApp and other
+  app calls started and then saved nothing. CallVault now gives its recorder a stand-in that presents itself
+  as the shell, only on phones where that refusal happens. Diagnosis by @jlp9989-sudo. (#53)
+  <!-- 🧪 VERIFYING — unit tests for the crash shape and the retry; the stand-in proven on the emulator
+       2026-10-25 (forced in a test-only build, uid 2000: policy armed, sink + mic RECORDING, sink heard the
+       tone at -17.5 dB). Not run in the Shizuku host. Needs the reporter's Honor and one WhatsApp call. -->
 - **CallVault and Shizuku's watchdog no longer fight.** With off-Wi-Fi recording on and Shizuku's Watchdog
   or TCP mode on, each app kept restarting the phone's debugging connection, which stopped the other, and
   recording could stay down until Shizuku was removed. CallVault now uses the connection Shizuku set up

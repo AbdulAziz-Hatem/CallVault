@@ -115,6 +115,20 @@
     <string name="merge_note_will_keep">Các cuộc gọi kia cũng được giữ lại trên máy.</string>
     <string name="home_scroll_to_top">Lên đầu</string>
     <string name="home_whatsnew_full_notes">Ghi chú phát hành đầy đủ</string>
+    <string name="whatsnew_247_title">Cài đặt mới, Shizuku bắt kịp và tiếng Ukraina</string>
+    <string-array name="whatsnew_247_items">
+        <item>Bố cục cài đặt mới — mỗi trang chỉ hiện cài đặt của riêng nó, chi tiết nằm sau ⓘ; giao diện cổ điển chỉ cách một lần chạm</item>
+        <item>Thiết lập đơn giản hơn — mỗi bước một dòng, giống cài đặt mới</item>
+        <item>Chế độ Shizuku bắt kịp — cuộc gọi qua ứng dụng, ghi âm bền bỉ và tên người nói cũng hoạt động ở đó, và cuộc gọi điện thoại bắt đầu ghi nhanh hơn</item>
+        <item>Tiếng Ukraina — ngôn ngữ ứng dụng và chép lời mới; tiếng Ba Tư cũng có thể được ghim để chép lời</item>
+        <item>Ẩn bản ghi — giữ bản ghi của bạn khỏi trình phát nhạc và thư viện ảnh</item>
+        <item>Nhập và sao lưu mô hình — dùng tệp mô hình bạn đã có và lưu một bản sao trước khi cài lại</item>
+        <item>Tự động chấp thuận mạng Wi-Fi mới — tùy chọn: việc ghi âm không còn chờ bạn chạm “Cho phép”</item>
+        <item>Bỏ qua liên hệ bị bỏ qua cả trong cuộc gọi qua ứng dụng</item>
+        <item>Tên tệp Honor / Huawei — ứng dụng Điện thoại của Honor có thể phát bản ghi từ lịch sử cuộc gọi</item>
+        <item>Cuộc gọi qua ứng dụng được ghi trên điện thoại Honor chạy MagicOS 11</item>
+        <item>Sửa lỗi — CallVault không còn xung đột với watchdog của Shizuku, trình ghi Shizuku quay lại sau khi Android dừng nó, tên tệp bắt đầu bằng liên hệ hoặc số lại được gộp và tìm thấy, bản tóm tắt tiếng Hy Lạp và Ba Tư được viết đúng ngôn ngữ, và một bản sửa bảo mật cho trình ghi</item>
+    </string-array>
     <string name="whatsnew_246_title">Công tắc bật/tắt tổng, tiếng Hy Lạp và các bản sửa lỗi</string>
     <string-array name="whatsnew_246_items">
         <item>Công tắc bật/tắt tổng — bật hoặc tắt toàn bộ ghi âm, cuộc gọi mạng và cuộc gọi ứng dụng, từ thẻ trang chủ hoặc Cài đặt nhanh (vẫn giữ sau khi khởi động lại)</item>

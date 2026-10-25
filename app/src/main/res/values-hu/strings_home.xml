@@ -115,6 +115,20 @@
     <string name="merge_note_will_keep">A többi hívás is a telefonon marad.</string>
     <string name="home_scroll_to_top">Az elejére</string>
     <string name="home_whatsnew_full_notes">Teljes kiadási jegyzék</string>
+    <string name="whatsnew_247_title">Új beállítások, a Shizuku felzárkózik, és ukrán nyelv</string>
+    <string-array name="whatsnew_247_items">
+        <item>Új beállításelrendezés — minden oldal csak a saját beállításait mutatja, a részletek az ⓘ mögött; a klasszikus nézet egy koppintásra van</item>
+        <item>Egyszerűbb beállítás — lépésenként egy sor, mint az új beállításokban</item>
+        <item>A Shizuku mód felzárkózik — az alkalmazáshívások, a tartós felvétel és a beszélők nevei ott is működnek, a telefonhívások felvétele pedig gyorsabban indul</item>
+        <item>Ukrán — új alkalmazás- és átírási nyelv; a perzsa is rögzíthető az átíráshoz</item>
+        <item>Felvételek elrejtése — a felvételek nem jelennek meg zenelejátszókban és galériákban</item>
+        <item>Modellek importálása és mentése — használjon meglévő modellfájlt, és mentsen másolatot újratelepítés előtt</item>
+        <item>Új Wi-Fi-hálózatok automatikus jóváhagyása — választható: a felvétel már nem várja meg, hogy az „Engedélyezés” gombra koppintson</item>
+        <item>Mellőzött névjegyek kihagyása az alkalmazáshívásoknál is</item>
+        <item>Honor / Huawei fájlnevek — a Honor telefonalkalmazása a híváslistából is le tudja játszani a felvételeket</item>
+        <item>Az alkalmazáshívások rögzülnek a MagicOS 11-et futtató Honor telefonokon</item>
+        <item>Javítások — a CallVault már nem ütközik a Shizuku watchdogjával, a Shizuku-rögzítő visszatér, miután az Android leállította, a névjeggyel vagy számmal kezdődő fájlnevek ismét összevonhatók és kereshetők, a görög és perzsa összefoglalók a megfelelő nyelven készülnek, és egy biztonsági javítás a rögzítőhöz</item>
+    </string-array>
     <string name="whatsnew_246_title">Központi be/ki kapcsoló, görög és javítások</string>
     <string-array name="whatsnew_246_items">
         <item>Központi be/ki kapcsoló — az összes rögzítés be- vagy kikapcsolása, hálózati és alkalmazáshívások, a kezdőkártyáról vagy a gyorsbeállításokból (újraindítás után is megmarad)</item>

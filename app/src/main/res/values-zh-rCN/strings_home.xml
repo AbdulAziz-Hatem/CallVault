@@ -115,6 +115,20 @@
     <string name="merge_note_will_keep">其余通话也会保留在手机上。</string>
     <string name="home_scroll_to_top">回到顶部</string>
     <string name="home_whatsnew_full_notes">完整发行说明</string>
+    <string name="whatsnew_247_title">全新设置、Shizuku 补齐功能、乌克兰语</string>
+    <string-array name="whatsnew_247_items">
+        <item>全新设置布局 — 每个页面只显示自己的设置，详细说明收在 ⓘ 后面；经典视图一点即回</item>
+        <item>更简单的初始设置 — 每一步一行，和新设置一致</item>
+        <item>Shizuku 模式补齐功能 — 应用内通话、稳健录音和说话人名称也能使用，电话通话开始录音更快</item>
+        <item>乌克兰语 — 新增应用语言和转写语言；波斯语也可固定为转写语言</item>
+        <item>隐藏录音 — 让录音不出现在音乐播放器和相册中</item>
+        <item>导入和备份模型 — 使用已有的模型文件，并在重装前保存一份副本</item>
+        <item>自动批准新的 Wi-Fi 网络 — 可选：录音不再等你点击“允许”</item>
+        <item>应用内通话也跳过已忽略的联系人</item>
+        <item>荣耀 / 华为文件名 — 荣耀的电话应用可以从通话记录播放录音</item>
+        <item>在搭载 MagicOS 11 的荣耀手机上可以录制应用内通话</item>
+        <item>修复 — CallVault 不再与 Shizuku 的看门狗冲突，Shizuku 录音器在被 Android 停止后会恢复，以联系人或号码开头的文件名可再次合并和搜索，希腊语和波斯语摘要使用正确的语言，以及录音器的一项安全修复</item>
+    </string-array>
     <string name="whatsnew_246_title">总开关、希腊语和多项修复</string>
     <string-array name="whatsnew_246_items">
         <item>录音总开关 — 从主页卡片或快捷设置一键开启或关闭所有录音，包括运营商通话和应用通话（重启后依然保留）</item>

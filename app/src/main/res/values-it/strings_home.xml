@@ -115,6 +115,20 @@
     <string name="merge_note_will_keep">Le altre chiamate restano anche sul telefono.</string>
     <string name="home_scroll_to_top">Su</string>
     <string name="home_whatsnew_full_notes">Note di rilascio complete</string>
+    <string name="whatsnew_247_title">Nuove impostazioni, Shizuku si mette in pari e l’ucraino</string>
+    <string-array name="whatsnew_247_items">
+        <item>Nuovo layout delle impostazioni — ogni pagina mostra solo le proprie impostazioni, con i dettagli dietro ⓘ; la vista classica è a un tocco</item>
+        <item>Configurazione più semplice — una riga per passaggio, come le nuove impostazioni</item>
+        <item>La modalità Shizuku si mette in pari — chiamate delle app, registrazione resiliente e nomi degli interlocutori funzionano anche lì, e le chiamate telefoniche iniziano a registrare prima</item>
+        <item>Ucraino — nuova lingua dell’app e della trascrizione; anche il persiano può essere fissato per la trascrizione</item>
+        <item>Nascondi registrazioni — tieni le registrazioni fuori dai lettori musicali e dalle gallerie</item>
+        <item>Importa e salva i modelli — usa un file di modello che hai già e salvane una copia prima di reinstallare</item>
+        <item>Approva automaticamente le nuove reti Wi-Fi — facoltativo: la registrazione non aspetta più il tuo «Consenti»</item>
+        <item>Salta i contatti ignorati anche nelle chiamate delle app</item>
+        <item>Nomi file Honor / Huawei — l’app Telefono di Honor può riprodurre le registrazioni dalla cronologia chiamate</item>
+        <item>Le chiamate delle app si registrano sui telefoni Honor con MagicOS 11</item>
+        <item>Correzioni — CallVault non si scontra più con il watchdog di Shizuku, il registratore Shizuku torna dopo che Android lo ha fermato, i nomi file che iniziano con contatto o numero si uniscono e si trovano di nuovo, i riepiloghi in greco e persiano escono nella lingua giusta, e una correzione di sicurezza per il registratore</item>
+    </string-array>
     <string name="whatsnew_246_title">Un interruttore generale, il greco e correzioni</string>
     <string-array name="whatsnew_246_items">
         <item>Interruttore generale on/off — attiva o disattiva tutte le registrazioni, chiamate di rete e di app, dalla scheda iniziale o dalle Impostazioni rapide (resiste al riavvio)</item>

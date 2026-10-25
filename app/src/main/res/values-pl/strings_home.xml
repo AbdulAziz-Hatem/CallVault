@@ -115,6 +115,20 @@
     <string name="merge_note_will_keep">Pozostałe rozmowy zostaną też zachowane w telefonie.</string>
     <string name="home_scroll_to_top">Do góry</string>
     <string name="home_whatsnew_full_notes">Pełne informacje o wydaniu</string>
+    <string name="whatsnew_247_title">Nowe ustawienia, Shizuku nadrabia i ukraiński</string>
+    <string-array name="whatsnew_247_items">
+        <item>Nowy układ ustawień — każda strona pokazuje tylko swoje ustawienia, szczegóły pod ⓘ; widok klasyczny jest o jedno dotknięcie</item>
+        <item>Prostsza konfiguracja — jedna linia na krok, jak w nowych ustawieniach</item>
+        <item>Tryb Shizuku nadrabia — połączenia w aplikacjach, odporne nagrywanie i nazwy rozmówców działają też tam, a rozmowy telefoniczne szybciej zaczynają się nagrywać</item>
+        <item>Ukraiński — nowy język aplikacji i transkrypcji; perski także można przypiąć do transkrypcji</item>
+        <item>Ukryj nagrania — nagrania nie pojawiają się w odtwarzaczach muzyki i galeriach</item>
+        <item>Import i kopia zapasowa modeli — użyj pliku modelu, który już masz, i zapisz kopię przed ponowną instalacją</item>
+        <item>Automatycznie zatwierdzaj nowe sieci Wi-Fi — opcjonalnie: nagrywanie nie czeka już, aż dotkniesz „Zezwól”</item>
+        <item>Pomijaj ignorowane kontakty także w połączeniach w aplikacjach</item>
+        <item>Nazwy plików Honor / Huawei — aplikacja Telefon na Honorze może odtwarzać nagrania z historii połączeń</item>
+        <item>Połączenia w aplikacjach nagrywają się na telefonach Honor z MagicOS 11</item>
+        <item>Poprawki — CallVault nie walczy już z watchdogiem Shizuku, rejestrator Shizuku wraca po zatrzymaniu przez Androida, nazwy plików zaczynające się od kontaktu lub numeru znów się scalają i są wyszukiwane, greckie i perskie podsumowania są w dobrym języku, oraz poprawka bezpieczeństwa rejestratora</item>
+    </string-array>
     <string name="whatsnew_246_title">Główny włącznik, grecki i poprawki</string>
     <string-array name="whatsnew_246_items">
         <item>Główny włącznik nagrywania — włącz lub wyłącz całe nagrywanie, połączenia sieciowe i w aplikacjach, z karty głównej lub Szybkich ustawień (przetrwa ponowne uruchomienie)</item>

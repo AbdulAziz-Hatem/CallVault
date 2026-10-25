@@ -115,6 +115,20 @@
     <string name="merge_note_will_keep">Las demás llamadas también se conservan en el teléfono.</string>
     <string name="home_scroll_to_top">Arriba</string>
     <string name="home_whatsnew_full_notes">Notas de versión completas</string>
+    <string name="whatsnew_247_title">Nuevos ajustes, Shizuku se pone al día y ucraniano</string>
+    <string-array name="whatsnew_247_items">
+        <item>Nuevo diseño de ajustes — cada página muestra solo sus propios ajustes, con los detalles tras ⓘ; la vista clásica está a un toque</item>
+        <item>Configuración más sencilla — una línea por paso, como los nuevos ajustes</item>
+        <item>El modo Shizuku se pone al día — las llamadas de apps, la grabación resistente y los nombres de los hablantes también funcionan allí, y las llamadas telefónicas empiezan a grabarse antes</item>
+        <item>Ucraniano — nuevo idioma de la app y de transcripción; el persa también se puede fijar para transcribir</item>
+        <item>Ocultar grabaciones — mantén tus grabaciones fuera de reproductores de música y galerías</item>
+        <item>Importar y respaldar modelos — usa un archivo de modelo que ya tengas y guarda una copia antes de reinstalar</item>
+        <item>Aprobar redes Wi-Fi nuevas automáticamente — opcional: la grabación ya no espera a que toques «Permitir»</item>
+        <item>Omitir también los contactos ignorados en llamadas de apps</item>
+        <item>Nombres de archivo Honor / Huawei — la app Teléfono de Honor puede reproducir las grabaciones desde su historial de llamadas</item>
+        <item>Las llamadas de apps se graban en los teléfonos Honor con MagicOS 11</item>
+        <item>Correcciones — CallVault ya no choca con el watchdog de Shizuku, la grabadora de Shizuku vuelve cuando Android la detiene, los nombres de archivo que empiezan por contacto o número vuelven a fusionarse y encontrarse, los resúmenes en griego y persa salen en el idioma correcto, y una corrección de seguridad de la grabadora</item>
+    </string-array>
     <string name="whatsnew_246_title">Un interruptor general, griego y correcciones</string>
     <string-array name="whatsnew_246_items">
         <item>Interruptor general de activación/desactivación — activa o desactiva toda la grabación, llamadas de red y de apps, desde la tarjeta de inicio o los Ajustes rápidos (sobrevive a un reinicio)</item>

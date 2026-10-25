@@ -115,6 +115,20 @@
     <string name="merge_note_will_keep">Die anderen Anrufe bleiben ebenfalls auf dem Telefon.</string>
     <string name="home_scroll_to_top">Nach oben</string>
     <string name="home_whatsnew_full_notes">Vollständige Versionshinweise</string>
+    <string name="whatsnew_247_title">Neue Einstellungen, Shizuku holt auf, und Ukrainisch</string>
+    <string-array name="whatsnew_247_items">
+        <item>Neues Einstellungs-Layout — jede Seite zeigt nur ihre eigenen Einstellungen, Details hinter ⓘ; die klassische Ansicht ist einen Tipp entfernt</item>
+        <item>Einfachere Einrichtung — eine Zeile pro Schritt, wie in den neuen Einstellungen</item>
+        <item>Shizuku-Modus holt auf — App-Anrufe, robuste Aufnahme und Sprechernamen funktionieren auch dort, und Telefonanrufe starten schneller</item>
+        <item>Ukrainisch — neue App- und Transkriptionssprache; auch Persisch kann für die Transkription festgelegt werden</item>
+        <item>Aufnahmen verbergen — halten Sie Ihre Aufnahmen aus Musik-Playern und Galerien heraus</item>
+        <item>Modelle importieren und sichern — eine vorhandene Modelldatei verwenden und vor einer Neuinstallation eine Kopie speichern</item>
+        <item>Neue WLAN-Netze automatisch erlauben — optional: die Aufnahme wartet nicht mehr auf Ihr „Zulassen“</item>
+        <item>Ignorierte Kontakte auch bei App-Anrufen überspringen</item>
+        <item>Honor-/Huawei-Dateinamen — die Telefon-App von Honor kann Aufnahmen aus ihrer Anrufliste abspielen</item>
+        <item>App-Anrufe werden auf Honor-Telefonen mit MagicOS 11 aufgenommen</item>
+        <item>Korrekturen — CallVault kämpft nicht mehr mit Shizukus Watchdog, der Shizuku-Rekorder kommt zurück, nachdem Android ihn beendet hat, Dateinamen mit Kontakt oder Nummer zuerst werden wieder zusammengeführt und gefunden, griechische und persische Zusammenfassungen erscheinen in der richtigen Sprache, und eine Sicherheitskorrektur für den Rekorder</item>
+    </string-array>
     <string name="whatsnew_246_title">Ein zentraler Ein/Aus-Schalter, Griechisch und Fehlerbehebungen</string>
     <string-array name="whatsnew_246_items">
         <item>Zentraler Ein/Aus-Schalter — alle Aufnahmen ein- oder ausschalten, Mobilfunk- und App-Anrufe, über die Startkarte oder die Schnelleinstellungen (übersteht einen Neustart)</item>

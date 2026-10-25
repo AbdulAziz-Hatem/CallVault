@@ -115,6 +115,20 @@
     <string name="merge_note_will_keep">As outras chamadas também são mantidas no telefone.</string>
     <string name="home_scroll_to_top">Topo</string>
     <string name="home_whatsnew_full_notes">Notas de versão completas</string>
+    <string name="whatsnew_247_title">Novas configurações, Shizuku em dia e ucraniano</string>
+    <string-array name="whatsnew_247_items">
+        <item>Novo layout de configurações — cada página mostra só as próprias configurações, com os detalhes atrás de ⓘ; a visão clássica está a um toque</item>
+        <item>Configuração inicial mais simples — uma linha por etapa, como as novas configurações</item>
+        <item>O modo Shizuku fica em dia — chamadas de apps, gravação resiliente e nomes dos interlocutores também funcionam nele, e as ligações começam a gravar mais rápido</item>
+        <item>Ucraniano — novo idioma do app e da transcrição; o persa também pode ser fixado para transcrição</item>
+        <item>Ocultar gravações — mantenha suas gravações fora de players de música e galerias</item>
+        <item>Importar e fazer backup de modelos — use um arquivo de modelo que você já tem e salve uma cópia antes de reinstalar</item>
+        <item>Aprovar novas redes Wi-Fi automaticamente — opcional: a gravação não espera mais você tocar em “Permitir”</item>
+        <item>Ignorar contatos ignorados também em chamadas de apps</item>
+        <item>Nomes de arquivo Honor / Huawei — o app Telefone da Honor pode tocar as gravações pelo histórico de chamadas</item>
+        <item>Chamadas de apps são gravadas em celulares Honor com MagicOS 11</item>
+        <item>Correções — o CallVault não briga mais com o watchdog do Shizuku, o gravador do Shizuku volta depois que o Android o encerra, nomes de arquivo que começam com contato ou número voltam a mesclar e a aparecer na busca, resumos em grego e persa saem no idioma certo, e uma correção de segurança do gravador</item>
+    </string-array>
     <string name="whatsnew_246_title">Um botão geral, grego e correções</string>
     <string-array name="whatsnew_246_items">
         <item>Botão geral liga/desliga — ative ou desative toda a gravação, chamadas da rede e de apps, pelo cartão inicial ou pelas Configurações rápidas (resiste a uma reinicialização)</item>

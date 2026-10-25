@@ -137,6 +137,20 @@
     <string name="merge_note_will_keep">The other calls are kept on the phone as well.</string>
     <string name="home_scroll_to_top">Top</string>
     <string name="home_whatsnew_full_notes">Full release notes</string>
+    <string name="whatsnew_247_title">New Settings, Shizuku catches up, and Ukrainian</string>
+    <string-array name="whatsnew_247_items">
+        <item>New Settings layout — each page shows only its own settings, with details behind ⓘ; the classic view is one tap away</item>
+        <item>Simpler setup — one line per step, like the new Settings</item>
+        <item>Shizuku mode catches up — app calls, resilient recording and speaker names work there too, and phone calls start recording faster</item>
+        <item>Ukrainian — a new app and transcription language; Persian can be pinned for transcription too</item>
+        <item>Hide Recordings — keep your recordings out of music players and galleries</item>
+        <item>Import and back up models — use a model file you already have, and save a copy before a reinstall</item>
+        <item>Approve new Wi-Fi networks automatically — opt-in: recording no longer waits for you to tap “Allow”</item>
+        <item>Skip ignored contacts on app calls too</item>
+        <item>Honor / Huawei file names — Honor’s phone app can play recordings from its call history</item>
+        <item>App calls record on Honor phones with MagicOS 11</item>
+        <item>Fixes — CallVault no longer fights Shizuku’s watchdog, the Shizuku recorder comes back after Android stops it, contact- and number-first file names merge and search again, Greek and Persian summaries come out in the right language, and a security fix for the recorder</item>
+    </string-array>
     <string name="whatsnew_246_title">A master on/off switch, Greek, and fixes</string>
     <string-array name="whatsnew_246_items">
         <item>Master On/Off switch — turn all recording on or off, carrier and app calls, from the home card or Quick Settings (survives a reboot)</item>
