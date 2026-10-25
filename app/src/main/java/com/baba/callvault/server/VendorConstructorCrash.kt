@@ -30,3 +30,21 @@ internal object VendorConstructorCrash {
         return e
     }
 }
+
+/**
+ * Whether a throwable is the crash a vendor put into `AudioRecord.startRecording()` — Honor's MagicOS 11
+ * (Android 17) audit block, which calls `Objects.requireNonNull(ActivityThread.currentApplication())` before
+ * the real start, in a recorder host that has no Application (issue #53). Same shape rule as
+ * [VendorConstructorCrash]: a NullPointerException raised inside code `startRecording` CALLED, not in
+ * `AudioRecord` itself.
+ */
+internal object VendorStartCrash {
+
+    fun matches(error: Throwable): Boolean {
+        val root = VendorConstructorCrash.rootCause(error)
+        if (root !is NullPointerException) return false
+        val frames = root.stackTrace
+        val start = frames.indexOfFirst { it.className == "android.media.AudioRecord" && it.methodName == "startRecording" }
+        return start > 0 && frames[0].className != "android.media.AudioRecord"
+    }
+}

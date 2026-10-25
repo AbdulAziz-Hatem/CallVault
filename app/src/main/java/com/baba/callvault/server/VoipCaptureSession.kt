@@ -148,8 +148,8 @@ internal class VoipCaptureSession(
 
         enc.start()
         startedNanos = System.nanoTime()
-        far.startRecording()
-        near.startRecording()
+        HostAudioRecord.start("VoIP far", far)
+        HostAudioRecord.start("VoIP near", near)
         AppLogger.i(TAG, "VoIP capture started: codec=${codec.cliKey} rate=$SAMPLE_RATE bitRate=$bitRate")
         AppLogger.i(
             TAG,
@@ -243,13 +243,13 @@ internal class VoipCaptureSession(
                 AppLogger.w(TAG, "Could not re-open the far-party sink on resume; the rest of this call is near-side only")
             } else {
                 farRecord = far
-                runCatching { far.startRecording() }
+                runCatching { HostAudioRecord.start("VoIP far (resume)", far) }
             }
             val near = newNearRecord()
             if (near == null) {
                 AppLogger.w(TAG, "Could not re-take the mic on resume; the rest of this call is far-side only")
             } else {
-                runCatching { near.startRecording() }
+                runCatching { HostAudioRecord.start("VoIP near (resume)", near) }
                 nearRecord = near
                 nearAuditId = CaptureAudit.opened("VoIP near capture (MIC, resumed)")
             }
@@ -555,7 +555,7 @@ internal class VoipCaptureSession(
             runCatching { fresh?.release() }
             return null
         }
-        runCatching { fresh.startRecording() }
+        runCatching { HostAudioRecord.start("VoIP mic re-take", fresh) }
         runCatching { current.stop() }
         runCatching { current.release() }
         return fresh
