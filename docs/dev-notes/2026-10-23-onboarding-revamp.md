@@ -1,8 +1,9 @@
 # Onboarding redesign (`feat/onboarding-revamp`)
 
 🧪 VERIFYING — the maintainer approved the look from the before/after page on 2026-10-24. Claude then ran
-standalone and Shizuku setup on the OP9 over adb (below). Still open for the maintainer: the "Developer
-options off" line (turning them off cuts USB adb, so Claude could not look) and one real call after setup.
+standalone and Shizuku setup on the OP9 over adb (below). ✅ VERIFIED 2026-10-25: the maintainer made a real
+call to the OP9 after setup (Shizuku mode, auto-record on) and reported it recorded properly. Still unconfirmed:
+the "Developer options off" line (📐 unseeable over adb, see below) and the Shizuku row in Settings.
 ## What changed
 
 Same idea as the new Settings layout: one line per option, a control, and an ⓘ for the explanation.
@@ -111,7 +112,10 @@ Updated 2026-10-24. The look is approved (before/after page). Left for the maint
 
 1. One real call on the OP9 after setup, to confirm it records. (2026-10-24: the first test call was not
    recorded because auto-record incoming/outgoing defaults to off and the wizard was clicked through. Both
-   were then switched on by hand on the OP9.)
+   were then switched on by hand on the OP9.) ✅ VERIFIED 2026-10-25: the maintainer's next call to the OP9
+   was recorded properly.
+2. Auto-record default: decided 2026-10-25 — leave as is (incoming/outgoing stay off by default, no wizard
+   warning added).
 
 📐 Developer-options-off line: not seeable by Claude on any device. With Developer options off on the emulator
 (2026-10-24) the card said "Wireless debugging is off", by design: `DeveloperOptionsPolicy` counts USB debugging
