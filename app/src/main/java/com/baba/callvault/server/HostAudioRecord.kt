@@ -58,4 +58,22 @@ internal object HostAudioRecord {
             .onFailure { AppLogger.e(TAG, "$what: building without the vendor constructor failed too: ${it.message}", it) }
             .getOrNull()
     }
+
+    /**
+     * Starts [record]. Only on the crash Honor put into `startRecording()` ([VendorStartCrash], issue #53) does it
+     * give the process a shell Application ([ShellApplication]) and start the same record again — the crash
+     * comes before the real start, so the record is untouched. Any other failure propagates as before.
+     */
+    fun start(what: String, record: AudioRecord) =
+        startWithRepair(what, start = { record.startRecording() }, repair = ShellApplication::install)
+
+    internal fun startWithRepair(what: String, start: () -> Unit, repair: () -> Boolean) {
+        val error = runCatching(start).exceptionOrNull() ?: return
+        if (!VendorStartCrash.matches(error)) throw error
+        AppLogger.w(TAG, "$what: the ROM's startRecording() needs an Application " +
+            "(${VendorConstructorCrash.rootCause(error).message}); giving the recorder a shell one")
+        if (!repair()) throw error
+        start()
+        AppLogger.i(TAG, "$what: started after the shell Application was installed")
+    }
 }

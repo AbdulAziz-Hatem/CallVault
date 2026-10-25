@@ -122,7 +122,7 @@ internal class DirectAudioRecorderSession(
         muxer = mux
 
         enc.start()
-        record.startRecording()
+        HostAudioRecord.start("direct ${source.cliKey}", record)
         if (record.recordingState != AudioRecord.RECORDSTATE_RECORDING) {
             throw IllegalStateException("AudioRecord failed to enter RECORDING state")
         }
