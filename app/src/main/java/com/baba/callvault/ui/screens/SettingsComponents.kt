@@ -14,6 +14,12 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.collapse
+import androidx.compose.ui.semantics.expand
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -191,7 +197,15 @@ internal fun SettingsSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .clickable { onToggle() },
+                .semantics {
+                    role = Role.Button
+                    if (expanded) {
+                        collapse { onToggle(); true }
+                    } else {
+                        expand { onToggle(); true }
+                    }
+                }
+                .clickable(role = Role.Button) { onToggle() },
             verticalAlignment = Alignment.CenterVertically
         ) {
             CvSectionHeader(text = title, modifier = Modifier.weight(1f))
@@ -249,7 +263,15 @@ internal fun SettingsSubSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(10.dp))
-                .clickable { onToggle() },
+                .semantics {
+                    role = Role.Button
+                    if (expanded) {
+                        collapse { onToggle(); true }
+                    } else {
+                        expand { onToggle(); true }
+                    }
+                }
+                .clickable(role = Role.Button) { onToggle() },
             verticalAlignment = Alignment.CenterVertically
         ) {
             SettingsSubHeader(title, modifier = Modifier.weight(1f))
@@ -449,7 +471,12 @@ internal fun SettingsToggleRow(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(enabled = enabled) { onCheckedChange(!checked) }
+            .toggleable(
+                value = checked,
+                enabled = enabled,
+                role = Role.Switch,
+                onValueChange = onCheckedChange
+            )
             .padding(horizontal = 16.dp, vertical = 10.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -472,7 +499,7 @@ internal fun SettingsToggleRow(
             if (infoText != null) {
                 SettingsInfoButton(label = label, explanation = infoText)
             }
-            Switch(checked = checked, onCheckedChange = onCheckedChange, enabled = enabled)
+            Switch(checked = checked, onCheckedChange = null, enabled = enabled)
         }
         if (descriptionBelow && description != null && !descriptionAsInfo) {
             // Full width, under the switch rather than in the narrow column beside it.

@@ -8,6 +8,11 @@
 
 package com.baba.callvault.ui.common
 
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -45,7 +50,12 @@ fun WorkProgressRing(percent: Int, modifier: Modifier = Modifier) {
 
     if (percent <= 0) {
         CircularProgressIndicator(
-            modifier = modifier.size(SPINNER_SIZE),
+            modifier = modifier
+                .size(SPINNER_SIZE)
+                .semantics {
+                    progressBarRangeInfo = ProgressBarRangeInfo.Indeterminate
+                    liveRegion = LiveRegionMode.Polite
+                },
             color = accent,
             strokeWidth = PROGRESS_STROKE,
             trackColor = track
@@ -53,10 +63,13 @@ fun WorkProgressRing(percent: Int, modifier: Modifier = Modifier) {
         return
     }
 
-    // The ring takes the whole slot rather than the 20dp the spinner uses, because it now has to
-    // hold a number. At 20dp there is no room for two digits at a legible size; at the full 40dp
-    // the reading sits comfortably inside the arc that describes it.
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+    Box(
+        modifier = modifier.semantics {
+            progressBarRangeInfo = ProgressBarRangeInfo(percent / PERCENT, 0f..1f)
+            liveRegion = LiveRegionMode.Polite
+        },
+        contentAlignment = Alignment.Center
+    ) {
         CircularProgressIndicator(
             progress = { percent / PERCENT },
             modifier = Modifier.fillMaxSize(),

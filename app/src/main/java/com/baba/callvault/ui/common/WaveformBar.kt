@@ -8,6 +8,10 @@
 
 package com.baba.callvault.ui.common
 
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.setProgress
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -61,6 +65,13 @@ fun WaveformBar(
         modifier = modifier
             .fillMaxWidth()
             .height(HEIGHT)
+            .semantics {
+                progressBarRangeInfo = ProgressBarRangeInfo(progress.coerceIn(0f, 1f), 0f..1f)
+                setProgress { targetProgress ->
+                    seek(targetProgress.coerceIn(0f, 1f))
+                    true
+                }
+            }
             .pointerInput(Unit) {
                 detectTapGestures { offset -> seek((offset.x / size.width).coerceIn(0f, 1f)) }
             }

@@ -8,6 +8,8 @@
 
 package com.baba.callvault.ui.screens
 
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.ui.semantics.Role
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -300,16 +302,19 @@ internal fun IgnoreContactsOptions(
 
         val enumEntries = AppPreferences.IgnoreContactsMode.entries
         enumEntries.forEach { ignoreContactMode ->
+            val isSelected = selectedEnum == ignoreContactMode
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    // This make the box/text next to the radio button clickable, not just the button itself, which is more user-friendly.
-                    .clickable { onSelected(ignoreContactMode) }
+                    .selectable(
+                        selected = isSelected,
+                        role = Role.RadioButton,
+                        onClick = { onSelected(ignoreContactMode) }
+                    )
                     .padding(vertical = 4.dp)
             ) {
-                // Make the actual radio button (circle) clickable (it's quite small)
-                RadioButton(selected = selectedEnum == ignoreContactMode, onClick = { onSelected(ignoreContactMode) })
+                RadioButton(selected = isSelected, onClick = null)
                 Text(
                     text = when (ignoreContactMode) {
                         AppPreferences.IgnoreContactsMode.NONE -> stringResource(R.string.settings_ignore_contacts_none)

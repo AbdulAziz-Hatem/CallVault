@@ -3255,7 +3255,7 @@ private fun RecordingRow(
                 Box(
                     modifier = Modifier
                         .clip(CircleShape)
-                        .clickable(enabled = !selectionMode) { onOpenPlayback() }
+                        .clickable(enabled = !selectionMode, role = Role.Button) { onOpenPlayback() }
                 ) {
                     PlayDisc(
                         isActive = !isBoth && isRowActive,
@@ -3265,7 +3265,7 @@ private fun RecordingRow(
                 CallOriginBadge(item.direction, item.voipApp)
             }
             Spacer(Modifier.width(14.dp))
-            Column(Modifier.weight(1f)) {
+            Column(Modifier.weight(1f).semantics(mergeDescendants = true) {}) {
                 // The whole line, to itself. The badge now sits under the play disc, in the gutter the
                 // details line already indents past — space that was simply empty.
                 Row(verticalAlignment = Alignment.CenterVertically) {

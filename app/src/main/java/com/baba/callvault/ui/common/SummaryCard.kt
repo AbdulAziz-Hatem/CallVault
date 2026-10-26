@@ -8,6 +8,11 @@
 
 package com.baba.callvault.ui.common
 
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.collapse
+import androidx.compose.ui.semantics.expand
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -151,7 +156,15 @@ fun SummarySheetStrip(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { expanded = !expanded }
+                        .semantics {
+                            role = Role.Button
+                            if (expanded) {
+                                collapse { expanded = false; true }
+                            } else {
+                                expand { expanded = true; true }
+                            }
+                        }
+                        .clickable(role = Role.Button) { expanded = !expanded }
                         .padding(vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -175,7 +188,7 @@ fun SummarySheetStrip(
                     Spacer(Modifier.width(8.dp))
                     Icon(
                         imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                        contentDescription = stringResource(R.string.summary_card_title),
+                        contentDescription = null,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp)
                     )

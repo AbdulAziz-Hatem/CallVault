@@ -8,6 +8,11 @@
 
 package com.baba.callvault.ui.screens
 
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.collapse
+import androidx.compose.ui.semantics.expand
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
@@ -83,7 +88,15 @@ internal fun SettingsGroupCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onToggle() }
+                    .semantics {
+                        role = Role.Button
+                        if (expanded) {
+                            collapse { onToggle(); true }
+                        } else {
+                            expand { onToggle(); true }
+                        }
+                    }
+                    .clickable(role = Role.Button) { onToggle() }
                     .padding(horizontal = 16.dp, vertical = 14.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {

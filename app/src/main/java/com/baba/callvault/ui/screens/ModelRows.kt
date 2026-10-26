@@ -8,6 +8,11 @@
 
 package com.baba.callvault.ui.screens
 
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -222,17 +227,24 @@ internal fun ModelDownloadingRow(
             value = cancelLabel,
             onClick = onCancel
         )
-        // Determinate only once there is a real figure; an empty bar sitting at zero reads as stuck.
+        val progressModifier = barModifier.semantics {
+            progressBarRangeInfo = if (percent != null) {
+                ProgressBarRangeInfo(percent / PERCENT, 0f..1f)
+            } else {
+                ProgressBarRangeInfo.Indeterminate
+            }
+            liveRegion = LiveRegionMode.Polite
+        }
         if (percent != null) {
             LinearProgressIndicator(
                 progress = { percent / PERCENT },
-                modifier = barModifier,
+                modifier = progressModifier,
                 color = accent,
                 trackColor = track
             )
         } else {
             LinearProgressIndicator(
-                modifier = barModifier,
+                modifier = progressModifier,
                 color = accent,
                 trackColor = track
             )

@@ -8,7 +8,8 @@
 
 package com.baba.callvault.ui.common
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -41,12 +42,17 @@ fun ToggleListItem(
 ) {
     val contentAlpha = if (enabled) 1f else 0.38f
     ListItem(
-        modifier        = modifier.clickable(enabled = enabled) { onCheckedChange(!checked) },
+        modifier        = modifier.toggleable(
+            value = checked,
+            enabled = enabled,
+            role = Role.Switch,
+            onValueChange = onCheckedChange
+        ),
         headlineContent = { Text(label, color = MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha)) },
         supportingContent = if (description != null) {
             { Text(description, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha)) }
         } else null,
-        trailingContent = { Switch(checked = checked, onCheckedChange = onCheckedChange, enabled = enabled) },
+        trailingContent = { Switch(checked = checked, onCheckedChange = null, enabled = enabled) },
         colors          = ListItemDefaults.colors(containerColor = Color.Transparent)
     )
 }

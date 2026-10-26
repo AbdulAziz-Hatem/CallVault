@@ -8,6 +8,10 @@
 
 package com.baba.callvault.ui.common
 
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.setProgress
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -55,6 +59,15 @@ fun SeekBar(
     Box(
         modifier = modifier
             .height(28.dp)
+            .semantics {
+                progressBarRangeInfo = ProgressBarRangeInfo(fraction, 0f..1f)
+                if (enabled) {
+                    setProgress { targetFraction ->
+                        onSeek((targetFraction.coerceIn(0f, 1f) * total).toInt())
+                        true
+                    }
+                }
+            }
             .onSizeChanged { widthPx.value = it.width }
             // Keyed on `enabled`: pointerInput caches its block, so a bar that started disabled would
             // stay deaf after the track loaded if the key never changed.

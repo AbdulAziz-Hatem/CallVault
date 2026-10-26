@@ -8,6 +8,7 @@
 
 package com.baba.callvault.ui.screens
 
+import androidx.compose.ui.semantics.Role
 import com.baba.callvault.ui.common.CallOriginBadge
 import android.text.format.DateUtils
 import androidx.compose.foundation.background
@@ -773,13 +774,18 @@ private fun TagCard(
                     onClick = { managing = tag },
                     label = { Text(tag) },
                     trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = stringResource(R.string.playback_tags_remove),
+                        Box(
                             modifier = Modifier
-                                .size(16.dp)
-                                .clickable { onRemoveTag(tag) }
-                        )
+                                .size(24.dp)
+                                .clickable(role = Role.Button) { onRemoveTag(tag) },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = stringResource(R.string.playback_tags_remove),
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
                     },
                     colors = InputChipDefaults.inputChipColors(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant,
